@@ -1,0 +1,41 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: light;
+  }
+  body {
+    @apply bg-paper text-chalkboard font-body;
+  }
+  h1, h2, h3, h4 {
+    @apply font-display;
+  }
+  :focus-visible {
+    outline: 3px solid theme("colors.crayon.blue");
+    outline-offset: 2px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@layer components {
+  /* Signature element: a wooden alphabet block, carved-letter look */
+  .letter-block {
+    @apply relative flex items-center justify-center rounded-block
+      bg-wood text-paper font-display shadow-block
+      transition-transform duration-150 ease-out;
+  }
+  .letter-block:hover {
+    @apply -translate-y-0.5 shadow-blockHover;
+  }
+  .letter-block:active {
+    @apply translate-y-0 shadow-none;
+  }
+}

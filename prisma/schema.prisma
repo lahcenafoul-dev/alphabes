@@ -1,0 +1,278 @@
+// AlphaBes database schema
+// Run: npx prisma migrate dev --name init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ---------- Auth / Accounts ----------
+
+enum Role {
+  PARENT
+  ADMIN
+}
+
+enum SubscriptionPlan {
+  FREE
+  PRO_MONTHLY
+  PRO_ANNUAL
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  PAST_DUE
+  CANCELED
+  TRIALING
+}
+
+model User {
+  id             String    @id @default(cuid())
+  email          String    @unique
+  passwordHash   String?
+  name           String?
+  role           Role      @default(PARENT)
+  emailVerified  DateTime?
+  image          String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  children       ChildProfile[]
+  subscription   Subscription?
+  blogPosts      BlogPost[]      @relation("AuthorPosts")
+
+  @@index([email])
+}
+
+// Minimal child profile: first name + age band only. No contact info,
+// no photos, no location -- COPPA-conscious by design.
+model ChildProfile {
+  id          String   @id @default(cuid())
+  parentId    String
+  parent      User     @relation(fields: [parentId], references: [id], onDelete: Cascade)
+  firstName   String
+  ageBand     String   // e.g. "3-4", "5-6", "7-8"
+  avatarKey   String?  // key into a fixed set of illustrated avatars, not a photo
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  progress    Progress[]
+
+  @@index([parentId])
+}
+
+// ---------- Curriculum ----------
+
+model Letter {
+  id              String   @id @default(cuid())
+  slug            String   @unique // "a" .. "z"
+  uppercase       String
+  lowercase       String
+  phonicsSound    String   // e.g. "Short A /æ/"
+  audioUrl        String?
+  order           Int      @unique // 1..26
+  exampleWords    Json     // string[] of { word, imageUrl, audioUrl }
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  lessons         Lesson[]
+  phonicsLessons  PhonicsLesson[]
+  worksheets      Worksheet[]
+  flashcards      Flashcard[]
+  activities      Activity[]
+
+  @@index([order])
+}
+
+enum LessonType {
+  RECOGNITION
+  TRACING
+  BEGINNING_SOUND
+  VOCABULARY
+}
+
+model Lesson {
+  id          String     @id @default(cuid())
+  letterId    String
+  letter      Letter     @relation(fields: [letterId], references: [id], onDelete: Cascade)
+  type        LessonType
+  title       String
+  body        Json       // structured lesson content blocks
+  isPremium   Boolean    @default(false)
+  order       Int        @default(0)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  progress    Progress[]
+
+  @@index([letterId])
+}
+
+enum PhonicsSkill {
+  LETTER_SOUNDS
+  BEGINNING_SOUNDS
+  CVC_WORDS
+  BLENDING
+}
+
+model PhonicsLesson {
+  id          String       @id @default(cuid())
+  letterId    String?
+  letter      Letter?      @relation(fields: [letterId], references: [id])
+  skill       PhonicsSkill
+  title       String
+  slug        String       @unique
+  body        Json
+  isPremium   Boolean      @default(false)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  @@index([skill])
+}
+
+model WorksheetCategory {
+  id          String      @id @default(cuid())
+  slug        String      @unique // "alphabet", "tracing", "phonics", ...
+  name        String
+  description String?
+  worksheets  Worksheet[]
+}
+
+model Worksheet {
+  id           String            @id @default(cuid())
+  title        String
+  slug         String            @unique
+  categoryId   String
+  category     WorksheetCategory @relation(fields: [categoryId], references: [id])
+  letterId     String?
+  letter       Letter?           @relation(fields: [letterId], references: [id])
+  ageRangeMin  Int
+  ageRangeMax  Int
+  difficulty   String            // "beginner" | "intermediate" | "advanced"
+  skill        String
+  previewUrl   String            // low-res watermarked preview image
+  fileUrl      String            // PDF in object storage, access-checked at request time
+  isPremium    Boolean           @default(false)
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+
+  @@index([categoryId])
+  @@index([letterId])
+  @@index([isPremium])
+}
+
+enum GameType {
+  FIND_THE_LETTER
+  MATCH_LETTER_PICTURE
+  BEGINNING_SOUND
+  LETTER_TRACING
+  ALPHABET_QUIZ
+}
+
+model Game {
+  id          String    @id @default(cuid())
+  type        GameType
+  slug        String    @unique
+  title       String
+  description String
+  isPremium   Boolean   @default(false)
+  config      Json      // per-game configuration (rounds, letter pool, etc.)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  progress    Progress[]
+}
+
+model Flashcard {
+  id        String   @id @default(cuid())
+  letterId  String
+  letter    Letter   @relation(fields: [letterId], references: [id], onDelete: Cascade)
+  word      String
+  imageUrl  String
+  audioUrl  String?
+  createdAt DateTime @default(now())
+
+  @@index([letterId])
+}
+
+model Activity {
+  id        String   @id @default(cuid())
+  letterId  String?
+  letter    Letter?  @relation(fields: [letterId], references: [id])
+  title     String
+  slug      String   @unique
+  type      String
+  isPremium Boolean  @default(false)
+  config    Json
+
+  progress  Progress[]
+}
+
+// A single polymorphic progress ledger keyed by which content type was completed.
+model Progress {
+  id             String        @id @default(cuid())
+  childId        String
+  child          ChildProfile  @relation(fields: [childId], references: [id], onDelete: Cascade)
+  lessonId       String?
+  lesson         Lesson?       @relation(fields: [lessonId], references: [id])
+  gameId         String?
+  game           Game?         @relation(fields: [gameId], references: [id])
+  activityId     String?
+  activity       Activity?     @relation(fields: [activityId], references: [id])
+  score          Int?
+  completedAt    DateTime      @default(now())
+
+  @@index([childId])
+  @@index([lessonId])
+  @@index([gameId])
+  @@index([activityId])
+}
+
+// ---------- Commerce ----------
+
+model Subscription {
+  id                   String             @id @default(cuid())
+  userId               String             @unique
+  user                 User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  plan                 SubscriptionPlan   @default(FREE)
+  status               SubscriptionStatus @default(ACTIVE)
+  stripeCustomerId     String?            @unique
+  stripeSubscriptionId String?            @unique
+  currentPeriodEnd     DateTime?
+  createdAt            DateTime           @default(now())
+  updatedAt            DateTime           @updatedAt
+}
+
+// ---------- Content / Marketing ----------
+
+model Category {
+  id       String     @id @default(cuid())
+  slug     String     @unique
+  name     String
+  posts    BlogPost[]
+}
+
+model BlogPost {
+  id              String    @id @default(cuid())
+  slug            String    @unique
+  title           String
+  excerpt         String
+  body            String    @db.Text
+  coverImageUrl   String?
+  authorId        String
+  author          User      @relation("AuthorPosts", fields: [authorId], references: [id])
+  categoryId      String?
+  category        Category? @relation(fields: [categoryId], references: [id])
+  publishedAt     DateTime?
+  metaTitle       String?
+  metaDescription String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@index([slug])
+  @@index([publishedAt])
+}
