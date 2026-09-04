@@ -4,7 +4,7 @@ export const wordEmojis: Record<string, string> = {
   // B
   Ball: "⚽", Bear: "🐻", Banana: "🍌", Butterfly: "🦋", Bird: "🐦", Book: "📖", Bus: "🚌", Boat: "⛵",
   // C
-  Cat: "🐱", Car: "🚗", Cake: "🎂", Cow: "🐄", Cloud: "☁️", Crab: "🦀", Corn: "🌽", Cup: "☕",
+  Cat: "🐱", Car: "🚗", Cake: "🎂", Cow: "🐄", Cloud: "☁️", Crab: "🦀", Corn: "🌽", Cup: "☕", Cookie: "🍪",
   // D
   Dog: "🐶", Duck: "🦆", Drum: "🥁", Door: "🚪", Dolphin: "🐬", Diamond: "💎",
   // E
@@ -46,7 +46,7 @@ export const wordEmojis: Record<string, string> = {
   // W
   Whale: "🐳", Watch: "⌚", Watermelon: "🍉", Wolf: "🐺", Window: "🪟",
   // X
-  Xylophone: "🎹", "X-ray": "🩻",
+  Xylophone: "🎹", "X-ray": "🩻",Quail: "🐦", Up: "⬆️", Ax: "🪓", Zigzag: "〰️",
   // Y
   Yak: "🐃", Yarn: "🧶", "Yo-yo": "🪀", Yogurt: "🍦",
   // Z
