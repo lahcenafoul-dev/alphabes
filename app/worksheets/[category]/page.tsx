@@ -45,7 +45,7 @@ export default function WorksheetCategoryPage({ params }: Props) {
         {letters.map((letter) => (
           <Link 
           key={letter} 
-          href={letter} 
+          href={`/alphabet/${letter}/worksheet`}
           className="rounded-block border border-chalkboard/10 p-4 text-center shadow-block">
             <div className="letter-block bg-crayon-blue aspect-square text-xl mx-auto mb-2">
               {letter.toUpperCase()}
