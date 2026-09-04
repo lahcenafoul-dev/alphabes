@@ -39,7 +39,7 @@ export default function AddChildForm() {
     return (
       <button
         type="button"
-        onClick={() => setOpen(true)}
+        onClick={() => { alert("الزر خدام!"); setOpen(true); }}
         className="rounded-block bg-crayon-blue text-paper font-display font-bold px-5 py-2.5 shadow-block hover:shadow-blockHover transition"
       >
         Add Child Profile
