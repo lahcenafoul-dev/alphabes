@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { getAllLetterSlugs, getLetterContent } from "@/lib/letters-data";
-import { speak } from "@/lib/speech";
+import SpeakButton from "@/components/SpeakButton";
 import { wordEmojis } from "@/lib/wordEmojis";
 type Props = { params: { letter: string } };
 
@@ -94,16 +94,11 @@ export default function LetterPage({ params }: Props) {
           )}
         </div>
       </header>
-
-      <button
-        type="button"
-        onClick={() => speak(content.uppercase)}
-        className="mt-6 inline-flex items-center gap-2 rounded-block bg-crayon-yellow px-5 py-2.5 font-display font-bold shadow-block hover:shadow-blockHover transition"
-        aria-label={`Listen and repeat the letter ${content.uppercase} sound`}
-        data-audio-src={`/audio/letters/${content.slug}.mp3`}
-      >
-        🔊 Listen &amp; Repeat
-      </button>
+<SpeakButton
+  text={content.uppercase}
+  className="mt-6 inline-flex items-center gap-2 rounded-bloc..."
+  ariaLabel={`Listen and repeat the letter ${content.uppercase}...`}
+/>
 
       {content.exampleWords.length > 0 && (
         <section className="mt-10" aria-labelledby="words-heading">
