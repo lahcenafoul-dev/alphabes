@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import AddChildForm from "./add-child-form";
 
 export const metadata: Metadata = {
   title: "Dashboard",
@@ -37,23 +38,28 @@ export default async function DashboardPage() {
           <p className="mt-2 text-chalkboard/70">
             Add a child profile to start tracking alphabet and phonics progress.
           </p>
-          <button className="mt-5 rounded-block bg-crayon-blue text-paper font-display font-bold px-5 py-2.5 shadow-block hover:shadow-blockHover transition">
-            Add Child Profile
-          </button>
+          <div className="mt-5 flex justify-center">
+            <AddChildForm />
+          </div>
         </div>
       ) : (
-        <div className="mt-10 grid md:grid-cols-2 gap-6">
-          {children.map((child) => {
-            const completed = child.progress.length;
-            return (
-              <div key={child.id} className="rounded-block border border-chalkboard/10 p-6 shadow-block">
-                <h2 className="font-display font-bold text-xl">{child.firstName}</h2>
-                <p className="text-sm text-chalkboard/60">Ages {child.ageBand}</p>
-                <p className="mt-4 text-chalkboard/80">{completed} lessons completed</p>
-              </div>
-            );
-          })}
-        </div>
+        <>
+          <div className="mt-10 grid md:grid-cols-2 gap-6">
+            {children.map((child) => {
+              const completed = child.progress.length;
+              return (
+                <div key={child.id} className="rounded-block border border-chalkboard/10 p-6 shadow-block">
+                  <h2 className="font-display font-bold text-xl">{child.firstName}</h2>
+                  <p className="text-sm text-chalkboard/60">Ages {child.ageBand}</p>
+                  <p className="mt-4 text-chalkboard/80">{completed} lessons completed</p>
+                </div>
+              );
+            })}
+          </div>
+          <div className="mt-6">
+            <AddChildForm />
+          </div>
+        </>
       )}
 
       {plan === "FREE" && (

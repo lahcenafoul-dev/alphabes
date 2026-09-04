@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Baloo_2, Nunito } from "next/font/google";
 import "./globals.css";
+import Footer from "@/components/Footer";
 
 const baloo = Baloo_2({
   subsets: ["latin"],
@@ -75,6 +76,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           Skip to content
         </a>
         {children}
+        <Footer />
       </body>
     </html>
   );
