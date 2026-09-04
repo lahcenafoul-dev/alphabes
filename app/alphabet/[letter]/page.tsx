@@ -2,7 +2,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { getAllLetterSlugs, getLetterContent } from "@/lib/letters-data";
-
+import { speak } from "@/lib/speech";
+import { wordEmojis } from "@/lib/wordEmojis";
 type Props = { params: { letter: string } };
 
 export function generateStaticParams() {
@@ -96,6 +97,7 @@ export default function LetterPage({ params }: Props) {
 
       <button
         type="button"
+        onClick={() => speak(content.uppercase)}
         className="mt-6 inline-flex items-center gap-2 rounded-block bg-crayon-yellow px-5 py-2.5 font-display font-bold shadow-block hover:shadow-blockHover transition"
         aria-label={`Listen and repeat the letter ${content.uppercase} sound`}
         data-audio-src={`/audio/letters/${content.slug}.mp3`}
@@ -115,10 +117,13 @@ export default function LetterPage({ params }: Props) {
                 className="rounded-block bg-paper border border-chalkboard/10 p-4 text-center shadow-block"
               >
                 <div
-                  className="mx-auto h-16 w-16 rounded-full bg-crayon-green/20"
+                  className="mx-auto h-16 w-16 rounded-full bg-crayon-gr... flex items-center justify-center text-4xl"
                   role="img"
-                  aria-label={w.imageAlt}
-                />
+                  aria-label={w.imageAlt}                  
+>
+  {wordEmojis[w.word] || "📦"}
+</div>
+              
                 <p className="mt-2 font-display font-bold">{w.word}</p>
               </li>
             ))}
