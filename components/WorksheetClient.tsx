@@ -25,35 +25,75 @@ export default function WorksheetClient({ letter, word, emoji }: Props) {
   const downloadPDF = () => {
     const doc = new jsPDF({ unit: "mm", format: "a4" });
     const pageWidth = doc.internal.pageSize.getWidth();
+    const margin = 15;
 
-    doc.setFontSize(24);
-    doc.text(`Letter ${upper}${lower} Worksheet`, pageWidth / 2, 20, {
+    // ===== Header bar =====
+    doc.setFillColor(59, 130, 246); // crayon-blue
+    doc.rect(0, 0, pageWidth, 22, "F");
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(16);
+    doc.setTextColor(255, 255, 255);
+    doc.text("Alphabes.com", margin, 14);
+    doc.setFontSize(11);
+    doc.text("Letter Tracing Worksheet", pageWidth - margin, 14, {
+      align: "right",
+    });
+
+    // ===== Title =====
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(22);
+    doc.setTextColor(30, 30, 30);
+    doc.text(`Letter ${upper}${lower}`, pageWidth / 2, 38, {
       align: "center",
     });
 
-    doc.setFontSize(80);
-    doc.setTextColor(200, 200, 200);
-    doc.text(upper, 40, 60);
-    doc.text(lower, 100, 60);
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(13);
+    doc.setTextColor(90, 90, 90);
+    doc.text(`${emoji}  ${word}`, pageWidth / 2, 47, { align: "center" });
 
-    doc.setDrawColor(150, 150, 150);
-    doc.setLineDashPattern([1, 1], 0);
-    for (let i = 0; i < 4; i++) {
-      const y = 80 + i * 15;
-      doc.text(upper, 30 + i * 12, y);
-      doc.text(lower, 90 + i * 12, y);
+    // ===== Big outline guide letters =====
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(70);
+    doc.setDrawColor(59, 130, 246);
+    doc.setLineWidth(0.6);
+    doc.text(upper, 45, 85, { renderingMode: "stroke" });
+    doc.text(lower, 115, 85, { renderingMode: "stroke" });
+
+    // ===== Practice rows with dotted guide lines =====
+    let startY = 105;
+    for (let row = 0; row < 3; row++) {
+      const y = startY + row * 28;
+
+      // 4 faint dashed guide letters per row
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(24);
+      doc.setDrawColor(180, 180, 180);
+      doc.setLineWidth(0.3);
+      for (let i = 0; i < 4; i++) {
+        const x = margin + 10 + i * 22;
+        doc.text(upper, x, y, { renderingMode: "stroke" });
+        doc.text(lower, x + 11, y, { renderingMode: "stroke" });
+      }
+
+      // dashed baseline under each row
+      doc.setDrawColor(150, 150, 150);
+      doc.setLineDashPattern([1, 1], 0);
+      doc.line(margin, y + 3, pageWidth - margin, y + 3);
+      doc.setLineDashPattern([], 0);
     }
 
-    doc.setLineDashPattern([], 0);
-    doc.setDrawColor(0, 0, 0);
-    for (let i = 0; i < 3; i++) {
-      const y = 150 + i * 15;
-      doc.line(20, y, pageWidth - 20, y);
-    }
+    // ===== Footer sentence =====
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(13);
+    doc.setTextColor(30, 30, 30);
+    doc.text(`${word} starts with the letter ${upper}${lower}.`, margin, 210);
 
-    doc.setFontSize(14);
-    doc.setTextColor(0, 0, 0);
-    doc.text(`${word} starts with the letter ${upper}${lower}`, 20, 210);
+    doc.setFontSize(9);
+    doc.setTextColor(150, 150, 150);
+    doc.text("alphabes.netlify.app", pageWidth - margin, 285, {
+      align: "right",
+    });
 
     doc.save(`letter-${lower}-worksheet.pdf`);
   };
