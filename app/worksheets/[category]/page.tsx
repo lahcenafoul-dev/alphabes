@@ -43,7 +43,7 @@ export default function WorksheetCategoryPage({ params }: Props) {
 
       <ul className="mt-10 grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-4">
         {letters.map((letter) => (
-          <li key={letter} id={letter} className="rounded-block border border-chalkboard/10 p-4 text-center shadow-block">
+          <link key={letter} href={letter} className="rounded-block border border-chalkboard/10 p-4 text-center shadow-block">
             <div className="letter-block bg-crayon-blue aspect-square text-xl mx-auto mb-2">
               {letter.toUpperCase()}
             </div>
@@ -51,7 +51,7 @@ export default function WorksheetCategoryPage({ params }: Props) {
             <span className="mt-1 inline-block rounded-full bg-crayon-green/20 text-crayon-green px-2 py-0.5 text-xs font-bold">
               Free
             </span>
-          </li>
+          </link>
         ))}
       </ul>
     </main>
