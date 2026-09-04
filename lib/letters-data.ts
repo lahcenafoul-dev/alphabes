@@ -101,34 +101,7 @@ const authored: Record<string, LetterContent> = {
       },
     ],
   },
-};
-
-export function getAllLetterSlugs(): string[] {
-  return alphabetOrder;
-}
-
-export function getLetterContent(slug: string): LetterContent | null {
-  const s = slug.toLowerCase();
-  if (!alphabetOrder.includes(s)) return null;
-  if (authored[s]) return authored[s];
-
-  // ADMIN NOTE: Letters D-Z are provisioned here with a minimal correct
-  // structure (real letterforms and sound, placeholder vocabulary) so the
-  // site never renders fake statistics or invented educational claims.
-  // Content team fills in exampleWords + faq per the `authored` shape above
-  // (or, in production, via the admin panel writing to the Letter table).
-  const order = alphabetOrder.indexOf(s) + 1;
-  return {
-    slug: s,
-    order,
-    uppercase: s.toUpperCase(),
-    lowercase: s,
-    phonicsSound: `${s.toUpperCase()} sound`,
-    ipa: "",
-    exampleWords: [],
-    faq: [],
-  };
-  d: {
+d: {
     slug: "d", order: 4, uppercase: "D", lowercase: "d",
     phonicsSound: "D sound", ipa: "/d/",
     exampleWords: [
@@ -450,4 +423,30 @@ export function getLetterContent(slug: string): LetterContent | null {
       { question: "How can I help my child practice the letter Z?", answer: "Have your child trace the letter Z while saying its sound, then look for a picture of a zebra at the zoo." },
     ],
   },
+};
+export function getAllLetterSlugs(): string[] {
+  return alphabetOrder;
+}
+
+export function getLetterContent(slug: string): LetterContent | null {
+  const s = slug.toLowerCase();
+  if (!alphabetOrder.includes(s)) return null;
+  if (authored[s]) return authored[s];
+
+  // ADMIN NOTE: Letters D-Z are provisioned here with a minimal correct
+  // structure (real letterforms and sound, placeholder vocabulary) so the
+  // site never renders fake statistics or invented educational claims.
+  // Content team fills in exampleWords + faq per the `authored` shape above
+  // (or, in production, via the admin panel writing to the Letter table).
+  const order = alphabetOrder.indexOf(s) + 1;
+  return {
+    slug: s,
+    order,
+    uppercase: s.toUpperCase(),
+    lowercase: s,
+    phonicsSound: `${s.toUpperCase()} sound`,
+    ipa: "",
+    exampleWords: [],
+    faq: [],
+  };
 }
