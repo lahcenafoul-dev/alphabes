@@ -50,7 +50,7 @@ export default function WorksheetClient({ letter, word, emoji }: Props) {
     doc.setFont("helvetica", "normal");
     doc.setFontSize(13);
     doc.setTextColor(90, 90, 90);
-    doc.text(`${emoji}  ${word}`, pageWidth / 2, 47, { align: "center" });
+    doc.text(word, pageWidth / 2, 47, { align: "center" });
 
     // ===== Big outline guide letters =====
     doc.setFont("helvetica", "bold");

@@ -2,7 +2,7 @@ import { alphabetData, getLetterData } from "@/lib/alphabet-data";
 import WorksheetClient from "@/components/WorksheetClient";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-
+import TracingCanvas from "@/components/TracingCanvas";
 type Props = {
   params: { letter: string };
 };
@@ -38,16 +38,12 @@ export default function LetterWorksheetPage({ params }: Props) {
       </div>
 
       <div className="mt-8">
-        <h2 className="text-xl font-bold">Practice tracing</h2>
-        <div className="mt-4 flex gap-4 text-5xl font-extrabold text-chalkboard/20 select-none">
-          <span>{upper}</span>
-          <span>{upper}</span>
-          <span>{upper}</span>
-          <span>{letter}</span>
-          <span>{letter}</span>
-          <span>{letter}</span>
-        </div>
-      </div>
+  <h2 className="text-xl font-bold">Practice tracing</h2>
+  <p className="mt-1 text-sm text-chalkboard/60">
+    Use your mouse or finger to trace the letter below.
+  </p>
+  <TracingCanvas letter={letter} />
+</div>
 
       <WorksheetClient letter={letter} word={word} emoji={emoji} />
     </main>
