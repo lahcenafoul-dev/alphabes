@@ -3,7 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import AddChildForm from "./add-child-form";
-
+import Link from "next/link";
 export const metadata: Metadata = {
   title: "Dashboard",
   robots: { index: false },
