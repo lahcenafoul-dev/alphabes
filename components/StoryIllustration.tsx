@@ -185,7 +185,252 @@ function getScene(scene: string | null) {
           </text>
         </svg>
       );
+    case "dog-1":
+      return (
+        <svg viewBox="0 0 400 300" className="w-full h-full">
+          <rect width="400" height="300" fill="#bae6fd" />
+          <ellipse cx="200" cy="270" rx="200" ry="30" fill="#86efac" />
+          <ellipse cx="200" cy="190" rx="70" ry="50" fill="#d97706" />
+          <circle cx="200" cy="140" r="40" fill="#d97706" />
+          <ellipse cx="180" cy="120" rx="10" ry="15" fill="#78350f" />
+          <ellipse cx="220" cy="120" rx="10" ry="15" fill="#78350f" />
+        </svg>
+      );
+    case "dog-2":
+      return (
+        <svg viewBox="0 0 400 300" className="w-full h-full">
+          <rect width="400" height="300" fill="#bae6fd" />
+          <ellipse cx="200" cy="270" rx="200" ry="30" fill="#86efac" />
+          <circle cx="120" cy="220" r="20" fill="#ef4444" />
+          <ellipse cx="220" cy="190" rx="70" ry="50" fill="#d97706" />
+          <circle cx="220" cy="140" r="40" fill="#d97706" />
+        </svg>
+      );
+    case "dog-3":
+      return (
+        <svg viewBox="0 0 400 300" className="w-full h-full">
+          <rect width="400" height="300" fill="#bae6fd" />
+          <ellipse cx="200" cy="270" rx="200" ry="30" fill="#86efac" />
+          <ellipse cx="180" cy="200" rx="80" ry="45" fill="#d97706" />
+          <circle cx="250" cy="160" r="38" fill="#d97706" />
+        </svg>
+      );
+    case "dog-4":
+      return (
+        <svg viewBox="0 0 400 300" className="w-full h-full">
+          <rect width="400" height="300" fill="#bae6fd" />
+          <ellipse cx="200" cy="270" rx="200" ry="30" fill="#86efac" />
+          <rect x="150" y="60" width="90" height="140" fill="#22c55e" />
+          <ellipse cx="195" cy="200" rx="70" ry="45" fill="#d97706" />
+          <circle cx="195" cy="150" r="38" fill="#d97706" />
+        </svg>
+      );
+    case "dog-5":
+      return (
+        <svg viewBox="0 0 400 300" className="w-full h-full">
+          <rect width="400" height="300" fill="#bae6fd" />
+          <ellipse cx="200" cy="270" rx="200" ry="30" fill="#86efac" />
+          <circle cx="150" cy="220" r="20" fill="#ef4444" />
+          <ellipse cx="220" cy="195" rx="70" ry="48" fill="#d97706" />
+          <circle cx="220" cy="145" r="40" fill="#d97706" />
+        </svg>
+      );
 
+    case "duck-1":
+      return (
+        <svg viewBox="0 0 400 300" className="w-full h-full">
+          <rect width="400" height="300" fill="#bae6fd" />
+          <ellipse cx="200" cy="250" rx="200" ry="50" fill="#38bdf8" />
+          <ellipse cx="200" cy="210" rx="55" ry="40" fill="#fde047" />
+          <circle cx="230" cy="180" r="30" fill="#fde047" />
+          <path d="M255 178 L270 182 L255 188 Z" fill="#f97316" />
+        </svg>
+      );
+    case "duck-2":
+      return (
+        <svg viewBox="0 0 400 300" className="w-full h-full">
+          <rect width="400" height="300" fill="#bae6fd" />
+          <ellipse cx="200" cy="250" rx="200" ry="50" fill="#38bdf8" />
+          <ellipse cx="130" cy="210" rx="50" ry="38" fill="#fde047" />
+          <circle cx="155" cy="182" r="28" fill="#fde047" />
+        </svg>
+      );
+    case "duck-3":
+      return (
+        <svg viewBox="0 0 400 300" className="w-full h-full">
+          <rect width="400" height="300" fill="#bae6fd" />
+          <ellipse cx="200" cy="250" rx="200" ry="50" fill="#38bdf8" />
+          <ellipse cx="150" cy="215" rx="50" ry="38" fill="#fde047" />
+          <circle cx="175" cy="188" r="28" fill="#fde047" />
+          <ellipse cx="260" cy="230" rx="35" ry="22" fill="#22c55e" />
+        </svg>
+      );
+    case "duck-4":
+      return (
+        <svg viewBox="0 0 400 300" className="w-full h-full">
+          <rect width="400" height="300" fill="#bae6fd" />
+          <ellipse cx="200" cy="250" rx="200" ry="50" fill="#38bdf8" />
+          <ellipse cx="200" cy="215" rx="55" ry="40" fill="#fde047" />
+          <circle cx="230" cy="188" r="30" fill="#fde047" />
+        </svg>
+      );
+    case "duck-5":
+      return (
+        <svg viewBox="0 0 400 300" className="w-full h-full">
+          <rect width="400" height="300" fill="#bae6fd" />
+          <ellipse cx="200" cy="250" rx="200" ry="50" fill="#38bdf8" />
+          <ellipse cx="150" cy="212" rx="50" ry="38" fill="#fde047" />
+          <circle cx="175" cy="185" r="28" fill="#fde047" />
+          <ellipse cx="250" cy="220" rx="35" ry="22" fill="#22c55e" />
+        </svg>
+      );
+
+    case "fish-1":
+      return (
+        <svg viewBox="0 0 400 300" className="w-full h-full">
+          <rect width="400" height="300" fill="#0ea5e9" />
+          <ellipse cx="200" cy="160" rx="70" ry="40" fill="#f97316" />
+          <path d="M270 160 L310 130 L310 190 Z" fill="#f97316" />
+          <circle cx="170" cy="150" r="6" fill="white" />
+        </svg>
+      );
+    case "fish-2":
+      return (
+        <svg viewBox="0 0 400 300" className="w-full h-full">
+          <rect width="400" height="300" fill="#0ea5e9" />
+          <ellipse cx="180" cy="140" rx="65" ry="38" fill="#f97316" />
+          <path d="M245 140 L280 112 L280 168 Z" fill="#f97316" />
+          <circle cx="240" cy="200" r="30" fill="#ef4444" />
+        </svg>
+      );
+    case "fish-3":
+      return (
+        <svg viewBox="0 0 400 300" className="w-full h-full">
+          <rect width="400" height="300" fill="#0ea5e9" />
+          <ellipse cx="160" cy="150" rx="60" ry="35" fill="#f97316" />
+          <path d="M220 150 L255 125 L255 175 Z" fill="#f97316" />
+          <circle cx="270" cy="180" r="35" fill="#ef4444" />
+        </svg>
+      );
+    case "fish-4":
+      return (
+        <svg viewBox="0 0 400 300" className="w-full h-full">
+          <rect width="400" height="300" fill="#0ea5e9" />
+          <ellipse cx="150" cy="160" rx="60" ry="35" fill="#f97316" />
+          <path d="M210 160 L245 135 L245 185 Z" fill="#f97316" />
+          <circle cx="260" cy="160" r="34" fill="#ef4444" />
+        </svg>
+      );
+    case "fish-5":
+      return (
+        <svg viewBox="0 0 400 300" className="w-full h-full">
+          <rect width="400" height="300" fill="#0ea5e9" />
+          <ellipse cx="200" cy="150" rx="70" ry="40" fill="#f97316" />
+          <path d="M270 150 L310 120 L310 180 Z" fill="#f97316" />
+          <circle cx="170" cy="140" r="6" fill="white" />
+        </svg>
+      );
+
+    case "owl-1":
+      return (
+        <svg viewBox="0 0 400 300" className="w-full h-full">
+          <rect width="400" height="300" fill="#1e293b" />
+          <rect x="180" y="80" width="30" height="180" fill="#78350f" />
+          <ellipse cx="195" cy="150" rx="55" ry="65" fill="#92400e" />
+          <circle cx="175" cy="135" r="15" fill="white" />
+          <circle cx="215" cy="135" r="15" fill="white" />
+          <circle cx="175" cy="135" r="6" fill="black" />
+          <circle cx="215" cy="135" r="6" fill="black" />
+        </svg>
+      );
+    case "owl-2":
+      return (
+        <svg viewBox="0 0 400 300" className="w-full h-full">
+          <rect width="400" height="300" fill="#1e293b" />
+          <circle cx="80" cy="60" r="5" fill="white" />
+          <circle cx="300" cy="40" r="4" fill="white" />
+          <circle cx="330" cy="90" r="6" fill="white" />
+          <ellipse cx="195" cy="150" rx="55" ry="65" fill="#92400e" />
+          <circle cx="175" cy="135" r="15" fill="white" />
+          <circle cx="215" cy="135" r="15" fill="white" />
+        </svg>
+      );
+    case "owl-3":
+      return (
+        <svg viewBox="0 0 400 300" className="w-full h-full">
+          <rect width="400" height="300" fill="#1e293b" />
+          <ellipse cx="150" cy="150" rx="50" ry="60" fill="#92400e" />
+          <circle cx="270" cy="220" r="25" fill="#a3a3a3" />
+        </svg>
+      );
+    case "owl-4":
+      return (
+        <svg viewBox="0 0 400 300" className="w-full h-full">
+          <rect width="400" height="300" fill="#1e293b" />
+          <ellipse cx="180" cy="180" rx="55" ry="50" fill="#92400e" />
+          <circle cx="270" cy="220" r="25" fill="#a3a3a3" />
+        </svg>
+      );
+    case "owl-5":
+      return (
+        <svg viewBox="0 0 400 300" className="w-full h-full">
+          <rect width="400" height="300" fill="#1e293b" />
+          <ellipse cx="180" cy="160" rx="55" ry="65" fill="#92400e" />
+          <circle cx="160" cy="145" r="15" fill="white" />
+          <circle cx="200" cy="145" r="15" fill="white" />
+          <circle cx="270" cy="210" r="25" fill="#a3a3a3" />
+        </svg>
+      );
+
+    case "lion-1":
+      return (
+        <svg viewBox="0 0 400 300" className="w-full h-full">
+          <rect width="400" height="300" fill="#fde68a" />
+          <ellipse cx="200" cy="270" rx="200" ry="30" fill="#facc15" />
+          <circle cx="200" cy="180" r="65" fill="#b45309" />
+          <circle cx="200" cy="180" r="42" fill="#f59e0b" />
+        </svg>
+      );
+    case "lion-2":
+      return (
+        <svg viewBox="0 0 400 300" className="w-full h-full">
+          <rect width="400" height="300" fill="#fde68a" />
+          <ellipse cx="200" cy="270" rx="200" ry="30" fill="#facc15" />
+          <circle cx="150" cy="200" r="60" fill="#b45309" />
+          <circle cx="150" cy="200" r="38" fill="#f59e0b" />
+          <ellipse cx="280" cy="140" rx="15" ry="10" fill="#78350f" />
+        </svg>
+      );
+    case "lion-3":
+      return (
+        <svg viewBox="0 0 400 300" className="w-full h-full">
+          <rect width="400" height="300" fill="#fde68a" />
+          <ellipse cx="200" cy="270" rx="200" ry="30" fill="#facc15" />
+          <circle cx="180" cy="190" r="62" fill="#b45309" />
+          <circle cx="180" cy="190" r="40" fill="#f59e0b" />
+        </svg>
+      );
+    case "lion-4":
+      return (
+        <svg viewBox="0 0 400 300" className="w-full h-full">
+          <rect width="400" height="300" fill="#fde68a" />
+          <ellipse cx="200" cy="270" rx="200" ry="30" fill="#facc15" />
+          <ellipse cx="260" cy="150" rx="15" ry="10" fill="#78350f" />
+          <ellipse cx="290" cy="145" rx="15" ry="10" fill="#78350f" />
+          <circle cx="150" cy="200" r="55" fill="#b45309" />
+          <circle cx="150" cy="200" r="35" fill="#f59e0b" />
+        </svg>
+      );
+    case "lion-5":
+      return (
+        <svg viewBox="0 0 400 300" className="w-full h-full">
+          <rect width="400" height="300" fill="#fde68a" />
+          <ellipse cx="200" cy="270" rx="200" ry="30" fill="#facc15" />
+          <circle cx="200" cy="180" r="65" fill="#b45309" />
+          <circle cx="200" cy="180" r="42" fill="#f59e0b" />
+          <path d="M185 175 Q200 190 215 175" stroke="#78350f" strokeWidth="4" fill="none" />
+        </svg>
+      );
     default:
       return (
         <svg viewBox="0 0 400 300" className="w-full h-full">
