@@ -33,6 +33,7 @@ export default function StoryReader({ story, children }: Props) {
   const isFirst = pageIndex === 0;
 
   async function saveProgress(newIndex: number, completed: boolean) {
+    console.log("saveProgress CALLED", { newIndex, completed, selectedChild });
     if (!selectedChild) return;
     await fetch(`/api/stories/${story.slug}/progress`, {
       method: "POST",
