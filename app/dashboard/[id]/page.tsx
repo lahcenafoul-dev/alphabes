@@ -48,7 +48,7 @@ export default async function ChildDashboardPage({ params }: Props) {
       <p className="mt-1 text-chalkboard/70">Ages {child.ageBand}</p>
 
 <Link
-  href="/alphabet/a"
+  href="/alphabet"
   className="mt-4 inline-block rounded-block bg-crayon-green text-white px-6 py-3 font-display font-bold"
 >
   Start Learning the Alphabet →
