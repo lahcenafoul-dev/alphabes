@@ -27,7 +27,7 @@ type Props = {
 export default function StoryReader({ story, children }: Props) {
   const [pageIndex, setPageIndex] = useState(0);
   const [selectedChild, setSelectedChild] = useState(children[0]?.id ?? "");
-
+  console.log("DEBUG children:", children, "selectedChild:", selectedChild);
   const page = story.pages[pageIndex];
   const isLast = pageIndex === story.pages.length - 1;
   const isFirst = pageIndex === 0;
