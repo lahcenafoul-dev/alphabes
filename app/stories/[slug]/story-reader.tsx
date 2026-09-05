@@ -43,8 +43,8 @@ export default function StoryReader({ story, children }: Props) {
         lastPageRead: newIndex + 1,
         completed,
       }),
-    }).catch(() => {});
-  }
+}).then(res => console.log("RESPONSE STATUS:", res.status))
+  .catch(err => console.error("FETCH ERROR:", err));  }
 
   function goNext() {
     if (isLast) {
