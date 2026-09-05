@@ -28,7 +28,7 @@ export default async function StoriesPage() {
             href={`/stories/${story.slug}`}
             className="rounded-block border border-chalkboard/10 shadow-block overflow-hidden hover:shadow-lg transition"
           >
-            <StoryIllustration scene={story.coverUrl} /> "bear-1" : "cat-1"} />
+           <StoryIllustration scene={story.coverUrl} />
             <div className="p-4">
               <h2 className="font-display font-bold text-lg">{story.title}</h2>
               <p className="mt-1 text-sm text-chalkboard/60">
