@@ -48,11 +48,14 @@ export default async function DashboardPage() {
             {children.map((child) => {
               const completed = child.progress.length;
               return (
-                <div key={child.id} className="rounded-block border border-chalkboard/10 p-6 shadow-block">
+                <Link
+                 key={child.id} 
+                 href={`/dashboard/${child.id}`}
+                 className="rounded-block border border-chalkboard/10 p-6 shadow-block">
                   <h2 className="font-display font-bold text-xl">{child.firstName}</h2>
                   <p className="text-sm text-chalkboard/60">Ages {child.ageBand}</p>
                   <p className="mt-4 text-chalkboard/80">{completed} lessons completed</p>
-                </div>
+                </Link>
               );
             })}
           </div>
