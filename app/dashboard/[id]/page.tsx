@@ -47,6 +47,13 @@ export default async function ChildDashboardPage({ params }: Props) {
       <h1 className="mt-4 text-4xl font-extrabold">{child.firstName}</h1>
       <p className="mt-1 text-chalkboard/70">Ages {child.ageBand}</p>
 
+<Link
+  href="/alphabet/a"
+  className="mt-4 inline-block rounded-block bg-crayon-green text-white px-6 py-3 font-display font-bold"
+>
+  Start Learning the Alphabet →
+</Link>
+
       {/* Progress overview */}
       <div className="mt-8 grid gap-4 sm:grid-cols-3">
         <div className="rounded-block border border-chalkboard/10 p-5 shadow-block">
