@@ -62,7 +62,15 @@ export default async function DashboardPage() {
           <div className="mt-6">
             <AddChildForm />
           </div>
-        </>
+        <div className="mt-6">
+  <Link
+    href="/stories"
+    className="inline-block rounded-block bg-crayon-purple text-white px-6 py-3 font-display font-bold"
+  >
+    📚 Story Time
+  </Link>
+</div>
+</>
       )}
 
       {plan === "FREE" && (
