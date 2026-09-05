@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-
+import StoryIllustration from "@/components/StoryIllustration";
 type Page = {
   id: string;
   pageNumber: number;
@@ -83,13 +83,7 @@ export default function StoryReader({ story, children }: Props) {
       )}
 
       <div className="rounded-block border border-chalkboard/10 shadow-block overflow-hidden">
-        {page.imageUrl && (
-          <img
-            src={page.imageUrl}
-            alt=""
-            className="w-full aspect-video object-cover"
-          />
-        )}
+        <StoryIllustration scene={page.imageUrl} />
         <div className="p-8 text-center">
           <p className="text-2xl font-display">{page.text}</p>
         </div>
