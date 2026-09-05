@@ -82,10 +82,7 @@ if (finished) {
       </div>
     );
   }
-
-  return (
-    <div className="mt-6">
-    ...
+  
   return (
     <div className="mt-6">
       {children.length > 0 && (
