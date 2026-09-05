@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import StoryIllustration from "@/components/StoryIllustration";
+import AudioButton from "@/components/AudioButton";
 type Page = {
   id: string;
   pageNumber: number;
@@ -105,12 +106,15 @@ if (finished) {
         </div>
       )}
 
-      <div className="rounded-block border border-chalkboard/10 shadow-block overflow-hidden">
-        <StoryIllustration scene={page.imageUrl} />
-        <div className="p-8 text-center">
-          <p className="text-2xl font-display">{page.text}</p>
-        </div>
-      </div>
+      <div className="rounded-block border border-chalkboard/10 shadow-block overflow-hidden ...">
+  <StoryIllustration scene={page.imageUrl} />
+  <div className="p-8 text-center">
+    <p className="text-2xl font-display">{page.text}</p>
+    <div className="mt-3 flex justify-center">
+      <AudioButton scene={page.imageUrl} />
+    </div>
+  </div>
+</div>
 
       <div className="mt-6 flex items-center justify-between">
         <button
