@@ -5,7 +5,7 @@ const columns = [
     title: "Learn",
     links: [
       { href: "/alphabet", label: "Alphabet" },
-      { href: "/stories", label: "storytime" },
+      { href: "/stories", label: "Story Time" },
       { href: "/phonics", label: "Phonics" },
       { href: "/worksheets", label: "Worksheets" },
       { href: "/games", label: "Games" },

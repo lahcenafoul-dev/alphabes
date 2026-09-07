@@ -86,7 +86,7 @@ export default function WorksheetClient({ letter, word, emoji }: Props) {
 
     doc.setFontSize(9);
     doc.setTextColor(150, 150, 150);
-    doc.text("alphabes.netlify.app", pageWidth - margin, 285, {
+    doc.text("alphabes.com", pageWidth - margin, 285, {
       align: "right",
     });
 
