@@ -1,37 +1,41 @@
+import { getAllLetterSlugs, getLetterContent } from "./letters-data";
+import { wordEmojis } from "./wordEmojis";
+
 export type LetterData = {
   letter: string;
   word: string;
   emoji: string;
 };
 
-export const alphabetData: LetterData[] = [
-  { letter: "a", word: "Apple", emoji: "🍎" },
-  { letter: "b", word: "Ball", emoji: "⚽" },
-  { letter: "c", word: "Cat", emoji: "🐱" },
-  { letter: "d", word: "Dog", emoji: "🐶" },
-  { letter: "e", word: "Elephant", emoji: "🐘" },
-  { letter: "f", word: "Fish", emoji: "🐟" },
-  { letter: "g", word: "Grapes", emoji: "🍇" },
-  { letter: "h", word: "Hat", emoji: "🎩" },
-  { letter: "i", word: "Ice cream", emoji: "🍦" },
-  { letter: "j", word: "Juice", emoji: "🧃" },
-  { letter: "k", word: "Kite", emoji: "🪁" },
-  { letter: "l", word: "Lion", emoji: "🦁" },
-  { letter: "m", word: "Moon", emoji: "🌙" },
-  { letter: "n", word: "Nest", emoji: "🪺" },
-  { letter: "o", word: "Orange", emoji: "🍊" },
-  { letter: "p", word: "Pizza", emoji: "🍕" },
-  { letter: "q", word: "Queen", emoji: "👑" },
-  { letter: "r", word: "Rainbow", emoji: "🌈" },
-  { letter: "s", word: "Sun", emoji: "☀️" },
-  { letter: "t", word: "Tree", emoji: "🌳" },
-  { letter: "u", word: "Umbrella", emoji: "☂️" },
-  { letter: "v", word: "Van", emoji: "🚐" },
-  { letter: "w", word: "Watch", emoji: "⌚" },
-  { letter: "x", word: "Xylophone", emoji: "🎼" },
-  { letter: "y", word: "Yo-yo", emoji: "🪀" },
-  { letter: "z", word: "Zebra", emoji: "🦓" },
-];
+// A few letters showcase a different example word than letters-data.ts's
+// first exampleWord (its list is ordered for phonics teaching, not for this
+// chart). "i" showcases a word that isn't in letters-data.ts at all.
+const preferredWord: Partial<Record<string, string>> = {
+  g: "Grapes",
+  h: "Hat",
+  i: "Ice cream",
+  j: "Juice",
+  m: "Moon",
+  p: "Pizza",
+  r: "Rainbow",
+  t: "Tree",
+  w: "Watch",
+  y: "Yo-yo",
+};
+
+// wordEmojis.ts doesn't have (or has a different emoji for) these words.
+const emojiOverrides: Record<string, string> = {
+  "Ice cream": "🍦",
+  Queen: "👑",
+  Xylophone: "🎼",
+};
+
+export const alphabetData: LetterData[] = getAllLetterSlugs().map((slug) => {
+  const exampleWords = getLetterContent(slug)?.exampleWords.map((w) => w.word) ?? [];
+  const word = preferredWord[slug] ?? exampleWords.find((w) => wordEmojis[w]) ?? exampleWords[0] ?? slug.toUpperCase();
+  const emoji = emojiOverrides[word] ?? wordEmojis[word] ?? "";
+  return { letter: slug, word, emoji };
+});
 
 export function getLetterData(letter: string) {
   return alphabetData.find((l) => l.letter === letter.toLowerCase());
