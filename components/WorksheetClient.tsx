@@ -56,7 +56,7 @@ export default function WorksheetClient({ letter, word, emoji }: Props) {
     doc.text(lower, 115, 85, { renderingMode: "stroke" });
 
     // ===== Practice rows with dotted guide lines =====
-    let startY = 105;
+    const startY = 105;
     for (let row = 0; row < 3; row++) {
       const y = startY + row * 28;
 

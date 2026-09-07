@@ -32,9 +32,11 @@ export default function TracingCanvas({ letter }: Props) {
 
     const resize = () => {
       const rect = canvas.getBoundingClientRect();
-      canvas.width = rect.width;
-      canvas.height = rect.height;
-      drawGuideLetter(ctx, canvas.width, canvas.height);
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = rect.width * dpr;
+      canvas.height = rect.height * dpr;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      drawGuideLetter(ctx, rect.width, rect.height);
     };
     resize();
     window.addEventListener("resize", resize);
@@ -84,7 +86,8 @@ export default function TracingCanvas({ letter }: Props) {
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
-    drawGuideLetter(ctx, canvas.width, canvas.height);
+    const rect = canvas.getBoundingClientRect();
+    drawGuideLetter(ctx, rect.width, rect.height);
   };
 
   return (
