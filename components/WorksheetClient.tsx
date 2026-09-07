@@ -1,6 +1,7 @@
 "use client";
 
 import { jsPDF } from "jspdf";
+import { speak } from "@/lib/speech";
 
 type Props = {
   letter: string;
@@ -13,13 +14,7 @@ export default function WorksheetClient({ letter, word, emoji }: Props) {
   const lower = letter.toLowerCase();
 
   const playSound = () => {
-    const utterance = new SpeechSynthesisUtterance(
-      `${upper}. ${word} starts with ${upper}.`
-    );
-    utterance.lang = "en-US";
-    utterance.rate = 0.85;
-    window.speechSynthesis.cancel();
-    window.speechSynthesis.speak(utterance);
+    speak(`${upper}. ${word} starts with ${upper}.`, 0.85);
   };
 
   const downloadPDF = () => {
