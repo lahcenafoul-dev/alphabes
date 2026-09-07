@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { worksheetCategories } from "@/lib/worksheet-categories";
 
 export const metadata: Metadata = {
   title: "Free Printable Worksheets",
@@ -7,22 +8,11 @@ export const metadata: Metadata = {
   alternates: { canonical: "https://alphabes.com/worksheets" },
 };
 
-// Placeholder data shaped exactly like the Worksheet + WorksheetCategory
-// Prisma models. In production this page becomes an async Server Component
-// that calls `prisma.worksheet.findMany({ where, orderBy, take, skip })`
-// with the same filters below, so hundreds of worksheets can be added via
-// the admin panel with zero code changes.
-const categories = [
-  { slug: "alphabet", name: "Alphabet" },
-  { slug: "tracing", name: "Tracing" },
-  { slug: "phonics", name: "Phonics" },
-  { slug: "beginning-sounds", name: "Beginning Sounds" },
-  { slug: "coloring", name: "Coloring" },
-  { slug: "handwriting", name: "Handwriting" },
-  { slug: "cvc-words", name: "CVC Words" },
-  { slug: "sight-words", name: "Sight Words" },
-];
-
+// Placeholder data shaped exactly like the Worksheet Prisma model. In
+// production this page becomes an async Server Component that calls
+// `prisma.worksheet.findMany({ where, orderBy, take, skip })` with the same
+// filters below, so hundreds of worksheets can be added via the admin panel
+// with zero code changes.
 const sampleWorksheets = [
   {
     slug: "letter-a-tracing",
@@ -60,7 +50,7 @@ export default function WorksheetsPage() {
       </p>
 
       <div className="mt-8 flex flex-wrap gap-2" role="tablist" aria-label="Worksheet categories">
-        {categories.map((c) => (
+        {worksheetCategories.map((c) => (
           <a
             key={c.slug}
             href={`/worksheets/${c.slug}`}

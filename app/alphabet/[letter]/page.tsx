@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import { getAllLetterSlugs, getLetterContent } from "@/lib/letters-data";
 import SpeakButton from "@/components/SpeakButton";
 import { wordEmojis } from "@/lib/wordEmojis";
+import { buildBreadcrumbJsonLd } from "@/lib/json-ld";
 type Props = { params: { letter: string } };
 
 export function generateStaticParams() {
@@ -47,15 +48,11 @@ export default function LetterPage({ params }: Props) {
     isAccessibleForFree: true,
   };
 
-  const breadcrumbJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Home", item: "https://alphabes.com" },
-      { "@type": "ListItem", position: 2, name: "Alphabet", item: "https://alphabes.com/alphabet" },
-      { "@type": "ListItem", position: 3, name: `Letter ${content.uppercase}`, item: `https://alphabes.com/alphabet/${content.slug}` },
-    ],
-  };
+  const breadcrumbJsonLd = buildBreadcrumbJsonLd([
+    { name: "Home", url: "https://alphabes.com" },
+    { name: "Alphabet", url: "https://alphabes.com/alphabet" },
+    { name: `Letter ${content.uppercase}`, url: `https://alphabes.com/alphabet/${content.slug}` },
+  ]);
 
   const faqJsonLd = content.faq.length
     ? {

@@ -78,7 +78,7 @@ export default function HomePage() {
             role="img"
             aria-label="Shelf of wooden alphabet blocks from A to Z"
           >
-            {letters.map((l, i) => (
+            {letters.map((l) => (
               <div
                 key={l}
                 className="letter-block aspect-square text-xl md:text-2xl"

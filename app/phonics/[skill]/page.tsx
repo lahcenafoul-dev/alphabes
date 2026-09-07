@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { phonicsSkills, getPhonicsSkill } from "@/lib/phonics-data";
+import { buildBreadcrumbJsonLd } from "@/lib/json-ld";
 
 type Props = { params: { skill: string } };
 
@@ -23,15 +24,11 @@ export default function PhonicsSkillPage({ params }: Props) {
   const skill = getPhonicsSkill(params.skill);
   if (!skill) notFound();
 
-  const breadcrumbJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Home", item: "https://alphabes.com" },
-      { "@type": "ListItem", position: 2, name: "Phonics", item: "https://alphabes.com/phonics" },
-      { "@type": "ListItem", position: 3, name: skill.title, item: `https://alphabes.com/phonics/${skill.slug}` },
-    ],
-  };
+  const breadcrumbJsonLd = buildBreadcrumbJsonLd([
+    { name: "Home", url: "https://alphabes.com" },
+    { name: "Phonics", url: "https://alphabes.com/phonics" },
+    { name: skill.title, url: `https://alphabes.com/phonics/${skill.slug}` },
+  ]);
 
   return (
     <main id="main-content" className="mx-auto max-w-3xl px-6 py-12">
