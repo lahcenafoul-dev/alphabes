@@ -4,6 +4,7 @@ import { useState } from "react";
 
 export default function ContactForm() {
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
+  const [errorMessage, setErrorMessage] = useState("Something went wrong. Please try again.");
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -20,8 +21,17 @@ export default function ContactForm() {
           message: form.get("message"),
         }),
       });
-      setStatus(res.ok ? "sent" : "error");
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        setErrorMessage(data.error || "Something went wrong. Please try again.");
+        setStatus("error");
+        return;
+      }
+
+      setStatus("sent");
     } catch {
+      setErrorMessage("Something went wrong. Please try again.");
       setStatus("error");
     }
   }
@@ -42,9 +52,9 @@ export default function ContactForm() {
       </div>
       <div>
         <label htmlFor="message" className="block text-sm font-bold">Message</label>
-        <textarea id="message" name="message" required rows={4} className="mt-1 w-full rounded-block border border-chalkboard/20 px-3 py-2" />
+        <textarea id="message" name="message" required rows={4} maxLength={2000} className="mt-1 w-full rounded-block border border-chalkboard/20 px-3 py-2" />
       </div>
-      {status === "error" && <p className="text-sm text-crayon-red">Something went wrong. Please try again.</p>}
+      {status === "error" && <p className="text-sm text-crayon-red">{errorMessage}</p>}
       <button
         type="submit"
         disabled={status === "sending"}
