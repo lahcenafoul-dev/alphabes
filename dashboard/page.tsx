@@ -51,7 +51,7 @@ export default async function DashboardPage() {
                 <Link
                  key={child.id}
                  href={`/dashboard/${child.id}`}
-                  className="rounded-block border border-chalkboard/10 p-6 shadow-block">
+                 className="rounded-block border border-chalkboard/10 p-6 shadow-block">
                   <h2 className="font-display font-bold text-xl">{child.firstName}</h2>
                   <p className="text-sm text-chalkboard/60">Ages {child.ageBand}</p>
                   <p className="mt-4 text-chalkboard/80">{completed} lessons completed</p>
@@ -62,7 +62,15 @@ export default async function DashboardPage() {
           <div className="mt-6">
             <AddChildForm />
           </div>
-        </>
+        <div className="mt-6">
+  <Link
+    href="/stories"
+    className="inline-block rounded-block bg-crayon-purple text-white px-6 py-3 font-display font-bold"
+  >
+    📚 Story Time
+  </Link>
+</div>
+</>
       )}
 
       {plan === "FREE" && (
