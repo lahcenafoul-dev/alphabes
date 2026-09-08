@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { worksheetCategories } from "@/lib/worksheet-categories";
 
 export const metadata: Metadata = {
@@ -49,17 +50,17 @@ export default function WorksheetsPage() {
         instantly; Pro worksheets unlock with a membership.
       </p>
 
-      <div className="mt-8 flex flex-wrap gap-2" role="tablist" aria-label="Worksheet categories">
+      <nav className="mt-8 flex flex-wrap gap-2" aria-label="Worksheet categories">
         {worksheetCategories.map((c) => (
-          <a
+          <Link
             key={c.slug}
             href={`/worksheets/${c.slug}`}
             className="rounded-block bg-paper border border-chalkboard/15 px-4 py-2 text-sm font-display font-bold hover:border-crayon-blue"
           >
             {c.name}
-          </a>
+          </Link>
         ))}
-      </div>
+      </nav>
 
       <ul className="mt-10 grid sm:grid-cols-2 md:grid-cols-3 gap-6">
         {sampleWorksheets.map((w) => (
