@@ -2,13 +2,30 @@ import { alphabetData, getLetterData } from "@/lib/alphabet-data";
 import WorksheetClient from "@/components/WorksheetClient";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import type { Metadata } from "next";
 import TracingCanvas from "@/components/TracingCanvas";
+import { buildBreadcrumbJsonLd } from "@/lib/json-ld";
 type Props = {
   params: { letter: string };
 };
 
 export function generateStaticParams() {
   return alphabetData.map((l) => ({ letter: l.letter }));
+}
+
+export function generateMetadata({ params }: Props): Metadata {
+  const data = getLetterData(params.letter);
+  if (!data) return {};
+  const { letter, word } = data;
+  const upper = letter.toUpperCase();
+  const title = `Letter ${upper} Worksheet — Trace, Listen & Print`;
+  const description = `Free printable letter ${upper}${letter} worksheet: trace the letter, listen to its sound, and learn the word "${word}". Download as PDF.`;
+  return {
+    title,
+    description,
+    alternates: { canonical: `https://alphabes.com/alphabet/${letter}/worksheet` },
+    openGraph: { title, description, url: `https://alphabes.com/alphabet/${letter}/worksheet` },
+  };
 }
 
 export default function LetterWorksheetPage({ params }: Props) {
@@ -18,10 +35,20 @@ export default function LetterWorksheetPage({ params }: Props) {
   const { letter, word, emoji } = data;
   const upper = letter.toUpperCase();
 
+  const breadcrumbJsonLd = buildBreadcrumbJsonLd([
+    { name: "Home", url: "https://alphabes.com" },
+    { name: "Alphabet", url: "https://alphabes.com/worksheets/alphabet" },
+    { name: `Letter ${upper}`, url: `https://alphabes.com/alphabet/${letter}/worksheet` },
+  ]);
+
   return (
     <main id="main-content" className="mx-auto max-w-4xl px-6 py-12">
-      <nav className="text-sm text-chalkboard/60">
-        <Link href="/">Home</Link> / <Link href="/worksheets/alphabet">Alphabet</Link> / Letter {upper}
+      <nav aria-label="Breadcrumb" className="text-sm text-chalkboard/60">
+        <ol className="flex gap-2">
+          <li><Link href="/">Home</Link> /</li>
+          <li><Link href="/worksheets/alphabet">Alphabet</Link> /</li>
+          <li aria-current="page" className="font-bold">Letter {upper}</li>
+        </ol>
       </nav>
 
       <h1 className="mt-4 text-4xl font-extrabold">Letter {upper}{letter} Worksheet</h1>
@@ -46,6 +73,8 @@ export default function LetterWorksheetPage({ params }: Props) {
 </div>
 
       <WorksheetClient letter={letter} word={word} />
+
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
     </main>
   );
 }
