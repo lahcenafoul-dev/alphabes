@@ -45,7 +45,7 @@ export default function LetterWorksheetPage({ params }: Props) {
   <TracingCanvas letter={letter} />
 </div>
 
-      <WorksheetClient letter={letter} word={word} emoji={emoji} />
+      <WorksheetClient letter={letter} word={word} />
     </main>
   );
 }

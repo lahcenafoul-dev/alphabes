@@ -6,10 +6,9 @@ import { speak } from "@/lib/speech";
 type Props = {
   letter: string;
   word: string;
-  emoji: string;
 };
 
-export default function WorksheetClient({ letter, word, emoji }: Props) {
+export default function WorksheetClient({ letter, word }: Props) {
   const upper = letter.toUpperCase();
   const lower = letter.toLowerCase();
 
