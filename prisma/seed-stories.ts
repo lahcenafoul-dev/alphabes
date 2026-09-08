@@ -129,7 +129,13 @@ async function main() {
   for (const story of stories) {
     const created = await prisma.story.upsert({
       where: { slug: story.slug },
-      update: { coverUrl: story.coverScene },
+      update: {
+        title: story.title,
+        ageRangeMin: story.ageRangeMin,
+        ageRangeMax: story.ageRangeMax,
+        order: story.order,
+        coverUrl: story.coverScene,
+      },
       create: {
         slug: story.slug,
         title: story.title,
