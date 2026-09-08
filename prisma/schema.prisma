@@ -313,7 +313,7 @@ model StoryPage {
 model StoryProgress {
   id           String   @id @default(cuid())
   childId      String
-  child        ChildProfile @relation(fields: [childId], references: [id])
+  child        ChildProfile @relation(fields: [childId], references: [id], onDelete: Cascade)
   storyId      String
   story        Story    @relation(fields: [storyId], references: [id])
   lastPageRead Int      @default(0)
