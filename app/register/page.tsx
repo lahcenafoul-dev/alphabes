@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import RegisterForm from "./register-form";
 
 export const metadata: Metadata = {
@@ -15,7 +16,9 @@ export default function RegisterPage() {
         Start with basic alphabet lessons, worksheets, and games — free.
       </p>
       <div className="mt-8 rounded-block border border-chalkboard/10 p-6 shadow-block">
-        <RegisterForm />
+        <Suspense fallback={<p className="text-center text-chalkboard/50">Loading…</p>}>
+          <RegisterForm />
+        </Suspense>
       </div>
       <p className="mt-6 text-center text-sm text-chalkboard/70">
         Already have an account?{" "}

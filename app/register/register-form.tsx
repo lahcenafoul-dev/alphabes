@@ -1,11 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { signIn } from "next-auth/react";
 
 export default function RegisterForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -34,14 +35,18 @@ export default function RegisterForm() {
       return;
     }
 
-    await signIn("credentials", {
+    const result = await signIn("credentials", {
       email: payload.email,
       password: payload.password,
       redirect: false,
     });
 
     setLoading(false);
-    router.push("/dashboard");
+    if (result?.error) {
+      setError("Your account was created, but we couldn't log you in automatically. Please log in.");
+      return;
+    }
+    router.push(searchParams.get("next") || "/dashboard");
   }
 
   return (
