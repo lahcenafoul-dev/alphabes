@@ -17,17 +17,17 @@ This is a real, working foundation, not a mockup — every file here runs.
 - **SEO**: `app/sitemap.ts` (all static routes + all 26 letters, extensible to blog/worksheets), `app/robots.ts`, per-page canonical URLs, Open Graph, and JSON-LD (Organization, LearningResource, BreadcrumbList, FAQPage).
 - **Security**: `middleware.ts` protects `/dashboard` and `/admin`, gates `/admin` to the `ADMIN` role, and rate-limits the credentials login callback. Security headers set in `next.config.js`. Stripe price IDs are validated server-side, never trusted from the client.
 - **Privacy**: `ChildProfile` intentionally stores only a first name and an age band — no photos, no contact info, no location, in line with COPPA-conscious design for a children's product.
+- **Parent dashboard** (`/dashboard`, `/dashboard/[id]`): lists child profiles and, per child, lessons completed, quiz average, stories read, and full quiz results grouped by lesson/game/activity.
+- **Blog** (`/blog`): 7 full articles in `lib/blog-data.ts`, rendered as index + detail pages with Article JSON-LD.
+- **Static/legal pages**: `/about`, `/contact` (working form posting to `/api/contact`), `/privacy`, `/terms`, `/cookies` — privacy/terms are flagged in-page as placeholder pending legal review.
 
 ## What is deliberately not built yet
 
 Building all of the following with real content in one pass would mean inventing placeholder statistics, testimonials, or thin content — which the brief explicitly forbids. Each is architected and ready to fill in:
 
 1. **Games** (`/games`, 5 game types) — `GameType` enum and `Game` model exist; each game is a client component reading its `config` JSON. Build one (e.g. Find the Letter) as the reference implementation, then the rest follow the same pattern.
-2. **Full dashboard** (`/dashboard`) — `Progress` model is in place; needs a server component querying a child's `Progress` rows grouped by lesson/game/activity.
-3. **Admin panel** (`/admin`) — role gate is already enforced in `middleware.ts`; needs CRUD screens (forms + server actions) per model.
-4. **Blog** (`/blog`) — `BlogPost`/`Category` models exist; needs MDX or rich-text rendering plus the 7 initial articles, written as genuine, non-AI-thin educational content.
-5. **Remaining static pages** (`/about`, `/contact`, `/privacy`, `/terms`, `/cookies`) — straightforward content pages once legal copy is finalized (recommend real legal review for privacy/terms given this is a children's product).
-6. **Object storage wiring** — `.env.example` documents S3 vars; add a small `lib/storage.ts` using the included `@aws-sdk/client-s3` dependency to generate signed URLs for premium worksheet PDFs, checked against `Worksheet.isPremium` + the user's `Subscription.status`.
+2. **Admin panel** (`/admin`) — role gate is already enforced in `middleware.ts`; needs CRUD screens (forms + server actions) per model.
+3. **Object storage wiring** — `.env.example` documents S3 vars; add a small `lib/storage.ts` using the included `@aws-sdk/client-s3` dependency to generate signed URLs for premium worksheet PDFs, checked against `Worksheet.isPremium` + the user's `Subscription.status`.
 
 ## Database
 
