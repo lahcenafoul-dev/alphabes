@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Pricing",
@@ -6,45 +7,45 @@ export const metadata: Metadata = {
   alternates: { canonical: "https://alphabes.com/pricing" },
 };
 
-const plans = [
-  {
-    name: "Free",
-    price: "$0",
-    period: "",
-    priceId: null,
-    features: [
-      "Basic alphabet lessons",
-      "Selected worksheets",
-      "Basic games",
-    ],
-  },
-  {
-    name: "Pro Monthly",
-    price: "$7.99",
-    period: "/month",
-    priceId: "price_pro_monthly", // set to a real Stripe Price ID
-    features: [
-      "All worksheets",
-      "All games",
-      "Full phonics library",
-      "Progress tracking",
-      "Premium activities",
-      "Printable bundles",
-    ],
-  },
-  {
-    name: "Pro Annual",
-    price: "$59",
-    period: "/year",
-    priceId: "price_pro_annual",
-    features: [
-      "Everything in Pro Monthly",
-      "2 months free vs. monthly",
-    ],
-  },
-];
-
 export default function PricingPage() {
+  const plans = [
+    {
+      name: "Free",
+      price: "$0",
+      period: "",
+      priceId: null,
+      features: [
+        "Basic alphabet lessons",
+        "Selected worksheets",
+        "Basic games",
+      ],
+    },
+    {
+      name: "Pro Monthly",
+      price: "$7.99",
+      period: "/month",
+      priceId: process.env.STRIPE_PRICE_PRO_MONTHLY ?? null,
+      features: [
+        "All worksheets",
+        "All games",
+        "Full phonics library",
+        "Progress tracking",
+        "Premium activities",
+        "Printable bundles",
+      ],
+    },
+    {
+      name: "Pro Annual",
+      price: "$59",
+      period: "/year",
+      priceId: process.env.STRIPE_PRICE_PRO_ANNUAL ?? null,
+      features: [
+        "Everything in Pro Monthly",
+        "2 months free vs. monthly",
+      ],
+    },
+  ];
+
   return (
     <main id="main-content" className="mx-auto max-w-5xl px-6 py-12">
       <h1 className="text-4xl font-extrabold text-center">Pricing</h1>
@@ -79,12 +80,12 @@ export default function PricingPage() {
                 </button>
               </form>
             ) : (
-              <a
+              <Link
                 href="/register"
                 className="mt-6 block text-center rounded-block bg-chalkboard text-paper font-display font-bold px-5 py-2.5 shadow-block hover:shadow-blockHover transition"
               >
                 Start Free
-              </a>
+              </Link>
             )}
           </div>
         ))}
