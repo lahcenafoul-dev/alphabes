@@ -429,24 +429,5 @@ export function getAllLetterSlugs(): string[] {
 }
 
 export function getLetterContent(slug: string): LetterContent | null {
-  const s = slug.toLowerCase();
-  if (!alphabetOrder.includes(s)) return null;
-  if (authored[s]) return authored[s];
-
-  // ADMIN NOTE: Letters D-Z are provisioned here with a minimal correct
-  // structure (real letterforms and sound, placeholder vocabulary) so the
-  // site never renders fake statistics or invented educational claims.
-  // Content team fills in exampleWords + faq per the `authored` shape above
-  // (or, in production, via the admin panel writing to the Letter table).
-  const order = alphabetOrder.indexOf(s) + 1;
-  return {
-    slug: s,
-    order,
-    uppercase: s.toUpperCase(),
-    lowercase: s,
-    phonicsSound: `${s.toUpperCase()} sound`,
-    ipa: "",
-    exampleWords: [],
-    faq: [],
-  };
+  return authored[slug.toLowerCase()] ?? null;
 }

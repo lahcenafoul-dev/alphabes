@@ -8,7 +8,7 @@ This is a real, working foundation, not a mockup — every file here runs.
 
 - **App shell**: root layout, fonts (Baloo 2 display / Nunito body), global styles, org-level JSON-LD, skip-link, focus-visible styling, reduced-motion support.
 - **Homepage** (`/`): all 7 required sections, real copy, FAQ schema.
-- **Alphabet system**: `/alphabet` index + `/alphabet/[letter]` dynamic route with `generateStaticParams` for all 26 letters. Letters **A, B, C** are fully authored (sound, IPA, 4 example words, FAQ) as the content pattern; **D–Z** render with correct letterforms/slugs today and are structured to receive the same content with no code changes (see `lib/letters-data.ts`).
+- **Alphabet system**: `/alphabet` index + `/alphabet/[letter]` dynamic route with `generateStaticParams` for all 26 letters. All 26 letters are fully authored (sound, IPA, 4 example words, FAQ) in `lib/letters-data.ts`.
 - **Worksheets** (`/worksheets`): category filter UI + card grid built directly against the `Worksheet`/`WorksheetCategory` Prisma shape, so swapping the placeholder array for a `prisma.worksheet.findMany()` call is a one-line change.
 - **Pricing** (`/pricing`): real plan data, posts to a working Stripe Checkout route.
 - **Auth**: NextAuth credentials provider backed by Prisma + bcrypt, JWT sessions, role on the token.
@@ -22,13 +22,12 @@ This is a real, working foundation, not a mockup — every file here runs.
 
 Building all of the following with real content in one pass would mean inventing placeholder statistics, testimonials, or thin content — which the brief explicitly forbids. Each is architected and ready to fill in:
 
-1. **Letters D–Z content** — add entries to the `authored` map in `lib/letters-data.ts` (or, once the admin panel exists, via the `Letter` table) using the exact shape already defined by A/B/C.
-2. **Games** (`/games`, 5 game types) — `GameType` enum and `Game` model exist; each game is a client component reading its `config` JSON. Build one (e.g. Find the Letter) as the reference implementation, then the rest follow the same pattern.
-3. **Full dashboard** (`/dashboard`) — `Progress` model is in place; needs a server component querying a child's `Progress` rows grouped by lesson/game/activity.
-4. **Admin panel** (`/admin`) — role gate is already enforced in `middleware.ts`; needs CRUD screens (forms + server actions) per model.
-5. **Blog** (`/blog`) — `BlogPost`/`Category` models exist; needs MDX or rich-text rendering plus the 7 initial articles, written as genuine, non-AI-thin educational content.
-6. **Remaining static pages** (`/about`, `/contact`, `/privacy`, `/terms`, `/cookies`) — straightforward content pages once legal copy is finalized (recommend real legal review for privacy/terms given this is a children's product).
-7. **Object storage wiring** — `.env.example` documents S3 vars; add a small `lib/storage.ts` using the included `@aws-sdk/client-s3` dependency to generate signed URLs for premium worksheet PDFs, checked against `Worksheet.isPremium` + the user's `Subscription.status`.
+1. **Games** (`/games`, 5 game types) — `GameType` enum and `Game` model exist; each game is a client component reading its `config` JSON. Build one (e.g. Find the Letter) as the reference implementation, then the rest follow the same pattern.
+2. **Full dashboard** (`/dashboard`) — `Progress` model is in place; needs a server component querying a child's `Progress` rows grouped by lesson/game/activity.
+3. **Admin panel** (`/admin`) — role gate is already enforced in `middleware.ts`; needs CRUD screens (forms + server actions) per model.
+4. **Blog** (`/blog`) — `BlogPost`/`Category` models exist; needs MDX or rich-text rendering plus the 7 initial articles, written as genuine, non-AI-thin educational content.
+5. **Remaining static pages** (`/about`, `/contact`, `/privacy`, `/terms`, `/cookies`) — straightforward content pages once legal copy is finalized (recommend real legal review for privacy/terms given this is a children's product).
+6. **Object storage wiring** — `.env.example` documents S3 vars; add a small `lib/storage.ts` using the included `@aws-sdk/client-s3` dependency to generate signed URLs for premium worksheet PDFs, checked against `Worksheet.isPremium` + the user's `Subscription.status`.
 
 ## Database
 
