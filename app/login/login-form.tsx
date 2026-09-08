@@ -24,7 +24,11 @@ export default function LoginForm() {
 
     setLoading(false);
     if (result?.error) {
-      setError("Incorrect email or password.");
+      setError(
+        result.status === 429
+          ? "Too many attempts. Try again shortly."
+          : "Incorrect email or password."
+      );
       return;
     }
     router.push(searchParams.get("next") || "/dashboard");
