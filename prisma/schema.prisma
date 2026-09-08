@@ -28,6 +28,10 @@ enum SubscriptionStatus {
   PAST_DUE
   CANCELED
   TRIALING
+  INCOMPLETE
+  INCOMPLETE_EXPIRED
+  UNPAID
+  PAUSED
 }
 
 model User {
