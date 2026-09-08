@@ -8,10 +8,10 @@ export const metadata: Metadata = {
 };
 
 const activities = [
-  { title: "Letter Recognition", description: "Find and circle a target letter across a page of mixed letters." },
-  { title: "Tracing Practice", description: "Trace dotted uppercase and lowercase letters." },
-  { title: "Beginning Sound Sort", description: "Sort picture cards by their beginning sound." },
-  { title: "Coloring by Letter", description: "Color a scene where each section is labeled with a letter." },
+  { title: "Letter Recognition", description: "Find and circle a target letter across a page of mixed letters.", isPremium: false },
+  { title: "Tracing Practice", description: "Trace dotted uppercase and lowercase letters.", isPremium: false },
+  { title: "Beginning Sound Sort", description: "Sort picture cards by their beginning sound.", isPremium: true },
+  { title: "Coloring by Letter", description: "Color a scene where each section is labeled with a letter.", isPremium: true },
 ];
 
 export default function ActivitiesPage() {
@@ -26,6 +26,9 @@ export default function ActivitiesPage() {
           <div key={a.title} className="rounded-block border border-chalkboard/10 p-6 shadow-block">
             <h2 className="font-display font-bold text-lg">{a.title}</h2>
             <p className="mt-2 text-sm text-chalkboard/70">{a.description}</p>
+            <span className={`mt-3 inline-block rounded-full px-3 py-1 text-xs font-bold ${a.isPremium ? "bg-crayon-purple/20 text-crayon-purple" : "bg-crayon-green/20 text-crayon-green"}`}>
+              {a.isPremium ? "Pro" : "Free"}
+            </span>
           </div>
         ))}
       </div>
