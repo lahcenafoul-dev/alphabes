@@ -27,7 +27,7 @@ export function generateMetadata({ params }: Props): Metadata {
 function neighbor(slug: string, dir: -1 | 1): string | null {
   const all = getAllLetterSlugs();
   const idx = all.indexOf(slug);
-  const nextIdx = idx + dir;
+  const nextIdx = (idx + dir + all.length) % all.length;
   return all[nextIdx] ?? null;
 }
 
