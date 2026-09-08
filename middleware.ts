@@ -21,9 +21,10 @@ function isRateLimited(key: string): boolean {
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
-  if (pathname.startsWith("/api/auth/callback/credentials")) {
+  if (pathname.startsWith("/api/auth/callback/credentials") || pathname === "/api/register") {
     const ip = req.headers.get("x-forwarded-for") ?? "unknown";
-    if (isRateLimited(`login:${ip}`)) {
+    const key = pathname === "/api/register" ? `register:${ip}` : `login:${ip}`;
+    if (isRateLimited(key)) {
       return NextResponse.json({ error: "Too many attempts. Try again shortly." }, { status: 429 });
     }
   }
@@ -44,5 +45,5 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*", "/admin/:path*", "/api/auth/callback/credentials"],
+  matcher: ["/dashboard/:path*", "/admin/:path*", "/api/auth/callback/credentials", "/api/register"],
 };
