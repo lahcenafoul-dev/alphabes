@@ -34,7 +34,6 @@ export const metadata: Metadata = {
     title: "AlphaBes — Learn Letters. Learn Sounds. Learn English.",
     description:
       "Interactive alphabet and phonics lessons, printable worksheets, and games for children ages 3-8.",
-    images: ["/og-default.png"],
   },
   twitter: {
     card: "summary_large_image",
@@ -56,7 +55,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     "@type": "EducationalOrganization",
     name: "AlphaBes",
     url: siteUrl,
-    logo: `${siteUrl}/logo.png`,
     description:
       "AlphaBes teaches children ages 3-8 letters, phonics, and early reading skills.",
     areaServed: ["US", "CA", "GB"],
