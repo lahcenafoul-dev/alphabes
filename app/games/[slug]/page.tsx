@@ -7,6 +7,7 @@ import MatchLetterPictureGame from "@/components/games/MatchLetterPictureGame";
 import BeginningSoundGame from "@/components/games/BeginningSoundGame";
 import LetterTracingGame from "@/components/games/LetterTracingGame";
 import AlphabetQuizGame from "@/components/games/AlphabetQuizGame";
+import ClientOnly from "@/components/games/ClientOnly";
 
 type Props = { params: { slug: string } };
 
@@ -44,7 +45,9 @@ export default function GamePage({ params }: Props) {
       <p className="mt-2 text-chalkboard/70 max-w-2xl">{game.description}</p>
 
       <div className="mt-8 rounded-block border border-chalkboard/10 p-6 shadow-block">
-        <GameBody slug={game.slug} />
+        <ClientOnly fallback={<p className="text-chalkboard/50">Loading game…</p>}>
+          <GameBody slug={game.slug} />
+        </ClientOnly>
       </div>
     </main>
   );

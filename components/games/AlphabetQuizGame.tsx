@@ -21,8 +21,10 @@ function neighbor(letter: string, dir: -1 | 1): string {
 }
 
 function buildSequenceQuestion(letter: string): Question {
-  const answer = neighbor(letter, 1).toUpperCase();
-  const distractors = pickDistractors(LETTERS, letter, 3).map((l) => l.toUpperCase());
+  const answerLetter = neighbor(letter, 1);
+  const answer = answerLetter.toUpperCase();
+  const pool = LETTERS.filter((l) => l !== letter && l !== answerLetter);
+  const distractors = shuffle(pool).slice(0, 3).map((l) => l.toUpperCase());
   return {
     prompt: `Which letter comes after ${letter.toUpperCase()}?`,
     choices: shuffle([answer, ...distractors]),
