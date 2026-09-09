@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { phonicsSkills, getPhonicsSkill } from "@/lib/phonics-data";
-import { buildBreadcrumbJsonLd } from "@/lib/json-ld";
+import { buildBreadcrumbJsonLd, buildLearningResourceJsonLd } from "@/lib/json-ld";
 
 type Props = { params: { skill: string } };
 
@@ -29,6 +29,14 @@ export default function PhonicsSkillPage({ params }: Props) {
     { name: "Phonics", url: "https://alphabes.com/phonics" },
     { name: skill.title, url: `https://alphabes.com/phonics/${skill.slug}` },
   ]);
+
+  const learningResourceJsonLd = buildLearningResourceJsonLd({
+    title: skill.title,
+    description: skill.description,
+    url: `https://alphabes.com/phonics/${skill.slug}`,
+    skills: [skill.title],
+    ageLevelLabel: "Preschool & Kindergarten",
+  });
 
   return (
     <main id="main-content" className="mx-auto max-w-3xl px-6 py-12">
@@ -60,6 +68,7 @@ export default function PhonicsSkillPage({ params }: Props) {
       </Link>
 
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(learningResourceJsonLd) }} />
     </main>
   );
 }

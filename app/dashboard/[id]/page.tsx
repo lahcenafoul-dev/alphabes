@@ -3,9 +3,15 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
+import type { Metadata } from "next";
 import ChildActions from "./child-actions";
 
 type Props = { params: { id: string } };
+
+export const metadata: Metadata = {
+  title: "Child Dashboard",
+  robots: { index: false },
+};
 
 export default async function ChildDashboardPage({ params }: Props) {
   const session = await getServerSession(authOptions);

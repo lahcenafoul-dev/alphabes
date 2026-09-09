@@ -2,11 +2,15 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { getAllLetterSlugs } from "@/lib/letters-data";
 
+const title = "Free Alphabet Worksheets & Printable ABC Activities | AlphaBes";
+const description =
+  "Free printable alphabet worksheets, letter tracing activities, and phonics practice for preschool and kindergarten. Interactive lessons and games for ages 3-8.";
+
 export const metadata: Metadata = {
-  title: "AlphaBes — Learn Letters. Learn Sounds. Learn English.",
-  description:
-    "Make learning ABCs fun with interactive alphabet lessons, phonics practice, printable worksheets, and games for children ages 3-8.",
+  title,
+  description,
   alternates: { canonical: "https://alphabes.com" },
+  openGraph: { title, description, url: "https://alphabes.com" },
 };
 
 const letters = getAllLetterSlugs();
@@ -50,11 +54,12 @@ export default function HomePage() {
         <div className="mx-auto max-w-6xl px-6 py-16 md:py-24 grid md:grid-cols-2 gap-10 items-center">
           <div>
             <h1 className="text-4xl md:text-6xl font-extrabold leading-tight">
-              Make Learning ABCs Fun!
+              Free Alphabet Worksheets &amp; Fun ABC Activities
             </h1>
             <p className="mt-5 text-lg md:text-xl text-paper/80 max-w-md">
-              Learn letters, sounds, words and phonics through fun interactive
-              activities.
+              Download free printable alphabet worksheets, practice letter
+              tracing, and build phonics skills through fun interactive
+              activities for ages 3-8.
             </p>
             <div className="mt-8 flex flex-wrap gap-4">
               <Link
@@ -145,12 +150,17 @@ export default function HomePage() {
           Alphabet, tracing, phonics, coloring, and handwriting worksheets,
           ready to print at home or in the classroom.
         </p>
-        <Link
-          href="/worksheets"
-          className="mt-6 inline-block rounded-block bg-crayon-green text-paper font-display font-bold px-6 py-3 shadow-block hover:shadow-blockHover transition"
-        >
-          Browse Worksheets
-        </Link>
+        <div className="mt-6 flex flex-wrap items-center gap-4">
+          <Link
+            href="/worksheets"
+            className="inline-block rounded-block bg-crayon-green text-paper font-display font-bold px-6 py-3 shadow-block hover:shadow-blockHover transition"
+          >
+            Browse Worksheets
+          </Link>
+          <Link href="/blog" className="font-display font-bold text-crayon-blue hover:underline">
+            Read our tips for teaching the alphabet →
+          </Link>
+        </div>
       </section>
 
       {/* 4. Fun Learning Games */}

@@ -39,6 +39,8 @@ export default function LetterPage({ params }: Props) {
   const prev = neighbor(content.slug, -1);
   const next = neighbor(content.slug, 1);
   const letterWorksheets = getWorksheetsByLetter(content.slug);
+  const tracingWorksheet = letterWorksheets.find((w) => w.worksheetType === "tracing");
+  const coloringWorksheet = letterWorksheets.find((w) => w.worksheetType === "coloring");
 
   const courseJsonLd = {
     "@context": "https://schema.org",
@@ -93,11 +95,23 @@ export default function LetterPage({ params }: Props) {
           )}
         </div>
       </header>
-<SpeakButton
-  text={content.uppercase}
-  className="mt-6 inline-flex items-center gap-2 rounded-bloc..."
-  ariaLabel={`Listen and repeat the letter ${content.uppercase}...`}
-/>
+
+      <p className="mt-4 text-chalkboard/80 max-w-2xl">
+        Letter {content.uppercase}{content.lowercase} is one of the first letters children learn
+        to recognize, trace, and sound out
+        {content.phonicsSound ? `, using its ${content.phonicsSound.toLowerCase()} sound` : ""}.
+        {content.exampleWords.length > 0 &&
+          ` It appears at the start of everyday words like ${content.exampleWords
+            .slice(0, 2)
+            .map((w) => w.word)
+            .join(" and ")}.`}
+      </p>
+
+      <SpeakButton
+        text={content.uppercase}
+        className="mt-6 inline-flex items-center gap-2 rounded-block bg-crayon-blue text-paper px-5 py-2.5 font-display font-bold shadow-block hover:shadow-blockHover transition"
+        ariaLabel={`Listen and repeat the letter ${content.uppercase}`}
+      />
 
       {content.exampleWords.length > 0 && (
         <section className="mt-10" aria-labelledby="words-heading">
@@ -111,13 +125,12 @@ export default function LetterPage({ params }: Props) {
                 className="rounded-block bg-paper border border-chalkboard/10 p-4 text-center shadow-block"
               >
                 <div
-                  className="mx-auto h-16 w-16 rounded-full bg-crayon-gr... flex items-center justify-center text-4xl"
+                  className="mx-auto h-16 w-16 rounded-full bg-crayon-green/20 flex items-center justify-center text-4xl"
                   role="img"
-                  aria-label={w.imageAlt}                  
->
-  {wordEmojis[w.word] || "📦"}
-</div>
-              
+                  aria-label={w.imageAlt}
+                >
+                  {wordEmojis[w.word] || "📦"}
+                </div>
                 <p className="mt-2 font-display font-bold">{w.word}</p>
               </li>
             ))}
@@ -133,18 +146,22 @@ export default function LetterPage({ params }: Props) {
           <ActivityCard
             title="Letter Recognition"
             description={`Find every ${content.uppercase} and ${content.lowercase} on the screen.`}
+            href="/games/find-the-letter"
           />
           <ActivityCard
             title="Tracing"
             description={`Trace the uppercase and lowercase ${content.uppercase}.`}
+            href={tracingWorksheet ? `/worksheets/${tracingWorksheet.slug}` : undefined}
           />
           <ActivityCard
             title="Beginning Sound"
             description={`Listen and pick the pictures that start with ${content.phonicsSound}.`}
+            href="/games/beginning-sound"
           />
           <ActivityCard
             title="Coloring Worksheet"
             description={`Color a page featuring the letter ${content.uppercase}.`}
+            href={coloringWorksheet ? `/worksheets/${coloringWorksheet.slug}` : undefined}
           />
         </div>
       </section>
@@ -196,7 +213,7 @@ export default function LetterPage({ params }: Props) {
         </section>
       )}
 
-      <nav className="mt-12 flex justify-between text-sm">
+      <nav aria-label="Letter navigation" className="mt-12 flex justify-between text-sm">
         {prev ? (
           <Link href={`/alphabet/${prev}`} className="font-display font-bold">
             ← Letter {prev.toUpperCase()}
@@ -218,11 +235,32 @@ export default function LetterPage({ params }: Props) {
   );
 }
 
-function ActivityCard({ title, description }: { title: string; description: string }) {
-  return (
-    <div className="rounded-block border border-chalkboard/10 p-4">
+function ActivityCard({
+  title,
+  description,
+  href,
+}: {
+  title: string;
+  description: string;
+  href?: string;
+}) {
+  const content = (
+    <>
       <p className="font-display font-bold">{title}</p>
       <p className="mt-1 text-sm text-chalkboard/70">{description}</p>
-    </div>
+    </>
   );
+
+  if (href) {
+    return (
+      <Link
+        href={href}
+        className="block rounded-block border border-chalkboard/10 p-4 shadow-block hover:border-crayon-blue hover:shadow-blockHover transition"
+      >
+        {content}
+      </Link>
+    );
+  }
+
+  return <div className="rounded-block border border-chalkboard/10 p-4">{content}</div>;
 }

@@ -8,6 +8,7 @@ import BeginningSoundGame from "@/components/games/BeginningSoundGame";
 import LetterTracingGame from "@/components/games/LetterTracingGame";
 import AlphabetQuizGame from "@/components/games/AlphabetQuizGame";
 import ClientOnly from "@/components/games/ClientOnly";
+import { buildBreadcrumbJsonLd } from "@/lib/json-ld";
 
 type Props = { params: { slug: string } };
 
@@ -31,6 +32,12 @@ export default function GamePage({ params }: Props) {
   const game = getGame(params.slug);
   if (!game) notFound();
 
+  const breadcrumbJsonLd = buildBreadcrumbJsonLd([
+    { name: "Home", url: BASE_URL },
+    { name: "Games", url: `${BASE_URL}/games` },
+    { name: game.title, url: `${BASE_URL}/games/${game.slug}` },
+  ]);
+
   return (
     <main id="main-content" className="mx-auto max-w-4xl px-6 py-12">
       <nav aria-label="Breadcrumb" className="text-sm text-chalkboard/60">
@@ -49,6 +56,8 @@ export default function GamePage({ params }: Props) {
           <GameBody slug={game.slug} />
         </ClientOnly>
       </div>
+
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
     </main>
   );
 }

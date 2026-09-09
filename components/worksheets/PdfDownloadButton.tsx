@@ -1,11 +1,11 @@
 "use client";
 
-import { jsPDF } from "jspdf";
 import { renderWorksheetPdf } from "@/lib/pdf";
 import type { WorksheetRecord } from "@/lib/worksheets-data";
 
 export default function PdfDownloadButton({ worksheet }: { worksheet: WorksheetRecord }) {
-  const download = () => {
+  const download = async () => {
+    const { jsPDF } = await import("jspdf");
     const doc = new jsPDF({ unit: "mm", format: "a4" });
     renderWorksheetPdf(doc, worksheet);
     doc.save(`${worksheet.slug}.pdf`);

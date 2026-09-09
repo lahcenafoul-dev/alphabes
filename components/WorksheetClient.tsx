@@ -1,6 +1,5 @@
 "use client";
 
-import { jsPDF } from "jspdf";
 import { speak } from "@/lib/speech";
 import { drawTracingWorksheet } from "@/lib/pdf/templates/tracing";
 
@@ -17,7 +16,8 @@ export default function WorksheetClient({ letter, word }: Props) {
     speak(`${upper}. ${word} starts with ${upper}.`, 0.85);
   };
 
-  const downloadPDF = () => {
+  const downloadPDF = async () => {
+    const { jsPDF } = await import("jspdf");
     const doc = new jsPDF({ unit: "mm", format: "a4" });
     drawTracingWorksheet(doc, { letter, word });
     doc.save(`letter-${lower}-worksheet.pdf`);

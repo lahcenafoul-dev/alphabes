@@ -28,6 +28,9 @@ export default function BlogPostPage({ params }: Props) {
     "@type": "Article",
     headline: post.title,
     description: post.excerpt,
+    author: { "@type": "Organization", name: "AlphaBes" },
+    publisher: { "@type": "Organization", name: "AlphaBes" },
+    mainEntityOfPage: `https://alphabes.com/blog/${post.slug}`,
   };
 
   return (
@@ -44,6 +47,24 @@ export default function BlogPostPage({ params }: Props) {
           <p key={i}>{para}</p>
         ))}
       </div>
+
+      {post.relatedLinks.length > 0 && (
+        <section className="mt-10 rounded-block bg-crayon-blue/10 p-6" aria-labelledby="continue-learning-heading">
+          <h2 id="continue-learning-heading" className="text-xl font-bold">
+            Continue learning
+          </h2>
+          <ul className="mt-3 space-y-2">
+            {post.relatedLinks.map((link) => (
+              <li key={link.href}>
+                <Link href={link.href} className="font-display font-bold text-crayon-blue hover:underline">
+                  {link.label} →
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }} />
     </main>
   );
