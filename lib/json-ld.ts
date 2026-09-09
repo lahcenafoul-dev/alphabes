@@ -10,3 +10,23 @@ export function buildBreadcrumbJsonLd(items: { name: string; url: string }[]) {
     })),
   };
 }
+
+export function buildLearningResourceJsonLd(worksheet: {
+  title: string;
+  description: string;
+  url: string;
+  skills: string[];
+  ageLevelLabel: string;
+}) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "LearningResource",
+    name: worksheet.title,
+    description: worksheet.description,
+    url: worksheet.url,
+    learningResourceType: "Worksheet",
+    educationalLevel: worksheet.ageLevelLabel,
+    teaches: worksheet.skills.join(", "),
+    isAccessibleForFree: true,
+  };
+}

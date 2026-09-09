@@ -39,3 +39,15 @@
     @apply translate-y-0 shadow-none;
   }
 }
+
+/* Worksheet print output: fits both US Letter and A4, with the site's
+   navigation/footer/buttons hidden via print:hidden on those elements. */
+@media print {
+  @page {
+    size: auto;
+    margin: 12mm;
+  }
+  .worksheet-preview {
+    break-inside: avoid;
+  }
+}

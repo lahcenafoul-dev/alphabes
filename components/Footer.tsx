@@ -42,7 +42,7 @@ const columns = [
 
 export default function Footer() {
   return (
-    <footer className="bg-chalkboard text-paper mt-16">
+    <footer className="bg-chalkboard text-paper mt-16 print:hidden">
       <div className="mx-auto max-w-6xl px-6 py-12 grid grid-cols-2 md:grid-cols-4 gap-8">
         {columns.map((col) => (
           <div key={col.title}>

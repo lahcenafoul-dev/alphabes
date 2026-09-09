@@ -5,6 +5,7 @@ import { getAllLetterSlugs, getLetterContent } from "@/lib/letters-data";
 import SpeakButton from "@/components/SpeakButton";
 import { wordEmojis } from "@/lib/wordEmojis";
 import { buildBreadcrumbJsonLd } from "@/lib/json-ld";
+import { getWorksheetsByLetter } from "@/lib/worksheets-data";
 type Props = { params: { letter: string } };
 
 export function generateStaticParams() {
@@ -37,6 +38,7 @@ export default function LetterPage({ params }: Props) {
 
   const prev = neighbor(content.slug, -1);
   const next = neighbor(content.slug, 1);
+  const letterWorksheets = getWorksheetsByLetter(content.slug);
 
   const courseJsonLd = {
     "@context": "https://schema.org",
@@ -158,6 +160,24 @@ export default function LetterPage({ params }: Props) {
         >
           Get the Worksheet
         </Link>
+      </section>
+
+      <section className="mt-10" aria-labelledby="worksheets-heading">
+        <h2 id="worksheets-heading" className="text-2xl font-bold">
+          Worksheets for Letter {content.uppercase}
+        </h2>
+        <ul className="mt-4 grid grid-cols-2 sm:grid-cols-5 gap-3">
+          {letterWorksheets.map((w) => (
+            <li key={w.slug}>
+              <Link
+                href={`/worksheets/${w.slug}`}
+                className="block rounded-block border border-chalkboard/10 p-3 text-center text-sm font-display font-bold shadow-block hover:border-crayon-blue"
+              >
+                {w.typeLabel}
+              </Link>
+            </li>
+          ))}
+        </ul>
       </section>
 
       {content.faq.length > 0 && (

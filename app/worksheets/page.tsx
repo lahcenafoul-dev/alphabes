@@ -1,56 +1,39 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { worksheetCategories } from "@/lib/worksheet-categories";
+import { WORKSHEET_TYPES } from "@/lib/worksheet-types";
+import { worksheets } from "@/lib/worksheets-data";
+import WorksheetLibrary, { type LibraryCardData } from "@/components/worksheets/WorksheetLibrary";
 
 export const metadata: Metadata = {
-  title: "Free Printable Worksheets",
+  title: "Free Printable Alphabet Worksheets",
   description:
-    "Alphabet, tracing, phonics, coloring, and handwriting worksheets for children ages 3-8. Preview free, download instantly.",
+    "260+ free printable alphabet worksheets: tracing, uppercase, lowercase, recognition, beginning sounds, coloring, matching, missing letter, writing practice, and review for every letter A-Z.",
   alternates: { canonical: "https://alphabes.com/worksheets" },
 };
 
-// Placeholder data shaped exactly like the Worksheet Prisma model. In
-// production this page becomes an async Server Component that calls
-// `prisma.worksheet.findMany({ where, orderBy, take, skip })` with the same
-// filters below, so hundreds of worksheets can be added via the admin panel
-// with zero code changes.
-const sampleWorksheets = [
-  {
-    slug: "letter-a-tracing",
-    title: "Letter A Tracing",
-    category: "tracing",
-    ageRange: "3-5",
-    difficulty: "beginner",
-    isPremium: false,
-  },
-  {
-    slug: "letter-b-coloring",
-    title: "Letter B Coloring Page",
-    category: "coloring",
-    ageRange: "3-5",
-    difficulty: "beginner",
-    isPremium: false,
-  },
-  {
-    slug: "cvc-words-short-a",
-    title: "CVC Words: Short A",
-    category: "cvc-words",
-    ageRange: "5-7",
-    difficulty: "intermediate",
-    isPremium: true,
-  },
-];
-
 export default function WorksheetsPage() {
+  const items: LibraryCardData[] = worksheets.map((w) => ({
+    slug: w.slug,
+    title: w.title,
+    letter: w.letter,
+    uppercase: w.uppercase,
+    worksheetType: w.worksheetType,
+    typeLabel: w.typeLabel,
+    ageLevelLabel: w.ageLevelLabel,
+    difficulty: w.difficulty,
+    primaryWord: w.primaryWord,
+  }));
+
   return (
     <main id="main-content" className="mx-auto max-w-6xl px-6 py-12">
-      <h1 className="text-4xl font-extrabold">Free Printable Worksheets</h1>
+      <h1 className="text-4xl font-extrabold">Free Printable Alphabet Worksheets</h1>
       <p className="mt-2 text-chalkboard/70 max-w-2xl">
-        Filter by category, age, and skill. Free worksheets download
-        instantly; Pro worksheets unlock with a membership.
+        {worksheets.length}+ worksheets across 10 activity types for every letter, A to Z. Preview free, print, or
+        download instantly as a PDF.
       </p>
 
-      <nav className="mt-8 flex flex-wrap gap-2" aria-label="Worksheet categories">
+      <nav className="mt-6 flex flex-wrap gap-2" aria-label="Worksheet categories">
         {worksheetCategories.map((c) => (
           <Link
             key={c.slug}
@@ -62,27 +45,25 @@ export default function WorksheetsPage() {
         ))}
       </nav>
 
-      <ul className="mt-10 grid sm:grid-cols-2 md:grid-cols-3 gap-6">
-        {sampleWorksheets.map((w) => (
-          <li
-            key={w.slug}
-            className="rounded-block border border-chalkboard/10 p-5 shadow-block"
+      <nav className="mt-3 flex flex-wrap gap-2" aria-label="Worksheet types">
+        {WORKSHEET_TYPES.map((t) => (
+          <Link
+            key={t.id}
+            href={`/worksheets/${t.categorySlug}`}
+            className="rounded-block bg-crayon-blue/10 text-crayon-blue px-4 py-2 text-sm font-display font-bold hover:bg-crayon-blue/20"
           >
-            <div className="aspect-[4/3] rounded-block bg-crayon-blue/10 mb-4" />
-            <p className="font-display font-bold">{w.title}</p>
-            <p className="mt-1 text-sm text-chalkboard/60">
-              Ages {w.ageRange} · {w.difficulty}
-            </p>
-            <span
-              className={`mt-3 inline-block rounded-full px-3 py-1 text-xs font-bold ${
-                w.isPremium ? "bg-crayon-purple/20 text-crayon-purple" : "bg-crayon-green/20 text-crayon-green"
-              }`}
-            >
-              {w.isPremium ? "Pro" : "Free"}
-            </span>
-          </li>
+            {t.label}
+          </Link>
         ))}
-      </ul>
+        <Link
+          href="/worksheets/bundles"
+          className="rounded-block bg-crayon-purple/10 text-crayon-purple px-4 py-2 text-sm font-display font-bold hover:bg-crayon-purple/20"
+        >
+          Bundles
+        </Link>
+      </nav>
+
+      <WorksheetLibrary items={items} />
     </main>
   );
 }
