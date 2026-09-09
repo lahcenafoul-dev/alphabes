@@ -1,18 +1,12 @@
 import type { Metadata } from "next";
+import Link from "next/link";
+import { games } from "@/lib/games-data";
 
 export const metadata: Metadata = {
   title: "Learning Games",
   description: "Five simple educational games for practicing letters and sounds: Find the Letter, Match Letter and Picture, Beginning Sound, Letter Tracing, and Alphabet Quiz.",
   alternates: { canonical: "https://alphabes.com/games" },
 };
-
-const games = [
-  { slug: "find-the-letter", title: "Find the Letter", description: "Spot the target letter among a grid of letters as fast as you can.", isPremium: false },
-  { slug: "match-letter-picture", title: "Match Letter and Picture", description: "Match each letter to the picture that starts with its sound.", isPremium: false },
-  { slug: "beginning-sound", title: "Beginning Sound", description: "Listen to a word and choose the letter that matches its first sound.", isPremium: true },
-  { slug: "letter-tracing", title: "Letter Tracing", description: "Trace uppercase and lowercase letters on screen with your finger or mouse.", isPremium: true },
-  { slug: "alphabet-quiz", title: "Alphabet Quiz", description: "A quick multiple-choice quiz covering letter names and sounds.", isPremium: true },
-];
 
 export default function GamesPage() {
   return (
@@ -26,15 +20,20 @@ export default function GamesPage() {
           <div key={g.slug} className="rounded-block border border-chalkboard/10 p-6 shadow-block">
             <h2 className="font-display font-bold text-lg">{g.title}</h2>
             <p className="mt-2 text-sm text-chalkboard/70">{g.description}</p>
-            <span className={`mt-3 inline-block rounded-full px-3 py-1 text-xs font-bold ${g.isPremium ? "bg-crayon-purple/20 text-crayon-purple" : "bg-crayon-green/20 text-crayon-green"}`}>
-              {g.isPremium ? "Pro" : "Free"}
-            </span>
+            <div className="mt-3 flex items-center justify-between">
+              <span className={`inline-block rounded-full px-3 py-1 text-xs font-bold ${g.isPremium ? "bg-crayon-purple/20 text-crayon-purple" : "bg-crayon-green/20 text-crayon-green"}`}>
+                {g.isPremium ? "Pro" : "Free"}
+              </span>
+              <Link
+                href={`/games/${g.slug}`}
+                className="rounded-block bg-chalkboard text-paper font-display font-bold px-4 py-2 text-sm shadow-block hover:shadow-blockHover transition"
+              >
+                ▶ Play
+              </Link>
+            </div>
           </div>
         ))}
       </div>
-      <p className="mt-8 text-sm text-chalkboard/50">
-        Interactive gameplay is coming soon — each game above will become a playable activity in this space.
-      </p>
     </main>
   );
 }
