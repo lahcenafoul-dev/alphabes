@@ -97,6 +97,7 @@ export default function WorksheetLibrary({ items }: { items: LibraryCardData[] }
             <div className="flex items-center gap-3">
               <div className="letter-block bg-crayon-blue h-12 w-12 text-lg shrink-0">{item.uppercase}</div>
               <WorksheetIcon word={item.primaryWord} className="h-12 w-12 text-chalkboard/70" />
+              <span className="sr-only">{item.primaryWord} illustration</span>
             </div>
             <p className="mt-3 font-display font-bold">{item.title}</p>
             <p className="mt-1 text-sm text-chalkboard/60">
