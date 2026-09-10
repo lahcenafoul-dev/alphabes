@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import CookiePreferencesButton from "@/components/CookiePreferencesButton";
 
 export const metadata: Metadata = {
   title: "Cookie Policy",
@@ -31,14 +32,16 @@ export default function CookiesPage() {
           <h2 className="font-display font-bold text-xl">Managing cookies</h2>
           <p className="mt-2">
             You can control or delete cookies through your browser settings at any time. Blocking
-            essential cookies may prevent you from staying logged in.
+            essential cookies may prevent you from staying logged in. If you've already made a
+            choice about analytics cookies, you can revisit it below.
           </p>
+          <CookiePreferencesButton />
         </section>
       </div>
 
       <p className="mt-10 text-sm text-chalkboard/50 border-t border-chalkboard/10 pt-4">
-        Placeholder policy — pair with an actual cookie-consent banner before enabling analytics,
-        since this site serves a UK audience where PECR consent rules apply.
+        Placeholder policy — recommend legal review before launch, particularly around UK PECR and
+        similar regional consent rules given this site's audience.
       </p>
     </main>
   );

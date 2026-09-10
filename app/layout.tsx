@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Baloo_2, Nunito } from "next/font/google";
 import "./globals.css";
 import Footer from "@/components/Footer";
+import CookieConsent from "@/components/CookieConsent";
 
 const baloo = Baloo_2({
   subsets: ["latin"],
@@ -75,6 +76,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </a>
         {children}
         <Footer />
+        <CookieConsent />
       </body>
     </html>
   );
