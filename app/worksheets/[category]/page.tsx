@@ -15,6 +15,10 @@ import { buildBreadcrumbJsonLd, buildLearningResourceJsonLd } from "@/lib/json-l
 import WorksheetIcon from "@/components/icons/WorksheetIcon";
 import PdfDownloadButton from "@/components/worksheets/PdfDownloadButton";
 import PrintButton from "@/components/worksheets/PrintButton";
+import StaticWorksheetButtons from "@/components/worksheets/StaticWorksheetButtons";
+import { getStaticPdfOverride } from "@/lib/static-pdf-overrides";
+import { staticWorksheetCategories, getStaticWorksheetCategory } from "@/lib/static-worksheet-categories";
+import { getStaticWorksheetBySlug, getStaticWorksheetsByCategory, getAllStaticWorksheetSlugs } from "@/lib/static-worksheets-data";
 
 type Props = { params: { category: string } };
 
@@ -25,6 +29,8 @@ export function generateStaticParams() {
     ...worksheetCategories.map((c) => ({ category: c.slug })),
     ...WORKSHEET_TYPES.map((t) => ({ category: t.categorySlug })),
     ...getAllWorksheetSlugs().map((slug) => ({ category: slug })),
+    ...staticWorksheetCategories.map((c) => ({ category: c.slug })),
+    ...getAllStaticWorksheetSlugs().map((slug) => ({ category: slug })),
   ];
 }
 
@@ -60,6 +66,25 @@ export function generateMetadata({ params }: Props): Metadata {
     };
   }
 
+  const staticCategory = getStaticWorksheetCategory(slug);
+  if (staticCategory) {
+    return {
+      title: `${staticCategory.name} Worksheets`,
+      description: staticCategory.description,
+      alternates: { canonical: `${BASE_URL}/worksheets/${staticCategory.slug}` },
+    };
+  }
+
+  const staticWorksheet = getStaticWorksheetBySlug(slug);
+  if (staticWorksheet) {
+    return {
+      title: staticWorksheet.seoTitle,
+      description: staticWorksheet.description,
+      alternates: { canonical: `${BASE_URL}/worksheets/${staticWorksheet.slug}` },
+      openGraph: { title: staticWorksheet.seoTitle, description: staticWorksheet.description, url: `${BASE_URL}/worksheets/${staticWorksheet.slug}` },
+    };
+  }
+
   return {};
 }
 
@@ -74,6 +99,12 @@ export default function WorksheetCategoryPage({ params }: Props) {
 
   const worksheet = getWorksheetBySlug(slug);
   if (worksheet) return <WorksheetDetailView slug={slug} />;
+
+  const staticCategory = getStaticWorksheetCategory(slug);
+  if (staticCategory) return <StaticCategoryView category={staticCategory} />;
+
+  const staticWorksheet = getStaticWorksheetBySlug(slug);
+  if (staticWorksheet) return <StaticWorksheetDetailView slug={slug} />;
 
   notFound();
 }
@@ -224,7 +255,7 @@ function WorksheetDetailView({ slug }: { slug: string }) {
       </section>
 
       <div className="mt-6 flex flex-wrap gap-4 print:hidden">
-        <PrintButton />
+        <PrintButton staticPdfUrl={getStaticPdfOverride(worksheet.slug)} />
         <PdfDownloadButton worksheet={worksheet} />
       </div>
 
@@ -270,6 +301,118 @@ function WorksheetDetailView({ slug }: { slug: string }) {
           </Link>
         ) : <span />}
       </nav>
+
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(learningResourceJsonLd) }} />
+    </main>
+  );
+}
+
+// ---------- Static-worksheet category view (Mechanism B, new) ----------
+
+function StaticCategoryView({ category }: { category: NonNullable<ReturnType<typeof getStaticWorksheetCategory>> }) {
+  const items = getStaticWorksheetsByCategory(category.slug);
+
+  return (
+    <main id="main-content" className="mx-auto max-w-6xl px-6 py-12">
+      <nav aria-label="Breadcrumb" className="text-sm text-chalkboard/60">
+        <ol className="flex gap-2">
+          <li><Link href="/">Home</Link> /</li>
+          <li><Link href="/worksheets">Worksheets</Link> /</li>
+          <li aria-current="page" className="font-bold">{category.name}</li>
+        </ol>
+      </nav>
+
+      <h1 className="mt-4 text-4xl font-extrabold">{category.name} Worksheets</h1>
+      <p className="mt-2 text-chalkboard/70 max-w-2xl">{category.description}</p>
+
+      <ul className="mt-10 grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-4">
+        {items.map((w) => (
+          <Link key={w.slug} href={`/worksheets/${w.slug}`} className="rounded-block border border-chalkboard/10 p-4 text-center shadow-block">
+            <div className="letter-block bg-crayon-blue aspect-square text-xl mx-auto mb-2">{w.previewLabel}</div>
+            <p className="text-sm font-display font-bold">{w.title}</p>
+          </Link>
+        ))}
+      </ul>
+    </main>
+  );
+}
+
+// ---------- Static-worksheet detail view (Mechanism B, new) ----------
+
+function StaticWorksheetDetailView({ slug }: { slug: string }) {
+  const worksheet = getStaticWorksheetBySlug(slug);
+  if (!worksheet) return notFound();
+
+  const category = getStaticWorksheetCategory(worksheet.categorySlug)!;
+  const related = getStaticWorksheetsByCategory(worksheet.categorySlug).filter((w) => w.slug !== worksheet.slug);
+
+  const breadcrumbJsonLd = buildBreadcrumbJsonLd([
+    { name: "Home", url: BASE_URL },
+    { name: "Worksheets", url: `${BASE_URL}/worksheets` },
+    { name: category.name, url: `${BASE_URL}/worksheets/${category.slug}` },
+    { name: worksheet.title, url: `${BASE_URL}/worksheets/${worksheet.slug}` },
+  ]);
+  const learningResourceJsonLd = buildLearningResourceJsonLd({
+    title: worksheet.title,
+    description: worksheet.description,
+    url: `${BASE_URL}/worksheets/${worksheet.slug}`,
+    skills: worksheet.skills,
+    ageLevelLabel: worksheet.ageLevelLabel,
+  });
+
+  return (
+    <main id="main-content" className="mx-auto max-w-4xl px-6 py-12">
+      <nav aria-label="Breadcrumb" className="text-sm text-chalkboard/60 print:hidden">
+        <ol className="flex flex-wrap gap-2">
+          <li><Link href="/">Home</Link> /</li>
+          <li><Link href="/worksheets">Worksheets</Link> /</li>
+          <li><Link href={`/worksheets/${category.slug}`}>{category.name}</Link> /</li>
+          <li aria-current="page" className="font-bold">{worksheet.previewLabel}</li>
+        </ol>
+      </nav>
+
+      <h1 className="mt-4 text-4xl font-extrabold">{worksheet.title}</h1>
+      <p className="mt-2 text-chalkboard/70 max-w-2xl">{worksheet.description}</p>
+
+      <dl className="mt-6 grid grid-cols-2 sm:grid-cols-4 gap-4 text-sm print:hidden">
+        <InfoItem label="Category" value={category.name} />
+        <InfoItem label="Age level" value={worksheet.ageLevelLabel} />
+        <InfoItem label="Difficulty" value={worksheet.difficulty} />
+      </dl>
+
+      <div className="mt-6 flex flex-wrap gap-2 print:hidden">
+        {worksheet.skills.map((skill) => (
+          <span key={skill} className="rounded-full bg-crayon-blue/10 text-crayon-blue px-3 py-1 text-xs font-bold">
+            {skill}
+          </span>
+        ))}
+      </div>
+
+      <section
+        className="worksheet-preview mt-8 rounded-block border border-chalkboard/20 p-8 text-center print:border-none print:rounded-none"
+        aria-label="Worksheet preview"
+      >
+        <p className="text-sm font-bold text-chalkboard/60 print:hidden">Preview</p>
+        <div className="mt-4 text-7xl font-extrabold text-crayon-blue/30 select-none">{worksheet.previewLabel}</div>
+      </section>
+
+      <StaticWorksheetButtons pdfUrl={worksheet.pdfPath} slug={worksheet.slug} />
+
+      <section className="mt-12 print:hidden" aria-labelledby="related-heading">
+        <h2 id="related-heading" className="text-xl font-bold">
+          More {category.name} Worksheets
+        </h2>
+        <ul className="mt-4 flex flex-wrap gap-2">
+          {related.map((w) => (
+            <li key={w.slug}>
+              <Link href={`/worksheets/${w.slug}`} className="rounded-block border border-chalkboard/15 px-3 py-1.5 text-sm font-bold hover:border-crayon-blue">
+                {w.previewLabel}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </section>
 
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(learningResourceJsonLd) }} />

@@ -11,8 +11,6 @@ export const worksheetCategories: WorksheetCategoryContent[] = [
   { slug: "beginning-sounds", name: "Beginning Sounds", description: "Practice identifying the first sound in a word." },
   { slug: "coloring", name: "Coloring", description: "Letter-themed coloring pages that reinforce recognition through play." },
   { slug: "handwriting", name: "Handwriting", description: "Line-based handwriting practice for uppercase and lowercase letters." },
-  { slug: "cvc-words", name: "CVC Words", description: "Simple consonant-vowel-consonant word practice pages." },
-  { slug: "sight-words", name: "Sight Words", description: "Practice pages for common sight words young readers see often." },
 ];
 
 export function getWorksheetCategory(slug: string): WorksheetCategoryContent | null {

@@ -6,6 +6,8 @@ import { WORKSHEET_TYPES } from "@/lib/worksheet-types";
 import { worksheets } from "@/lib/worksheets-data";
 import { bundles } from "@/lib/worksheet-bundles";
 import { blogPosts } from "@/lib/blog-data";
+import { staticWorksheetCategories } from "@/lib/static-worksheet-categories";
+import { staticWorksheets } from "@/lib/static-worksheets-data";
 
 const baseUrl = "https://alphabes.com";
 
@@ -87,6 +89,20 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.6,
   }));
 
+  const staticWorksheetCategoryRoutes = staticWorksheetCategories.map((c) => ({
+    url: `${baseUrl}/worksheets/${c.slug}`,
+    lastModified: new Date(),
+    changeFrequency: "weekly" as const,
+    priority: 0.7,
+  }));
+
+  const staticWorksheetDetailRoutes = staticWorksheets.map((w) => ({
+    url: `${baseUrl}/worksheets/${w.slug}`,
+    lastModified: new Date(),
+    changeFrequency: "monthly" as const,
+    priority: 0.6,
+  }));
+
   return [
     ...staticRoutes,
     ...letterRoutes,
@@ -96,5 +112,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...worksheetDetailRoutes,
     ...bundleRoutes,
     ...blogRoutes,
+    ...staticWorksheetCategoryRoutes,
+    ...staticWorksheetDetailRoutes,
   ];
 }

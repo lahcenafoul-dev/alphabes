@@ -3,6 +3,7 @@ import Link from "next/link";
 import { worksheetCategories } from "@/lib/worksheet-categories";
 import { WORKSHEET_TYPES } from "@/lib/worksheet-types";
 import { worksheets } from "@/lib/worksheets-data";
+import { staticWorksheetCategories } from "@/lib/static-worksheet-categories";
 import WorksheetLibrary, { type LibraryCardData } from "@/components/worksheets/WorksheetLibrary";
 
 export const metadata: Metadata = {
@@ -61,6 +62,18 @@ export default function WorksheetsPage() {
         >
           Bundles
         </Link>
+      </nav>
+
+      <nav className="mt-3 flex flex-wrap gap-2" aria-label="More worksheet topics">
+        {staticWorksheetCategories.map((c) => (
+          <Link
+            key={c.slug}
+            href={`/worksheets/${c.slug}`}
+            className="rounded-block bg-crayon-green/10 text-crayon-green px-4 py-2 text-sm font-display font-bold hover:bg-crayon-green/20"
+          >
+            {c.name}
+          </Link>
+        ))}
       </nav>
 
       <WorksheetLibrary items={items} />

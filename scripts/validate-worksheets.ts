@@ -4,6 +4,8 @@
 // NOT wired into `prebuild` (kept manual/CI-only) so it can never become a
 // new way for the Netlify build to fail. Run this by hand or in CI whenever
 // worksheet data or the type/template registries change.
+import fs from "fs";
+import path from "path";
 import { z } from "zod";
 import { worksheets, type WorksheetRecord } from "../lib/worksheets-data";
 import { WORKSHEET_TYPES } from "../lib/worksheet-types";
@@ -12,6 +14,11 @@ import { bundles } from "../lib/worksheet-bundles";
 import { getAllLetterSlugs } from "../lib/letters-data";
 import { PDF_TEMPLATES } from "../lib/pdf";
 import { ICONS } from "../lib/pdf/icons";
+import { STATIC_PDF_OVERRIDES } from "../lib/static-pdf-overrides";
+import { staticWorksheetCategories } from "../lib/static-worksheet-categories";
+import { staticWorksheets } from "../lib/static-worksheets-data";
+
+const PUBLIC_DIR = path.join(__dirname, "..", "public");
 
 let hardFailures = 0;
 let warnings = 0;
@@ -98,28 +105,11 @@ function main() {
       }
     });
 
-  // 8. Route-collision guard: pillar slugs, type-category slugs, worksheet
-  // slugs, and bundle slugs must be pairwise disjoint.
+  // 8. Route-collision guard groups (checked pairwise, all slug groups, below).
   const pillarSlugs = worksheetCategories.map((c) => c.slug);
   const typeCategorySlugs = WORKSHEET_TYPES.map((t) => t.categorySlug);
   const worksheetSlugs = worksheets.map((w) => w.slug);
   const bundleSlugs = bundles.map((b) => b.slug);
-  const groups: [string, string[]][] = [
-    ["pillar categories", pillarSlugs],
-    ["type categories", typeCategorySlugs],
-    ["worksheets", worksheetSlugs],
-    ["bundles", bundleSlugs],
-  ];
-  for (let i = 0; i < groups.length; i++) {
-    for (let j = i + 1; j < groups.length; j++) {
-      const [nameA, slugsA] = groups[i];
-      const [nameB, slugsB] = groups[j];
-      const setB = new Set(slugsB);
-      slugsA.forEach((slug) => {
-        if (setB.has(slug)) fail(`Slug collision between ${nameA} and ${nameB}: "${slug}"`);
-      });
-    }
-  }
 
   // 9. Bundle integrity.
   const expectedBundleCount = 1 + letters.length + WORKSHEET_TYPES.length;
@@ -142,7 +132,46 @@ function main() {
     }
   });
 
-  console.log(`\n${worksheets.length} worksheets, ${bundles.length} bundles checked.`);
+  // 10. Static PDF overrides (Mechanism A): every referenced file must exist.
+  Object.entries(STATIC_PDF_OVERRIDES).forEach(([slug, publicPath]) => {
+    if (!worksheetSlugSet.has(slug)) fail(`Static PDF override references unknown worksheet slug: ${slug}`);
+    const filePath = path.join(PUBLIC_DIR, publicPath);
+    if (!fs.existsSync(filePath)) fail(`Static PDF override for "${slug}" points at missing file: ${publicPath}`);
+  });
+
+  // 11. Static worksheets (Mechanism B): unique slugs, no collisions with any
+  // existing slug group, valid category refs, and files that exist on disk.
+  const staticCategorySlugs = staticWorksheetCategories.map((c) => c.slug);
+  const staticWorksheetSlugs = staticWorksheets.map((w) => w.slug);
+  const staticSlugSeen = new Set<string>();
+  staticWorksheets.forEach((w) => {
+    if (staticSlugSeen.has(w.slug)) fail(`Duplicate static worksheet slug: ${w.slug}`);
+    staticSlugSeen.add(w.slug);
+    if (!staticCategorySlugs.includes(w.categorySlug)) fail(`Static worksheet "${w.slug}" references unknown category "${w.categorySlug}"`);
+    const filePath = path.join(PUBLIC_DIR, w.pdfPath);
+    if (!fs.existsSync(filePath)) fail(`Static worksheet "${w.slug}" points at missing file: ${w.pdfPath}`);
+  });
+
+  const allGroups: [string, string[]][] = [
+    ["pillar categories", pillarSlugs],
+    ["type categories", typeCategorySlugs],
+    ["worksheets", worksheetSlugs],
+    ["bundles", bundleSlugs],
+    ["static categories", staticCategorySlugs],
+    ["static worksheets", staticWorksheetSlugs],
+  ];
+  for (let i = 0; i < allGroups.length; i++) {
+    for (let j = i + 1; j < allGroups.length; j++) {
+      const [nameA, slugsA] = allGroups[i];
+      const [nameB, slugsB] = allGroups[j];
+      const setB = new Set(slugsB);
+      slugsA.forEach((slug) => {
+        if (setB.has(slug)) fail(`Slug collision between ${nameA} and ${nameB}: "${slug}"`);
+      });
+    }
+  }
+
+  console.log(`\n${worksheets.length} worksheets, ${bundles.length} bundles, ${staticWorksheets.length} static worksheets checked.`);
   console.log(`${hardFailures} failure(s), ${warnings} warning(s).`);
 
   if (hardFailures > 0) {

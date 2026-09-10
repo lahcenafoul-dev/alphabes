@@ -6,6 +6,7 @@ import SpeakButton from "@/components/SpeakButton";
 import { wordEmojis } from "@/lib/wordEmojis";
 import { buildBreadcrumbJsonLd } from "@/lib/json-ld";
 import { getWorksheetsByLetter } from "@/lib/worksheets-data";
+import { getCursiveWorksheetForLetter } from "@/lib/static-worksheets-data";
 type Props = { params: { letter: string } };
 
 export function generateStaticParams() {
@@ -39,6 +40,7 @@ export default function LetterPage({ params }: Props) {
   const prev = neighbor(content.slug, -1);
   const next = neighbor(content.slug, 1);
   const letterWorksheets = getWorksheetsByLetter(content.slug);
+  const cursiveWorksheet = getCursiveWorksheetForLetter(content.slug);
   const tracingWorksheet = letterWorksheets.find((w) => w.worksheetType === "tracing");
   const coloringWorksheet = letterWorksheets.find((w) => w.worksheetType === "coloring");
 
@@ -194,6 +196,16 @@ export default function LetterPage({ params }: Props) {
               </Link>
             </li>
           ))}
+          {cursiveWorksheet && (
+            <li key={cursiveWorksheet.slug}>
+              <Link
+                href={`/worksheets/${cursiveWorksheet.slug}`}
+                className="block rounded-block border border-chalkboard/10 p-3 text-center text-sm font-display font-bold shadow-block hover:border-crayon-blue"
+              >
+                Cursive Writing
+              </Link>
+            </li>
+          )}
         </ul>
       </section>
 
