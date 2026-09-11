@@ -42,6 +42,27 @@ export default function NotFound() {
         >
           Explore the Alphabet
         </Link>
+        <Link
+          href="/blog"
+          className="rounded-block border-2 border-chalkboard/20 font-display font-bold px-5 py-2.5 hover:border-crayon-blue transition"
+        >
+          Read the Blog
+        </Link>
+      </div>
+
+      <div className="mt-10">
+        <p className="text-sm font-bold text-chalkboard/60">Popular worksheets</p>
+        <div className="mt-3 flex flex-wrap justify-center gap-3">
+          <Link href="/worksheets/letter-a-tracing" className="text-sm font-display font-bold text-crayon-blue hover:underline">
+            Letter A Tracing
+          </Link>
+          <Link href="/worksheets/cvc-words" className="text-sm font-display font-bold text-crayon-blue hover:underline">
+            CVC Words
+          </Link>
+          <Link href="/worksheets/sight-words" className="text-sm font-display font-bold text-crayon-blue hover:underline">
+            Sight Words
+          </Link>
+        </div>
       </div>
     </main>
   );

@@ -52,6 +52,12 @@ export default function PricingPage() {
       <p className="mt-2 text-center text-chalkboard/70">
         Start free. Upgrade any time.
       </p>
+      <p className="mt-4 max-w-2xl mx-auto text-center text-chalkboard/70">
+        The free plan covers the alphabet basics: letter lessons, a selection of worksheets, and a
+        few games. Pro is for parents and teachers who want the full library — every printable
+        worksheet across all 26 letters, every game, full phonics and CVC-word practice, printable
+        bundles for a whole classroom, and progress tracking for each child.
+      </p>
 
       <div className="mt-10 grid md:grid-cols-3 gap-6">
         {plans.map((plan) => (

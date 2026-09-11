@@ -109,6 +109,77 @@ export default function WorksheetCategoryPage({ params }: Props) {
   notFound();
 }
 
+// ---------- Shared "related categories" + FAQ block for all three category views ----------
+
+const PILLAR_CATEGORY_LINKS = worksheetCategories.map((c) => ({ slug: c.slug, name: c.name }));
+
+function CategoryExtras({ currentSlug }: { currentSlug: string }) {
+  const relatedPillars = PILLAR_CATEGORY_LINKS.filter((c) => c.slug !== currentSlug);
+
+  const faqJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: [
+      {
+        "@type": "Question",
+        name: "Are these worksheets free to download and print?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Yes. Every worksheet on this page can be previewed, printed, and downloaded as a PDF at no cost.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "What age are these worksheets designed for?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Most worksheets here suit preschool and kindergarten-aged children, roughly ages 3 to 6, though some also work well for early elementary practice.",
+        },
+      },
+    ],
+  };
+
+  return (
+    <>
+      <section className="mt-12 print:hidden" aria-labelledby="related-categories-heading">
+        <h2 id="related-categories-heading" className="text-xl font-bold">
+          Explore More Worksheet Categories
+        </h2>
+        <ul className="mt-4 flex flex-wrap gap-2">
+          {relatedPillars.map((c) => (
+            <li key={c.slug}>
+              <Link href={`/worksheets/${c.slug}`} className="rounded-block border border-chalkboard/15 px-3 py-1.5 text-sm font-bold hover:border-crayon-blue">
+                {c.name}
+              </Link>
+            </li>
+          ))}
+          <li>
+            <Link href="/worksheets" className="rounded-block bg-crayon-blue/10 text-crayon-blue px-3 py-1.5 text-sm font-bold hover:bg-crayon-blue/20">
+              Browse all worksheets →
+            </Link>
+          </li>
+        </ul>
+      </section>
+
+      <section className="mt-10 print:hidden" aria-labelledby="category-faq-heading">
+        <h2 id="category-faq-heading" className="text-xl font-bold">
+          FAQ
+        </h2>
+        <dl className="mt-4 space-y-4">
+          {faqJsonLd.mainEntity.map((item) => (
+            <div key={item.name}>
+              <dt className="font-display font-bold">{item.name}</dt>
+              <dd className="mt-1 text-chalkboard/70">{item.acceptedAnswer.text}</dd>
+            </div>
+          ))}
+        </dl>
+      </section>
+
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
+    </>
+  );
+}
+
 // ---------- Pillar category view (existing behavior, unchanged) ----------
 
 function PillarCategoryView({ category }: { category: NonNullable<ReturnType<typeof getWorksheetCategory>> }) {
@@ -131,8 +202,9 @@ function PillarCategoryView({ category }: { category: NonNullable<ReturnType<typ
         {letters.map((letter) => (
           <Link
             key={letter}
+            id={letter}
             href={`/alphabet/${letter}/worksheet`}
-            className="rounded-block border border-chalkboard/10 p-4 text-center shadow-block"
+            className="rounded-block border border-chalkboard/10 p-4 text-center shadow-block scroll-mt-20"
           >
             <div className="letter-block bg-crayon-blue aspect-square text-xl mx-auto mb-2">
               {letter.toUpperCase()}
@@ -144,6 +216,8 @@ function PillarCategoryView({ category }: { category: NonNullable<ReturnType<typ
           </Link>
         ))}
       </ul>
+
+      <CategoryExtras currentSlug={category.slug} />
     </main>
   );
 }
@@ -181,6 +255,8 @@ function TypeCategoryView({ typeId }: { typeId: (typeof WORKSHEET_TYPES)[number]
           </Link>
         ))}
       </ul>
+
+      <CategoryExtras currentSlug={type.categorySlug} />
     </main>
   );
 }
@@ -334,6 +410,8 @@ function StaticCategoryView({ category }: { category: NonNullable<ReturnType<typ
           </Link>
         ))}
       </ul>
+
+      <CategoryExtras currentSlug={category.slug} />
     </main>
   );
 }
