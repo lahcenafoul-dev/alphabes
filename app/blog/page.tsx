@@ -1,32 +1,96 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import { blogPosts } from "@/lib/blog-data";
+import { blogPosts, blogCategories } from "@/lib/blog-data";
+
+const BASE_URL = "https://alphabes.com";
+const title = "AlphaBes Blog: Alphabet, Phonics & Early Learning Guides";
+const description =
+  "Practical, original guides for parents and teachers on teaching the alphabet, phonics, letter tracing, and early reading skills.";
 
 export const metadata: Metadata = {
-  title: "Blog",
-  description: "Practical, research-informed articles on teaching the alphabet and phonics at home.",
-  alternates: { canonical: "https://alphabes.com/blog" },
+  title,
+  description,
+  alternates: { canonical: `${BASE_URL}/blog` },
+  openGraph: { title, description, url: `${BASE_URL}/blog` },
 };
 
+function formatDate(iso: string): string {
+  return new Date(iso).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
+}
+
 export default function BlogIndexPage() {
+  const sorted = [...blogPosts].sort((a, b) => (a.publishedAt < b.publishedAt ? 1 : -1));
+  const featured = sorted.slice(0, 2);
+  const latest = sorted;
+
   return (
-    <main id="main-content" className="mx-auto max-w-3xl px-6 py-12">
-      <h1 className="text-4xl font-extrabold">Blog</h1>
-      <p className="mt-2 text-chalkboard/70">
-        Practical guidance for parents and teachers on early letters and phonics.
+    <main id="main-content" className="mx-auto max-w-4xl px-6 py-12">
+      <h1 className="text-4xl font-extrabold">AlphaBes Blog</h1>
+      <p className="mt-2 text-chalkboard/70 max-w-2xl">
+        Practical, research-informed articles on teaching the alphabet, phonics, and early reading —
+        written for parents and teachers, not search engines.
       </p>
-      <div className="mt-8 space-y-6">
-        {blogPosts.map((post) => (
+
+      <nav className="mt-6 flex flex-wrap gap-2" aria-label="Blog categories">
+        {blogCategories.map((c) => (
           <Link
-            key={post.slug}
-            href={`/blog/${post.slug}`}
-            className="block rounded-block border border-chalkboard/10 p-6 shadow-block hover:shadow-blockHover transition"
+            key={c.slug}
+            href={`/blog/${c.slug}`}
+            className="rounded-block bg-crayon-blue/10 text-crayon-blue px-4 py-2 text-sm font-display font-bold hover:bg-crayon-blue/20"
           >
-            <h2 className="font-display font-bold text-xl">{post.title}</h2>
-            <p className="mt-2 text-chalkboard/70">{post.excerpt}</p>
+            {c.name}
           </Link>
         ))}
-      </div>
+      </nav>
+
+      <section className="mt-10" aria-labelledby="featured-heading">
+        <h2 id="featured-heading" className="text-2xl font-bold">Featured Articles</h2>
+        <div className="mt-4 grid sm:grid-cols-2 gap-5">
+          {featured.map((post) => (
+            <Link
+              key={post.slug}
+              href={`/blog/${post.slug}`}
+              className="block rounded-block border border-chalkboard/10 p-6 shadow-block hover:shadow-blockHover transition-colors"
+            >
+              <h3 className="font-display font-bold text-xl">{post.title}</h3>
+              <p className="mt-2 text-chalkboard/70">{post.excerpt}</p>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      <section className="mt-12" aria-labelledby="latest-heading">
+        <h2 id="latest-heading" className="text-2xl font-bold">Latest Articles</h2>
+        <div className="mt-4 space-y-5">
+          {latest.map((post) => (
+            <Link
+              key={post.slug}
+              href={`/blog/${post.slug}`}
+              className="block rounded-block border border-chalkboard/10 p-6 shadow-block hover:shadow-blockHover transition-colors"
+            >
+              <h3 className="font-display font-bold text-xl">{post.title}</h3>
+              <p className="mt-2 text-chalkboard/70">{post.excerpt}</p>
+              <p className="mt-2 text-xs text-chalkboard/50">{formatDate(post.publishedAt)}</p>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      <section className="mt-12 rounded-block bg-crayon-green/10 p-6" aria-labelledby="resources-heading">
+        <h2 id="resources-heading" className="text-xl font-bold">Explore More on AlphaBes</h2>
+        <p className="mt-2 text-chalkboard/70">
+          Every article links back to the lesson, worksheet, or activity it's about — here are the
+          main hubs those links point to.
+        </p>
+        <ul className="mt-4 flex flex-wrap gap-3">
+          <li><Link href="/alphabet" className="rounded-block border border-chalkboard/15 px-4 py-2 text-sm font-display font-bold hover:border-crayon-blue">Alphabet Hub</Link></li>
+          <li><Link href="/phonics" className="rounded-block border border-chalkboard/15 px-4 py-2 text-sm font-display font-bold hover:border-crayon-blue">Phonics Hub</Link></li>
+          <li><Link href="/worksheets" className="rounded-block border border-chalkboard/15 px-4 py-2 text-sm font-display font-bold hover:border-crayon-blue">Worksheets</Link></li>
+          <li><Link href="/preschool" className="rounded-block border border-chalkboard/15 px-4 py-2 text-sm font-display font-bold hover:border-crayon-blue">Preschool Hub</Link></li>
+          <li><Link href="/kindergarten" className="rounded-block border border-chalkboard/15 px-4 py-2 text-sm font-display font-bold hover:border-crayon-blue">Kindergarten Hub</Link></li>
+          <li><Link href="/games" className="rounded-block border border-chalkboard/15 px-4 py-2 text-sm font-display font-bold hover:border-crayon-blue">Games</Link></li>
+        </ul>
+      </section>
     </main>
   );
 }

@@ -30,3 +30,25 @@ export function buildLearningResourceJsonLd(worksheet: {
     isAccessibleForFree: true,
   };
 }
+
+export function buildArticleJsonLd(article: {
+  headline: string;
+  description: string;
+  url: string;
+  author: string;
+  datePublished: string;
+  dateModified?: string;
+}) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: article.headline,
+    description: article.description,
+    url: article.url,
+    mainEntityOfPage: article.url,
+    author: { "@type": "Organization", name: article.author },
+    publisher: { "@type": "Organization", name: "AlphaBes" },
+    datePublished: article.datePublished,
+    dateModified: article.dateModified ?? article.datePublished,
+  };
+}
