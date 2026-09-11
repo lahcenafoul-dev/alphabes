@@ -254,7 +254,13 @@ export default function HomePage() {
             Beyond worksheets, AlphaBes has hands-on activities, flashcards, and games sized for
             preschool and kindergarten attention spans.
           </p>
-          <div className="mt-6 grid sm:grid-cols-3 gap-4">
+          <div className="mt-6 grid sm:grid-cols-3 md:grid-cols-5 gap-4">
+            <Link href="/preschool" className="rounded-block bg-paper p-5 shadow-block hover:shadow-blockHover transition font-display font-bold">
+              Preschool Hub
+            </Link>
+            <Link href="/kindergarten" className="rounded-block bg-paper p-5 shadow-block hover:shadow-blockHover transition font-display font-bold">
+              Kindergarten Hub
+            </Link>
             <Link href="/activities" className="rounded-block bg-paper p-5 shadow-block hover:shadow-blockHover transition font-display font-bold">
               Activities
             </Link>

@@ -22,10 +22,10 @@ const roadmap: RoadmapStep[] = [
   { n: 1, title: "Letter Recognition", blurb: "Recognize uppercase and lowercase letters.", href: "/worksheets/letter-recognition" },
   { n: 2, title: "Letter Sounds", blurb: "Connect common letters with their sounds.", href: "/phonics/letter-sounds" },
   { n: 3, title: "Beginning Sounds", blurb: "Identify the first sound in familiar words.", href: "/phonics/beginning-sounds" },
-  { n: 4, title: "Short Vowels", blurb: "Practice short vowel sounds in simple words." },
+  { n: 4, title: "Short Vowels", blurb: "Practice short vowel sounds in simple words.", href: "/phonics/short-vowels" },
   { n: 5, title: "CVC Words", blurb: "Read simple consonant-vowel-consonant words.", href: "/phonics/cvc-words" },
   { n: 6, title: "Blending", blurb: "Combine individual sounds to read a word.", href: "/phonics/blending" },
-  { n: 7, title: "Word Families", blurb: "Notice common patterns such as -at, -ig, and -un." },
+  { n: 7, title: "Word Families", blurb: "Notice common patterns such as -at, -ig, and -un.", href: "/phonics/word-families" },
   { n: 8, title: "More Advanced Patterns", blurb: "Introduce more letter combinations when ready." },
 ];
 
@@ -276,6 +276,17 @@ export default function PhonicsPage() {
             </li>
           ))}
         </ul>
+        <div className="mt-6 flex flex-wrap gap-4">
+          <Link
+            href="/phonics/short-vowels"
+            className="inline-block rounded-block bg-chalkboard text-paper font-display font-bold px-5 py-2.5 shadow-block hover:shadow-blockHover transition-shadow"
+          >
+            Practice Short Vowels
+          </Link>
+          <Link href="/phonics/long-vowels" className="font-display font-bold text-crayon-blue hover:underline self-center">
+            Ready for long vowel sounds? →
+          </Link>
+        </div>
       </section>
 
       {/* CVC Words */}
@@ -303,12 +314,17 @@ export default function PhonicsPage() {
           form a word: <span className="font-display font-bold">/m/ + /a/ + /p/ → map</span>.
           Children usually practice blending once they're confident with individual letter sounds.
         </p>
-        <Link
-          href="/phonics/blending"
-          className="mt-6 inline-block rounded-block bg-chalkboard text-paper font-display font-bold px-5 py-2.5 shadow-block hover:shadow-blockHover transition-shadow"
-        >
-          Practice Sound Blending
-        </Link>
+        <div className="mt-6 flex flex-wrap gap-4">
+          <Link
+            href="/phonics/blending"
+            className="inline-block rounded-block bg-chalkboard text-paper font-display font-bold px-5 py-2.5 shadow-block hover:shadow-blockHover transition-shadow"
+          >
+            Practice Sound Blending
+          </Link>
+          <Link href="/phonics/segmenting" className="font-display font-bold text-crayon-blue hover:underline self-center">
+            Try it in reverse: segmenting →
+          </Link>
+        </div>
       </section>
 
       {/* Word Families */}
@@ -333,12 +349,14 @@ export default function PhonicsPage() {
             <Link href="/worksheets/cvc-word-sun" className="underline">sun</Link>, bun, run, fun
           </li>
         </ul>
-        <Link
-          href="/worksheets/cvc-words"
-          className="mt-6 inline-block rounded-block bg-crayon-green text-paper font-display font-bold px-5 py-2.5 shadow-block hover:shadow-blockHover transition-shadow"
-        >
-          Explore Word Family Practice
-        </Link>
+        <div className="mt-6 flex flex-wrap gap-4">
+          <Link
+            href="/phonics/word-families"
+            className="inline-block rounded-block bg-crayon-green text-paper font-display font-bold px-5 py-2.5 shadow-block hover:shadow-blockHover transition-shadow"
+          >
+            Explore Word Family Practice
+          </Link>
+        </div>
       </section>
 
       {/* Phonics for Preschool */}
@@ -347,7 +365,11 @@ export default function PhonicsPage() {
         <p className="mt-2 text-chalkboard/70 max-w-2xl">
           Preschool phonics stays mostly oral: listening to sounds, saying a letter's sound out
           loud, and noticing the beginning sound of a familiar word. Matching sounds to pictures
-          and simple tracing add a hands-on layer without pushing full reading yet.
+          and simple tracing add a hands-on layer without pushing full reading yet. Our{" "}
+          <Link href="/preschool" className="font-bold underline">
+            Preschool Learning Hub
+          </Link>{" "}
+          brings these ideas together across the whole site.
         </p>
         <Link
           href="/activities"
@@ -363,7 +385,11 @@ export default function PhonicsPage() {
         <p className="mt-2 text-chalkboard/70 max-w-2xl">
           By kindergarten, most children are ready to combine letter-sound knowledge with short
           vowels, CVC words, and blending to start decoding simple text. Word families and
-          repeated CVC practice build the speed needed for early reading.
+          repeated CVC practice build the speed needed for early reading. See our{" "}
+          <Link href="/kindergarten" className="font-bold underline">
+            Kindergarten Learning Hub
+          </Link>{" "}
+          for sight words and writing practice alongside phonics.
         </p>
         <Link
           href="/worksheets/cvc-words"

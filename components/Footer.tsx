@@ -11,6 +11,8 @@ const columns = [
       { href: "/games", label: "Games" },
       { href: "/flashcards", label: "Flashcards" },
       { href: "/activities", label: "Activities" },
+      { href: "/preschool", label: "Preschool" },
+      { href: "/kindergarten", label: "Kindergarten" },
     ],
   },
   {

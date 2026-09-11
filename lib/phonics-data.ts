@@ -39,6 +39,38 @@ export const phonicsSkills: PhonicsSkillContent[] = [
       "Blending is the skill of stringing individual letter sounds together without pausing between them, turning \"c... a... t\" into the spoken word \"cat.\" It's usually practiced after a child is comfortable with individual letter sounds.",
     examples: ["/s/ + /i/ + /t/ → sit", "/h/ + /o/ + /p/ → hop"],
   },
+  {
+    slug: "short-vowels",
+    title: "Short Vowels",
+    summary: "Practice the short sound of each vowel in simple words.",
+    description:
+      "Short vowel sounds show up in most early reading words, so getting comfortable with all five of them opens the door to CVC words and beyond. Each vowel's short sound is usually quicker and simpler to say than its long, letter-name sound.",
+    examples: ["a → apple", "e → bed", "i → pig", "o → hot", "u → sun"],
+  },
+  {
+    slug: "long-vowels",
+    title: "Long Vowels",
+    summary: "Recognize the long, letter-name sound of each vowel.",
+    description:
+      "A long vowel sound says the vowel's own name, like the a in cake or the o in boat. Children usually meet long vowels after short vowels feel automatic, often through patterns like a silent e at the end of a word.",
+    examples: ["cake → long a", "bike → long i", "boat → long o", "cute → long u"],
+  },
+  {
+    slug: "segmenting",
+    title: "Segmenting",
+    summary: "Break a spoken word into its individual sounds.",
+    description:
+      "Segmenting is the reverse of blending: instead of combining sounds into a word, a child listens to a whole word and pulls it apart into the sounds that make it up. It's a key skill for spelling, since spelling means writing down each sound in order.",
+    examples: ["map → /m/ /a/ /p/", "sit → /s/ /i/ /t/", "dog → /d/ /o/ /g/"],
+  },
+  {
+    slug: "word-families",
+    title: "Word Families",
+    summary: "Spot common word endings shared by several simple words.",
+    description:
+      "A word family is a group of words that end the same way, changing only the first sound, like cat, hat, and mat. Once a child recognizes the pattern, sounding out a new word in that family becomes much faster.",
+    examples: ["-at: cat, hat, mat", "-ig: pig, big, dig", "-un: sun, bun, run"],
+  },
 ];
 
 export function getPhonicsSkill(slug: string): PhonicsSkillContent | null {

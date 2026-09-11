@@ -381,12 +381,17 @@ export default function AlphabetIndexPage() {
           </Link>{" "}
           has more low-pressure ideas.
         </p>
-        <Link
-          href="/activities"
-          className="mt-6 inline-block rounded-block bg-chalkboard text-paper font-display font-bold px-5 py-2.5 shadow-block hover:shadow-blockHover transition-shadow"
-        >
-          Explore Preschool Alphabet Activities
-        </Link>
+        <div className="mt-6 flex flex-wrap gap-4">
+          <Link
+            href="/activities"
+            className="inline-block rounded-block bg-chalkboard text-paper font-display font-bold px-5 py-2.5 shadow-block hover:shadow-blockHover transition-shadow"
+          >
+            Explore Preschool Alphabet Activities
+          </Link>
+          <Link href="/preschool" className="font-display font-bold text-crayon-blue hover:underline self-center">
+            Visit the Preschool Learning Hub →
+          </Link>
+        </div>
       </section>
 
       {/* Kindergarten */}
@@ -402,12 +407,17 @@ export default function AlphabetIndexPage() {
           </Link>{" "}
           for hands-on ways to reinforce it.
         </p>
-        <Link
-          href="/worksheets/alphabet-writing-practice"
-          className="mt-6 inline-block rounded-block bg-chalkboard text-paper font-display font-bold px-5 py-2.5 shadow-block hover:shadow-blockHover transition-shadow"
-        >
-          Explore Kindergarten Writing Worksheets
-        </Link>
+        <div className="mt-6 flex flex-wrap gap-4">
+          <Link
+            href="/worksheets/alphabet-writing-practice"
+            className="inline-block rounded-block bg-chalkboard text-paper font-display font-bold px-5 py-2.5 shadow-block hover:shadow-blockHover transition-shadow"
+          >
+            Explore Kindergarten Writing Worksheets
+          </Link>
+          <Link href="/kindergarten" className="font-display font-bold text-crayon-blue hover:underline self-center">
+            Visit the Kindergarten Learning Hub →
+          </Link>
+        </div>
       </section>
 
       {/* Fun Alphabet Activities */}
