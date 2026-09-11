@@ -348,6 +348,84 @@ export const blogPosts: BlogPost[] = [
       { label: "Letter Recognition Worksheets", href: "/worksheets/letter-recognition" },
     ],
   },
+  {
+    // Demonstrates the standard "activity article" section pattern used by
+    // most of the 30-article editorial plan: Introduction, What Children
+    // Learn, Materials Needed, Step-by-Step Activity, Variations, Tips,
+    // Common Mistakes, Conclusion -- see the ADMIN NOTE below.
+    slug: "letter-a-activities-for-preschoolers",
+    title: "Letter A Activities for Preschoolers",
+    excerpt: "Five simple, no-prep activities for practicing the letter A at home or in the classroom.",
+    categorySlug: "preschool-activities",
+    author: "AlphaBes Team",
+    publishedAt: "2026-09-11",
+    sections: [
+      {
+        heading: "Introduction",
+        paragraphs: [
+          "Letter A is often the very first letter children practice, both because it starts the alphabet and because so many familiar words — apple, ant, airplane — begin with it. These five simple activities give a child several different ways to work with the letter A in one sitting, without needing any special materials.",
+        ],
+      },
+      {
+        heading: "What Children Learn",
+        paragraphs: [
+          "These activities build three skills at once: recognizing the shape of uppercase A and lowercase a, connecting the letter to its short \"a\" sound, and practicing the fine motor control needed to eventually write it.",
+        ],
+      },
+      {
+        heading: "Materials Needed",
+        paragraphs: [
+          "A pencil or crayon, a printed Letter A tracing worksheet, and a few small household objects that start with A (an apple, an action figure, anything on hand) — no special supplies required.",
+        ],
+      },
+      {
+        heading: "Step-by-Step Activity",
+        paragraphs: [
+          "Say the letter name and its sound together: \"A, /æ/, like apple.\" Trace the uppercase A and lowercase a on a tracing worksheet, saying the sound out loud with each stroke. Go on a 30-second \"A hunt\" around the room, collecting or pointing at anything that starts with A. Sort what was found into \"starts with A\" and \"doesn't start with A\" if the child collected a mix. Finish by writing the letter A independently, without the dotted guide, to check how much stuck.",
+        ],
+      },
+      {
+        heading: "Variations",
+        paragraphs: [
+          "For a child who already knows the letter well, skip straight to independent writing and add a simple phrase like \"A is for apple\" to copy. For a child who's just starting out, skip the independent-writing step and repeat the tracing and hunting steps instead.",
+        ],
+      },
+      {
+        heading: "Tips for Parents and Teachers",
+        paragraphs: [
+          "Keep the whole activity under ten minutes — preschool attention spans are short, and a shorter, positive session beats a longer one that ends in frustration. It's fine to spread the five steps across a few days instead of doing them all at once.",
+        ],
+      },
+      {
+        heading: "Common Mistakes",
+        paragraphs: [
+          "A common misstep is correcting every wobbly line during tracing. At this stage, the goal is practicing the motion and the sound, not producing a perfect letter — accuracy improves with repetition, not correction.",
+        ],
+      },
+      {
+        heading: "Conclusion",
+        paragraphs: [
+          "Letter A is a natural starting point precisely because it's the first letter most children encounter formally, but the same five steps — say it, trace it, hunt for it, sort it, write it — work for any letter once a child is ready to move on.",
+        ],
+      },
+    ],
+    faq: [
+      {
+        question: "How long should a Letter A activity session take?",
+        answer: "About five to ten minutes is plenty for most preschoolers. Shorter, more frequent sessions build skills better than one long session.",
+      },
+      {
+        question: "What if my child already knows the letter A?",
+        answer: "Move straight to the independent-writing step and add a simple word or short phrase to copy, so the activity still offers a challenge.",
+      },
+    ],
+    relatedArticleSlugs: ["how-to-teach-the-alphabet-to-preschoolers", "best-ways-to-teach-letter-recognition"],
+    relatedLinks: [
+      { label: "Letter A lesson page", href: "/alphabet/a" },
+      { label: "Letter A Tracing Worksheet", href: "/worksheets/letter-a-tracing" },
+      { label: "Preschool Learning Hub", href: "/preschool" },
+    ],
+  },
 ];
 
 // Fails fast at build/dev time if a future article or category slug
@@ -402,3 +480,15 @@ export function getRelatedPosts(post: BlogPost, limit = 3): BlogPost[] {
 // 6. That's it -- no route file, sitemap entry, or component needs to
 //    change. `/blog/{slug}` and the sitemap pick up the new article
 //    automatically because they're all derived from this array.
+//
+// Two recommended `sections` patterns (both use the same generic shape --
+// pick whichever fits the article, and skip headings that don't apply):
+//   - Guide/advice articles (e.g. "when-should-kids-learn-letter-sounds"):
+//     a few sections, each just a short original explanation.
+//   - Activity articles (e.g. "letter-a-activities-for-preschoolers"):
+//     Introduction, What Children Learn, Materials Needed, Step-by-Step
+//     Activity, Variations, Tips for Parents and Teachers, Common
+//     Mistakes, Conclusion. This is the pattern most of the 30-article
+//     editorial plan should follow, since most of those titles are
+//     activity-shaped ("Letter B Activities for Preschoolers", "Beginning
+//     Sounds Activities", etc).

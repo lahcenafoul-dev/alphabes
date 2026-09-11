@@ -25,10 +25,10 @@ export default function BlogIndexPage() {
 
   return (
     <main id="main-content" className="mx-auto max-w-4xl px-6 py-12">
-      <h1 className="text-4xl font-extrabold">AlphaBes Blog</h1>
+      <h1 className="text-4xl font-extrabold">Early Learning Activities &amp; Printable Resources</h1>
       <p className="mt-2 text-chalkboard/70 max-w-2xl">
-        Practical, research-informed articles on teaching the alphabet, phonics, and early reading —
-        written for parents and teachers, not search engines.
+        Practical, original articles on teaching the alphabet, phonics, and early reading —
+        written for parents, preschool and kindergarten teachers, and homeschool families.
       </p>
 
       <nav className="mt-6 flex flex-wrap gap-2" aria-label="Blog categories">
@@ -90,6 +90,17 @@ export default function BlogIndexPage() {
           <li><Link href="/kindergarten" className="rounded-block border border-chalkboard/15 px-4 py-2 text-sm font-display font-bold hover:border-crayon-blue">Kindergarten Hub</Link></li>
           <li><Link href="/games" className="rounded-block border border-chalkboard/15 px-4 py-2 text-sm font-display font-bold hover:border-crayon-blue">Games</Link></li>
         </ul>
+      </section>
+
+      <section className="mt-12 border-t border-chalkboard/10 pt-8" aria-labelledby="about-heading">
+        <h2 id="about-heading" className="text-lg font-bold">About This Blog</h2>
+        <p className="mt-2 text-sm text-chalkboard/70 max-w-2xl">
+          Articles are written in-house by the AlphaBes team and updated when a resource they link
+          to changes. We don't publish sponsored posts or copy other sites' content. Read more on{" "}
+          <Link href="/about" className="font-bold underline">our About page</Link>, or{" "}
+          <Link href="/contact" className="font-bold underline">get in touch</Link> if you spot
+          something that needs fixing.
+        </p>
       </section>
     </main>
   );
