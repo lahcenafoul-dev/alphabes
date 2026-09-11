@@ -8,7 +8,7 @@ const BASE_URL = "https://alphabes.com";
 
 const title = "Learn the Alphabet A–Z: Letters, Sounds & Worksheets";
 const description =
-  "Learn the alphabet from A to Z with letter sounds, tracing, phonics, writing practice, fun activities, and free printable worksheets for preschool and kindergarten.";
+  "Learn the alphabet from A to Z with letter sounds, uppercase and lowercase letters, tracing practice, phonics activities, and free printable worksheets for preschool and kindergarten.";
 
 export const metadata: Metadata = {
   title,
@@ -31,6 +31,11 @@ const learnCards: LearnCard[] = [
     title: "Letter Sounds",
     description: "Connect letters with their common sounds.",
     href: "/phonics/letter-sounds",
+  },
+  {
+    title: "Uppercase and Lowercase",
+    description: "Learn that the same letter can appear in uppercase and lowercase forms.",
+    href: "/worksheets/uppercase-letters",
   },
   {
     title: "Letter Tracing",
@@ -58,6 +63,7 @@ const worksheetCategoryLinks: LearnCard[] = [
   { title: "Beginning Sounds", description: "Picture-and-sound matching pages.", href: "/worksheets/beginning-sounds-practice" },
   { title: "Letter Coloring", description: "Coloring pages built around each letter.", href: "/worksheets/letter-coloring" },
   { title: "Letter Writing", description: "Extended handwriting practice.", href: "/worksheets/alphabet-writing-practice" },
+  { title: "Letter Matching", description: "Match each letter to a picture.", href: "/worksheets/letter-picture-matching" },
 ];
 
 const activityLinks = [
@@ -75,12 +81,19 @@ const popularResources = [
   { title: "Phonics Lessons", href: "/phonics" },
   { title: "Beginning Sounds Practice", href: "/phonics/beginning-sounds" },
   { title: "Alphabet Games", href: "/games" },
+  { title: "Alphabet Activities", href: "/activities" },
+  { title: "Blog", href: "/blog" },
   { title: "Letter A Lesson", href: "/alphabet/a" },
 ];
 
 const faqItems = [
   {
-    question: "What age should children start learning the alphabet?",
+    question: "What is the best way to teach the alphabet?",
+    answer:
+      "Combine a few methods rather than relying on one: say each letter's name and sound together, trace its shape, and connect it to a familiar word or picture. Short, repeated practice tends to work better than long, one-time lessons.",
+  },
+  {
+    question: "When should children start learning letters?",
     answer:
       "Many children start recognizing letters around age 2 to 3, with most preschoolers actively learning letter names and shapes between ages 3 and 4.",
   },
@@ -90,24 +103,24 @@ const faqItems = [
       "Most children find uppercase letters easier to recognize first because their shapes are more visually distinct, so many programs introduce uppercase before lowercase.",
   },
   {
-    question: "How can I teach letter sounds?",
+    question: "How can children practice letter sounds?",
     answer:
       "Pair each letter with a simple, familiar word that starts with its sound, like A for apple, and practice saying the sound out loud before naming the letter itself.",
   },
   {
-    question: "How can I help my child practice writing letters?",
+    question: "Are alphabet worksheets useful for preschool?",
     answer:
-      "Start with guided tracing on dotted letter outlines, then move to copying the letter independently once the shape feels familiar. Short, frequent practice works better than long sessions.",
+      "Yes. Worksheets give preschoolers repeated, hands-on practice with letter shapes and beginning sounds, which reinforces what they're learning through games and books.",
   },
   {
-    question: "Are AlphaBes alphabet worksheets free?",
+    question: "How can I help my child practice letters at home?",
     answer:
-      "Yes. AlphaBes offers a wide selection of free printable alphabet worksheets, with additional worksheets and bundles available through the Pro plan.",
+      "Keep it short and low-pressure: point out letters on signs and packaging, trace a letter together, or print one worksheet at a time instead of a whole workbook in one sitting.",
   },
   {
-    question: "Are these alphabet activities suitable for preschool and kindergarten?",
+    question: "What should children learn after recognizing the alphabet?",
     answer:
-      "Yes. The activities and worksheets on this page are designed for preschool and kindergarten-aged children, roughly ages 3 to 6.",
+      "Once letter recognition is solid, most children move into letter sounds and beginning sounds, then start blending those sounds into simple CVC words like cat or dog.",
   },
 ];
 
@@ -172,13 +185,13 @@ export default function AlphabetIndexPage() {
             href="/alphabet/a"
             className="rounded-block bg-crayon-blue text-paper font-display font-bold px-6 py-3 shadow-block hover:shadow-blockHover transition-shadow focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-crayon-blue"
           >
-            Start Learning A–Z
+            Explore Letters A–Z
           </Link>
           <Link
             href="/worksheets"
             className="rounded-block border-2 border-chalkboard/20 px-6 py-3 font-display font-bold hover:border-crayon-blue transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-crayon-blue"
           >
-            Explore Alphabet Worksheets
+            Browse Free Worksheets
           </Link>
         </div>
       </header>
@@ -193,12 +206,14 @@ export default function AlphabetIndexPage() {
           {letters.map((l) => {
             const content = getLetterContent(l)!;
             const word = content.exampleWords[0]?.word ?? content.uppercase;
+            const secondWord = content.exampleWords[1]?.word;
             const emoji = wordEmojis[word] || "📦";
+            const wordsLabel = secondWord ? `${word} and ${secondWord}` : word;
             return (
               <li key={l}>
                 <Link
                   href={`/alphabet/${l}`}
-                  aria-label={`Learn Letter ${content.uppercase}: ${content.uppercase} is for ${word}`}
+                  aria-label={`Learn Letter ${content.uppercase}: ${content.uppercase} is for ${wordsLabel}`}
                   className="group block h-full rounded-block border-2 border-chalkboard/10 bg-paper p-4 text-center shadow-block hover:border-crayon-blue hover:shadow-blockHover transition-colors motion-reduce:transition-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-crayon-blue"
                 >
                   <span
@@ -207,11 +222,12 @@ export default function AlphabetIndexPage() {
                   >
                     {content.uppercase}{content.lowercase}
                   </span>
-                  <span className="mt-3 block text-2xl" role="img" aria-label={`${word}`}>
+                  <span className="mt-3 block text-2xl" role="img" aria-label={wordsLabel}>
                     {emoji}
                   </span>
                   <p className="mt-2 font-display font-bold text-sm">
                     {content.uppercase} is for {word}
+                    {secondWord ? `, ${secondWord}` : ""}
                   </p>
                   <span className="mt-2 inline-block text-xs font-bold text-crayon-blue group-hover:underline">
                     Learn Letter {content.uppercase} →
@@ -285,7 +301,7 @@ export default function AlphabetIndexPage() {
           <li>C → cat</li>
         </ul>
         <Link
-          href="/phonics/letter-sounds"
+          href="/phonics"
           className="mt-6 inline-block rounded-block bg-chalkboard text-paper font-display font-bold px-5 py-2.5 shadow-block hover:shadow-blockHover transition-shadow"
         >
           Explore Phonics Activities
@@ -356,10 +372,10 @@ export default function AlphabetIndexPage() {
       <section className="mt-16 bg-crayon-yellow/15 rounded-block p-8" aria-labelledby="preschool-heading">
         <h2 id="preschool-heading" className="text-3xl font-bold">Alphabet Learning for Preschool</h2>
         <p className="mt-2 text-chalkboard/70 max-w-2xl">
-          Preschool alphabet learning focuses on recognizing letter shapes, telling uppercase and
-          lowercase apart, and building fine motor skills through tracing and coloring. Simple
-          alphabet games and picture-word matching help letter sounds click without formal
-          lessons. Our guide on{" "}
+          Preschool alphabet learning focuses on the basics: recognizing letter shapes, saying
+          letter names out loud, and noticing the beginning sound of a word. Tracing, coloring,
+          and matching letters to their pictures build fine motor skills and letter-sound
+          association without formal lessons. Our guide on{" "}
           <Link href="/blog/how-to-teach-the-alphabet-to-preschoolers" className="font-bold underline">
             how to teach the alphabet to preschoolers
           </Link>{" "}
@@ -377,9 +393,10 @@ export default function AlphabetIndexPage() {
       <section className="mt-16 bg-crayon-purple/10 rounded-block p-8" aria-labelledby="kindergarten-heading">
         <h2 id="kindergarten-heading" className="text-3xl font-bold">Alphabet Learning for Kindergarten</h2>
         <p className="mt-2 text-chalkboard/70 max-w-2xl">
-          By kindergarten, most children are refining letter recognition and moving into writing,
-          phonics, and beginning sounds as they prepare for early reading. Practice usually
-          combines uppercase and lowercase review with more independent writing. See our ideas for{" "}
+          By kindergarten, most children are refining uppercase and lowercase recognition and
+          moving into independent writing, phonics, and beginning sounds as they prepare for early
+          reading. Word-picture matching and short worksheet sets help bridge letter knowledge
+          into reading readiness. See our ideas for{" "}
           <Link href="/blog/alphabet-activities-for-kindergarten" className="font-bold underline">
             alphabet activities for kindergarten
           </Link>{" "}
@@ -419,44 +436,36 @@ export default function AlphabetIndexPage() {
       <section className="mt-16" aria-labelledby="howto-heading">
         <h2 id="howto-heading" className="text-3xl font-bold">How to Help Your Child Learn the Alphabet</h2>
         <ol className="mt-6 space-y-4 list-decimal list-inside text-chalkboard/80">
+          <li>Practice a few letters at a time rather than the whole alphabet at once.</li>
+          <li>Say the letter name and its sound together, out loud, every time.</li>
+          <li>Use pictures and familiar words to make each letter memorable.</li>
           <li>
-            Start with letter recognition —{" "}
-            <Link href="/worksheets/letter-recognition" className="font-bold underline">
-              letter recognition worksheets
-            </Link>{" "}
-            build this first.
-          </li>
-          <li>
-            Practice uppercase and lowercase letters together using{" "}
+            Practice uppercase and lowercase forms together using{" "}
             <Link href="/worksheets/uppercase-letters" className="font-bold underline">
               uppercase &amp; lowercase worksheets
             </Link>
             .
           </li>
           <li>
-            Introduce letter sounds through short, playful{" "}
-            <Link href="/phonics/letter-sounds" className="font-bold underline">
-              letter sounds lessons
-            </Link>
-            .
-          </li>
-          <li>
-            Practice tracing and writing with guided{" "}
+            Use{" "}
             <Link href="/worksheets/letter-tracing" className="font-bold underline">
               letter tracing worksheets
-            </Link>
-            .
+            </Link>{" "}
+            regularly to build handwriting muscle memory.
           </li>
           <li>
-            Reinforce learning with{" "}
+            Mix in{" "}
             <Link href="/games" className="font-bold underline">
               alphabet games
-            </Link>
-            , books, and printable activities from{" "}
+            </Link>{" "}
+            and songs so practice doesn't feel like a chore.
+          </li>
+          <li>
+            Review previously learned letters often — see{" "}
             <Link href="/blog" className="font-bold underline">
               our blog
-            </Link>
-            .
+            </Link>{" "}
+            for more ideas.
           </li>
         </ol>
       </section>
