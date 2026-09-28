@@ -20,7 +20,7 @@ import { getStaticPdfOverride } from "@/lib/static-pdf-overrides";
 import { staticWorksheetCategories, getStaticWorksheetCategory } from "@/lib/static-worksheet-categories";
 import { getStaticWorksheetBySlug, getStaticWorksheetsByCategory, getAllStaticWorksheetSlugs } from "@/lib/static-worksheets-data";
 
-type Props = { params: { category: string } };
+type Props = { params: Promise<{ category: string }> };
 
 const BASE_URL = "https://alphabes.com";
 
@@ -34,7 +34,8 @@ export function generateStaticParams() {
   ];
 }
 
-export function generateMetadata({ params }: Props): Metadata {
+export async function generateMetadata(props: Props): Promise<Metadata> {
+  const params = await props.params;
   const slug = params.category;
 
   const pillar = getWorksheetCategory(slug);
@@ -88,7 +89,8 @@ export function generateMetadata({ params }: Props): Metadata {
   return {};
 }
 
-export default function WorksheetCategoryPage({ params }: Props) {
+export default async function WorksheetCategoryPage(props: Props) {
+  const params = await props.params;
   const slug = params.category;
 
   const pillar = getWorksheetCategory(slug);

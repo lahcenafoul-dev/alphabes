@@ -4,13 +4,14 @@ import type { Metadata } from "next";
 import { phonicsSkills, getPhonicsSkill } from "@/lib/phonics-data";
 import { buildBreadcrumbJsonLd, buildLearningResourceJsonLd } from "@/lib/json-ld";
 
-type Props = { params: { skill: string } };
+type Props = { params: Promise<{ skill: string }> };
 
 export function generateStaticParams() {
   return phonicsSkills.map((s) => ({ skill: s.slug }));
 }
 
-export function generateMetadata({ params }: Props): Metadata {
+export async function generateMetadata(props: Props): Promise<Metadata> {
+  const params = await props.params;
   const skill = getPhonicsSkill(params.skill);
   if (!skill) return {};
   return {
@@ -20,7 +21,8 @@ export function generateMetadata({ params }: Props): Metadata {
   };
 }
 
-export default function PhonicsSkillPage({ params }: Props) {
+export default async function PhonicsSkillPage(props: Props) {
+  const params = await props.params;
   const skill = getPhonicsSkill(params.skill);
   if (!skill) notFound();
 

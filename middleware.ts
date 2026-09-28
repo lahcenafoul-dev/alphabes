@@ -26,7 +26,8 @@ export async function middleware(req: NextRequest) {
     pathname === "/api/register" ||
     pathname === "/api/contact"
   ) {
-    const ip = req.headers.get("x-forwarded-for") ?? "unknown";
+    const ip =
+      req.headers.get("cf-connecting-ip") ?? req.headers.get("x-forwarded-for") ?? "unknown";
     const bucket =
       pathname === "/api/register" ? "register" : pathname === "/api/contact" ? "contact" : "login";
     if (isRateLimited(`${bucket}:${ip}`)) {

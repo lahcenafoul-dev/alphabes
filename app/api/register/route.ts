@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { z } from "zod";
 import { Prisma } from "@prisma/client";
-import { prisma } from "@/lib/prisma";
+import { getPrisma } from "@/lib/prisma";
 
 const schema = z.object({
   name: z.string().min(1).max(100),
@@ -11,6 +11,7 @@ const schema = z.object({
 });
 
 export async function POST(req: NextRequest) {
+  const prisma = getPrisma();
   const json = await req.json().catch(() => null);
   const parsed = schema.safeParse(json);
 

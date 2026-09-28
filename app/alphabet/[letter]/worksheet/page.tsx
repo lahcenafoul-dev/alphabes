@@ -6,14 +6,15 @@ import type { Metadata } from "next";
 import TracingCanvas from "@/components/TracingCanvas";
 import { buildBreadcrumbJsonLd } from "@/lib/json-ld";
 type Props = {
-  params: { letter: string };
+  params: Promise<{ letter: string }>;
 };
 
 export function generateStaticParams() {
   return alphabetData.map((l) => ({ letter: l.letter }));
 }
 
-export function generateMetadata({ params }: Props): Metadata {
+export async function generateMetadata(props: Props): Promise<Metadata> {
+  const params = await props.params;
   const data = getLetterData(params.letter);
   if (!data) return {};
   const { letter, word } = data;
@@ -28,7 +29,8 @@ export function generateMetadata({ params }: Props): Metadata {
   };
 }
 
-export default function LetterWorksheetPage({ params }: Props) {
+export default async function LetterWorksheetPage(props: Props) {
+  const params = await props.params;
   const data = getLetterData(params.letter);
   if (!data) return notFound();
 

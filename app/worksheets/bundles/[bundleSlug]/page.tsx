@@ -6,7 +6,7 @@ import { worksheets } from "@/lib/worksheets-data";
 import { buildBreadcrumbJsonLd } from "@/lib/json-ld";
 import BundleDownloadButton from "@/components/worksheets/BundleDownloadButton";
 
-type Props = { params: { bundleSlug: string } };
+type Props = { params: Promise<{ bundleSlug: string }> };
 
 const BASE_URL = "https://alphabes.com";
 
@@ -14,7 +14,8 @@ export function generateStaticParams() {
   return getAllBundleSlugs().map((bundleSlug) => ({ bundleSlug }));
 }
 
-export function generateMetadata({ params }: Props): Metadata {
+export async function generateMetadata(props: Props): Promise<Metadata> {
+  const params = await props.params;
   const bundle = getBundleBySlug(params.bundleSlug);
   if (!bundle) return {};
   return {
@@ -24,7 +25,8 @@ export function generateMetadata({ params }: Props): Metadata {
   };
 }
 
-export default function BundleDetailPage({ params }: Props) {
+export default async function BundleDetailPage(props: Props) {
+  const params = await props.params;
   const bundle = getBundleBySlug(params.bundleSlug);
   if (!bundle) notFound();
 

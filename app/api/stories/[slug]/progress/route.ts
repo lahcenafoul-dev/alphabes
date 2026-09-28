@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { z } from "zod";
 import { authOptions } from "@/lib/auth";
-import { prisma } from "@/lib/prisma";
+import { getPrisma } from "@/lib/prisma";
 
 const schema = z.object({
   childId: z.string().min(1),
@@ -12,8 +12,10 @@ const schema = z.object({
 
 export async function POST(
   req: NextRequest,
-  { params }: { params: { slug: string } }
+  props: { params: Promise<{ slug: string }> }
 ) {
+  const prisma = getPrisma();
+  const params = await props.params;
   const session = await getServerSession(authOptions);
   if (!session?.user?.email) {
     return NextResponse.json({ error: "Please log in first." }, { status: 401 });
@@ -45,9 +47,11 @@ export async function POST(
         storyId: story.id,
       },
     },
+    // The reader fires a save per page without awaiting, so saves can land
+    // out of order; never let a late page save undo a finished story.
     update: {
       lastPageRead: parsed.data.lastPageRead,
-      completed: parsed.data.completed,
+      ...(parsed.data.completed && { completed: true }),
     },
     create: {
       childId: parsed.data.childId,

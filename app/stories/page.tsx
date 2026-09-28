@@ -1,11 +1,16 @@
 import Link from "next/link";
-import { prisma } from "@/lib/prisma";
+import { getPrisma } from "@/lib/prisma";
 import StoryIllustration from "@/components/StoryIllustration";
 export const metadata = {
   title: "Story Time",
 };
 
+// Rendered per request so the build never needs the database and new
+// stories show up without a redeploy.
+export const dynamic = "force-dynamic";
+
 export default async function StoriesPage() {
+  const prisma = getPrisma();
   const stories = await prisma.story.findMany({
     orderBy: { order: "asc" },
   });

@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { z } from "zod";
 import { authOptions } from "@/lib/auth";
-import { prisma } from "@/lib/prisma";
+import { getPrisma } from "@/lib/prisma";
 
 const updateSchema = z.object({
   firstName: z.string().min(1).max(50).optional(),
@@ -10,6 +10,7 @@ const updateSchema = z.object({
 });
 
 async function getOwnedChild(childId: string, email: string) {
+  const prisma = getPrisma();
   const child = await prisma.childProfile.findUnique({
     where: { id: childId },
     include: { parent: true },
@@ -20,8 +21,10 @@ async function getOwnedChild(childId: string, email: string) {
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  props: { params: Promise<{ id: string }> }
 ) {
+  const prisma = getPrisma();
+  const params = await props.params;
   const session = await getServerSession(authOptions);
   if (!session?.user?.email) {
     return NextResponse.json({ error: "Please log in first." }, { status: 401 });
@@ -45,8 +48,10 @@ export async function GET(
 
 export async function PATCH(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  props: { params: Promise<{ id: string }> }
 ) {
+  const prisma = getPrisma();
+  const params = await props.params;
   const session = await getServerSession(authOptions);
   if (!session?.user?.email) {
     return NextResponse.json({ error: "Please log in first." }, { status: 401 });
@@ -73,8 +78,10 @@ export async function PATCH(
 
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  props: { params: Promise<{ id: string }> }
 ) {
+  const prisma = getPrisma();
+  const params = await props.params;
   const session = await getServerSession(authOptions);
   if (!session?.user?.email) {
     return NextResponse.json({ error: "Please log in first." }, { status: 401 });

@@ -10,7 +10,7 @@ import AlphabetQuizGame from "@/components/games/AlphabetQuizGame";
 import ClientOnly from "@/components/games/ClientOnly";
 import { buildBreadcrumbJsonLd } from "@/lib/json-ld";
 
-type Props = { params: { slug: string } };
+type Props = { params: Promise<{ slug: string }> };
 
 const BASE_URL = "https://alphabes.com";
 
@@ -18,7 +18,8 @@ export function generateStaticParams() {
   return games.map((g) => ({ slug: g.slug }));
 }
 
-export function generateMetadata({ params }: Props): Metadata {
+export async function generateMetadata(props: Props): Promise<Metadata> {
+  const params = await props.params;
   const game = getGame(params.slug);
   if (!game) return {};
   return {
@@ -28,7 +29,8 @@ export function generateMetadata({ params }: Props): Metadata {
   };
 }
 
-export default function GamePage({ params }: Props) {
+export default async function GamePage(props: Props) {
+  const params = await props.params;
   const game = getGame(params.slug);
   if (!game) notFound();
 

@@ -1,19 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
-import Stripe from "stripe";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import { prisma } from "@/lib/prisma";
-
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
-  apiVersion: "2024-06-20",
-});
-
-const ALLOWED_PRICE_IDS = new Set([
-  process.env.STRIPE_PRICE_PRO_MONTHLY,
-  process.env.STRIPE_PRICE_PRO_ANNUAL,
-]);
+import { getPrisma } from "@/lib/prisma";
+import { getStripe } from "@/lib/stripe";
 
 export async function POST(req: NextRequest) {
+  const prisma = getPrisma();
   const session = await getServerSession(authOptions);
   if (!session?.user) {
     return NextResponse.redirect(new URL("/login?next=/pricing", req.url));
@@ -24,6 +16,10 @@ export async function POST(req: NextRequest) {
 
   // Never trust a client-submitted Stripe price ID directly -- only allow
   // the price IDs configured server-side.
+  const ALLOWED_PRICE_IDS = new Set([
+    process.env.STRIPE_PRICE_PRO_MONTHLY,
+    process.env.STRIPE_PRICE_PRO_ANNUAL,
+  ]);
   if (typeof priceId !== "string" || !ALLOWED_PRICE_IDS.has(priceId)) {
     return NextResponse.json({ error: "Invalid plan selected." }, { status: 400 });
   }
@@ -33,6 +29,7 @@ export async function POST(req: NextRequest) {
     include: { subscription: true },
   });
 
+  const stripe = getStripe();
   let customerId = user.subscription?.stripeCustomerId;
   if (!customerId) {
     const customer = await stripe.customers.create({

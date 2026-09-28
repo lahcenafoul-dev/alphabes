@@ -7,13 +7,14 @@ import { wordEmojis } from "@/lib/wordEmojis";
 import { buildBreadcrumbJsonLd } from "@/lib/json-ld";
 import { getWorksheetsByLetter } from "@/lib/worksheets-data";
 import { getCursiveWorksheetForLetter } from "@/lib/static-worksheets-data";
-type Props = { params: { letter: string } };
+type Props = { params: Promise<{ letter: string }> };
 
 export function generateStaticParams() {
   return getAllLetterSlugs().map((letter) => ({ letter }));
 }
 
-export function generateMetadata({ params }: Props): Metadata {
+export async function generateMetadata(props: Props): Promise<Metadata> {
+  const params = await props.params;
   const content = getLetterContent(params.letter);
   if (!content) return {};
   const title = `Letter ${content.uppercase} — Sound, Words & Activities`;
@@ -33,7 +34,8 @@ function neighbor(slug: string, dir: -1 | 1): string | null {
   return all[nextIdx] ?? null;
 }
 
-export default function LetterPage({ params }: Props) {
+export default async function LetterPage(props: Props) {
+  const params = await props.params;
   const content = getLetterContent(params.letter);
   if (!content) notFound();
 

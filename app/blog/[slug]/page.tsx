@@ -16,7 +16,7 @@ import RelatedArticles from "@/components/blog/RelatedArticles";
 
 const BASE_URL = "https://alphabes.com";
 
-type Props = { params: { slug: string } };
+type Props = { params: Promise<{ slug: string }> };
 
 export function generateStaticParams() {
   return [
@@ -25,7 +25,8 @@ export function generateStaticParams() {
   ];
 }
 
-export function generateMetadata({ params }: Props): Metadata {
+export async function generateMetadata(props: Props): Promise<Metadata> {
+  const params = await props.params;
   const slug = params.slug;
 
   const category = getBlogCategory(slug);
@@ -56,7 +57,8 @@ export function generateMetadata({ params }: Props): Metadata {
   return {};
 }
 
-export default function BlogSlugPage({ params }: Props) {
+export default async function BlogSlugPage(props: Props) {
+  const params = await props.params;
   const slug = params.slug;
 
   const category = getBlogCategory(slug);

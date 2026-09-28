@@ -2,6 +2,9 @@
 const nextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
+  // Keep Prisma out of the bundler so its Workers (WASM) build is picked at
+  // runtime by OpenNext.
+  serverExternalPackages: ["@prisma/client", ".prisma/client"],
   images: {
     formats: ["image/avif", "image/webp"],
     remotePatterns: [

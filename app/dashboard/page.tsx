@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import { prisma } from "@/lib/prisma";
+import { getPrisma } from "@/lib/prisma";
 import AddChildForm from "./add-child-form";
 import Link from "next/link";
 export const metadata: Metadata = {
@@ -10,6 +10,7 @@ export const metadata: Metadata = {
 };
 
 export default async function DashboardPage() {
+  const prisma = getPrisma();
   const session = await getServerSession(authOptions);
   const email = session?.user?.email;
 

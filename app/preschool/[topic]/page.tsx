@@ -6,13 +6,14 @@ import { buildBreadcrumbJsonLd, buildLearningResourceJsonLd } from "@/lib/json-l
 
 const BASE_URL = "https://alphabes.com";
 
-type Props = { params: { topic: string } };
+type Props = { params: Promise<{ topic: string }> };
 
 export function generateStaticParams() {
   return preschoolTopics.map((t) => ({ topic: t.slug }));
 }
 
-export function generateMetadata({ params }: Props): Metadata {
+export async function generateMetadata(props: Props): Promise<Metadata> {
+  const params = await props.params;
   const topic = getPreschoolTopic(params.topic);
   if (!topic) return {};
   return {
@@ -22,7 +23,8 @@ export function generateMetadata({ params }: Props): Metadata {
   };
 }
 
-export default function PreschoolTopicPage({ params }: Props) {
+export default async function PreschoolTopicPage(props: Props) {
+  const params = await props.params;
   const topic = getPreschoolTopic(params.topic);
   if (!topic) notFound();
 

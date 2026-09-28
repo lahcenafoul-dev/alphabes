@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { z } from "zod";
 import { authOptions } from "@/lib/auth";
-import { prisma } from "@/lib/prisma";
+import { getPrisma } from "@/lib/prisma";
 
 const schema = z.object({
   firstName: z.string().min(1).max(50),
@@ -10,6 +10,7 @@ const schema = z.object({
 });
 
 export async function POST(req: NextRequest) {
+  const prisma = getPrisma();
   const session = await getServerSession(authOptions);
   if (!session?.user?.email) {
     return NextResponse.json({ error: "Please log in first." }, { status: 401 });

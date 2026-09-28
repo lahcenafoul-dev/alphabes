@@ -1,18 +1,15 @@
 import { notFound } from "next/navigation";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import { prisma } from "@/lib/prisma";
+import { getPrisma } from "@/lib/prisma";
 import Link from "next/link";
 import StoryReader from "./story-reader";
 
-type Props = { params: { slug: string } };
+type Props = { params: Promise<{ slug: string }> };
 
-export async function generateStaticParams() {
-  const stories = await prisma.story.findMany({ select: { slug: true } });
-  return stories.map((s) => ({ slug: s.slug }));
-}
-
-export default async function StoryPage({ params }: Props) {
+export default async function StoryPage(props: Props) {
+  const prisma = getPrisma();
+  const params = await props.params;
   const story = await prisma.story.findUnique({
     where: { slug: params.slug },
     include: { pages: { orderBy: { pageNumber: "asc" } } },

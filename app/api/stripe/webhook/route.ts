@@ -1,15 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
-import { prisma } from "@/lib/prisma";
-
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
-  apiVersion: "2024-06-20",
-});
-
-// Stripe webhooks must read the raw body to verify the signature.
-export const runtime = "nodejs";
+import { getPrisma } from "@/lib/prisma";
+import { getStripe } from "@/lib/stripe";
 
 export async function POST(req: NextRequest) {
+  const prisma = getPrisma();
+  // Stripe webhooks must read the raw body to verify the signature.
   const body = await req.text();
   const signature = req.headers.get("stripe-signature");
 
@@ -19,10 +15,13 @@ export async function POST(req: NextRequest) {
 
   let event: Stripe.Event;
   try {
-    event = stripe.webhooks.constructEvent(
+    // Async variant: Workers only has Web Crypto, which is async.
+    event = await getStripe().webhooks.constructEventAsync(
       body,
       signature,
-      process.env.STRIPE_WEBHOOK_SECRET as string
+      process.env.STRIPE_WEBHOOK_SECRET as string,
+      undefined,
+      Stripe.createSubtleCryptoProvider()
     );
   } catch (err) {
     return NextResponse.json({ error: "Invalid signature" }, { status: 400 });
