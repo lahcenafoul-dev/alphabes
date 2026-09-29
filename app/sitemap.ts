@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { getAllLetterSlugs } from "@/lib/letters-data";
+import { ACCENTS_SLUG, frenchLetters, isAccentLetter } from "@/lib/letters-fr";
 import { phonicsSkills } from "@/lib/phonics-data";
 import { worksheetCategories } from "@/lib/worksheet-categories";
 import { WORKSHEET_TYPES } from "@/lib/worksheet-types";
@@ -15,6 +16,7 @@ import {
   FRENCH_PATHNAMES,
   NOINDEX_PATHNAMES,
   SITE_URL,
+  absoluteUrl,
   counterpartPath,
   matchPath,
 } from "@/lib/i18n/routes";
@@ -177,7 +179,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...(await getStoryRoutes()),
   ];
 
-  return withFrench(englishEntries);
+  // Pages with no English twin: the letters with accents and the accents page.
+  const frenchOnlyEntries: MetadataRoute.Sitemap = [
+    ...frenchLetters.filter(isAccentLetter).map((l) => l.slug),
+    ACCENTS_SLUG,
+  ].map((letter) => ({
+    url: absoluteUrl("fr", "/alphabet/[letter]", { letter }),
+    lastModified: new Date(),
+    changeFrequency: "monthly" as const,
+    priority: 0.8,
+  }));
+
+  return [...withFrench(englishEntries), ...frenchOnlyEntries];
 }
 
 // Every English page that also exists in French gets hreflang alternates,

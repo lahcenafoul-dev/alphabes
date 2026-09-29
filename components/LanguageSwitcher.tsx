@@ -8,6 +8,7 @@ import {
   LOCALE_COOKIE,
   LOCALE_COOKIE_MAX_AGE,
   counterpartPath,
+  isFrenchOnly,
   localizedPath,
   matchPath,
 } from "@/lib/i18n/routes";
@@ -37,6 +38,8 @@ export default function LanguageSwitcher() {
       for (const l of routing.locales) {
         const target = counterpartPath(match, l);
         if (target) next[l] = target;
+        // French-only letters (é, ç…): English readers land on the alphabet.
+        else if (l !== match.locale && isFrenchOnly(match.pathname, match.params)) next[l] = localizedPath(l, "/alphabet");
       }
     }
     setHrefs(next);

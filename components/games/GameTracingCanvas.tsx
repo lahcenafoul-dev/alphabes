@@ -8,13 +8,13 @@
 // component to respect case would risk changing the existing
 // /alphabet/[letter]/worksheet page's behavior, so this game gets its own
 // copy instead, correctly respecting whatever exact string it's given.
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 
 export default function GameTracingCanvas({ letter }: { letter: string }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const isDrawing = useRef(false);
 
-  const drawGuideLetter = (ctx: CanvasRenderingContext2D, w: number, h: number) => {
+  const drawGuideLetter = useCallback((ctx: CanvasRenderingContext2D, w: number, h: number) => {
     ctx.clearRect(0, 0, w, h);
     ctx.font = `bold ${h * 0.7}px sans-serif`;
     ctx.textAlign = "center";
@@ -24,7 +24,7 @@ export default function GameTracingCanvas({ letter }: { letter: string }) {
     ctx.setLineDash([4, 4]);
     ctx.strokeText(letter, w / 2, h / 2);
     ctx.setLineDash([]);
-  };
+  }, [letter]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -43,7 +43,7 @@ export default function GameTracingCanvas({ letter }: { letter: string }) {
     resize();
     window.addEventListener("resize", resize);
     return () => window.removeEventListener("resize", resize);
-  }, [letter]);
+  }, [drawGuideLetter]);
 
   const getPos = (e: React.MouseEvent | React.TouchEvent, canvas: HTMLCanvasElement) => {
     const rect = canvas.getBoundingClientRect();

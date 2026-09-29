@@ -19,10 +19,14 @@ export const LOCALE_HEADER = "x-alphabes-locale";
 export const FRENCH_PATHNAMES: ReadonlySet<AppPathname> = new Set<AppPathname>([
   "/",
   "/about",
+  "/alphabet",
+  "/alphabet/[letter]",
+  "/alphabet/[letter]/worksheet",
   "/contact",
   "/cookies",
   "/dashboard",
   "/dashboard/[id]",
+  "/flashcards",
   "/login",
   "/pricing",
   "/privacy-policy",
@@ -43,6 +47,20 @@ export const NOINDEX_PATHNAMES: ReadonlySet<AppPathname> = new Set<AppPathname>(
 const PARAMS_DIFFER: ReadonlySet<AppPathname> = new Set<AppPathname>(["/stories/[slug]"]);
 
 export type RouteParams = Record<string, string>;
+
+// Pages that exist only in French: the letters with accents and the accents
+// page (lib/letters-fr.ts, checked by tests/i18n/letters-fr.test.ts). They
+// get no English hreflang, and the switcher can't map them to English.
+const FRENCH_ONLY_LETTERS = ["e-accent-aigu", "e-accent-grave", "e-accent-circonflexe", "c-cedille"];
+const FRENCH_ONLY_PARAMS: Partial<Record<AppPathname, { key: string; values: ReadonlySet<string> }>> = {
+  "/alphabet/[letter]": { key: "letter", values: new Set([...FRENCH_ONLY_LETTERS, "accents"]) },
+  "/alphabet/[letter]/worksheet": { key: "letter", values: new Set(FRENCH_ONLY_LETTERS) },
+};
+
+export function isFrenchOnly(pathname: AppPathname, params: RouteParams): boolean {
+  const only = FRENCH_ONLY_PARAMS[pathname];
+  return !!only && only.values.has(params[only.key]);
+}
 
 export function isLocale(value: unknown): value is Locale {
   return typeof value === "string" && (routing.locales as readonly string[]).includes(value);
@@ -86,7 +104,7 @@ export function alternatesFor(
   otherParams?: Partial<Record<Locale, RouteParams>>,
 ): NonNullable<Metadata["alternates"]> {
   const canonical = absoluteUrl(locale, pathname, params);
-  if (!FRENCH_PATHNAMES.has(pathname)) return { canonical };
+  if (!FRENCH_PATHNAMES.has(pathname) || isFrenchOnly(pathname, params)) return { canonical };
   const paramsFor = (l: Locale) => (l === locale ? params : otherParams?.[l] ?? (PARAMS_DIFFER.has(pathname) ? null : params));
   const en = paramsFor("en");
   const fr = paramsFor("fr");
@@ -152,6 +170,7 @@ export function counterpartPath(match: MatchedPath, target: Locale): string | nu
   if (match.locale === target) return null;
   if (!isAvailable(target, match.pathname) || !isAvailable(match.locale, match.pathname)) return null;
   if (PARAMS_DIFFER.has(match.pathname)) return null;
+  if (target !== "fr" && isFrenchOnly(match.pathname, match.params)) return null;
   return localizedPath(target, match.pathname, match.params);
 }
 

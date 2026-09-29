@@ -1,6 +1,12 @@
 // Usage: node frcheck.mjs [baseUrl] -- checks the French pages against a running server.
 const base = process.argv[2] ?? "http://localhost:3100";
-const pages = ["/fr", "/fr/tarifs", "/fr/a-propos", "/fr/contact", "/fr/confidentialite", "/fr/conditions-utilisation", "/fr/cookies", "/fr/connexion", "/fr/inscription"];
+// Phase 2: the alphabet (26 letters + é è ê ç), the accents page and the imagier.
+const letters = [..."abcdefghijklmnopqrstuvwxyz", "e-accent-aigu", "e-accent-grave", "e-accent-circonflexe", "c-cedille"];
+const pages = [
+  "/fr", "/fr/tarifs", "/fr/a-propos", "/fr/contact", "/fr/confidentialite", "/fr/conditions-utilisation", "/fr/cookies", "/fr/connexion", "/fr/inscription",
+  "/fr/alphabet", "/fr/alphabet/accents", "/fr/imagier",
+  ...letters.flatMap((l) => [`/fr/alphabet/${l}`, `/fr/alphabet/${l}/fiche`]),
+];
 const decode = (s) => s.replace(/&amp;/g, "&").replace(/&#x27;|&#39;/g, "'").replace(/&quot;/g, '"').replace(/&nbsp;/g, " ");
 // English words that shouldn't appear in French page text.
 const ENGLISH = /\b(the|and|your|with|free|worksheets?|letters?|sounds?|children|parents?|sign up|log in|learn|games?|stories|about us|privacy|terms|cookie policy)\b/i;
@@ -43,7 +49,7 @@ for (const l of [...links].sort()) {
 
 console.log("\nRouting rules:");
 const rules = [
-  ["/fr/alphabet", {}, 404, null, "French page not written yet"],
+  ["/fr/jeux", {}, 404, null, "French page not written yet"],
   ["/fr/xyz", {}, 404, null, "unknown French URL"],
   ["/does-not-exist", {}, 404, null, "unknown English URL"],
   ["/en/pricing", {}, 307, "/pricing", "/en prefix removed"],
@@ -51,7 +57,9 @@ const rules = [
   ["/fr/tableau-de-bord", {}, 307, "/fr/connexion?next=%2Ffr%2Ftableau-de-bord", "French dashboard needs login"],
   ["/dashboard", {}, 307, "/login?next=%2Fdashboard", "English dashboard needs login"],
   ["/pricing", { headers: { cookie: "NEXT_LOCALE=fr" } }, 307, "/fr/tarifs", "remembered French choice"],
-  ["/alphabet", { headers: { cookie: "NEXT_LOCALE=fr" } }, 200, null, "no French twin yet: stay"],
+  ["/games", { headers: { cookie: "NEXT_LOCALE=fr" } }, 200, null, "no French twin yet: stay"],
+  ["/alphabet/c-cedille", {}, 404, null, "French-only letter under an English URL"],
+  ["/fr/alphabet/c-cedille", { headers: { cookie: "NEXT_LOCALE=en" } }, 200, null, "French-only letter, English chosen: stay"],
   ["/fr/tarifs", { headers: { cookie: "NEXT_LOCALE=en" } }, 307, "/pricing", "remembered English choice"],
   ["/pricing", { headers: { "accept-language": "fr-FR,fr;q=0.9" } }, 200, null, "no Accept-Language redirect"],
 ];

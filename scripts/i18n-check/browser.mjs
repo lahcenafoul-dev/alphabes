@@ -1,6 +1,6 @@
 // Usage (from the repo root): node scripts/i18n-check/browser.mjs [baseUrl] [shotsDir]
 // Real-browser checks of the language switcher, French forms and mobile layout.
-import { mkdirSync } from "fs";
+import { mkdirSync, readFileSync } from "fs";
 import { chromium } from "@playwright/test";
 
 const base = process.argv[2] ?? "http://localhost:3100";
@@ -35,9 +35,9 @@ console.log("Language switcher (desktop)");
   await page.waitForLoadState("networkidle");
   check((await switcherHref(page, "fr")) === "/fr/a-propos", "FR link on /about points to /fr/a-propos");
 
-  await page.goto(base + "/alphabet");
+  await page.goto(base + "/games");
   await page.waitForLoadState("networkidle");
-  check((await switcherHref(page, "fr")) === "/fr", "FR link on /alphabet (no French yet) falls back to /fr");
+  check((await switcherHref(page, "fr")) === "/fr", "FR link on /games (no French yet) falls back to /fr");
 
   await page.goto(base + "/pricing");
   await page.waitForLoadState("networkidle");
@@ -49,8 +49,8 @@ console.log("Language switcher (desktop)");
 
   await page.goto(base + "/contact");
   check(page.url().endsWith("/fr/contact"), "with the cookie, /contact redirects to /fr/contact");
-  await page.goto(base + "/alphabet");
-  check(page.url().endsWith("/alphabet"), "with the cookie, /alphabet (no French yet) stays English");
+  await page.goto(base + "/games");
+  check(new URL(page.url()).pathname === "/games", "with the cookie, /games (no French yet) stays English");
 
   await page.goto(base + "/fr/tarifs");
   await page.waitForLoadState("networkidle");
@@ -125,6 +125,108 @@ console.log("Mobile (390px)");
   await page.screenshot({ path: `${shots}/en-mobile.png` });
   check(errors.length === 0, `no console/page errors${errors.length ? ": " + errors.slice(0, 3).join(" | ") : ""}`);
   await context.close();
+}
+
+console.log("Alphabet (phase 2)");
+{
+  // Fake voices: the device has only the voices listed; speech is recorded, not played.
+  const fakeVoices = (langs) => `(() => {
+    const voices = ${JSON.stringify(langs)}.map((lang) => ({ lang, name: "Voix " + lang, localService: true, default: false, voiceURI: lang }));
+    window.__spoken = [];
+    window.SpeechSynthesisUtterance = class { constructor(text) { this.text = text; } };
+    Object.defineProperty(window, "speechSynthesis", { value: {
+      getVoices: () => voices, cancel() {}, speak: (u) => window.__spoken.push({ text: u.text, lang: u.lang }),
+      addEventListener() {}, removeEventListener() {},
+    } });
+  })()`;
+
+  const { context, page, errors } = await newPage();
+  await page.goto(base + "/alphabet/b");
+  await page.waitForLoadState("networkidle");
+  check((await switcherHref(page, "fr")) === "/fr/alphabet/b", "FR link on /alphabet/b points to /fr/alphabet/b");
+  await page.goto(base + "/fr/alphabet/c-cedille");
+  await page.waitForLoadState("networkidle");
+  check((await switcherHref(page, "en")) === "/alphabet", "EN link on a French-only letter goes to /alphabet");
+  await page.goto(base + "/fr/imagier");
+  await page.waitForLoadState("networkidle");
+  check((await switcherHref(page, "en")) === "/flashcards", "EN link on /fr/imagier points to /flashcards");
+
+  // Tracing: draw a stroke, switch to cursive.
+  await page.goto(base + "/fr/alphabet/e-accent-aigu/fiche");
+  await page.waitForLoadState("networkidle");
+  const canvas = page.getByLabel("Zone de tracé de la lettre É");
+  const box = await canvas.boundingBox();
+  await page.mouse.move(box.x + 100, box.y + 100);
+  await page.mouse.down();
+  await page.mouse.move(box.x + 300, box.y + 150, { steps: 10 });
+  await page.mouse.up();
+  const inked = await canvas.evaluate((c) => {
+    const d = c.getContext("2d").getImageData(0, 0, c.width, c.height).data;
+    for (let i = 0; i < d.length; i += 4) if (d[i] === 37 && d[i + 1] === 99 && d[i + 2] === 235) return true;
+    return false;
+  });
+  check(inked, "drawing on the canvas leaves blue ink");
+  await page.screenshot({ path: `${shots}/fr-fiche-script.png`, fullPage: true });
+  await page.getByRole("button", { name: "Cursive" }).click();
+  check((await page.getByRole("button", { name: "Cursive" }).getAttribute("aria-pressed")) === "true", "cursive toggle is pressed");
+  const fontLoaded = () => [...document.fonts].some((f) => /Playwrite/.test(f.family) && f.status === "loaded");
+  await page.waitForFunction(fontLoaded, null, { timeout: 15000 }).catch(() => {});
+  check(await page.evaluate(fontLoaded), "cursive font (Playwrite FR Trad) loaded");
+  await page.waitForTimeout(300);
+  await canvas.screenshot({ path: `${shots}/fr-fiche-cursive-canvas.png` });
+
+  // French PDF download (jsPDF writes text uncompressed, é as \351 in WinAnsi).
+  const [download] = await Promise.all([page.waitForEvent("download"), page.getByRole("button", { name: /Télécharger la fiche/ }).click()]);
+  const pdfPath = `${shots}/${download.suggestedFilename()}`;
+  await download.saveAs(pdfPath);
+  const pdf = readFileSync(pdfPath, "latin1");
+  check(download.suggestedFilename() === "fiche-lettre-e-accent-aigu.pdf", `PDF file name (${download.suggestedFilename()})`);
+  check(pdf.includes("Fiche de trac") && /La lettre (É é|\\311 \\351)/.test(pdf), "PDF has the French header and the title with É é");
+  check(errors.length === 0, `no console/page errors${errors.length ? ": " + errors.slice(0, 3).join(" | ") : ""}`);
+  await context.close();
+
+  // Speech with a French voice: French text, fr-FR voice.
+  {
+    const { context, page } = await newPage();
+    await context.addInitScript(fakeVoices(["en-US", "fr-CA", "fr-FR"]));
+    await page.goto(base + "/fr/alphabet/b");
+    await page.waitForLoadState("networkidle");
+    await page.getByRole("button", { name: "🔊 Le son" }).click();
+    await page.getByRole("button", { name: "Écouter : une banane" }).click();
+    const spoken = await page.evaluate(() => window.__spoken);
+    check(spoken[0]?.text === "ba, bo, bi. Comme dans ballon, banane." && spoken[0]?.lang === "fr-FR", `sound read in French (${JSON.stringify(spoken[0])})`);
+    check(spoken[1]?.text === "une banane", "word read with its article");
+    check(!(await page.getByText("Aucune voix française").isVisible()), "no missing-voice message when a French voice exists");
+    await context.close();
+  }
+  // Speech without a French voice: nothing said, French help shown.
+  {
+    const { context, page } = await newPage({ width: 390, height: 844 });
+    await context.addInitScript(fakeVoices(["en-US", "en-GB"]));
+    await page.goto(base + "/fr/alphabet/b");
+    await page.waitForLoadState("networkidle");
+    await page.getByRole("button", { name: "🔊 Le nom de la lettre" }).click();
+    const notice = page.getByText("Aucune voix française n'est installée sur cet appareil.");
+    check(await notice.isVisible(), "missing-voice message appears");
+    check((await page.evaluate(() => window.__spoken.length)) === 0, "an English voice never reads French");
+    await page.screenshot({ path: `${shots}/fr-no-voice.png` });
+    await page.getByRole("button", { name: "Fermer", exact: true }).click();
+    check(!(await notice.isVisible()), "missing-voice message closes");
+    await context.close();
+  }
+  // Layout at 390px.
+  {
+    const { context, page, errors } = await newPage({ width: 390, height: 844 });
+    for (const p of ["/fr/alphabet", "/fr/alphabet/e", "/fr/alphabet/e/fiche", "/fr/alphabet/accents", "/fr/imagier", "/alphabet/a/worksheet"]) {
+      await page.goto(base + p);
+      await page.waitForLoadState("networkidle");
+      const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+      check(overflow <= 0, `${p}: no horizontal scroll (overflow ${overflow}px)`);
+      await page.screenshot({ path: `${shots}/m${p.replaceAll("/", "_")}.png`, fullPage: true });
+    }
+    check(errors.length === 0, `no console/page errors${errors.length ? ": " + errors.slice(0, 3).join(" | ") : ""}`);
+    await context.close();
+  }
 }
 
 await browser.close();

@@ -69,8 +69,8 @@ See CLAUDE.md, "Languages", for the rules. In short:
 | Phase | Content | Status |
 |---|---|---|
 | 0 | Baseline snapshot of all English routes; ESLint config + existing lint fixes | **Done** |
-| 1 | next-intl routing, header + EN/FR switcher, cookie, hreflang + sitemap, French UI (home, about, pricing, contact, login, register, dashboard, legal), API error codes, French 404 | **Done**, pushed. The owner is testing it locally. |
-| 2 | Alphabet: French letter data (26 + é è ê ç), "Les accents" page, alphabet chart, letter pages, flashcards (`/fr/imagier`), `speak()` with French voice + no-voice message, tracing canvas with script/cursive toggle | **Next.** Don't start until the owner says so. |
+| 1 | next-intl routing, header + EN/FR switcher, cookie, hreflang + sitemap, French UI (home, about, pricing, contact, login, register, dashboard, legal), API error codes, French 404 | **Done**, pushed. |
+| 2 | Alphabet: French letter data (26 + é è ê ç), "Les accents" page, alphabet chart, letter pages, flashcards (`/fr/imagier`), `speak()` with French voice + no-voice message, tracing canvas with script/cursive toggle | **Done**, committed, not pushed: waiting for the owner's OK. |
 | 3 | Sons (phonics): ~18 skill pages + index, speakable examples | To do |
 | 4 | Worksheets: French jsPDF templates and text, cursive font (license rule) + Seyès lines, French static sets (nombres, formes, couleurs, mots-outils, syllabes), bundles (`/fr/fiches/packs`), pre-rendered French PDFs | To do |
 | 5 | Stories: DB migration, 8 original French stories (same illustration scenes), story list filtered by language, reader in French, audio via Google Cloud TTS (cost estimate first) | To do |
@@ -92,7 +92,8 @@ Slugs stay globally unique; fill in `StoryPage.audioUrl`. Apply to the Neon `dev
 - `/stories/[slug]` and `/worksheets/[category]` (and bundles) will have French slugs that differ from English: add them to `PARAMS_DIFFER` handling / `otherParams` in `alternatesFor`, make `lib/i18n/known-params.ts` locale-aware, and make `storyExists` check the story's language.
 - Each dynamic page's `generateStaticParams` receives `{ params: { locale } }`: return the French list for `fr` once it exists. Don't return `[]` for one locale (Next then prebuilds nothing for the route); the middleware already hides unwritten French pages.
 - French home page (`app/[locale]/home-fr.tsx`): the "Apprendre les sons" tiles link to `/phonics` until phase 3 gives them real slugs; the worksheet links point to `/worksheets` until phase 4, which should also add a "Fiches populaires" section and accent letter blocks (é è ê ç).
-- The tracing canvases (`components/TracingCanvas.tsx`, `components/games/GameTracingCanvas.tsx`) have the only remaining lint warnings; phase 2 rewrites them.
+- Phase 2 uses **Playwrite FR Trad** (Google Fonts, SIL OFL 1.1, commercial use allowed) for cursive, in `lib/fonts/cursive.ts`. Phase 4's jsPDF templates need the same font embedded (TTF) for cursive worksheets.
+- French-only letters (é è ê ç) have no English twin: the switcher sends them to `/alphabet`, and `/alphabet/c-cedille` etc. 404.
 
 ## Testing
 

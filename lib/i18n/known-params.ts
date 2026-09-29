@@ -12,6 +12,7 @@ import { getBlogCategory, getBlogPost } from "@/lib/blog-data";
 import { getGame } from "@/lib/games-data";
 import { getKindergartenTopic } from "@/lib/kindergarten-data";
 import { getLetterContent } from "@/lib/letters-data";
+import { ACCENTS_SLUG, frenchLetterParams } from "@/lib/letters-fr";
 import { getPhonicsSkill } from "@/lib/phonics-data";
 import { getPreschoolTopic } from "@/lib/preschool-data";
 import { getStaticWorksheetCategory } from "@/lib/static-worksheet-categories";
@@ -24,9 +25,14 @@ import type { RouteParams } from "./routes";
 
 type Validator = (params: RouteParams, locale: Locale) => boolean;
 
+// French letters: the 26 (as "a" or "A"), then é, è, ê, ç by slug.
+const FRENCH_LETTERS = new Set(frenchLetterParams());
+
 const VALIDATORS: Partial<Record<AppPathname, Validator>> = {
-  "/alphabet/[letter]": ({ letter }) => !!getLetterContent(letter),
-  "/alphabet/[letter]/worksheet": ({ letter }) => !!getLetterData(letter),
+  "/alphabet/[letter]": ({ letter }, locale) =>
+    locale === "fr" ? FRENCH_LETTERS.has(letter) || letter === ACCENTS_SLUG : !!getLetterContent(letter),
+  "/alphabet/[letter]/worksheet": ({ letter }, locale) =>
+    locale === "fr" ? FRENCH_LETTERS.has(letter) : !!getLetterData(letter),
   "/blog/[slug]": ({ slug }) => !!(getBlogCategory(slug) || getBlogPost(slug)),
   "/games/[slug]": ({ slug }) => !!getGame(slug),
   "/kindergarten/[topic]": ({ topic }) => !!getKindergartenTopic(topic),

@@ -89,9 +89,17 @@ describe("middleware routing", () => {
   });
 
   it("serves the French 404 page for French pages not written yet", async () => {
-    const res = await middleware(request("/fr/alphabet"));
+    const res = await middleware(request("/fr/jeux"));
     expect(rewrite(res)).toBe("/_not-found");
     expect(notFoundLocale(res)).toBe("fr");
+  });
+
+  it("serves the 404 page for letters of the other alphabet", async () => {
+    const en = await middleware(request("/alphabet/c-cedille"));
+    expect(rewrite(en)).toBe("/_not-found");
+    expect(notFoundLocale(en)).toBe("en");
+    expect(rewrite(await middleware(request("/fr/alphabet/accents/fiche")))).toBe("/_not-found");
+    expect(rewrite(await middleware(request("/fr/alphabet/c-cedille")))).not.toBe("/_not-found");
   });
 
   it("redirects /en URLs to the unprefixed English ones", async () => {
@@ -123,9 +131,14 @@ describe("remembered language", () => {
   });
 
   it("stays on English pages that have no French twin", async () => {
-    const res = await middleware(request("/alphabet", "NEXT_LOCALE=fr"));
+    const res = await middleware(request("/games", "NEXT_LOCALE=fr"));
     expect(redirect(res)).toBeNull();
-    expect(rewrite(res)).toBe("/en/alphabet");
+    expect(rewrite(res)).toBe("/en/games");
+  });
+
+  it("stays on French-only letters for a visitor who chose English", async () => {
+    const res = await middleware(request("/fr/alphabet/c-cedille", "NEXT_LOCALE=en"));
+    expect(redirect(res)).toBeNull();
   });
 
   it("sends a visitor who chose English back from French pages", async () => {
