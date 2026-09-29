@@ -17,6 +17,11 @@ function rewrite(res: Response) {
   return target ? new URL(target).pathname : null;
 }
 
+// The language passed to app/global-not-found.tsx through a request header override.
+function notFoundLocale(res: Response) {
+  return res.headers.get("x-middleware-request-x-alphabes-locale");
+}
+
 function redirect(res: Response) {
   const location = res.headers.get("location");
   if (!location) return null;
@@ -44,15 +49,38 @@ describe("middleware routing", () => {
     expect(rewrite(await middleware(request("/fr/a-propos")))).toBe("/fr/about");
   });
 
-  it("serves the 404 page for unknown URLs", async () => {
-    // "/fr/pricing": French URLs use French words, so the English word is unknown there.
-    for (const path of ["/does-not-exist", "/a/b/c", "/fr/xyz", "/fr/pricing"]) {
-      expect(rewrite(await middleware(request(path))), path).toBe("/_not-found");
+  it("serves the 404 page, in the right language, for unknown URLs", async () => {
+    for (const [path, locale] of [
+      ["/does-not-exist", "en"],
+      ["/a/b/c", "en"],
+      ["/fr/xyz", "fr"],
+      // French URLs use French words, so the English word is unknown there.
+      ["/fr/pricing", "fr"],
+    ]) {
+      const res = await middleware(request(path));
+      expect(rewrite(res), path).toBe("/_not-found");
+      expect(notFoundLocale(res), path).toBe(locale);
     }
   });
 
-  it("serves the 404 page for French pages not written yet", async () => {
-    expect(rewrite(await middleware(request("/fr/alphabet")))).toBe("/_not-found");
+  it("serves the 404 page for unknown letters, games and worksheets", async () => {
+    for (const path of ["/alphabet/zzz", "/alphabet/zz/worksheet", "/games/nope", "/blog/nope", "/worksheets/nope", "/worksheets/bundles/nope"]) {
+      const res = await middleware(request(path));
+      expect(rewrite(res), path).toBe("/_not-found");
+      expect(notFoundLocale(res), path).toBe("en");
+    }
+  });
+
+  it("lets real pages through, including /alphabet/A", async () => {
+    for (const path of ["/alphabet/A", "/alphabet/b/worksheet", "/games/find-the-letter", "/worksheets/letter-a-tracing", "/worksheets/sight-words", "/stories/any-story"]) {
+      expect(rewrite(await middleware(request(path))), path).toBe(`/en${path}`);
+    }
+  });
+
+  it("serves the French 404 page for French pages not written yet", async () => {
+    const res = await middleware(request("/fr/alphabet"));
+    expect(rewrite(res)).toBe("/_not-found");
+    expect(notFoundLocale(res)).toBe("fr");
   });
 
   it("redirects /en URLs to the unprefixed English ones", async () => {

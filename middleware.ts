@@ -1,15 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getToken } from "next-auth/jwt";
 import createIntlMiddleware from "next-intl/middleware";
-import { routing } from "@/i18n/routing";
+import { routing, type Locale } from "@/i18n/routing";
 import {
   LOCALE_COOKIE,
+  LOCALE_HEADER,
   counterpartPath,
   isAvailable,
   isLocale,
   localizedPath,
   matchPath,
 } from "@/lib/i18n/routes";
+import { paramsExist } from "@/lib/i18n/known-params";
 
 const handleI18nRouting = createIntlMiddleware(routing);
 
@@ -30,9 +32,12 @@ function isRateLimited(key: string): boolean {
   return entry.count > MAX_ATTEMPTS;
 }
 
-// Serve Next's built-in 404 route (app/not-found.tsx) with a 404 status.
-function notFound(req: NextRequest) {
-  return NextResponse.rewrite(new URL("/_not-found", req.url));
+// Serve Next's built-in 404 route (app/global-not-found.tsx) with a 404
+// status, telling it which language to use.
+function notFound(req: NextRequest, locale: Locale) {
+  const headers = new Headers(req.headers);
+  headers.set(LOCALE_HEADER, locale);
+  return NextResponse.rewrite(new URL("/_not-found", req.url), { request: { headers } });
 }
 
 export async function middleware(req: NextRequest) {
@@ -60,11 +65,16 @@ export async function middleware(req: NextRequest) {
 
   const match = matchPath(pathname);
 
-  // Unknown URLs, and French pages that haven't been written yet, get the
-  // 404 page (never English content under a French URL). "/en/..." is left
-  // to next-intl, which redirects it to the unprefixed URL.
-  if (!match ? !/^\/en(\/|$)/.test(pathname) : !isAvailable(match.locale, match.pathname)) {
-    return notFound(req);
+  // Unknown URLs, unknown letters/games/worksheets, and French pages that
+  // haven't been written yet get the 404 page in the right language (never
+  // English content under a French URL). "/en/..." is left to next-intl,
+  // which redirects it to the unprefixed URL.
+  if (
+    !match
+      ? !/^\/en(\/|$)/.test(pathname)
+      : !isAvailable(match.locale, match.pathname) || !paramsExist(match.pathname, match.params, match.locale)
+  ) {
+    return notFound(req, match?.locale ?? (/^\/fr(\/|$)/.test(pathname) ? "fr" : routing.defaultLocale));
   }
 
   // Remembered language: the switcher stores an explicit choice in a cookie.

@@ -17,9 +17,9 @@ const NAV = [
 // Site-wide header: logo, main sections, parent account link, EN/FR switch.
 // Static (no session lookup) so every page stays prerenderable; "My Account"
 // leads to the dashboard, which sends signed-out visitors to the login page.
-// Links are built from the locale prop rather than next-intl's <Link>, because
-// this also renders in app/not-found.tsx, outside [locale], where reading the
-// request locale would make every page dynamic.
+// Links are built from the locale prop rather than next-intl's <Link>, so the
+// header never depends on the request locale (it also renders in
+// app/global-not-found.tsx, outside [locale]).
 export default async function SiteHeader({ locale }: { locale: Locale }) {
   const t = await getTranslations({ locale, namespace: "Header" });
   const items = NAV.filter((item) => isAvailable(locale, item.href));

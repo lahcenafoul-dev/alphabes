@@ -4,8 +4,8 @@ import { isAvailable, localizedPath } from "@/lib/i18n/routes";
 
 // The 404 page body. English is kept exactly as it was before the French
 // version; French only links to sections that already exist in French. Links
-// use next/link with locale-built hrefs so this can render outside [locale]
-// (app/not-found.tsx) without reading the request.
+// use next/link with locale-built hrefs so this renders the same inside
+// [locale] and in app/global-not-found.tsx.
 export default function NotFoundContent({ locale }: { locale: Locale }) {
   return locale === "fr" ? <NotFoundFr /> : <NotFoundEn />;
 }

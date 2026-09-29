@@ -9,6 +9,10 @@ export const SITE_URL = "https://alphabes.com";
 
 export const LOCALE_COOKIE = "NEXT_LOCALE";
 export const LOCALE_COOKIE_MAX_AGE = 60 * 60 * 24 * 365;
+
+// Set by the middleware on 404 rewrites so app/global-not-found.tsx knows the language.
+export const LOCALE_HEADER = "x-alphabes-locale";
+
 // Internal pathnames that have a real French page. This grows phase by
 // phase; every other /fr URL answers 404, and only these get hreflang and
 // French sitemap entries.

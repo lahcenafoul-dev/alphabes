@@ -9,6 +9,15 @@ const nextConfig = {
   // Keep Prisma out of the bundler so its Workers (WASM) build is picked at
   // runtime by OpenNext.
   serverExternalPackages: ["@prisma/client", ".prisma/client"],
+  // app/global-not-found.tsx: a 404 page in the visitor's language that,
+  // unlike app/not-found.tsx, isn't rendered into every page.
+  experimental: {
+    globalNotFound: true,
+  },
+  // Always put <title>/<meta> in <head>, including on pages rendered per
+  // request (404, dashboard, stories), instead of streaming them into <body>
+  // for non-bot browsers. Their metadata is cheap to compute.
+  htmlLimitedBots: /.*/,
   images: {
     formats: ["image/avif", "image/webp"],
     remotePatterns: [
