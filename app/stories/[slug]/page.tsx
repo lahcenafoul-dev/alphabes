@@ -37,7 +37,7 @@ export default async function StoryPage(props: Props) {
 
       <h1 className="mt-4 text-3xl font-extrabold">{story.title}</h1>
 
-      <StoryReader story={story} children={children} />
+      <StoryReader story={story} childProfiles={children} />
     </main>
   );
 }

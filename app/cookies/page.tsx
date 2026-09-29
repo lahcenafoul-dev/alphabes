@@ -32,7 +32,7 @@ export default function CookiesPage() {
           <h2 className="font-display font-bold text-xl">Managing cookies</h2>
           <p className="mt-2">
             You can control or delete cookies through your browser settings at any time. Blocking
-            essential cookies may prevent you from staying logged in. If you've already made a
+            essential cookies may prevent you from staying logged in. If you&apos;ve already made a
             choice about analytics cookies, you can revisit it below.
           </p>
           <CookiePreferencesButton />
@@ -41,7 +41,7 @@ export default function CookiesPage() {
 
       <p className="mt-10 text-sm text-chalkboard/50 border-t border-chalkboard/10 pt-4">
         Placeholder policy — recommend legal review before launch, particularly around UK PECR and
-        similar regional consent rules given this site's audience.
+        similar regional consent rules given this site&apos;s audience.
       </p>
     </main>
   );

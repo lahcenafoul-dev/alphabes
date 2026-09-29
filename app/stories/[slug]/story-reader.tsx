@@ -22,13 +22,13 @@ type Child = { id: string; firstName: string };
 
 type Props = {
   story: Story;
-  children: Child[];
+  childProfiles: Child[];
 };
 
-export default function StoryReader({ story, children }: Props) {
+export default function StoryReader({ story, childProfiles }: Props) {
   const [finished, setFinished] = useState(false);
   const [pageIndex, setPageIndex] = useState(0);
-  const [selectedChild, setSelectedChild] = useState(children[0]?.id ?? "");
+  const [selectedChild, setSelectedChild] = useState(childProfiles[0]?.id ?? "");
   
   const page = story.pages[pageIndex];
   const isLast = pageIndex === story.pages.length - 1;
@@ -71,7 +71,7 @@ if (finished) {
       <div className="text-center py-20">
         <div className="text-6xl mb-4">🎉</div>
         <h2 className="text-3xl font-extrabold text-crayon-green">Great job!</h2>
-        <p className="mt-2 text-chalkboard/70">You finished "{story.title}"!</p>
+        <p className="mt-2 text-chalkboard/70">You finished &quot;{story.title}&quot;!</p>
         <div className="mt-6 flex justify-center gap-4">
           <Link href="/stories" className="rounded-block bg-blue-500 text-white px-6 py-3 font-bold">
             More Stories
@@ -86,7 +86,7 @@ if (finished) {
   
   return (
     <div className="mt-6">
-      {children.length > 0 && (
+      {childProfiles.length > 0 && (
         <div className="mb-4">
           <label htmlFor="child" className="text-sm font-bold">
             Reading as
@@ -97,7 +97,7 @@ if (finished) {
             onChange={(e) => setSelectedChild(e.target.value)}
             className="ml-2 rounded-block border border-chalkboard/20 px-3 py-1"
           >
-            {children.map((c) => (
+            {childProfiles.map((c) => (
               <option key={c.id} value={c.id}>
                 {c.firstName}
               </option>

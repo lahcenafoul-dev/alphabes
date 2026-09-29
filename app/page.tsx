@@ -164,7 +164,7 @@ export default function HomePage() {
         <h2 className="text-3xl font-bold">Free Alphabet Worksheets</h2>
         <p className="mt-2 text-chalkboard/70 max-w-2xl">
           AlphaBes has 260+ free printable alphabet worksheets covering every letter A-Z: tracing,
-          coloring, handwriting, letter recognition, and beginning sounds. They're built for
+          coloring, handwriting, letter recognition, and beginning sounds. They&apos;re built for
           parents, homeschool families, and preschool and kindergarten teachers who want printable
           PDF worksheets they can hand a child right away, without extra prep.
         </p>
