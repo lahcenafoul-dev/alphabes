@@ -19,6 +19,8 @@ Neon PostgreSQL through Prisma 5 with the Neon driver adapter (`previewFeatures 
 
 ## Languages (English + French)
 
+**The French plan, the owner's decisions, phase status, branch workflow and open issues are in [docs/french-plan.md](docs/french-plan.md). Read it before any French work.**
+
 next-intl with `localePrefix: "as-needed"`: English keeps its unprefixed URLs, French lives under `/fr` with French path words (`/fr/jeux`, `/fr/histoires`). Pages are in `app/[locale]/`; the URL map is `i18n/routing.ts`.
 
 - **English URLs and output must not change.** Before and after i18n work, compare the rendered English pages (title, meta, canonical, JSON-LD, links, text); only hreflang and the site header may differ.
