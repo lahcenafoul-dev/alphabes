@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getToken } from "next-auth/jwt";
+import { storyExists } from "@/lib/story-exists";
 
 // In-memory sliding window; swap for Upstash/Redis in a multi-instance
 // deployment so limits are shared across serverless instances.
@@ -47,11 +48,19 @@ export async function middleware(req: NextRequest) {
     }
   }
 
+  // Unknown story: serve Next's 404 page (status 404) instead of letting the
+  // page call notFound(), which leaves an empty shell in the server HTML.
+  const story = pathname.match(/^\/stories\/([^/]+)\/?$/);
+  if (story && (await storyExists(decodeURIComponent(story[1]))) === false) {
+    return NextResponse.rewrite(new URL("/_not-found", req.url));
+  }
+
   return NextResponse.next();
 }
 
 export const config = {
   matcher: [
+    "/stories/:slug",
     "/dashboard/:path*",
     "/admin/:path*",
     "/api/auth/callback/credentials",
