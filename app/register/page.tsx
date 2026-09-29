@@ -6,6 +6,7 @@ import RegisterForm from "./register-form";
 export const metadata: Metadata = {
   title: "Create an Account",
   robots: { index: false },
+  alternates: { canonical: "https://alphabes.com/register" },
 };
 
 export default function RegisterPage() {

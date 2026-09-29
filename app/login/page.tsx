@@ -6,6 +6,7 @@ import LoginForm from "./login-form";
 export const metadata: Metadata = {
   title: "Log In",
   robots: { index: false },
+  alternates: { canonical: "https://alphabes.com/login" },
 };
 
 export default function LoginPage() {

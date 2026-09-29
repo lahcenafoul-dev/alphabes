@@ -3,9 +3,16 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { getPrisma } from "@/lib/prisma";
 import Link from "next/link";
+import type { Metadata } from "next";
 import StoryReader from "./story-reader";
 
 type Props = { params: Promise<{ slug: string }> };
+
+// Without its own canonical, a story inherited the home page's.
+export async function generateMetadata(props: Props): Promise<Metadata> {
+  const { slug } = await props.params;
+  return { alternates: { canonical: `https://alphabes.com/stories/${slug}` } };
+}
 
 export default async function StoryPage(props: Props) {
   const prisma = getPrisma();

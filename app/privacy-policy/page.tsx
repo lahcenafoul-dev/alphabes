@@ -9,7 +9,7 @@ export default function PrivacyPolicyPage() {
   return (
     <main id="main-content" className="mx-auto max-w-2xl px-6 py-12">
       <h1 className="text-4xl font-extrabold">Privacy Policy</h1>
-      <p className="mt-2 text-sm text-chalkboard/50">Last updated: September 9, 2026</p>
+      <p className="mt-2 text-sm text-chalkboard/50">Last updated: September 29, 2026</p>
 
       <div className="mt-8 space-y-6 text-chalkboard/80 leading-relaxed">
         <section>
@@ -118,7 +118,7 @@ export default function PrivacyPolicyPage() {
               profile, and progress data is stored.
             </li>
             <li>
-              <strong>Site hosting and infrastructure</strong> — Netlify, which serves the website
+              <strong>Site hosting and infrastructure</strong> — Cloudflare, which serves the website
               and processes requests to it.
             </li>
             <li>

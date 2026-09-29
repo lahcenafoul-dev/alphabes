@@ -3,6 +3,7 @@ import { getPrisma } from "@/lib/prisma";
 import StoryIllustration from "@/components/StoryIllustration";
 export const metadata = {
   title: "Story Time",
+  alternates: { canonical: "https://alphabes.com/stories" },
 };
 
 // Rendered per request so the build never needs the database and new
