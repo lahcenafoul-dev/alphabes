@@ -18,6 +18,11 @@ const BASE_URL = "https://alphabes.com";
 
 type Props = { params: Promise<{ slug: string }> };
 
+// Every valid page is listed in generateStaticParams, so unknown params go
+// straight to the 404 page. (Calling notFound() inside the page instead leaves
+// an empty error shell in the server HTML with this Next.js version.)
+export const dynamicParams = false;
+
 export function generateStaticParams() {
   return [
     ...blogCategories.map((c) => ({ slug: c.slug })),

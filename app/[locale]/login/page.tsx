@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
+import { absoluteUrl } from "@/lib/i18n/routes";
 import { initLocale, type LocaleParams } from "@/lib/i18n/server";
 import ClientMessages from "@/components/ClientMessages";
 import LoginForm from "./login-form";
@@ -12,6 +13,7 @@ export async function generateMetadata({ params }: { params: LocaleParams }): Pr
   return {
     title: t("title"),
     robots: { index: false },
+    alternates: { canonical: absoluteUrl(locale, "/login") },
   };
 }
 

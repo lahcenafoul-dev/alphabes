@@ -9,8 +9,14 @@ import { getWorksheetsByLetter } from "@/lib/worksheets-data";
 import { getCursiveWorksheetForLetter } from "@/lib/static-worksheets-data";
 type Props = { params: Promise<{ letter: string }> };
 
+// Every valid page is listed in generateStaticParams, so unknown params go
+// straight to the 404 page. (Calling notFound() inside the page instead leaves
+// an empty error shell in the server HTML with this Next.js version.)
+export const dynamicParams = false;
+
 export function generateStaticParams() {
-  return getAllLetterSlugs().map((letter) => ({ letter }));
+  // Uppercase too: /alphabet/A has always worked (letter lookups lowercase).
+  return getAllLetterSlugs().flatMap((letter) => [{ letter }, { letter: letter.toUpperCase() }]);
 }
 
 export async function generateMetadata(props: Props): Promise<Metadata> {

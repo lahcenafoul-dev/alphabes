@@ -6,6 +6,11 @@ import { buildBreadcrumbJsonLd, buildLearningResourceJsonLd } from "@/lib/json-l
 
 type Props = { params: Promise<{ skill: string }> };
 
+// Every valid page is listed in generateStaticParams, so unknown params go
+// straight to the 404 page. (Calling notFound() inside the page instead leaves
+// an empty error shell in the server HTML with this Next.js version.)
+export const dynamicParams = false;
+
 export function generateStaticParams() {
   return phonicsSkills.map((s) => ({ skill: s.slug }));
 }

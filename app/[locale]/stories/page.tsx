@@ -1,9 +1,16 @@
 import Link from "next/link";
 import { getPrisma } from "@/lib/prisma";
 import StoryIllustration from "@/components/StoryIllustration";
-export const metadata = {
-  title: "Story Time",
-};
+import { alternatesFor } from "@/lib/i18n/routes";
+import { initLocale, type LocaleParams } from "@/lib/i18n/server";
+
+export async function generateMetadata({ params }: { params: LocaleParams }) {
+  const locale = initLocale((await params).locale);
+  return {
+    title: "Story Time",
+    alternates: alternatesFor(locale, "/stories"),
+  };
+}
 
 // Rendered per request so the build never needs the database and new
 // stories show up without a redeploy.
