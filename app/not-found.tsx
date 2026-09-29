@@ -1,69 +1,27 @@
-import Link from "next/link";
 import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
+import LocaleDocument, { buildLocaleMetadata } from "@/components/LocaleDocument";
+import NotFoundContent from "@/components/NotFoundContent";
 
-export const metadata: Metadata = {
-  title: "Page Not Found",
-  robots: { index: false },
-};
+// The 404 page for unknown URLs: the middleware rewrites them to Next's
+// built-in /_not-found route, which renders this with a 404 status.
+//
+// It must stay static: Next renders this component as part of every page, so
+// reading the request here (headers, cookies, the next-intl request locale)
+// would make the whole site dynamic. That's why it is English only for now.
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations({ locale: "en", namespace: "NotFound" });
+  return {
+    ...(await buildLocaleMetadata("en")),
+    title: `${t("title")} | AlphaBes`,
+    robots: { index: false },
+  };
+}
 
-export default function NotFound() {
+export default function GlobalNotFound() {
   return (
-    <main id="main-content" className="mx-auto max-w-2xl px-6 py-20 text-center">
-      <div className="flex justify-center gap-3" aria-hidden="true">
-        {["4", "0", "4"].map((char, i) => (
-          <div key={i} className="letter-block bg-crayon-yellow h-20 w-20 text-4xl">
-            {char}
-          </div>
-        ))}
-      </div>
-
-      <h1 className="mt-8 text-3xl font-extrabold">We couldn&apos;t find that page</h1>
-      <p className="mt-3 text-chalkboard/70">
-        The page you&apos;re looking for may have moved or no longer exists. Here are some good
-        places to start instead:
-      </p>
-
-      <div className="mt-8 flex flex-wrap justify-center gap-4">
-        <Link
-          href="/"
-          className="rounded-block bg-chalkboard text-paper font-display font-bold px-5 py-2.5 shadow-block hover:shadow-blockHover transition"
-        >
-          Go Home
-        </Link>
-        <Link
-          href="/worksheets"
-          className="rounded-block bg-crayon-green text-paper font-display font-bold px-5 py-2.5 shadow-block hover:shadow-blockHover transition"
-        >
-          Browse Worksheets
-        </Link>
-        <Link
-          href="/alphabet"
-          className="rounded-block border-2 border-chalkboard/20 font-display font-bold px-5 py-2.5 hover:border-crayon-blue transition"
-        >
-          Explore the Alphabet
-        </Link>
-        <Link
-          href="/blog"
-          className="rounded-block border-2 border-chalkboard/20 font-display font-bold px-5 py-2.5 hover:border-crayon-blue transition"
-        >
-          Read the Blog
-        </Link>
-      </div>
-
-      <div className="mt-10">
-        <p className="text-sm font-bold text-chalkboard/60">Popular worksheets</p>
-        <div className="mt-3 flex flex-wrap justify-center gap-3">
-          <Link href="/worksheets/letter-a-tracing" className="text-sm font-display font-bold text-crayon-blue hover:underline">
-            Letter A Tracing
-          </Link>
-          <Link href="/worksheets/cvc-words" className="text-sm font-display font-bold text-crayon-blue hover:underline">
-            CVC Words
-          </Link>
-          <Link href="/worksheets/sight-words" className="text-sm font-display font-bold text-crayon-blue hover:underline">
-            Sight Words
-          </Link>
-        </div>
-      </div>
-    </main>
+    <LocaleDocument locale="en">
+      <NotFoundContent locale="en" />
+    </LocaleDocument>
   );
 }

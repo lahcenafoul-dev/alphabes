@@ -11,8 +11,15 @@ import { staticWorksheets } from "@/lib/static-worksheets-data";
 import { preschoolTopics } from "@/lib/preschool-data";
 import { kindergartenTopics } from "@/lib/kindergarten-data";
 import { getPrisma } from "@/lib/prisma";
+import {
+  FRENCH_PATHNAMES,
+  NOINDEX_PATHNAMES,
+  SITE_URL,
+  counterpartPath,
+  matchPath,
+} from "@/lib/i18n/routes";
 
-const baseUrl = "https://alphabes.com";
+const baseUrl = SITE_URL;
 
 // Stories live in the database, so build the sitemap per request: new
 // stories appear without a rebuild and the build never needs the database.
@@ -153,7 +160,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.6,
   }));
 
-  return [
+  const englishEntries: MetadataRoute.Sitemap = [
     ...staticRoutes,
     ...letterRoutes,
     ...phonicsRoutes,
@@ -169,4 +176,28 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...kindergartenRoutes,
     ...(await getStoryRoutes()),
   ];
+
+  return withFrench(englishEntries);
+}
+
+// Every English page that also exists in French gets hreflang alternates,
+// and its French URL is listed as an entry of its own.
+function withFrench(entries: MetadataRoute.Sitemap): MetadataRoute.Sitemap {
+  const out: MetadataRoute.Sitemap = [];
+  for (const entry of entries) {
+    const path = entry.url.slice(SITE_URL.length) || "/";
+    const match = matchPath(path);
+    const frPath =
+      match && FRENCH_PATHNAMES.has(match.pathname) && !NOINDEX_PATHNAMES.has(match.pathname)
+        ? counterpartPath(match, "fr")
+        : null;
+    if (!frPath) {
+      out.push(entry);
+      continue;
+    }
+    const languages = { en: entry.url, fr: `${SITE_URL}${frPath}`, "x-default": entry.url };
+    out.push({ ...entry, alternates: { languages } });
+    out.push({ ...entry, url: languages.fr, alternates: { languages } });
+  }
+  return out;
 }

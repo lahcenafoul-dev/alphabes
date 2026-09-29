@@ -1,8 +1,10 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { CONSENT_STORAGE_KEY } from "./CookieConsent";
 
 export default function CookiePreferencesButton() {
+  const t = useTranslations("CookieConsent");
   function resetConsent() {
     try {
       localStorage.removeItem(CONSENT_STORAGE_KEY);
@@ -18,7 +20,7 @@ export default function CookiePreferencesButton() {
       onClick={resetConsent}
       className="mt-3 rounded-block border border-chalkboard/20 px-4 py-2 text-sm font-display font-bold hover:border-crayon-blue transition"
     >
-      Manage cookie preferences
+      {t("manage")}
     </button>
   );
 }

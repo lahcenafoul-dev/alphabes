@@ -13,18 +13,18 @@ export async function POST(req: NextRequest) {
   const prisma = getPrisma();
   const session = await getServerSession(authOptions);
   if (!session?.user?.email) {
-    return NextResponse.json({ error: "Please log in first." }, { status: 401 });
+    return NextResponse.json({ error: "Please log in first.", code: "unauthorized" }, { status: 401 });
   }
 
   const json = await req.json().catch(() => null);
   const parsed = schema.safeParse(json);
   if (!parsed.success) {
-    return NextResponse.json({ error: "Please provide a name and age range." }, { status: 400 });
+    return NextResponse.json({ error: "Please provide a name and age range.", code: "invalid_child" }, { status: 400 });
   }
 
   const user = await prisma.user.findUnique({ where: { email: session.user.email } });
   if (!user) {
-    return NextResponse.json({ error: "Account not found." }, { status: 404 });
+    return NextResponse.json({ error: "Account not found.", code: "account_not_found" }, { status: 404 });
   }
 
   const child = await prisma.childProfile.create({

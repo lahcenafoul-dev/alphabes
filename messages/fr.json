@@ -1,0 +1,206 @@
+{
+  "Metadata": {
+    "defaultTitle": "AlphaBes — Les lettres. Les sons. La lecture.",
+    "description": "AlphaBes accompagne les enfants de 3 à 8 ans dans la découverte des lettres, des sons et des premiers pas en lecture, avec des leçons interactives, des fiches à imprimer et des jeux.",
+    "ogDescription": "Leçons interactives sur l'alphabet et les sons, fiches à imprimer et jeux pour les enfants de 3 à 8 ans.",
+    "twitterDescription": "Les lettres. Les sons. La lecture.",
+    "orgDescription": "AlphaBes aide les enfants de 3 à 8 ans à apprendre les lettres, les sons et à faire leurs premiers pas en lecture."
+  },
+  "Common": {
+    "skipToContent": "Aller au contenu",
+    "loading": "Chargement…"
+  },
+  "Header": {
+    "homeLabel": "Accueil AlphaBes",
+    "mainNav": "Navigation principale",
+    "menu": "Menu",
+    "closeMenu": "Fermer le menu",
+    "alphabet": "Alphabet",
+    "phonics": "Les sons",
+    "worksheets": "Fiches",
+    "games": "Jeux",
+    "stories": "Histoires",
+    "pricing": "Tarifs",
+    "account": "Mon espace"
+  },
+  "LanguageSwitcher": {
+    "label": "Choisir la langue",
+    "en": "English",
+    "fr": "Français"
+  },
+  "Footer": {
+    "learn": "Apprendre",
+    "account": "Compte",
+    "company": "AlphaBes",
+    "legal": "Informations légales",
+    "alphabet": "Alphabet",
+    "stories": "Histoires",
+    "phonics": "Les sons",
+    "worksheets": "Fiches à imprimer",
+    "games": "Jeux",
+    "flashcards": "Imagier",
+    "activities": "Activités",
+    "preschool": "Maternelle",
+    "kindergarten": "Grande section",
+    "pricing": "Tarifs",
+    "login": "Se connecter",
+    "register": "Créer un compte",
+    "dashboard": "Tableau de bord",
+    "about": "À propos",
+    "blog": "Blog",
+    "contact": "Contact",
+    "privacy": "Politique de confidentialité",
+    "terms": "Conditions d'utilisation",
+    "cookies": "Politique de cookies",
+    "copyright": "© {year} AlphaBes. Tous droits réservés.",
+    "tagline": "Conçu pour les petits curieux de 3 à 8 ans."
+  },
+  "CookieConsent": {
+    "region": "Consentement aux cookies",
+    "message": "Nous utilisons des cookies de mesure d'audience, facultatifs, pour comprendre comment AlphaBes est utilisé. Consultez notre <link>politique de cookies</link>.",
+    "decline": "Refuser",
+    "accept": "Accepter",
+    "manage": "Gérer mes préférences de cookies"
+  },
+  "NotFound": {
+    "title": "Page introuvable"
+  },
+  "Errors": {
+    "generic": "Une erreur s'est produite. Veuillez réessayer.",
+    "rate_limited": "Trop de tentatives. Réessayez dans quelques instants.",
+    "invalid_registration": "Vérifiez votre nom, votre adresse e-mail et votre mot de passe (8 caractères minimum).",
+    "email_taken": "Un compte existe déjà avec cette adresse e-mail.",
+    "unauthorized": "Veuillez d'abord vous connecter.",
+    "invalid_child": "Indiquez un prénom et une tranche d'âge.",
+    "account_not_found": "Compte introuvable.",
+    "profile_not_found": "Profil introuvable.",
+    "invalid_data": "Données invalides.",
+    "story_not_found": "Histoire introuvable.",
+    "invalid_contact": "Veuillez remplir correctement tous les champs."
+  },
+  "Login": {
+    "title": "Connexion",
+    "heading": "Se connecter",
+    "intro": "Bon retour parmi nous ! Connectez-vous pour suivre les progrès de votre enfant.",
+    "newHere": "Nouveau sur AlphaBes ?",
+    "createAccount": "Créer un compte",
+    "email": "Adresse e-mail",
+    "password": "Mot de passe",
+    "invalidCredentials": "Adresse e-mail ou mot de passe incorrect.",
+    "submitting": "Connexion…",
+    "submit": "Se connecter"
+  },
+  "Register": {
+    "title": "Créer un compte",
+    "heading": "Créez votre compte gratuit",
+    "intro": "Commencez gratuitement avec les premières leçons sur l'alphabet, des fiches et des jeux.",
+    "haveAccount": "Vous avez déjà un compte ?",
+    "login": "Se connecter",
+    "name": "Votre nom",
+    "email": "Adresse e-mail",
+    "password": "Mot de passe",
+    "passwordHint": "8 caractères minimum.",
+    "autoLoginFailed": "Votre compte a bien été créé, mais la connexion automatique n'a pas fonctionné. Veuillez vous connecter.",
+    "submitting": "Création du compte…",
+    "submit": "Commencer gratuitement"
+  },
+  "Contact": {
+    "title": "Nous contacter",
+    "description": "Une question ou une suggestion ? Écrivez à l'équipe AlphaBes.",
+    "heading": "Nous contacter",
+    "intro": "Une question, une idée ou un problème à signaler ? Écrivez-nous.",
+    "name": "Nom",
+    "email": "Adresse e-mail",
+    "message": "Message",
+    "sent": "Merci ! Nous vous répondrons très vite.",
+    "sending": "Envoi…",
+    "submit": "Envoyer le message"
+  },
+  "Pricing": {
+    "title": "Tarifs",
+    "description": "Comparez les formules Gratuite et Pro d'AlphaBes. Pro coûte 7,99 $ par mois ou 59 $ par an.",
+    "heading": "Tarifs",
+    "subtitle": "Commencez gratuitement. Passez à Pro quand vous le souhaitez.",
+    "intro": "La formule gratuite couvre les bases de l'alphabet : les leçons sur les lettres, une sélection de fiches et quelques jeux. Pro s'adresse aux parents et aux enseignants qui veulent tout le contenu : toutes les fiches à imprimer pour les 26 lettres, tous les jeux, tous les sons et les syllabes, des packs de fiches pour toute une classe et le suivi des progrès de chaque enfant.",
+    "currencyNote": "Prix en dollars américains (USD).",
+    "choose": "Choisir {plan}",
+    "startFree": "Commencer gratuitement",
+    "free": {
+      "name": "Gratuit",
+      "price": "0 $",
+      "period": "",
+      "features": ["Les premières leçons sur l'alphabet", "Une sélection de fiches", "Quelques jeux"]
+    },
+    "monthly": {
+      "name": "Pro mensuel",
+      "price": "7,99 $",
+      "period": "/mois",
+      "features": [
+        "Toutes les fiches",
+        "Tous les jeux",
+        "Tous les sons et les syllabes",
+        "Suivi des progrès",
+        "Activités premium",
+        "Packs de fiches à imprimer"
+      ]
+    },
+    "annual": {
+      "name": "Pro annuel",
+      "price": "59 $",
+      "period": "/an",
+      "features": ["Tout le contenu de Pro mensuel", "2 mois offerts par rapport au mensuel"]
+    }
+  },
+  "Dashboard": {
+    "title": "Tableau de bord",
+    "welcome": "Bonjour !",
+    "welcomeName": "Bonjour {name} !",
+    "freePlan": "Formule gratuite",
+    "proPlan": "Pro",
+    "emptyTitle": "Aucun profil enfant pour l'instant",
+    "emptyText": "Ajoutez un profil pour suivre les progrès de votre enfant sur l'alphabet et les sons.",
+    "ages": "{band} ans",
+    "lessonsCompleted": "{count, plural, =0 {Aucune leçon terminée} one {# leçon terminée} other {# leçons terminées}}",
+    "storyTime": "📚 Histoires",
+    "upsell": "Débloquez toutes les fiches, tous les jeux et toutes les leçons de sons.",
+    "seePlans": "Voir les formules Pro"
+  },
+  "ChildDashboard": {
+    "title": "Profil enfant",
+    "home": "Accueil",
+    "dashboard": "Tableau de bord",
+    "ages": "{band} ans",
+    "startAlphabet": "Commencer l'alphabet →",
+    "storyTime": "📚 Histoires",
+    "lessonsCompleted": "Leçons terminées",
+    "quizAverage": "Moyenne aux quiz",
+    "storiesRead": "Histoires lues",
+    "quizResults": "Résultats des quiz",
+    "noQuizResults": "Pas encore de résultat de quiz.",
+    "activity": "Activité",
+    "stories": "Histoires",
+    "comingSoon": "Bientôt disponible",
+    "storiesOnTheWay": "Des histoires pour {name} arrivent bientôt !",
+    "completed": "Terminée",
+    "page": "Page {page}",
+    "settings": "Réglages du profil"
+  },
+  "ChildForm": {
+    "add": "Ajouter un profil enfant",
+    "firstName": "Prénom de l'enfant",
+    "ageRange": "Tranche d'âge",
+    "age34": "3-4 ans",
+    "age56": "5-6 ans",
+    "age78": "7-8 ans",
+    "adding": "Ajout…",
+    "submitAdd": "Ajouter",
+    "cancel": "Annuler",
+    "edit": "Modifier le profil",
+    "delete": "Supprimer le profil",
+    "confirmDelete": "Confirmer la suppression ?",
+    "deleting": "Suppression…",
+    "yesDelete": "Oui, supprimer",
+    "saving": "Enregistrement…",
+    "save": "Enregistrer"
+  }
+}

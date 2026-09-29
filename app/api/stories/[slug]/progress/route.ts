@@ -18,18 +18,18 @@ export async function POST(
   const params = await props.params;
   const session = await getServerSession(authOptions);
   if (!session?.user?.email) {
-    return NextResponse.json({ error: "Please log in first." }, { status: 401 });
+    return NextResponse.json({ error: "Please log in first.", code: "unauthorized" }, { status: 401 });
   }
 
   const json = await req.json().catch(() => null);
   const parsed = schema.safeParse(json);
   if (!parsed.success) {
-    return NextResponse.json({ error: "Invalid data." }, { status: 400 });
+    return NextResponse.json({ error: "Invalid data.", code: "invalid_data" }, { status: 400 });
   }
 
   const story = await prisma.story.findUnique({ where: { slug: params.slug } });
   if (!story) {
-    return NextResponse.json({ error: "Story not found." }, { status: 404 });
+    return NextResponse.json({ error: "Story not found.", code: "story_not_found" }, { status: 404 });
   }
 
   const child = await prisma.childProfile.findUnique({
@@ -37,7 +37,7 @@ export async function POST(
     include: { parent: true },
   });
   if (!child || child.parent.email !== session.user.email) {
-    return NextResponse.json({ error: "Profile not found." }, { status: 404 });
+    return NextResponse.json({ error: "Profile not found.", code: "profile_not_found" }, { status: 404 });
   }
 
   const progress = await prisma.storyProgress.upsert({

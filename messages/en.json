@@ -1,0 +1,206 @@
+{
+  "Metadata": {
+    "defaultTitle": "AlphaBes — Learn Letters. Learn Sounds. Learn English.",
+    "description": "AlphaBes teaches children ages 3-8 letters, phonics sounds, and early reading through interactive lessons, printable worksheets, and games.",
+    "ogDescription": "Interactive alphabet and phonics lessons, printable worksheets, and games for children ages 3-8.",
+    "twitterDescription": "Learn Letters. Learn Sounds. Learn English.",
+    "orgDescription": "AlphaBes teaches children ages 3-8 letters, phonics, and early reading skills."
+  },
+  "Common": {
+    "skipToContent": "Skip to content",
+    "loading": "Loading…"
+  },
+  "Header": {
+    "homeLabel": "AlphaBes home",
+    "mainNav": "Main navigation",
+    "menu": "Menu",
+    "closeMenu": "Close menu",
+    "alphabet": "Alphabet",
+    "phonics": "Phonics",
+    "worksheets": "Worksheets",
+    "games": "Games",
+    "stories": "Stories",
+    "pricing": "Pricing",
+    "account": "My Account"
+  },
+  "LanguageSwitcher": {
+    "label": "Choose language",
+    "en": "English",
+    "fr": "Français"
+  },
+  "Footer": {
+    "learn": "Learn",
+    "account": "Account",
+    "company": "Company",
+    "legal": "Legal",
+    "alphabet": "Alphabet",
+    "stories": "Story Time",
+    "phonics": "Phonics",
+    "worksheets": "Worksheets",
+    "games": "Games",
+    "flashcards": "Flashcards",
+    "activities": "Activities",
+    "preschool": "Preschool",
+    "kindergarten": "Kindergarten",
+    "pricing": "Pricing",
+    "login": "Log In",
+    "register": "Sign Up",
+    "dashboard": "Dashboard",
+    "about": "About",
+    "blog": "Blog",
+    "contact": "Contact",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service",
+    "cookies": "Cookie Policy",
+    "copyright": "© {year} AlphaBes. All rights reserved.",
+    "tagline": "Made for curious learners ages 3-8."
+  },
+  "CookieConsent": {
+    "region": "Cookie consent",
+    "message": "We use optional analytics cookies to understand how AlphaBes is used. See our <link>Cookie Policy</link>.",
+    "decline": "Decline",
+    "accept": "Accept",
+    "manage": "Manage cookie preferences"
+  },
+  "NotFound": {
+    "title": "Page Not Found"
+  },
+  "Errors": {
+    "generic": "Something went wrong. Please try again.",
+    "rate_limited": "Too many attempts. Try again shortly.",
+    "invalid_registration": "Please check your name, email, and password.",
+    "email_taken": "An account with this email already exists.",
+    "unauthorized": "Please log in first.",
+    "invalid_child": "Please provide a name and age range.",
+    "account_not_found": "Account not found.",
+    "profile_not_found": "Profile not found.",
+    "invalid_data": "Invalid data.",
+    "story_not_found": "Story not found.",
+    "invalid_contact": "Please fill in all fields correctly."
+  },
+  "Login": {
+    "title": "Log In",
+    "heading": "Log In",
+    "intro": "Welcome back! Log in to see your child's progress.",
+    "newHere": "New here?",
+    "createAccount": "Create an account",
+    "email": "Email",
+    "password": "Password",
+    "invalidCredentials": "Incorrect email or password.",
+    "submitting": "Logging in…",
+    "submit": "Log In"
+  },
+  "Register": {
+    "title": "Create an Account",
+    "heading": "Create Your Free Account",
+    "intro": "Start with basic alphabet lessons, worksheets, and games — free.",
+    "haveAccount": "Already have an account?",
+    "login": "Log in",
+    "name": "Your Name",
+    "email": "Email",
+    "password": "Password",
+    "passwordHint": "At least 8 characters.",
+    "autoLoginFailed": "Your account was created, but we couldn't log you in automatically. Please log in.",
+    "submitting": "Creating account…",
+    "submit": "Start Learning Free"
+  },
+  "Contact": {
+    "title": "Contact Us",
+    "description": "Get in touch with the AlphaBes team.",
+    "heading": "Contact Us",
+    "intro": "Questions, feedback, or a bug to report? Send us a message.",
+    "name": "Name",
+    "email": "Email",
+    "message": "Message",
+    "sent": "Thanks — we'll get back to you soon.",
+    "sending": "Sending…",
+    "submit": "Send Message"
+  },
+  "Pricing": {
+    "title": "Pricing",
+    "description": "Compare AlphaBes Free and Pro plans. Pro is $7.99/month or $59/year.",
+    "heading": "Pricing",
+    "subtitle": "Start free. Upgrade any time.",
+    "intro": "The free plan covers the alphabet basics: letter lessons, a selection of worksheets, and a few games. Pro is for parents and teachers who want the full library — every printable worksheet across all 26 letters, every game, full phonics and CVC-word practice, printable bundles for a whole classroom, and progress tracking for each child.",
+    "currencyNote": "",
+    "choose": "Choose {plan}",
+    "startFree": "Start Free",
+    "free": {
+      "name": "Free",
+      "price": "$0",
+      "period": "",
+      "features": ["Basic alphabet lessons", "Selected worksheets", "Basic games"]
+    },
+    "monthly": {
+      "name": "Pro Monthly",
+      "price": "$7.99",
+      "period": "/month",
+      "features": [
+        "All worksheets",
+        "All games",
+        "Full phonics library",
+        "Progress tracking",
+        "Premium activities",
+        "Printable bundles"
+      ]
+    },
+    "annual": {
+      "name": "Pro Annual",
+      "price": "$59",
+      "period": "/year",
+      "features": ["Everything in Pro Monthly", "2 months free vs. monthly"]
+    }
+  },
+  "Dashboard": {
+    "title": "Dashboard",
+    "welcome": "Welcome back",
+    "welcomeName": "Welcome back, {name}",
+    "freePlan": "Free Plan",
+    "proPlan": "Pro",
+    "emptyTitle": "No child profiles yet",
+    "emptyText": "Add a child profile to start tracking alphabet and phonics progress.",
+    "ages": "Ages {band}",
+    "lessonsCompleted": "{count} lessons completed",
+    "storyTime": "📚 Story Time",
+    "upsell": "Unlock every worksheet, game, and phonics lesson.",
+    "seePlans": "See Pro Plans"
+  },
+  "ChildDashboard": {
+    "title": "Child Dashboard",
+    "home": "Home",
+    "dashboard": "Dashboard",
+    "ages": "Ages {band}",
+    "startAlphabet": "Start Learning the Alphabet →",
+    "storyTime": "📚 Story Time",
+    "lessonsCompleted": "Lessons Completed",
+    "quizAverage": "Quiz Average",
+    "storiesRead": "Stories Read",
+    "quizResults": "Quiz Results",
+    "noQuizResults": "No quiz results yet.",
+    "activity": "Activity",
+    "stories": "Story Time",
+    "comingSoon": "Coming Soon",
+    "storiesOnTheWay": "Story adventures for {name} are on the way!",
+    "completed": "Completed",
+    "page": "Page {page}",
+    "settings": "Profile Settings"
+  },
+  "ChildForm": {
+    "add": "Add Child Profile",
+    "firstName": "Child's First Name",
+    "ageRange": "Age Range",
+    "age34": "3-4 years",
+    "age56": "5-6 years",
+    "age78": "7-8 years",
+    "adding": "Adding…",
+    "submitAdd": "Add Child",
+    "cancel": "Cancel",
+    "edit": "Edit Profile",
+    "delete": "Delete Profile",
+    "confirmDelete": "Are you sure?",
+    "deleting": "Deleting…",
+    "yesDelete": "Yes, delete",
+    "saving": "Saving…",
+    "save": "Save Changes"
+  }
+}

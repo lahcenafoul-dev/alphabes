@@ -16,3 +16,15 @@ The site (alphabes.com) is hosted on **Cloudflare Workers**, built with OpenNext
 ## Database
 
 Neon PostgreSQL through Prisma 5 with the Neon driver adapter (`previewFeatures = ["driverAdapters"]`). On Workers a database connection can't be shared between requests, so always get the client with `getPrisma()` from `lib/prisma.ts` inside the request (route handler, server component, or auth callback), never at module level. The local `.env` points at the Neon `dev` branch.
+
+## Languages (English + French)
+
+next-intl with `localePrefix: "as-needed"`: English keeps its unprefixed URLs, French lives under `/fr` with French path words (`/fr/jeux`, `/fr/histoires`). Pages are in `app/[locale]/`; the URL map is `i18n/routing.ts`.
+
+- **English URLs and output must not change.** Before and after i18n work, compare the rendered English pages (title, meta, canonical, JSON-LD, links, text); only hreflang and the site header may differ.
+- **Which pages exist in French** is `FRENCH_PATHNAMES` in `lib/i18n/routes.ts`. It drives the middleware (other `/fr` URLs 404), hreflang (`alternatesFor`), the sitemap, and the header/footer links. Add a pathname there only once its French page is written.
+- **UI strings** are in `messages/en.json` and `messages/fr.json` (same keys; `tests/i18n/messages.test.ts` checks). Teaching content differs by language, so long-form pages have `*-en.tsx` / `*-fr.tsx` components rather than translated strings. Write French directly for French-speaking families; don't translate word for word.
+- **Pages** call `initLocale(locale)` from `lib/i18n/server.ts` first, so they stay static.
+- **`app/not-found.tsx` must stay static.** Next renders it inside every page, so reading the request there (headers, cookies, next-intl's request locale, next-intl's server `Link` or server `NextIntlClientProvider`) makes the whole site dynamic. That's why the header, footer and 404 content build hrefs with `localizedPath(locale, ...)` and `next/link`, and why providers use `components/IntlClientProvider.tsx` with explicit props.
+- **Language cookie:** the EN/FR switcher sets `NEXT_LOCALE`; the middleware then redirects to the same page in that language when it exists. Never redirect on `Accept-Language`.
+- **API errors** return `{ error, code }`; clients show `Errors.<code>` from the messages.

@@ -27,7 +27,7 @@ export async function GET(
   const params = await props.params;
   const session = await getServerSession(authOptions);
   if (!session?.user?.email) {
-    return NextResponse.json({ error: "Please log in first." }, { status: 401 });
+    return NextResponse.json({ error: "Please log in first.", code: "unauthorized" }, { status: 401 });
   }
 
   const child = await prisma.childProfile.findUnique({
@@ -40,7 +40,7 @@ export async function GET(
   });
 
   if (!child || child.parent.email !== session.user.email) {
-    return NextResponse.json({ error: "Profile not found." }, { status: 404 });
+    return NextResponse.json({ error: "Profile not found.", code: "profile_not_found" }, { status: 404 });
   }
 
   return NextResponse.json({ child });
@@ -54,18 +54,18 @@ export async function PATCH(
   const params = await props.params;
   const session = await getServerSession(authOptions);
   if (!session?.user?.email) {
-    return NextResponse.json({ error: "Please log in first." }, { status: 401 });
+    return NextResponse.json({ error: "Please log in first.", code: "unauthorized" }, { status: 401 });
   }
 
   const owned = await getOwnedChild(params.id, session.user.email);
   if (!owned) {
-    return NextResponse.json({ error: "Profile not found." }, { status: 404 });
+    return NextResponse.json({ error: "Profile not found.", code: "profile_not_found" }, { status: 404 });
   }
 
   const json = await req.json().catch(() => null);
   const parsed = updateSchema.safeParse(json);
   if (!parsed.success) {
-    return NextResponse.json({ error: "Invalid data." }, { status: 400 });
+    return NextResponse.json({ error: "Invalid data.", code: "invalid_data" }, { status: 400 });
   }
 
   const updated = await prisma.childProfile.update({
@@ -84,12 +84,12 @@ export async function DELETE(
   const params = await props.params;
   const session = await getServerSession(authOptions);
   if (!session?.user?.email) {
-    return NextResponse.json({ error: "Please log in first." }, { status: 401 });
+    return NextResponse.json({ error: "Please log in first.", code: "unauthorized" }, { status: 401 });
   }
 
   const owned = await getOwnedChild(params.id, session.user.email);
   if (!owned) {
-    return NextResponse.json({ error: "Profile not found." }, { status: 404 });
+    return NextResponse.json({ error: "Profile not found.", code: "profile_not_found" }, { status: 404 });
   }
 
   await prisma.progress.deleteMany({ where: { childId: params.id } });

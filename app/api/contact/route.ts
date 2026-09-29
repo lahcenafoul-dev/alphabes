@@ -12,7 +12,7 @@ export async function POST(req: NextRequest) {
   const parsed = schema.safeParse(json);
 
   if (!parsed.success) {
-    return NextResponse.json({ error: "Please fill in all fields correctly." }, { status: 400 });
+    return NextResponse.json({ error: "Please fill in all fields correctly.", code: "invalid_contact" }, { status: 400 });
   }
 
   // NEXT STEP: wire this to an email provider (e.g. Resend, Postmark) or

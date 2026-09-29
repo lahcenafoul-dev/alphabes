@@ -1,72 +1,79 @@
+import { getTranslations } from "next-intl/server";
 import Link from "next/link";
+import type { Locale } from "@/i18n/routing";
+import { isAvailable, localizedPath } from "@/lib/i18n/routes";
 
 const columns = [
   {
-    title: "Learn",
+    title: "learn",
     links: [
-      { href: "/alphabet", label: "Alphabet" },
-      { href: "/stories", label: "Story Time" },
-      { href: "/phonics", label: "Phonics" },
-      { href: "/worksheets", label: "Worksheets" },
-      { href: "/games", label: "Games" },
-      { href: "/flashcards", label: "Flashcards" },
-      { href: "/activities", label: "Activities" },
-      { href: "/preschool", label: "Preschool" },
-      { href: "/kindergarten", label: "Kindergarten" },
+      { href: "/alphabet", label: "alphabet" },
+      { href: "/stories", label: "stories" },
+      { href: "/phonics", label: "phonics" },
+      { href: "/worksheets", label: "worksheets" },
+      { href: "/games", label: "games" },
+      { href: "/flashcards", label: "flashcards" },
+      { href: "/activities", label: "activities" },
+      { href: "/preschool", label: "preschool" },
+      { href: "/kindergarten", label: "kindergarten" },
     ],
   },
   {
-    title: "Account",
+    title: "account",
     links: [
-      { href: "/pricing", label: "Pricing" },
-      { href: "/login", label: "Log In" },
-      { href: "/register", label: "Sign Up" },
-      { href: "/dashboard", label: "Dashboard" },
+      { href: "/pricing", label: "pricing" },
+      { href: "/login", label: "login" },
+      { href: "/register", label: "register" },
+      { href: "/dashboard", label: "dashboard" },
     ],
   },
   {
-    title: "Company",
+    title: "company",
     links: [
-      { href: "/about", label: "About" },
-      { href: "/blog", label: "Blog" },
-      { href: "/contact", label: "Contact" },
+      { href: "/about", label: "about" },
+      { href: "/blog", label: "blog" },
+      { href: "/contact", label: "contact" },
     ],
   },
   {
-    title: "Legal",
+    title: "legal",
     links: [
-      { href: "/privacy-policy", label: "Privacy Policy" },
-      { href: "/terms", label: "Terms of Service" },
-      { href: "/cookies", label: "Cookie Policy" },
+      { href: "/privacy-policy", label: "privacy" },
+      { href: "/terms", label: "terms" },
+      { href: "/cookies", label: "cookies" },
     ],
   },
-];
+] as const;
 
-export default function Footer() {
+export default async function Footer({ locale }: { locale: Locale }) {
+  const t = await getTranslations({ locale, namespace: "Footer" });
+
   return (
     <footer className="bg-chalkboard text-paper mt-16 print:hidden">
       <div className="mx-auto max-w-6xl px-6 py-12 grid grid-cols-2 md:grid-cols-4 gap-8">
         {columns.map((col) => (
           <div key={col.title}>
             <h2 className="font-display font-bold text-sm uppercase tracking-wide text-paper/60">
-              {col.title}
+              {t(col.title)}
             </h2>
             <ul className="mt-4 space-y-2">
-              {col.links.map((link) => (
-                <li key={link.href}>
-                  <Link href={link.href} className="text-paper/80 hover:text-paper text-sm">
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
+              {col.links
+                .filter((link) => isAvailable(locale, link.href))
+                .map((link) => (
+                  <li key={link.href}>
+                    <Link href={localizedPath(locale, link.href)} className="text-paper/80 hover:text-paper text-sm">
+                      {t(link.label)}
+                    </Link>
+                  </li>
+                ))}
             </ul>
           </div>
         ))}
       </div>
       <div className="border-t border-paper/10">
         <div className="mx-auto max-w-6xl px-6 py-6 flex flex-wrap items-center justify-between gap-3 text-sm text-paper/60">
-          <p>&copy; {new Date().getFullYear()} AlphaBes. All rights reserved.</p>
-          <p>Made for curious learners ages 3-8.</p>
+          <p>{t("copyright", { year: new Date().getFullYear() })}</p>
+          <p>{t("tagline")}</p>
         </div>
       </div>
     </footer>

@@ -16,7 +16,7 @@ export async function POST(req: NextRequest) {
   const parsed = schema.safeParse(json);
 
   if (!parsed.success) {
-    return NextResponse.json({ error: "Please check your name, email, and password." }, { status: 400 });
+    return NextResponse.json({ error: "Please check your name, email, and password.", code: "invalid_registration" }, { status: 400 });
   }
 
   const { name, email, password } = parsed.data;
@@ -24,7 +24,7 @@ export async function POST(req: NextRequest) {
 
   const existing = await prisma.user.findUnique({ where: { email: normalizedEmail } });
   if (existing) {
-    return NextResponse.json({ error: "An account with this email already exists." }, { status: 409 });
+    return NextResponse.json({ error: "An account with this email already exists.", code: "email_taken" }, { status: 409 });
   }
 
   const passwordHash = await bcrypt.hash(password, 12);
@@ -44,7 +44,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ id: user.id, email: user.email }, { status: 201 });
   } catch (err) {
     if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === "P2002") {
-      return NextResponse.json({ error: "An account with this email already exists." }, { status: 409 });
+      return NextResponse.json({ error: "An account with this email already exists.", code: "email_taken" }, { status: 409 });
     }
     throw err;
   }

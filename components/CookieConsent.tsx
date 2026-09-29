@@ -8,6 +8,8 @@
 // pattern used for the games' random starting state earlier this session.
 import { useEffect, useState } from "react";
 import Script from "next/script";
+import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 
 const GA_ID = "G-Z06LXRGHBR";
 export const CONSENT_STORAGE_KEY = "alphabes-cookie-consent";
@@ -15,6 +17,7 @@ export const CONSENT_STORAGE_KEY = "alphabes-cookie-consent";
 type Consent = "accepted" | "declined" | null;
 
 export default function CookieConsent() {
+  const t = useTranslations("CookieConsent");
   const [mounted, setMounted] = useState(false);
   const [consent, setConsent] = useState<Consent>(null);
 
@@ -57,16 +60,18 @@ export default function CookieConsent() {
       {mounted && consent === null && (
         <div
           role="region"
-          aria-label="Cookie consent"
+          aria-label={t("region")}
           className="fixed inset-x-0 bottom-0 z-50 bg-chalkboard text-paper print:hidden"
         >
           <div className="mx-auto max-w-4xl px-6 py-4 flex flex-wrap items-center justify-between gap-4">
             <p className="text-sm text-paper/90 max-w-2xl">
-              We use optional analytics cookies to understand how AlphaBes is used. See our{" "}
-              <a href="/cookies" className="underline font-bold">
-                Cookie Policy
-              </a>
-              .
+              {t.rich("message", {
+                link: (chunks) => (
+                  <Link href="/cookies" className="underline font-bold">
+                    {chunks}
+                  </Link>
+                ),
+              })}
             </p>
             <div className="flex gap-3 shrink-0">
               <button
@@ -74,14 +79,14 @@ export default function CookieConsent() {
                 onClick={() => choose("declined")}
                 className="rounded-block border border-paper/30 px-4 py-2 text-sm font-display font-bold hover:border-paper transition"
               >
-                Decline
+                {t("decline")}
               </button>
               <button
                 type="button"
                 onClick={() => choose("accepted")}
                 className="rounded-block bg-crayon-green text-paper px-4 py-2 text-sm font-display font-bold shadow-block hover:shadow-blockHover transition"
               >
-                Accept
+                {t("accept")}
               </button>
             </div>
           </div>
