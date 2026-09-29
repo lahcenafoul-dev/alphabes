@@ -10,10 +10,34 @@ import { staticWorksheetCategories } from "@/lib/static-worksheet-categories";
 import { staticWorksheets } from "@/lib/static-worksheets-data";
 import { preschoolTopics } from "@/lib/preschool-data";
 import { kindergartenTopics } from "@/lib/kindergarten-data";
+import { getPrisma } from "@/lib/prisma";
 
 const baseUrl = "https://alphabes.com";
 
-export default function sitemap(): MetadataRoute.Sitemap {
+// Stories live in the database, so build the sitemap per request: new
+// stories appear without a rebuild and the build never needs the database.
+export const dynamic = "force-dynamic";
+
+async function getStoryRoutes(): Promise<MetadataRoute.Sitemap> {
+  try {
+    const stories = await getPrisma().story.findMany({
+      select: { slug: true, updatedAt: true },
+      orderBy: { order: "asc" },
+    });
+    return stories.map((s) => ({
+      url: `${baseUrl}/stories/${s.slug}`,
+      lastModified: s.updatedAt,
+      changeFrequency: "monthly" as const,
+      priority: 0.6,
+    }));
+  } catch (err) {
+    // Still serve every static route if the database is unreachable.
+    console.error("sitemap: could not load stories", err);
+    return [];
+  }
+}
+
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticRoutes = [
     "",
     "/alphabet",
@@ -22,6 +46,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/kindergarten",
     "/worksheets",
     "/games",
+    "/stories",
     "/flashcards",
     "/activities",
     "/pricing",
@@ -142,5 +167,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...staticWorksheetDetailRoutes,
     ...preschoolRoutes,
     ...kindergartenRoutes,
+    ...(await getStoryRoutes()),
   ];
 }
