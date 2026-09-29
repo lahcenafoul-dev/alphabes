@@ -60,7 +60,7 @@ export default async function BundleDetailPage(props: Props) {
       </div>
 
       <section className="mt-10">
-        <h2 className="text-xl font-bold">What's included ({included.length} worksheets)</h2>
+        <h2 className="text-xl font-bold">What&apos;s included ({included.length} worksheets)</h2>
         <ul className="mt-4 grid sm:grid-cols-2 md:grid-cols-3 gap-3">
           {included.map((w) => (
             <li key={w.slug}>

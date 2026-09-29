@@ -291,7 +291,7 @@ export default function AlphabetIndexPage() {
         <h2 id="sounds-heading" className="text-3xl font-bold">Learn Letter Sounds</h2>
         <p className="mt-2 text-chalkboard/70 max-w-2xl">
           Every letter has at least one common sound, and connecting a letter to its sound is one
-          of the biggest steps toward reading. Sounds aren't always one-to-one — some letters make
+          of the biggest steps toward reading. Sounds aren&apos;t always one-to-one — some letters make
           more than one sound depending on the word — but starting with the most common sound
           gives a child a reliable foundation.
         </p>
@@ -328,7 +328,7 @@ export default function AlphabetIndexPage() {
           </li>
           <li>
             <Link href="/alphabet/a/worksheet" className="font-display font-bold text-crayon-blue hover:underline">
-              Try the online tracing tool on any letter's page
+              Try the online tracing tool on any letter&apos;s page
             </Link>
           </li>
         </ul>
@@ -468,7 +468,7 @@ export default function AlphabetIndexPage() {
             <Link href="/games" className="font-bold underline">
               alphabet games
             </Link>{" "}
-            and songs so practice doesn't feel like a chore.
+            and songs so practice doesn&apos;t feel like a chore.
           </li>
           <li>
             Review previously learned letters often — see{" "}

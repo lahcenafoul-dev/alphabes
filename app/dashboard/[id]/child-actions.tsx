@@ -109,7 +109,7 @@ export default function ChildActions({ childId, firstName, ageBand }: Props) {
     >
       <div>
         <label htmlFor="firstName" className="block text-sm font-bold">
-          Child's First Name
+          Child&apos;s First Name
         </label>
         <input
           id="firstName"

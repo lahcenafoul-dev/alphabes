@@ -79,7 +79,7 @@ export default function BlogIndexPage() {
       <section className="mt-12 rounded-block bg-crayon-green/10 p-6" aria-labelledby="resources-heading">
         <h2 id="resources-heading" className="text-xl font-bold">Explore More on AlphaBes</h2>
         <p className="mt-2 text-chalkboard/70">
-          Every article links back to the lesson, worksheet, or activity it's about — here are the
+          Every article links back to the lesson, worksheet, or activity it&apos;s about — here are the
           main hubs those links point to.
         </p>
         <ul className="mt-4 flex flex-wrap gap-3">
@@ -96,7 +96,7 @@ export default function BlogIndexPage() {
         <h2 id="about-heading" className="text-lg font-bold">About This Blog</h2>
         <p className="mt-2 text-sm text-chalkboard/70 max-w-2xl">
           Articles are written in-house by the AlphaBes team and updated when a resource they link
-          to changes. We don't publish sponsored posts or copy other sites' content. Read more on{" "}
+          to changes. We don&apos;t publish sponsored posts or copy other sites&apos; content. Read more on{" "}
           <Link href="/about" className="font-bold underline">our About page</Link>, or{" "}
           <Link href="/contact" className="font-bold underline">get in touch</Link> if you spot
           something that needs fixing.

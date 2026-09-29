@@ -105,7 +105,7 @@ export default function PreschoolPage() {
         <h2 id="ready-heading" className="text-3xl font-bold">What Preschoolers Are Ready For</h2>
         <p className="mt-2 text-chalkboard/70 max-w-2xl">
           Most preschoolers are building letter recognition, learning to say a few letter sounds,
-          and developing the pencil control needed for tracing, well before they're expected to
+          and developing the pencil control needed for tracing, well before they&apos;re expected to
           read or write on their own. Short, playful sessions work better than long lessons at
           this age.
         </p>

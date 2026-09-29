@@ -21,7 +21,7 @@ export default function AboutPage() {
           several different ways before moving on.
         </p>
         <p>
-          The site is designed to work well on phones and tablets, since that's often where young
+          The site is designed to work well on phones and tablets, since that&apos;s often where young
           children practice, and to keep the interface simple enough that a child can navigate
           much of it independently once a parent has helped them get started.
         </p>

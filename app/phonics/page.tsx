@@ -214,7 +214,7 @@ export default function PhonicsPage() {
         <h2 id="sounds-heading" className="text-3xl font-bold">Learn Letter Sounds</h2>
         <p className="mt-2 text-chalkboard/70 max-w-2xl">
           Every consonant has a fairly consistent sound, while vowels usually have a short sound
-          and a long sound. Children build this skill by listening to a letter's sound, saying it
+          and a long sound. Children build this skill by listening to a letter&apos;s sound, saying it
           back clearly, and matching it to letters they already recognize.
         </p>
         <p className="mt-3 text-chalkboard/70 max-w-2xl">
@@ -295,7 +295,7 @@ export default function PhonicsPage() {
         <p className="mt-2 text-chalkboard/70 max-w-2xl">
           CVC stands for consonant-vowel-consonant: a word shaped like{" "}
           <span className="font-display font-bold">c-a-t</span>. Words like cat, dog, sun, hat,
-          bed, and pig are usually a child's first readable words, since sounding out three
+          bed, and pig are usually a child&apos;s first readable words, since sounding out three
           consistent letters is more manageable than a long or irregular word.
         </p>
         <Link
@@ -312,7 +312,7 @@ export default function PhonicsPage() {
         <p className="mt-2 text-chalkboard/70 max-w-2xl">
           Blending means saying individual sounds one after another, smoothly enough that they
           form a word: <span className="font-display font-bold">/m/ + /a/ + /p/ → map</span>.
-          Children usually practice blending once they're confident with individual letter sounds.
+          Children usually practice blending once they&apos;re confident with individual letter sounds.
         </p>
         <div className="mt-6 flex flex-wrap gap-4">
           <Link
@@ -363,7 +363,7 @@ export default function PhonicsPage() {
       <section className="mt-16 bg-crayon-purple/10 rounded-block p-8" aria-labelledby="preschool-heading">
         <h2 id="preschool-heading" className="text-3xl font-bold">Phonics for Preschool</h2>
         <p className="mt-2 text-chalkboard/70 max-w-2xl">
-          Preschool phonics stays mostly oral: listening to sounds, saying a letter's sound out
+          Preschool phonics stays mostly oral: listening to sounds, saying a letter&apos;s sound out
           loud, and noticing the beginning sound of a familiar word. Matching sounds to pictures
           and simple tracing add a hands-on layer without pushing full reading yet. Our{" "}
           <Link href="/preschool" className="font-bold underline">
@@ -453,7 +453,7 @@ export default function PhonicsPage() {
         <h2 id="howto-heading" className="text-3xl font-bold">How to Practice Phonics at Home</h2>
         <ol className="mt-6 space-y-4 list-decimal list-inside text-chalkboard/80">
           <li>Practice a few sounds at a time instead of the whole alphabet at once.</li>
-          <li>Say the sound clearly, without adding an extra "uh" sound to the end.</li>
+          <li>Say the sound clearly, without adding an extra &quot;uh&quot; sound to the end.</li>
           <li>Use familiar words and pictures so the sound has something to attach to.</li>
           <li>Ask your child to identify the beginning sound in everyday words.</li>
           <li>
