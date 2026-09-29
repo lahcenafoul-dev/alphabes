@@ -12,6 +12,7 @@ import {
   matchPath,
 } from "@/lib/i18n/routes";
 import { paramsExist } from "@/lib/i18n/known-params";
+import { storyExists } from "@/lib/story-exists";
 
 const handleI18nRouting = createIntlMiddleware(routing);
 
@@ -75,6 +76,10 @@ export async function middleware(req: NextRequest) {
       : !isAvailable(match.locale, match.pathname) || !paramsExist(match.pathname, match.params, match.locale)
   ) {
     return notFound(req, match?.locale ?? (/^\/fr(\/|$)/.test(pathname) ? "fr" : routing.defaultLocale));
+  }
+  // Stories live in the database, so they're checked with a (cached) query.
+  if (match?.pathname === "/stories/[slug]" && (await storyExists(match.params.slug)) === false) {
+    return notFound(req, match.locale);
   }
 
   // Remembered language: the switcher stores an explicit choice in a cookie.

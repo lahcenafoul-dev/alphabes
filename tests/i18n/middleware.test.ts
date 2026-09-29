@@ -1,6 +1,11 @@
-import { beforeAll, describe, expect, it } from "vitest";
+import { beforeAll, describe, expect, it, vi } from "vitest";
 import { NextRequest } from "next/server";
 import { middleware } from "@/middleware";
+
+// Stand-in for the database lookup: only one story exists.
+vi.mock("@/lib/story-exists", () => ({
+  storyExists: async (slug: string) => slug === "the-little-apple",
+}));
 
 beforeAll(() => {
   process.env.NEXTAUTH_SECRET = "test-secret";
@@ -72,9 +77,15 @@ describe("middleware routing", () => {
   });
 
   it("lets real pages through, including /alphabet/A", async () => {
-    for (const path of ["/alphabet/A", "/alphabet/b/worksheet", "/games/find-the-letter", "/worksheets/letter-a-tracing", "/worksheets/sight-words", "/stories/any-story"]) {
+    for (const path of ["/alphabet/A", "/alphabet/b/worksheet", "/games/find-the-letter", "/worksheets/letter-a-tracing", "/worksheets/sight-words", "/stories/the-little-apple"]) {
       expect(rewrite(await middleware(request(path))), path).toBe(`/en${path}`);
     }
+  });
+
+  it("serves the 404 page for unknown stories", async () => {
+    const res = await middleware(request("/stories/nope"));
+    expect(rewrite(res)).toBe("/_not-found");
+    expect(notFoundLocale(res)).toBe("en");
   });
 
   it("serves the French 404 page for French pages not written yet", async () => {
