@@ -102,6 +102,17 @@ describe("middleware routing", () => {
     expect(rewrite(await middleware(request("/fr/alphabet/c-cedille")))).not.toBe("/_not-found");
   });
 
+  it("keeps French sounds and English phonics skills apart", async () => {
+    expect(rewrite(await middleware(request("/fr/sons/ou")))).not.toBe("/_not-found");
+    expect(rewrite(await middleware(request("/fr/sons")))).not.toBe("/_not-found");
+    const fr = await middleware(request("/fr/sons/blending"));
+    expect(rewrite(fr)).toBe("/_not-found");
+    expect(notFoundLocale(fr)).toBe("fr");
+    expect(rewrite(await middleware(request("/phonics/ou")))).toBe("/_not-found");
+    expect(redirect(await middleware(request("/phonics", "NEXT_LOCALE=fr")))).toBe("/fr/sons");
+    expect(redirect(await middleware(request("/phonics/blending", "NEXT_LOCALE=fr")))).toBeNull();
+  });
+
   it("redirects /en URLs to the unprefixed English ones", async () => {
     expect(redirect(await middleware(request("/en/pricing")))).toBe("/pricing");
   });

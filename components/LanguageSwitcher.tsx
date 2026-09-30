@@ -8,9 +8,9 @@ import {
   LOCALE_COOKIE,
   LOCALE_COOKIE_MAX_AGE,
   counterpartPath,
-  isFrenchOnly,
   localizedPath,
   matchPath,
+  sectionFallbackPath,
 } from "@/lib/i18n/routes";
 
 function rememberLocale(locale: Locale) {
@@ -22,9 +22,10 @@ function homeHrefs(): Record<Locale, string> {
 }
 
 // EN / FR toggle. Each link goes to the same page in the other language when
-// it exists there, otherwise to that language's home page. The exact target
-// is computed from the browser URL after mount (the server render links to
-// the home pages), so static pages never hydrate with a wrong href.
+// it exists there, otherwise to its section index (or home page) in that
+// language. The exact target is computed from the browser URL after mount
+// (the server render links to the home pages), so static pages never
+// hydrate with a wrong href.
 export default function LanguageSwitcher() {
   const locale = useLocale();
   const t = useTranslations("LanguageSwitcher");
@@ -36,10 +37,10 @@ export default function LanguageSwitcher() {
     const next = homeHrefs();
     if (match) {
       for (const l of routing.locales) {
-        const target = counterpartPath(match, l);
+        if (l === match.locale) continue;
+        // No twin (é, a French sound…): the section index, e.g. /alphabet.
+        const target = counterpartPath(match, l) ?? sectionFallbackPath(match, l);
         if (target) next[l] = target;
-        // French-only letters (é, ç…): English readers land on the alphabet.
-        else if (l !== match.locale && isFrenchOnly(match.pathname, match.params)) next[l] = localizedPath(l, "/alphabet");
       }
     }
     setHrefs(next);

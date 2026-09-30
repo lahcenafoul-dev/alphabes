@@ -28,6 +28,8 @@ export const FRENCH_PATHNAMES: ReadonlySet<AppPathname> = new Set<AppPathname>([
   "/dashboard/[id]",
   "/flashcards",
   "/login",
+  "/phonics",
+  "/phonics/[skill]",
   "/pricing",
   "/privacy-policy",
   "/register",
@@ -43,18 +45,33 @@ export const NOINDEX_PATHNAMES: ReadonlySet<AppPathname> = new Set<AppPathname>(
 ]);
 
 // Pages whose params differ between languages (a French story has its own
-// slug), so an English URL can't be mapped to its French twin by path alone.
-const PARAMS_DIFFER: ReadonlySet<AppPathname> = new Set<AppPathname>(["/stories/[slug]"]);
+// slug; the French sounds aren't the English phonics skills), so an English
+// URL can't be mapped to its French twin by path alone.
+const PARAMS_DIFFER: ReadonlySet<AppPathname> = new Set<AppPathname>(["/stories/[slug]", "/phonics/[skill]"]);
 
 export type RouteParams = Record<string, string>;
 
 // Pages that exist only in French: the letters with accents and the accents
-// page (lib/letters-fr.ts, checked by tests/i18n/letters-fr.test.ts). They
-// get no English hreflang, and the switcher can't map them to English.
+// page (lib/letters-fr.ts), and every French sound page (lib/sons-fr.ts).
+// Both lists are checked against the data by tests/i18n. They get no English
+// hreflang, and the switcher can't map them to English.
 const FRENCH_ONLY_LETTERS = ["e-accent-aigu", "e-accent-grave", "e-accent-circonflexe", "c-cedille"];
+export const FRENCH_SOUND_SLUGS = [
+  "voyelles", "premier-son", "syllabes", "ou", "on", "an", "in", "oi", "ch", "gn", "eu", "o-au-eau",
+  "e-accent-aigu", "e-accent-grave", "ill", "c-et-g", "s-et-ss", "lettres-muettes", "mots-outils",
+];
 const FRENCH_ONLY_PARAMS: Partial<Record<AppPathname, { key: string; values: ReadonlySet<string> }>> = {
   "/alphabet/[letter]": { key: "letter", values: new Set([...FRENCH_ONLY_LETTERS, "accents"]) },
   "/alphabet/[letter]/worksheet": { key: "letter", values: new Set(FRENCH_ONLY_LETTERS) },
+  "/phonics/[skill]": { key: "skill", values: new Set(FRENCH_SOUND_SLUGS) },
+};
+
+// Where the language switcher sends a page that has no twin in the other
+// language: its section's index rather than the home page.
+const SECTION_INDEX: Partial<Record<AppPathname, AppPathname>> = {
+  "/alphabet/[letter]": "/alphabet",
+  "/alphabet/[letter]/worksheet": "/alphabet",
+  "/phonics/[skill]": "/phonics",
 };
 
 export function isFrenchOnly(pathname: AppPathname, params: RouteParams): boolean {
@@ -172,6 +189,12 @@ export function counterpartPath(match: MatchedPath, target: Locale): string | nu
   if (PARAMS_DIFFER.has(match.pathname)) return null;
   if (target !== "fr" && isFrenchOnly(match.pathname, match.params)) return null;
   return localizedPath(target, match.pathname, match.params);
+}
+
+/** For a page with no twin in `target`: its section index there, if that exists. */
+export function sectionFallbackPath(match: MatchedPath, target: Locale): string | null {
+  const index = SECTION_INDEX[match.pathname];
+  return index && isAvailable(target, index) ? localizedPath(target, index) : null;
 }
 
 /** The ?next= target after login: only same-site paths, never "//host" or a full URL. */

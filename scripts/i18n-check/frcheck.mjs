@@ -2,10 +2,17 @@
 const base = process.argv[2] ?? "http://localhost:3100";
 // Phase 2: the alphabet (26 letters + é è ê ç), the accents page and the imagier.
 const letters = [..."abcdefghijklmnopqrstuvwxyz", "e-accent-aigu", "e-accent-grave", "e-accent-circonflexe", "c-cedille"];
+// Phase 3: the sounds (lib/sons-fr.ts).
+const sounds = [
+  "voyelles", "premier-son", "syllabes", "ou", "on", "an", "in", "oi", "ch", "gn", "eu", "o-au-eau",
+  "e-accent-aigu", "e-accent-grave", "ill", "c-et-g", "s-et-ss", "lettres-muettes", "mots-outils",
+];
 const pages = [
   "/fr", "/fr/tarifs", "/fr/a-propos", "/fr/contact", "/fr/confidentialite", "/fr/conditions-utilisation", "/fr/cookies", "/fr/connexion", "/fr/inscription",
   "/fr/alphabet", "/fr/alphabet/accents", "/fr/imagier",
   ...letters.flatMap((l) => [`/fr/alphabet/${l}`, `/fr/alphabet/${l}/fiche`]),
+  "/fr/sons",
+  ...sounds.map((s) => `/fr/sons/${s}`),
 ];
 const decode = (s) => s.replace(/&amp;/g, "&").replace(/&#x27;|&#39;/g, "'").replace(/&quot;/g, '"').replace(/&nbsp;/g, " ");
 // English words that shouldn't appear in French page text.
@@ -60,6 +67,10 @@ const rules = [
   ["/games", { headers: { cookie: "NEXT_LOCALE=fr" } }, 200, null, "no French twin yet: stay"],
   ["/alphabet/c-cedille", {}, 404, null, "French-only letter under an English URL"],
   ["/fr/alphabet/c-cedille", { headers: { cookie: "NEXT_LOCALE=en" } }, 200, null, "French-only letter, English chosen: stay"],
+  ["/fr/sons/blending", {}, 404, null, "English phonics skill under /fr/sons"],
+  ["/phonics/ou", {}, 404, null, "French sound under an English URL"],
+  ["/phonics", { headers: { cookie: "NEXT_LOCALE=fr" } }, 307, "/fr/sons", "phonics index has a French twin"],
+  ["/phonics/blending", { headers: { cookie: "NEXT_LOCALE=fr" } }, 200, null, "English-only skill, French chosen: stay"],
   ["/fr/tarifs", { headers: { cookie: "NEXT_LOCALE=en" } }, 307, "/pricing", "remembered English choice"],
   ["/pricing", { headers: { "accept-language": "fr-FR,fr;q=0.9" } }, 200, null, "no Accept-Language redirect"],
 ];

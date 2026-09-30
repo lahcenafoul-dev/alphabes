@@ -127,18 +127,19 @@ console.log("Mobile (390px)");
   await context.close();
 }
 
+// Fake voices: the device has only the voices listed; speech is recorded, not played.
+const fakeVoices = (langs) => `(() => {
+  const voices = ${JSON.stringify(langs)}.map((lang) => ({ lang, name: "Voix " + lang, localService: true, default: false, voiceURI: lang }));
+  window.__spoken = [];
+  window.SpeechSynthesisUtterance = class { constructor(text) { this.text = text; } };
+  Object.defineProperty(window, "speechSynthesis", { value: {
+    getVoices: () => voices, cancel() {}, speak: (u) => window.__spoken.push({ text: u.text, lang: u.lang }),
+    addEventListener() {}, removeEventListener() {},
+  } });
+})()`;
+
 console.log("Alphabet (phase 2)");
 {
-  // Fake voices: the device has only the voices listed; speech is recorded, not played.
-  const fakeVoices = (langs) => `(() => {
-    const voices = ${JSON.stringify(langs)}.map((lang) => ({ lang, name: "Voix " + lang, localService: true, default: false, voiceURI: lang }));
-    window.__spoken = [];
-    window.SpeechSynthesisUtterance = class { constructor(text) { this.text = text; } };
-    Object.defineProperty(window, "speechSynthesis", { value: {
-      getVoices: () => voices, cancel() {}, speak: (u) => window.__spoken.push({ text: u.text, lang: u.lang }),
-      addEventListener() {}, removeEventListener() {},
-    } });
-  })()`;
 
   const { context, page, errors } = await newPage();
   await page.goto(base + "/alphabet/b");
@@ -227,6 +228,58 @@ console.log("Alphabet (phase 2)");
     check(errors.length === 0, `no console/page errors${errors.length ? ": " + errors.slice(0, 3).join(" | ") : ""}`);
     await context.close();
   }
+}
+
+console.log("Sounds (phase 3)");
+{
+  const { context, page, errors } = await newPage();
+  await context.addInitScript(fakeVoices(["en-US", "fr-FR"]));
+  await page.goto(base + "/phonics");
+  await page.waitForLoadState("networkidle");
+  check((await switcherHref(page, "fr")) === "/fr/sons", "FR link on /phonics points to /fr/sons");
+  await page.goto(base + "/phonics/blending");
+  await page.waitForLoadState("networkidle");
+  check((await switcherHref(page, "fr")) === "/fr/sons", "FR link on an English-only skill goes to /fr/sons");
+  await page.goto(base + "/fr/sons/ou");
+  await page.waitForLoadState("networkidle");
+  check((await switcherHref(page, "en")) === "/phonics", "EN link on a French sound goes to /phonics");
+
+  // The hunt: a right card turns green, a wrong one explains, the counter moves.
+  await page.getByRole("button", { name: "Écouter : un mouton" }).click();
+  await page.getByRole("button", { name: "Écouter : la lune" }).click();
+  check(await page.getByText("Oui : on entend [u] dans « mouton ».").isVisible(), "right card says why");
+  check(await page.getByText("Non : pas de [u] dans « lune ».").isVisible(), "wrong card says why");
+  check(await page.getByText("Trouvés : 1 sur 3").isVisible(), "counter shows 1 of 3");
+  let spoken = await page.evaluate(() => window.__spoken.map((u) => u.text));
+  check(spoken.join("|") === "un mouton|la lune", `hunt words read aloud (${spoken.join("|")})`);
+  await page.getByRole("button", { name: "Écouter : une citrouille" }).click();
+  await page.getByRole("button", { name: "Écouter : une douche" }).click();
+  check(await page.getByText("Bravo, tu as trouvé les 3 mots !").isVisible(), "hunt finished message");
+  await page.screenshot({ path: `${shots}/fr-son-ou.png`, fullPage: true });
+
+  // The syllable builder: l + i = li.
+  await page.goto(base + "/fr/sons/syllabes");
+  await page.waitForLoadState("networkidle");
+  await page.getByRole("button", { name: "l", exact: true }).click();
+  await page.getByRole("button", { name: "i", exact: true }).click();
+  check(await page.getByRole("button", { name: "Écouter la syllabe li" }).isVisible(), "builder shows li");
+  spoken = await page.evaluate(() => window.__spoken.map((u) => u.text));
+  check(spoken.at(-1) === "li", `builder reads the syllable (${spoken.at(-1)})`);
+  await page.screenshot({ path: `${shots}/fr-son-syllabes.png`, fullPage: true });
+  check(errors.length === 0, `no console/page errors${errors.length ? ": " + errors.slice(0, 3).join(" | ") : ""}`);
+  await context.close();
+}
+{
+  const { context, page, errors } = await newPage({ width: 390, height: 844 });
+  for (const p of ["/fr/sons", "/fr/sons/syllabes", "/fr/sons/ill", "/fr/sons/c-et-g", "/fr/sons/mots-outils", "/phonics"]) {
+    await page.goto(base + p);
+    await page.waitForLoadState("networkidle");
+    const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+    check(overflow <= 0, `${p}: no horizontal scroll (overflow ${overflow}px)`);
+    await page.screenshot({ path: `${shots}/m${p.replaceAll("/", "_")}.png`, fullPage: true });
+  }
+  check(errors.length === 0, `no console/page errors${errors.length ? ": " + errors.slice(0, 3).join(" | ") : ""}`);
+  await context.close();
 }
 
 await browser.close();

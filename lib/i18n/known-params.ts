@@ -15,6 +15,7 @@ import { getLetterContent } from "@/lib/letters-data";
 import { ACCENTS_SLUG, frenchLetterParams } from "@/lib/letters-fr";
 import { getPhonicsSkill } from "@/lib/phonics-data";
 import { getPreschoolTopic } from "@/lib/preschool-data";
+import { getFrenchSound } from "@/lib/sons-fr";
 import { getStaticWorksheetCategory } from "@/lib/static-worksheet-categories";
 import { getStaticWorksheetBySlug } from "@/lib/static-worksheets-data";
 import { getBundleBySlug } from "@/lib/worksheet-bundles";
@@ -36,7 +37,7 @@ const VALIDATORS: Partial<Record<AppPathname, Validator>> = {
   "/blog/[slug]": ({ slug }) => !!(getBlogCategory(slug) || getBlogPost(slug)),
   "/games/[slug]": ({ slug }) => !!getGame(slug),
   "/kindergarten/[topic]": ({ topic }) => !!getKindergartenTopic(topic),
-  "/phonics/[skill]": ({ skill }) => !!getPhonicsSkill(skill),
+  "/phonics/[skill]": ({ skill }, locale) => (locale === "fr" ? !!getFrenchSound(skill) : !!getPhonicsSkill(skill)),
   "/preschool/[topic]": ({ topic }) => !!getPreschoolTopic(topic),
   "/worksheets/[category]": ({ category }) =>
     !!(

@@ -133,13 +133,18 @@ export default function HomeFr() {
             s&apos;écrivent avec plusieurs lettres, comme ou, on, an ou ch.
           </p>
           <div className="mt-8 grid sm:grid-cols-2 md:grid-cols-4 gap-4">
-            {["Les voyelles", "La syllabe", "Le son ou", "Le son ch"].map((item) => (
+            {[
+              { label: "Les voyelles", skill: "voyelles" },
+              { label: "La syllabe", skill: "syllabes" },
+              { label: "Le son ou", skill: "ou" },
+              { label: "Le son ch", skill: "ch" },
+            ].map((item) => (
               <Link
-                key={item}
-                href="/phonics"
+                key={item.skill}
+                href={{ pathname: "/phonics/[skill]", params: { skill: item.skill } }}
                 className="rounded-block bg-paper p-5 shadow-block hover:shadow-blockHover transition font-display font-bold"
               >
-                {item}
+                {item.label}
               </Link>
             ))}
           </div>

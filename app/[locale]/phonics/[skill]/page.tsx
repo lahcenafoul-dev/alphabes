@@ -1,81 +1,31 @@
-import Link from "next/link";
-import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { phonicsSkills, getPhonicsSkill } from "@/lib/phonics-data";
-import { buildBreadcrumbJsonLd, buildLearningResourceJsonLd } from "@/lib/json-ld";
+import { frenchSounds } from "@/lib/sons-fr";
+import { initLocale } from "@/lib/i18n/server";
+import SkillEn, { englishSkillParams, skillMetadataEn } from "./skill-en";
+import SoundFr, { soundMetadataFr } from "./sound-fr";
 
-type Props = { params: Promise<{ skill: string }> };
+type Props = { params: Promise<{ locale: string; skill: string }> };
 
 // Every valid page is listed in generateStaticParams, so unknown params go
 // straight to the 404 page. (Calling notFound() inside the page instead leaves
 // an empty error shell in the server HTML with this Next.js version.)
 export const dynamicParams = false;
 
-export function generateStaticParams() {
-  return phonicsSkills.map((s) => ({ skill: s.slug }));
+// French has its own sound pages (ou, on, la syllabe…), unrelated to the
+// English phonics skills. Keep in sync with lib/i18n/known-params.ts.
+export function generateStaticParams({ params }: { params: { locale: string } }) {
+  const skills = params.locale === "fr" ? frenchSounds.map((s) => s.slug) : englishSkillParams();
+  return skills.map((skill) => ({ skill }));
 }
 
 export async function generateMetadata(props: Props): Promise<Metadata> {
-  const params = await props.params;
-  const skill = getPhonicsSkill(params.skill);
-  if (!skill) return {};
-  return {
-    title: skill.title,
-    description: skill.summary,
-    alternates: { canonical: `https://alphabes.com/phonics/${skill.slug}` },
-  };
+  const { locale: param, skill } = await props.params;
+  const locale = initLocale(param);
+  return locale === "fr" ? soundMetadataFr(skill) : skillMetadataEn(skill);
 }
 
 export default async function PhonicsSkillPage(props: Props) {
-  const params = await props.params;
-  const skill = getPhonicsSkill(params.skill);
-  if (!skill) notFound();
-
-  const breadcrumbJsonLd = buildBreadcrumbJsonLd([
-    { name: "Home", url: "https://alphabes.com" },
-    { name: "Phonics", url: "https://alphabes.com/phonics" },
-    { name: skill.title, url: `https://alphabes.com/phonics/${skill.slug}` },
-  ]);
-
-  const learningResourceJsonLd = buildLearningResourceJsonLd({
-    title: skill.title,
-    description: skill.description,
-    url: `https://alphabes.com/phonics/${skill.slug}`,
-    skills: [skill.title],
-    ageLevelLabel: "Preschool & Kindergarten",
-  });
-
-  return (
-    <main id="main-content" className="mx-auto max-w-3xl px-6 py-12">
-      <nav aria-label="Breadcrumb" className="text-sm text-chalkboard/60">
-        <ol className="flex gap-2">
-          <li><Link href="/">Home</Link> /</li>
-          <li><Link href="/phonics">Phonics</Link> /</li>
-          <li aria-current="page" className="font-bold">{skill.title}</li>
-        </ol>
-      </nav>
-
-      <h1 className="mt-4 text-4xl font-extrabold">{skill.title}</h1>
-      <p className="mt-3 text-chalkboard/70">{skill.description}</p>
-
-      <section className="mt-8 rounded-block bg-crayon-blue/10 p-6">
-        <h2 className="font-display font-bold text-lg">Examples</h2>
-        <ul className="mt-3 space-y-2 text-chalkboard/80">
-          {skill.examples.map((ex) => (
-            <li key={ex}>• {ex}</li>
-          ))}
-        </ul>
-      </section>
-
-      <Link
-        href="/worksheets/phonics"
-        className="mt-8 inline-block rounded-block bg-chalkboard text-paper font-display font-bold px-5 py-2.5 shadow-block hover:shadow-blockHover transition"
-      >
-        Practice with a Worksheet
-      </Link>
-
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(learningResourceJsonLd) }} />
-    </main>
-  );
+  const { locale: param, skill } = await props.params;
+  const locale = initLocale(param);
+  return locale === "fr" ? <SoundFr slug={skill} /> : <SkillEn slug={skill} />;
 }

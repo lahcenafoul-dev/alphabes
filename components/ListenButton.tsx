@@ -19,23 +19,35 @@ export default function ListenButton({
   ariaLabel?: string;
   rate?: number;
 }) {
+  const { say, notice } = useFrenchSpeech();
+
+  return (
+    <>
+      <button type="button" onClick={() => say(text, rate)} className={className} aria-label={ariaLabel}>
+        {children}
+      </button>
+      {notice}
+    </>
+  );
+}
+
+/**
+ * French speech for interactive components: `say(text)` reads it with a
+ * French voice, and `notice` (render it) explains how to install one when
+ * the device has none.
+ */
+export function useFrenchSpeech() {
   const [problem, setProblem] = useState<Exclude<SpeakResult, "ok"> | null>(null);
 
   useEffect(warmUpVoices, []);
 
-  async function onClick() {
+  async function say(text: string, rate?: number) {
     const result = await speakIn("fr", text, rate);
     setProblem(result === "ok" ? null : result);
   }
 
-  return (
-    <>
-      <button type="button" onClick={onClick} className={className} aria-label={ariaLabel}>
-        {children}
-      </button>
-      {problem && <NoVoiceNotice kind={problem} onClose={() => setProblem(null)} />}
-    </>
-  );
+  const notice = problem ? <NoVoiceNotice kind={problem} onClose={() => setProblem(null)} /> : null;
+  return { say, notice };
 }
 
 function NoVoiceNotice({ kind, onClose }: { kind: Exclude<SpeakResult, "ok">; onClose: () => void }) {
