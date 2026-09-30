@@ -78,7 +78,7 @@ export async function middleware(req: NextRequest) {
     return notFound(req, match?.locale ?? (/^\/fr(\/|$)/.test(pathname) ? "fr" : routing.defaultLocale));
   }
   // Stories live in the database, so they're checked with a (cached) query.
-  if (match?.pathname === "/stories/[slug]" && (await storyExists(match.params.slug)) === false) {
+  if (match?.pathname === "/stories/[slug]" && (await storyExists(match.params.slug, match.locale)) === false) {
     return notFound(req, match.locale);
   }
 

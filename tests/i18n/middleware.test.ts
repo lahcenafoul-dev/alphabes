@@ -4,7 +4,8 @@ import { middleware } from "@/middleware";
 
 // Stand-in for the database lookup: only one story exists.
 vi.mock("@/lib/story-exists", () => ({
-  storyExists: async (slug: string) => slug === "the-little-apple",
+  storyExists: async (slug: string, locale: string) =>
+    (locale === "en" && slug === "the-little-apple") || (locale === "fr" && slug === "la-petite-pomme"),
 }));
 
 beforeAll(() => {
@@ -111,6 +112,17 @@ describe("middleware routing", () => {
     expect(rewrite(await middleware(request("/phonics/ou")))).toBe("/_not-found");
     expect(redirect(await middleware(request("/phonics", "NEXT_LOCALE=fr")))).toBe("/fr/sons");
     expect(redirect(await middleware(request("/phonics/blending", "NEXT_LOCALE=fr")))).toBeNull();
+  });
+
+  it("keeps each story in its own language", async () => {
+    expect(rewrite(await middleware(request("/fr/histoires/la-petite-pomme")))).not.toBe("/_not-found");
+    expect(rewrite(await middleware(request("/fr/histoires")))).not.toBe("/_not-found");
+    const fr = await middleware(request("/fr/histoires/the-little-apple"));
+    expect(rewrite(fr)).toBe("/_not-found");
+    expect(notFoundLocale(fr)).toBe("fr");
+    expect(rewrite(await middleware(request("/stories/la-petite-pomme")))).toBe("/_not-found");
+    expect(redirect(await middleware(request("/stories", "NEXT_LOCALE=fr")))).toBe("/fr/histoires");
+    expect(redirect(await middleware(request("/stories/the-little-apple", "NEXT_LOCALE=fr")))).toBeNull();
   });
 
   it("redirects /en URLs to the unprefixed English ones", async () => {

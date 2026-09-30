@@ -72,12 +72,12 @@ See CLAUDE.md, "Languages", for the rules. In short:
 | 1 | next-intl routing, header + EN/FR switcher, cookie, hreflang + sitemap, French UI (home, about, pricing, contact, login, register, dashboard, legal), API error codes, French 404 | **Done**, pushed. |
 | 2 | Alphabet: French letter data (26 + é è ê ç), "Les accents" page, alphabet chart, letter pages, flashcards (`/fr/imagier`), `speak()` with French voice + no-voice message, tracing canvas with script/cursive toggle | **Done**, pushed. |
 | 3 | Sons (phonics): 19 sound pages + index (`/fr/sons`), speakable words and sentences, "Où est le son ?" picture hunt, syllable builder | **Done**, pushed. |
-| 4 | Worksheets: 238 French PDFs (6 types × 30 letters, nombres, formes, couleurs, mots-outils, syllabes, sons), 43 packs (`/fr/fiches/packs`), cursive on Seyès lines, pre-rendered with Chromium | **Done**, committed, not pushed: waiting for the owner's OK. |
-| 5 | Stories: DB migration, 8 original French stories (same illustration scenes), story list filtered by language, reader in French, audio via Google Cloud TTS (cost estimate first) | To do |
+| 4 | Worksheets: 238 French PDFs (6 types × 30 letters, nombres, formes, couleurs, mots-outils, syllabes, sons), 43 packs (`/fr/fiches/packs`), cursive on Seyès lines, pre-rendered with Chromium | **Done**, pushed. |
+| 5 | Stories: DB migration, 8 original French stories (same illustration scenes), story list filtered by language, reader in French, audio via Google Cloud TTS (cost estimate first) | **Code done**, committed, not pushed. Migration applied to the Neon `dev` branch only. Audio **not generated**: waiting for the owner's OK (estimate: 2,186 characters, $0). Until then pages use the browser's French voice. |
 | 6 | Games (5 French games), child language preference (dashboard forms + links), maternelle, grande section, activities | To do |
 | 7 | Launch: production DB migration (with OK), merge to `main`, submit the French sitemap in Search Console. French blog optional (new writing). | To do |
 
-### Planned database changes (phase 5, additive)
+### Database changes (phase 5, additive)
 
 ```prisma
 enum Locale { EN FR }
@@ -85,11 +85,14 @@ model Story        { locale Locale @default(EN)  translationGroup String?  @@ind
 model ChildProfile { language Locale @default(EN) }
 model User         { locale Locale @default(EN) }
 ```
-Slugs stay globally unique; fill in `StoryPage.audioUrl`. Apply to the Neon `dev` branch first; production gets `prisma migrate deploy` only with the owner's OK, before the merge to `main`.
+Slugs stay globally unique. Migration `20260930050000_story_locale`, **applied to `dev` on 2026-09-30**; production gets `prisma migrate deploy` and `npm run db:seed` only with the owner's OK, before the merge to `main` (phase 7). `ChildProfile.language` and `User.locale` are used from phase 6.
+
+- Story content lives in `prisma/stories-data.ts` (both languages, `translationGroup` pairs twins); `npm run db:seed` upserts it. Twins get hreflang to each other (page metadata and sitemap).
+- Stories exist only in their language: the lists filter by `locale`, and `storyExists(slug, locale)` in the middleware 404s a story under the other language's URL.
+- Audio: `npm run tts:histoires` prints the estimate and sends nothing. `-- --list-voices` / `-- --generate [--voice fr-FR-Neural2-A]` need `GOOGLE_TTS_API_KEY` (key restricted to Text-to-Speech) and write `public/audio/histoires/<slug>-<page>.mp3`; then `npm run db:seed` fills `StoryPage.audioUrl`. Without a file, "Écouter" uses the browser's French voice.
 
 ### Things later phases must remember
 
-- `/stories/[slug]` and `/worksheets/[category]` (and bundles) will have French slugs that differ from English: add them to `PARAMS_DIFFER` handling / `otherParams` in `alternatesFor`, make `lib/i18n/known-params.ts` locale-aware, and make `storyExists` check the story's language.
 - Each dynamic page's `generateStaticParams` receives `{ params: { locale } }`: return the French list for `fr` once it exists. Don't return `[]` for one locale (Next then prebuilds nothing for the route); the middleware already hides unwritten French pages.
 - French home page (`app/[locale]/home-fr.tsx`): the worksheet links point to `/worksheets` until phase 4, which should also add a "Fiches populaires" section and accent letter blocks (é è ê ç).
 - The French sounds (`lib/sons-fr.ts`, slugs also listed in `FRENCH_SOUND_SLUGS` in `lib/i18n/routes.ts`) are all French-only: `/phonics/[skill]` is in `PARAMS_DIFFER`, so English skill pages get no French hreflang, and the switcher falls back to the section index (`sectionFallbackPath`). Only `/phonics` ↔ `/fr/sons` are paired. Phase 4 can link sound pages to French phonics worksheets; phase 6 games can reuse `components/sons/SoundHunt.tsx` and `useFrenchSpeech()`.

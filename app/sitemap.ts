@@ -29,18 +29,27 @@ const baseUrl = SITE_URL;
 // stories appear without a rebuild and the build never needs the database.
 export const dynamic = "force-dynamic";
 
+// Each story under its own language's URL; stories with a twin in the
+// other language (same translationGroup) list each other as alternates.
 async function getStoryRoutes(): Promise<MetadataRoute.Sitemap> {
   try {
     const stories = await getPrisma().story.findMany({
-      select: { slug: true, updatedAt: true },
-      orderBy: { order: "asc" },
+      select: { slug: true, updatedAt: true, locale: true, translationGroup: true },
+      orderBy: [{ locale: "asc" }, { order: "asc" }],
     });
-    return stories.map((s) => ({
-      url: `${baseUrl}/stories/${s.slug}`,
-      lastModified: s.updatedAt,
-      changeFrequency: "monthly" as const,
-      priority: 0.6,
-    }));
+    const urlOf = (s: (typeof stories)[number]) => absoluteUrl(s.locale === "FR" ? "fr" : "en", "/stories/[slug]", { slug: s.slug });
+    return stories.map((s) => {
+      const twin = s.translationGroup ? stories.find((o) => o.translationGroup === s.translationGroup && o.locale !== s.locale) : undefined;
+      const en = s.locale === "EN" ? s : twin;
+      const fr = s.locale === "FR" ? s : twin;
+      return {
+        url: urlOf(s),
+        lastModified: s.updatedAt,
+        changeFrequency: "monthly" as const,
+        priority: 0.6,
+        ...(en && fr && { alternates: { languages: { en: urlOf(en), fr: urlOf(fr), "x-default": urlOf(en) } } }),
+      };
+    });
   } catch (err) {
     // Still serve every static route if the database is unreachable.
     console.error("sitemap: could not load stories", err);
@@ -178,7 +187,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...staticWorksheetDetailRoutes,
     ...preschoolRoutes,
     ...kindergartenRoutes,
-    ...(await getStoryRoutes()),
   ];
 
   // Pages with no English twin: the letters with accents, the accents page,
@@ -210,7 +218,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     })),
   ];
 
-  return [...withFrench(englishEntries), ...frenchOnlyEntries];
+  return [...withFrench(englishEntries), ...frenchOnlyEntries, ...(await getStoryRoutes())];
 }
 
 // Every English page that also exists in French gets hreflang alternates,

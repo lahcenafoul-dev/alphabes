@@ -1,7 +1,8 @@
-type Props = { scene: string | null };
+// endLabel: the words drawn on the last apple picture ("Fin" in French).
+type Props = { scene: string | null; endLabel?: string };
 
-export default function StoryIllustration({ scene }: Props) {
-  const svg = getScene(scene);
+export default function StoryIllustration({ scene, endLabel = "The End" }: Props) {
+  const svg = getScene(scene, endLabel);
   return (
     <div className="w-full aspect-video bg-paper flex items-center justify-center">
       {svg}
@@ -9,7 +10,7 @@ export default function StoryIllustration({ scene }: Props) {
   );
 }
 
-function getScene(scene: string | null) {
+function getScene(scene: string | null, endLabel: string) {
   switch (scene) {
     // ===== The Little Apple =====
     case "apple-1":
@@ -62,7 +63,7 @@ function getScene(scene: string | null) {
           <rect x="185" y="180" width="30" height="110" fill="#92400e" />
           <circle cx="200" cy="140" r="70" fill="#22c55e" />
           <text x="200" y="150" textAnchor="middle" fontSize="28" fontWeight="bold" fill="white">
-            The End
+            {endLabel}
           </text>
         </svg>
       );

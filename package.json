@@ -16,6 +16,7 @@
     "generate:worksheets": "tsx scripts/generate-worksheets.ts",
     "validate:worksheets": "tsx scripts/validate-worksheets.ts",
     "fiches:fr": "tsx scripts/fiches-fr/generate.ts",
+    "tts:histoires": "tsx scripts/tts-histoires.ts",
     "postinstall": "prisma generate",
     "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
     "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",

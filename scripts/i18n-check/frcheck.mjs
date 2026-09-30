@@ -17,6 +17,8 @@ const pages = [
   "/fr/fiches", "/fr/fiches/packs", "/fr/fiches/ecriture-cursive", "/fr/fiches/nombres", "/fr/fiches/sons",
   "/fr/fiches/lettre-a-cursive", "/fr/fiches/lettre-e-accent-aigu-son", "/fr/fiches/syllabes-m", "/fr/fiches/son-ou",
   "/fr/fiches/couleur-rouge", "/fr/fiches/packs/pack-alphabet-complet", "/fr/fiches/packs/pack-lettre-c-cedille",
+  // Phase 5: stories (from the database).
+  "/fr/histoires", "/fr/histoires/la-petite-pomme", "/fr/histoires/la-sieste-de-leon",
 ];
 const decode = (s) => s.replace(/&amp;/g, "&").replace(/&#x27;|&#39;/g, "'").replace(/&quot;/g, '"').replace(/&nbsp;/g, " ");
 // English words that shouldn't appear in French page text.
@@ -80,6 +82,9 @@ const rules = [
   ["/fr/fiches/packs/complete-bundle", {}, 404, null, "English bundle under /fr/fiches/packs"],
   ["/worksheets", { headers: { cookie: "NEXT_LOCALE=fr" } }, 307, "/fr/fiches", "worksheet index has a French twin"],
   ["/worksheets/letter-a-tracing", { headers: { cookie: "NEXT_LOCALE=fr" } }, 200, null, "English-only worksheet, French chosen: stay"],
+  ["/fr/histoires/the-little-apple", {}, 404, null, "English story under /fr/histoires"],
+  ["/stories/la-petite-pomme", {}, 404, null, "French story under an English URL"],
+  ["/stories", { headers: { cookie: "NEXT_LOCALE=fr" } }, 307, "/fr/histoires", "story list has a French twin"],
   ["/fr/tarifs", { headers: { cookie: "NEXT_LOCALE=en" } }, 307, "/pricing", "remembered English choice"],
   ["/pricing", { headers: { "accept-language": "fr-FR,fr;q=0.9" } }, 200, null, "no Accept-Language redirect"],
 ];

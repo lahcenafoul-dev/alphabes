@@ -317,5 +317,46 @@ console.log("Worksheets (phase 4)");
   await context.close();
 }
 
+console.log("Stories (phase 5)");
+{
+  const { context, page, errors } = await newPage();
+  await context.addInitScript(fakeVoices(["en-US", "fr-FR"]));
+  await page.goto(base + "/stories");
+  await page.waitForLoadState("networkidle");
+  check((await switcherHref(page, "fr")) === "/fr/histoires", "FR link on /stories points to /fr/histoires");
+  check(!(await page.getByText("La petite pomme").count()), "English story list has no French story");
+  await page.goto(base + "/fr/histoires");
+  await page.waitForLoadState("networkidle");
+  check((await page.locator("main").getByRole("heading", { level: 2 }).count()) === 8, "French story list shows 8 stories");
+  check(!(await page.getByText("The Little Apple").count()), "French story list has no English story");
+  await page.getByRole("link", { name: /La petite pomme/ }).click();
+  await page.waitForURL("**/fr/histoires/la-petite-pomme");
+  await page.waitForLoadState("networkidle");
+  check(new URL(page.url()).pathname === "/fr/histoires/la-petite-pomme", "story opens at /fr/histoires/la-petite-pomme");
+  check((await switcherHref(page, "en")) === "/stories", "EN link on a French story goes to /stories");
+  const hreflang = await page.locator('link[rel=alternate][hreflang=en]').getAttribute("href");
+  check(hreflang === "https://alphabes.com/stories/the-little-apple", `hreflang pairs the twin story (${hreflang})`);
+  await page.getByRole("button", { name: "Écouter la page" }).click();
+  const spoken = await page.evaluate(() => window.__spoken.map((u) => `${u.lang}|${u.text}`));
+  check(spoken[0] === "fr-FR|Il était une fois une petite pomme rouge, toute ronde.", `page read with a French voice (${spoken[0]})`);
+  for (let i = 0; i < 4; i++) await page.getByRole("button", { name: "Suivant →" }).click();
+  check(await page.getByText("Page 5 sur 5").isVisible(), "French page counter");
+  check(await page.getByText("Fin", { exact: true }).isVisible(), "last picture says Fin");
+  await page.screenshot({ path: `${shots}/fr-histoire.png`, fullPage: true });
+  check(errors.length === 0, `no console/page errors${errors.length ? ": " + errors.slice(0, 3).join(" | ") : ""}`);
+  await context.close();
+}
+{
+  const { context, page, errors } = await newPage({ width: 390, height: 844 });
+  for (const p of ["/fr/histoires", "/fr/histoires/hugo-le-hibou", "/stories"]) {
+    await page.goto(base + p);
+    await page.waitForLoadState("networkidle");
+    const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+    check(overflow <= 0, `${p}: no horizontal scroll (overflow ${overflow}px)`);
+  }
+  check(errors.length === 0, `no console/page errors${errors.length ? ": " + errors.slice(0, 3).join(" | ") : ""}`);
+  await context.close();
+}
+
 await browser.close();
 console.log(problems ? `\n${problems} problem(s)` : "\nall browser checks passed");
