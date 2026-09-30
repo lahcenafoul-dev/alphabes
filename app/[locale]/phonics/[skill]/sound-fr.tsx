@@ -5,6 +5,7 @@ import MarkedWord from "@/components/sons/MarkedWord";
 import SoundHunt from "@/components/sons/SoundHunt";
 import SyllableBuilder from "@/components/sons/SyllableBuilder";
 import { absoluteUrl, alternatesFor } from "@/lib/i18n/routes";
+import { ficheForSound } from "@/lib/fiches-fr";
 import { buildBreadcrumbJsonLd } from "@/lib/json-ld";
 import { getFrenchSound, plainWord, soundNeighbors, type FrenchSound, type SoundWord } from "@/lib/sons-fr";
 
@@ -58,6 +59,7 @@ export default function SoundFr({ slug }: { slug: string }) {
   const { prev, next } = soundNeighbors(s.slug);
   const url = absoluteUrl("fr", "/phonics/[skill]", { skill: s.slug });
   const related = s.related.map((r) => getFrenchSound(r)!);
+  const fiche = ficheForSound(s.slug);
   const subtitle = [s.spellings, s.ipa && `Son : ${s.ipa}`, s.level].filter(Boolean).join(" · ");
 
   const lessonJsonLd = {
@@ -200,6 +202,23 @@ export default function SoundFr({ slug }: { slug: string }) {
           <div className="mt-3">
             <SoundHunt hunt={s.hunt} />
           </div>
+        </section>
+      )}
+
+      {fiche && (
+        <section className="mt-10 flex flex-wrap items-center gap-4 rounded-block border border-chalkboard/10 p-5" aria-labelledby="fiche-heading">
+          <div>
+            <h2 id="fiche-heading" className="text-2xl font-bold">
+              La fiche à imprimer
+            </h2>
+            <p className="mt-1 text-chalkboard/70">Les mots à lire, la phrase et des mots à écrire en cursive, sur une page A4.</p>
+          </div>
+          <Link
+            href={{ pathname: "/worksheets/[category]", params: { category: fiche.slug } }}
+            className="rounded-block bg-crayon-green text-white px-5 py-2.5 font-display font-bold shadow-block hover:shadow-blockHover transition"
+          >
+            Voir la fiche
+          </Link>
         </section>
       )}
 

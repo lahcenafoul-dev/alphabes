@@ -176,13 +176,13 @@ console.log("Alphabet (phase 2)");
   await page.waitForTimeout(300);
   await canvas.screenshot({ path: `${shots}/fr-fiche-cursive-canvas.png` });
 
-  // French PDF download (jsPDF writes text uncompressed, é as \351 in WinAnsi).
-  const [download] = await Promise.all([page.waitForEvent("download"), page.getByRole("button", { name: /Télécharger la fiche/ }).click()]);
+  // French PDF download: the pre-rendered tracing worksheet (lib/fiches-fr.ts).
+  const [download] = await Promise.all([page.waitForEvent("download"), page.getByRole("link", { name: /Fiche de tracé/ }).click()]);
   const pdfPath = `${shots}/${download.suggestedFilename()}`;
   await download.saveAs(pdfPath);
   const pdf = readFileSync(pdfPath, "latin1");
   check(download.suggestedFilename() === "fiche-lettre-e-accent-aigu.pdf", `PDF file name (${download.suggestedFilename()})`);
-  check(pdf.includes("Fiche de trac") && /La lettre (É é|\\311 \\351)/.test(pdf), "PDF has the French header and the title with É é");
+  check(pdf.startsWith("%PDF") && pdf.length > 10_000, `a real PDF was downloaded (${pdf.length} bytes)`);
   check(errors.length === 0, `no console/page errors${errors.length ? ": " + errors.slice(0, 3).join(" | ") : ""}`);
   await context.close();
 
@@ -272,6 +272,41 @@ console.log("Sounds (phase 3)");
 {
   const { context, page, errors } = await newPage({ width: 390, height: 844 });
   for (const p of ["/fr/sons", "/fr/sons/syllabes", "/fr/sons/ill", "/fr/sons/c-et-g", "/fr/sons/mots-outils", "/phonics"]) {
+    await page.goto(base + p);
+    await page.waitForLoadState("networkidle");
+    const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+    check(overflow <= 0, `${p}: no horizontal scroll (overflow ${overflow}px)`);
+    await page.screenshot({ path: `${shots}/m${p.replaceAll("/", "_")}.png`, fullPage: true });
+  }
+  check(errors.length === 0, `no console/page errors${errors.length ? ": " + errors.slice(0, 3).join(" | ") : ""}`);
+  await context.close();
+}
+
+console.log("Worksheets (phase 4)");
+{
+  const { context, page, errors } = await newPage();
+  await page.goto(base + "/worksheets");
+  await page.waitForLoadState("networkidle");
+  check((await switcherHref(page, "fr")) === "/fr/fiches", "FR link on /worksheets points to /fr/fiches");
+  await page.goto(base + "/fr/fiches/lettre-b-cursive");
+  await page.waitForLoadState("networkidle");
+  check((await switcherHref(page, "en")) === "/worksheets", "EN link on a French worksheet goes to /worksheets");
+  const img = page.getByAltText(/Aperçu de la fiche : Écrire la lettre B en cursive/);
+  check(await img.evaluate((i) => i.complete && i.naturalWidth > 300), "worksheet preview image loads");
+  const href = await page.getByRole("link", { name: /Télécharger le PDF/ }).getAttribute("href");
+  const res = await page.request.get(base + href);
+  check(res.status() === 200 && res.headers()["content-type"]?.includes("pdf"), `worksheet PDF is served (${res.status()} ${res.headers()["content-type"]})`);
+  await page.screenshot({ path: `${shots}/fr-fiche-cursive.png`, fullPage: true });
+  await page.goto(base + "/fr/fiches/packs/pack-lettre-a");
+  await page.waitForLoadState("networkidle");
+  const packHref = await page.getByRole("link", { name: /Télécharger le PDF \(6 pages\)/ }).getAttribute("href");
+  check((await page.request.get(base + packHref)).status() === 200, "pack PDF is served");
+  check(errors.length === 0, `no console/page errors${errors.length ? ": " + errors.slice(0, 3).join(" | ") : ""}`);
+  await context.close();
+}
+{
+  const { context, page, errors } = await newPage({ width: 390, height: 844 });
+  for (const p of ["/fr/fiches", "/fr/fiches/ecriture-cursive", "/fr/fiches/lettre-b-son", "/fr/fiches/packs", "/fr/alphabet/b", "/worksheets"]) {
     await page.goto(base + p);
     await page.waitForLoadState("networkidle");
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);

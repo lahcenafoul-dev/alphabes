@@ -2,6 +2,9 @@ import type { Metadata } from "next";
 import { Link } from "@/i18n/navigation";
 import { getAllLetterSlugs } from "@/lib/letters-data";
 import { alternatesFor } from "@/lib/i18n/routes";
+import { FicheCard } from "@/components/fiches/FicheParts";
+import { getFiche } from "@/lib/fiches-fr";
+import { frenchLetters, isAccentLetter } from "@/lib/letters-fr";
 
 const title = "Apprendre l'alphabet : fiches et jeux gratuits | AlphaBes";
 const description =
@@ -122,6 +125,25 @@ export default function HomeFr() {
             </Link>
           ))}
         </div>
+        <p className="mt-6 text-chalkboard/70">Et les lettres avec un accent, qui changent le son :</p>
+        <div className="mt-3 flex flex-wrap gap-3">
+          {frenchLetters.filter(isAccentLetter).map((l) => (
+            <Link
+              key={l.slug}
+              href={{ pathname: "/alphabet/[letter]", params: { letter: l.slug } }}
+              className="letter-block bg-crayon-purple h-14 w-14 text-2xl"
+              aria-label={`Leçon sur la lettre ${l.upper}`}
+            >
+              {l.upper}
+            </Link>
+          ))}
+          <Link
+            href={{ pathname: "/alphabet/[letter]", params: { letter: "accents" } }}
+            className="self-center font-display font-bold text-crayon-blue hover:underline"
+          >
+            Tous les accents →
+          </Link>
+        </div>
       </section>
 
       {/* 2. Les sons */}
@@ -155,18 +177,27 @@ export default function HomeFr() {
       <section className="mx-auto max-w-6xl px-6 py-16">
         <h2 className="text-3xl font-bold">Des fiches alphabet gratuites</h2>
         <p className="mt-2 text-chalkboard/70 max-w-2xl">
-          AlphaBes propose plus de 300 fiches gratuites à imprimer pour toutes les lettres de
-          l&apos;alphabet, accents compris : tracé, coloriage, écriture, reconnaissance des
-          lettres et premiers sons. Elles sont pensées pour les parents, l&apos;instruction en
+          AlphaBes propose plus de 230 fiches gratuites à imprimer pour toutes les lettres de
+          l&apos;alphabet, accents compris : tracé, cursive, coloriage, reconnaissance des
+          lettres, sons et syllabes. Elles sont pensées pour les parents, l&apos;instruction en
           famille et les enseignants de maternelle et de CP qui veulent une fiche prête à
           l&apos;emploi, sans préparation.
         </p>
+        <h3 className="mt-8 font-display font-bold text-xl">Fiches populaires</h3>
+        <ul className="mt-4 grid grid-cols-2 md:grid-cols-4 gap-4">
+          {["lettre-a-cursive", "lettre-b-son", "syllabes-m", "son-ou"].map((slug) => (
+            <FicheCard key={slug} fiche={getFiche(slug)!} />
+          ))}
+        </ul>
         <div className="mt-6 flex flex-wrap items-center gap-4">
           <Link
             href="/worksheets"
             className="inline-block rounded-block bg-crayon-green text-paper font-display font-bold px-6 py-3 shadow-block hover:shadow-blockHover transition"
           >
             Parcourir les fiches
+          </Link>
+          <Link href="/worksheets/bundles" className="font-display font-bold text-crayon-purple hover:underline">
+            Les packs PDF →
           </Link>
         </div>
       </section>
@@ -183,10 +214,16 @@ export default function HomeFr() {
           </p>
           <div className="mt-6 flex flex-wrap gap-4">
             <Link
-              href="/worksheets"
+              href={{ pathname: "/worksheets/[category]", params: { category: "trace-des-lettres" } }}
               className="inline-block rounded-block bg-chalkboard text-paper font-display font-bold px-6 py-3 shadow-block hover:shadow-blockHover transition"
             >
-              Fiches de tracé et de cursive
+              Fiches de tracé
+            </Link>
+            <Link
+              href={{ pathname: "/worksheets/[category]", params: { category: "ecriture-cursive" } }}
+              className="inline-block rounded-block border-2 border-chalkboard/20 font-display font-bold px-6 py-3 hover:border-crayon-blue transition"
+            >
+              Fiches d&apos;écriture cursive
             </Link>
           </div>
         </div>

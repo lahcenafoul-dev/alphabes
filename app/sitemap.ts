@@ -3,6 +3,7 @@ import { getAllLetterSlugs } from "@/lib/letters-data";
 import { ACCENTS_SLUG, frenchLetters, isAccentLetter } from "@/lib/letters-fr";
 import { phonicsSkills } from "@/lib/phonics-data";
 import { frenchSounds } from "@/lib/sons-fr";
+import { FICHE_CATEGORIES, fichePacks, fiches } from "@/lib/fiches-fr";
 import { worksheetCategories } from "@/lib/worksheet-categories";
 import { WORKSHEET_TYPES } from "@/lib/worksheet-types";
 import { worksheets } from "@/lib/worksheets-data";
@@ -180,8 +181,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...(await getStoryRoutes()),
   ];
 
-  // Pages with no English twin: the letters with accents, the accents page
-  // and the French sound pages.
+  // Pages with no English twin: the letters with accents, the accents page,
+  // the French sound pages and the French worksheets and packs.
   const frenchOnlyEntries: MetadataRoute.Sitemap = [
     ...[...frenchLetters.filter(isAccentLetter).map((l) => l.slug), ACCENTS_SLUG].map((letter) => ({
       url: absoluteUrl("fr", "/alphabet/[letter]", { letter }),
@@ -194,6 +195,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: new Date(),
       changeFrequency: "monthly" as const,
       priority: 0.7,
+    })),
+    ...[...FICHE_CATEGORIES.map((c) => c.slug), ...fiches.map((f) => f.slug)].map((category) => ({
+      url: absoluteUrl("fr", "/worksheets/[category]", { category }),
+      lastModified: new Date(),
+      changeFrequency: "monthly" as const,
+      priority: 0.6,
+    })),
+    ...fichePacks.map((p) => ({
+      url: absoluteUrl("fr", "/worksheets/bundles/[bundleSlug]", { bundleSlug: p.slug }),
+      lastModified: new Date(),
+      changeFrequency: "monthly" as const,
+      priority: 0.5,
     })),
   ];
 

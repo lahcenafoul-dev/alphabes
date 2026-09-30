@@ -37,7 +37,7 @@ Hard rule: **English URLs and content stay exactly as they are** (no redirects, 
 | Remembering the language | The switcher sets a `NEXT_LOCALE` cookie (1 year); the middleware sends the visitor to the same page in that language when it exists. |
 | Pricing | Keep USD for now (French format: "7,99 $", with a note "Prix en dollars américains (USD)"). Stripe is paused (not available in Morocco). |
 | Story audio | **Google Cloud Text-to-Speech**, fr-FR Neural2 or WaveNet voice (owner already has a Google Cloud project). Stay inside the free tier and **tell the owner the expected cost before generating**. Browser speech (Web Speech API, fr-FR) as fallback when a page has no audio file. |
-| Cursive font | Use a free font **only if its license clearly allows commercial use in a paid product**. If none qualifies, show the owner the paid options with prices **before buying**. Candidates to check: Belle Allure, Écolier, Cursive standard. Worksheets on Seyès ruling (grands carreaux). |
+| Cursive font | Use a free font **only if its license clearly allows commercial use in a paid product**. If none qualifies, show the owner the paid options with prices **before buying**. **Chosen: Playwrite FR Trad** (TypeTogether, SIL OFL 1.1: commercial use and embedding allowed, the OFL doesn't cover documents made with it). Its proportions match Seyès exactly (x-height = 1 interline, loops = 3). Worksheets on Seyès ruling (grands carreaux). |
 | Letter E | The letter's name is [ə], but *Escargot* and *Elfe* start with the è sound [ɛ]. The E page must say so for parents. |
 | Accents | Full letter pages for **é, è, ê, ç** (they change the sound). **à, ù, â, î, ô, û, ë, ï, œ** go on one "Les accents" page (à and ù don't change the sound). |
 | Content review | The owner accepted the plan; recommended: a native French teacher reviews stories and sound pages before launch. Legal pages need a lawyer (GDPR/CNIL, Moroccan law 09-08/CNDP). |
@@ -71,8 +71,8 @@ See CLAUDE.md, "Languages", for the rules. In short:
 | 0 | Baseline snapshot of all English routes; ESLint config + existing lint fixes | **Done** |
 | 1 | next-intl routing, header + EN/FR switcher, cookie, hreflang + sitemap, French UI (home, about, pricing, contact, login, register, dashboard, legal), API error codes, French 404 | **Done**, pushed. |
 | 2 | Alphabet: French letter data (26 + é è ê ç), "Les accents" page, alphabet chart, letter pages, flashcards (`/fr/imagier`), `speak()` with French voice + no-voice message, tracing canvas with script/cursive toggle | **Done**, pushed. |
-| 3 | Sons (phonics): 19 sound pages + index (`/fr/sons`), speakable words and sentences, "Où est le son ?" picture hunt, syllable builder | **Done**, committed, not pushed: waiting for the owner's OK. |
-| 4 | Worksheets: French jsPDF templates and text, cursive font (license rule) + Seyès lines, French static sets (nombres, formes, couleurs, mots-outils, syllabes), bundles (`/fr/fiches/packs`), pre-rendered French PDFs | To do |
+| 3 | Sons (phonics): 19 sound pages + index (`/fr/sons`), speakable words and sentences, "Où est le son ?" picture hunt, syllable builder | **Done**, pushed. |
+| 4 | Worksheets: 238 French PDFs (6 types × 30 letters, nombres, formes, couleurs, mots-outils, syllabes, sons), 43 packs (`/fr/fiches/packs`), cursive on Seyès lines, pre-rendered with Chromium | **Done**, committed, not pushed: waiting for the owner's OK. |
 | 5 | Stories: DB migration, 8 original French stories (same illustration scenes), story list filtered by language, reader in French, audio via Google Cloud TTS (cost estimate first) | To do |
 | 6 | Games (5 French games), child language preference (dashboard forms + links), maternelle, grande section, activities | To do |
 | 7 | Launch: production DB migration (with OK), merge to `main`, submit the French sitemap in Search Console. French blog optional (new writing). | To do |
@@ -96,6 +96,14 @@ Slugs stay globally unique; fill in `StoryPage.audioUrl`. Apply to the Neon `dev
 - Phase 2 uses **Playwrite FR Trad** (Google Fonts, SIL OFL 1.1, commercial use allowed) for cursive, in `lib/fonts/cursive.ts`. Phase 4's jsPDF templates need the same font embedded (TTF) for cursive worksheets.
 - French-only letters (é è ê ç) have no English twin: the switcher sends them to `/alphabet`, and `/alphabet/c-cedille` etc. 404.
 
+## Worksheets (phase 4)
+
+- Catalogue: `lib/fiches-fr.ts` (categories, worksheets, packs, and the content they draw: letter pictures, numbers, shapes, colours, mots-outils, syllables). Pages: `app/[locale]/worksheets/**/*-fr.tsx`.
+- **The PDFs are pre-rendered, not made in the browser.** jsPDF doesn't apply OpenType shaping, so cursive letters don't join. `npm run fiches:fr` (`scripts/fiches-fr/`) renders HTML/SVG templates with Playwright's Chromium into `public/fiches-pdf/<category>/<slug>.pdf`, a JPEG preview per page (`apercus/`) and the packs (`packs/`): 519 files, about 33 MB. Re-run it after changing a template or the catalogue (`npm run fiches:fr -- lettre-b-,son-ou` renders a subset), then commit the files. `tests/i18n/fiches-fr.test.ts` fails if a PDF or preview is missing.
+- Fonts (only in the generator, never served): Playwrite FR Trad and Noto Emoji (static instances with overlaps removed, OFL, no Reserved Font Names), Andika (OFL, unmodified: its name is reserved). Licences and changes in `scripts/fiches-fr/fonts/README.md`. Pictures are Noto Emoji in black and white, outlined for colouring.
+- `/fr/alphabet/[letter]/fiche` now downloads the pre-rendered tracing and cursive PDFs; the English jsPDF tracing template is back to its `main` version.
+- Git for Windows converts PDFs to text in `git diff` (`astextplain`), so never move PDFs between worktrees with `git diff | git apply`: copy the files.
+
 ## Testing
 
 Scripts in `scripts/i18n-check/` (run against `next start`, usually on port 3100 or 3400):
@@ -108,7 +116,9 @@ Scripts in `scripts/i18n-check/` (run against `next start`, usually on port 3100
 
 ## Open issues
 
-- The French home page links to sections built in phases 2–6; they 404 until then (the header and footer only show French pages that exist).
+- The French home page links to sections built in phases 5–6 (jeux, maternelle, grande section, activités); they 404 until then (the header and footer only show French pages that exist).
+- English and French pages share one route bundle, so the English worksheet pages now load next-intl's localized `Link` too (about +14 kB of JavaScript, as on the alphabet pages).
+- Regenerating the worksheets rewrites every PDF (Chromium stamps a creation date), so only re-run it when something changed.
 - The English 404 page no longer has `og:image`/`twitter:image` tags (`global-not-found` doesn't get root file metadata). Harmless on a noindex page.
 - `experimental.globalNotFound` is experimental in Next 15.5 (stable in Next 16). Re-test 404s after any Next upgrade.
 - The build pre-renders French copies of English-only pages (unreachable, the middleware 404s them) until each phase adds French content: about 1,140 pages instead of about 575.

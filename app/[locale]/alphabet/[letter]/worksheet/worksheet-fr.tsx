@@ -90,14 +90,16 @@ export default function WorksheetFr({ letter }: { letter: string }) {
         />
       </section>
 
-      <FicheActions
-        letter={l.lower}
-        slug={l.slug}
-        word={word.word}
-        spoken={`${l.nameSpoken}. ${word.withArticle}.`}
-      />
+      <FicheActions slug={l.slug} spoken={`${l.nameSpoken}. ${word.withArticle}.`} />
       <p className="mt-3 text-sm text-chalkboard/60">
-        La fiche PDF est en écriture script. Les fiches en cursive, sur lignes Seyès, arrivent bientôt.
+        Toutes les fiches de la lettre {l.upper} (reconnaissance, coloriage, mots…) sont sur{" "}
+        <Link
+          href={{ pathname: "/worksheets/bundles/[bundleSlug]", params: { bundleSlug: `pack-lettre-${l.slug}` } }}
+          className="font-bold underline"
+        >
+          la page de ses fiches
+        </Link>
+        .
       </p>
 
       <p className="mt-10">

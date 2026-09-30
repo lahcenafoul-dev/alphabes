@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Link } from "@/i18n/navigation";
 import ListenButton from "@/components/ListenButton";
+import { FicheCard } from "@/components/fiches/FicheParts";
+import { fichesForLetter, getFicheCategory } from "@/lib/fiches-fr";
 import { cursiveFont } from "@/lib/fonts/cursive";
 import { absoluteUrl, alternatesFor } from "@/lib/i18n/routes";
 import { buildBreadcrumbJsonLd } from "@/lib/json-ld";
@@ -202,6 +204,23 @@ export default function LetterFr({ letter }: { letter: string }) {
             </p>
           </Link>
         </div>
+      </section>
+
+      <section className="mt-10" aria-labelledby="fiches-heading">
+        <h2 id="fiches-heading" className="text-2xl font-bold">
+          Les fiches à imprimer
+        </h2>
+        <ul className="mt-4 grid grid-cols-2 sm:grid-cols-3 gap-4">
+          {fichesForLetter(l.slug).map((f) => (
+            <FicheCard key={f.slug} fiche={{ ...f, label: getFicheCategory(f.category)!.name }} />
+          ))}
+        </ul>
+        <Link
+          href={{ pathname: "/worksheets/bundles/[bundleSlug]", params: { bundleSlug: `pack-lettre-${l.slug}` } }}
+          className="mt-4 inline-block font-display font-bold text-crayon-purple hover:underline"
+        >
+          Toutes les fiches de la lettre {l.upper} en un seul PDF →
+        </Link>
       </section>
 
       {related.length > 0 && (

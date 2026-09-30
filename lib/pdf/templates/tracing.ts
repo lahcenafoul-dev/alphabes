@@ -6,29 +6,13 @@
 import type { jsPDF } from "jspdf";
 import { PAGE_MARGIN, drawWorksheetHeader, drawWorksheetTitle, drawWorksheetFooter } from "../chrome";
 
-export type TracingLabels = {
-  header: string;
-  title: (upper: string, lower: string) => string;
-  footer: (word: string, upper: string, lower: string) => string;
-};
-
-const ENGLISH_LABELS: TracingLabels = {
-  header: "Letter Tracing Worksheet",
-  title: (upper, lower) => `Letter ${upper}${lower}`,
-  footer: (word, upper, lower) => `${word} starts with the letter ${upper}${lower}.`,
-};
-
-export function drawTracingWorksheet(
-  doc: jsPDF,
-  data: { letter: string; word: string },
-  labels: TracingLabels = ENGLISH_LABELS,
-): void {
+export function drawTracingWorksheet(doc: jsPDF, data: { letter: string; word: string }): void {
   const upper = data.letter.toUpperCase();
   const lower = data.letter.toLowerCase();
   const pageWidth = doc.internal.pageSize.getWidth();
 
-  drawWorksheetHeader(doc, labels.header);
-  drawWorksheetTitle(doc, labels.title(upper, lower), data.word);
+  drawWorksheetHeader(doc, "Letter Tracing Worksheet");
+  drawWorksheetTitle(doc, `Letter ${upper}${lower}`, data.word);
 
   // Big outline guide letters
   doc.setFont("helvetica", "bold");
@@ -59,5 +43,5 @@ export function drawTracingWorksheet(
     doc.setLineDashPattern([], 0);
   }
 
-  drawWorksheetFooter(doc, labels.footer(data.word, upper, lower), 210);
+  drawWorksheetFooter(doc, `${data.word} starts with the letter ${upper}${lower}.`, 210);
 }

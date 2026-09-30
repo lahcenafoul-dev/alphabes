@@ -34,6 +34,10 @@ export const FRENCH_PATHNAMES: ReadonlySet<AppPathname> = new Set<AppPathname>([
   "/privacy-policy",
   "/register",
   "/terms",
+  "/worksheets",
+  "/worksheets/[category]",
+  "/worksheets/bundles",
+  "/worksheets/bundles/[bundleSlug]",
 ]);
 
 // Private or thin pages: never given hreflang or French sitemap entries.
@@ -45,9 +49,15 @@ export const NOINDEX_PATHNAMES: ReadonlySet<AppPathname> = new Set<AppPathname>(
 ]);
 
 // Pages whose params differ between languages (a French story has its own
-// slug; the French sounds aren't the English phonics skills), so an English
-// URL can't be mapped to its French twin by path alone.
-const PARAMS_DIFFER: ReadonlySet<AppPathname> = new Set<AppPathname>(["/stories/[slug]", "/phonics/[skill]"]);
+// slug; the French sounds and worksheets aren't the English phonics skills
+// and worksheets), so an English URL can't be mapped to its French twin by
+// path alone.
+const PARAMS_DIFFER: ReadonlySet<AppPathname> = new Set<AppPathname>([
+  "/stories/[slug]",
+  "/phonics/[skill]",
+  "/worksheets/[category]",
+  "/worksheets/bundles/[bundleSlug]",
+]);
 
 export type RouteParams = Record<string, string>;
 
@@ -72,6 +82,8 @@ const SECTION_INDEX: Partial<Record<AppPathname, AppPathname>> = {
   "/alphabet/[letter]": "/alphabet",
   "/alphabet/[letter]/worksheet": "/alphabet",
   "/phonics/[skill]": "/phonics",
+  "/worksheets/[category]": "/worksheets",
+  "/worksheets/bundles/[bundleSlug]": "/worksheets/bundles",
 };
 
 export function isFrenchOnly(pathname: AppPathname, params: RouteParams): boolean {

@@ -13,6 +13,10 @@ const pages = [
   ...letters.flatMap((l) => [`/fr/alphabet/${l}`, `/fr/alphabet/${l}/fiche`]),
   "/fr/sons",
   ...sounds.map((s) => `/fr/sons/${s}`),
+  // Phase 4: worksheets (a sample; the tests check every catalogue entry).
+  "/fr/fiches", "/fr/fiches/packs", "/fr/fiches/ecriture-cursive", "/fr/fiches/nombres", "/fr/fiches/sons",
+  "/fr/fiches/lettre-a-cursive", "/fr/fiches/lettre-e-accent-aigu-son", "/fr/fiches/syllabes-m", "/fr/fiches/son-ou",
+  "/fr/fiches/couleur-rouge", "/fr/fiches/packs/pack-alphabet-complet", "/fr/fiches/packs/pack-lettre-c-cedille",
 ];
 const decode = (s) => s.replace(/&amp;/g, "&").replace(/&#x27;|&#39;/g, "'").replace(/&quot;/g, '"').replace(/&nbsp;/g, " ");
 // English words that shouldn't appear in French page text.
@@ -71,6 +75,11 @@ const rules = [
   ["/phonics/ou", {}, 404, null, "French sound under an English URL"],
   ["/phonics", { headers: { cookie: "NEXT_LOCALE=fr" } }, 307, "/fr/sons", "phonics index has a French twin"],
   ["/phonics/blending", { headers: { cookie: "NEXT_LOCALE=fr" } }, 200, null, "English-only skill, French chosen: stay"],
+  ["/fr/fiches/letter-a-tracing", {}, 404, null, "English worksheet under /fr/fiches"],
+  ["/worksheets/lettre-a-cursive", {}, 404, null, "French worksheet under an English URL"],
+  ["/fr/fiches/packs/complete-bundle", {}, 404, null, "English bundle under /fr/fiches/packs"],
+  ["/worksheets", { headers: { cookie: "NEXT_LOCALE=fr" } }, 307, "/fr/fiches", "worksheet index has a French twin"],
+  ["/worksheets/letter-a-tracing", { headers: { cookie: "NEXT_LOCALE=fr" } }, 200, null, "English-only worksheet, French chosen: stay"],
   ["/fr/tarifs", { headers: { cookie: "NEXT_LOCALE=en" } }, 307, "/pricing", "remembered English choice"],
   ["/pricing", { headers: { "accept-language": "fr-FR,fr;q=0.9" } }, 200, null, "no Accept-Language redirect"],
 ];

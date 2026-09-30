@@ -9,6 +9,7 @@
 import type { AppPathname, Locale } from "@/i18n/routing";
 import { getLetterData } from "@/lib/alphabet-data";
 import { getBlogCategory, getBlogPost } from "@/lib/blog-data";
+import { getFiche, getFicheCategory, getFichePack } from "@/lib/fiches-fr";
 import { getGame } from "@/lib/games-data";
 import { getKindergartenTopic } from "@/lib/kindergarten-data";
 import { getLetterContent } from "@/lib/letters-data";
@@ -39,15 +40,18 @@ const VALIDATORS: Partial<Record<AppPathname, Validator>> = {
   "/kindergarten/[topic]": ({ topic }) => !!getKindergartenTopic(topic),
   "/phonics/[skill]": ({ skill }, locale) => (locale === "fr" ? !!getFrenchSound(skill) : !!getPhonicsSkill(skill)),
   "/preschool/[topic]": ({ topic }) => !!getPreschoolTopic(topic),
-  "/worksheets/[category]": ({ category }) =>
-    !!(
-      getWorksheetCategory(category) ||
-      getWorksheetTypeByCategorySlug(category) ||
-      getWorksheetBySlug(category) ||
-      getStaticWorksheetCategory(category) ||
-      getStaticWorksheetBySlug(category)
-    ),
-  "/worksheets/bundles/[bundleSlug]": ({ bundleSlug }) => !!getBundleBySlug(bundleSlug),
+  "/worksheets/[category]": ({ category }, locale) =>
+    locale === "fr"
+      ? !!(getFicheCategory(category) || getFiche(category))
+      : !!(
+          getWorksheetCategory(category) ||
+          getWorksheetTypeByCategorySlug(category) ||
+          getWorksheetBySlug(category) ||
+          getStaticWorksheetCategory(category) ||
+          getStaticWorksheetBySlug(category)
+        ),
+  "/worksheets/bundles/[bundleSlug]": ({ bundleSlug }, locale) =>
+    locale === "fr" ? !!getFichePack(bundleSlug) : !!getBundleBySlug(bundleSlug),
 };
 
 /** False only when we know the params don't exist; true for routes we can't check. */

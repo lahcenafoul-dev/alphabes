@@ -15,6 +15,7 @@
     "db:seed": "tsx prisma/seed-stories.ts",
     "generate:worksheets": "tsx scripts/generate-worksheets.ts",
     "validate:worksheets": "tsx scripts/validate-worksheets.ts",
+    "fiches:fr": "tsx scripts/fiches-fr/generate.ts",
     "postinstall": "prisma generate",
     "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
     "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",

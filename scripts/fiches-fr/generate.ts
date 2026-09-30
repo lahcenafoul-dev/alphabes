@@ -1,0 +1,107 @@
+// npm run fiches:fr [-- <filter>] [--no-packs] [--no-previews]
+//
+// Renders the French worksheet PDFs listed in lib/fiches-fr.ts with Chromium
+// (Playwright), which shapes the cursive font properly (jsPDF can't join the
+// letters). Writes, under public/fiches-pdf/:
+//   <category>/<slug>.pdf    one A4 page per worksheet
+//   apercus/<slug>.jpg       a preview of that page for the website
+//   packs/<slug>.pdf         the packs, one PDF with all their pages
+//
+// <filter> renders only worksheets whose slug contains it, or one of its
+// comma-separated parts (packs are skipped then). Re-run after changing a template or the catalogue, and commit the
+// files: the site serves them as static assets.
+import { mkdirSync, readFileSync, statSync } from "fs";
+import { dirname, join } from "path";
+import { chromium, type Page } from "@playwright/test";
+import { fichePacks, fiches, type Fiche } from "../../lib/fiches-fr";
+import { PAGE_CSS, ficheBody, layoutFills, pageHtml } from "./templates";
+
+const ROOT = process.cwd();
+const OUT = join(ROOT, "public");
+const FONTS = join(ROOT, "scripts", "fiches-fr", "fonts");
+
+const args = process.argv.slice(2);
+const filter = args.find((a) => !a.startsWith("--"));
+const withPacks = !filter && !args.includes("--no-packs");
+const withPreviews = !args.includes("--no-previews");
+
+function fontFace(family: string, file: string, weight = 400): string {
+  const data = readFileSync(join(FONTS, file)).toString("base64");
+  return `@font-face { font-family: "${family}"; font-weight: ${weight}; src: url(data:font/ttf;base64,${data}) format("truetype") }`;
+}
+
+const SHELL = `<!doctype html><html lang="fr"><head><meta charset="utf-8"><title>AlphaBes</title><style>
+${fontFace("cursive-fr", "PlaywriteFRTrad-Regular.ttf")}
+${fontFace("script", "Andika-Regular.ttf")}
+${fontFace("script", "Andika-Bold.ttf", 700)}
+${fontFace("emoji", "NotoEmoji-Regular.ttf")}
+${PAGE_CSS}
+</style>
+<script>/* tsx wraps functions in __name(); layoutFills runs here, so define it. */ var __name = (f) => f;</script>
+</head><body></body></html>`;
+
+async function render(page: Page, html: string, title: string, pdfFile: string, previewFile?: string) {
+  await page.evaluate(
+    ({ html, title }) => {
+      document.body.innerHTML = html;
+      document.title = title;
+    },
+    { html, title },
+  );
+  await page.evaluate(() => document.fonts.ready);
+  await page.evaluate(layoutFills);
+  mkdirSync(dirname(pdfFile), { recursive: true });
+  await page.pdf({ path: pdfFile, preferCSSPageSize: true, printBackground: true });
+  if (previewFile) {
+    mkdirSync(dirname(previewFile), { recursive: true });
+    const first = page.locator(".page").first();
+    await first.screenshot({ path: previewFile, type: "jpeg", quality: 72 });
+  }
+}
+
+const kb = (file: string) => Math.round(statSync(file).size / 1024);
+
+async function main() {
+  const parts = filter?.split(",") ?? [];
+  const list: Fiche[] = filter ? fiches.filter((f) => parts.some((p) => f.slug.includes(p))) : fiches;
+  if (!list.length) throw new Error(`No worksheet matches "${filter}"`);
+
+  const browser = await chromium.launch();
+  // A4 at 96 dpi is 794 × 1123 px; 0.6 gives ~476 px wide previews.
+  const context = await browser.newContext({ viewport: { width: 794, height: 1123 }, deviceScaleFactor: 0.6 });
+  const page = await context.newPage();
+  await page.setContent(SHELL);
+  await page.evaluate(() => document.fonts.ready);
+
+  let total = 0;
+  for (const [i, f] of list.entries()) {
+    const pdf = join(OUT, f.pdf);
+    await render(page, pageHtml(f, ficheBody(f)), `${f.title} – AlphaBes`, pdf, withPreviews ? join(OUT, f.preview) : undefined);
+    total += kb(pdf);
+    if ((i + 1) % 20 === 0 || i === list.length - 1) console.log(`  ${i + 1}/${list.length} worksheets`);
+  }
+  console.log(`Worksheets: ${list.length} PDFs, ${total} KB`);
+
+  if (withPacks) {
+    const bySlug = new Map(fiches.map((f) => [f.slug, f]));
+    let packTotal = 0;
+    for (const pack of fichePacks) {
+      const html = pack.fiches.map((slug) => {
+        const f = bySlug.get(slug)!;
+        return pageHtml(f, ficheBody(f));
+      });
+      const pdf = join(OUT, pack.pdf);
+      await render(page, html.join(""), `${pack.title} – AlphaBes`, pdf);
+      packTotal += kb(pdf);
+      console.log(`  ${pack.slug}: ${pack.fiches.length} pages, ${kb(pdf)} KB`);
+    }
+    console.log(`Packs: ${fichePacks.length} PDFs, ${packTotal} KB`);
+  }
+
+  await browser.close();
+}
+
+main().catch((err) => {
+  console.error(err);
+  process.exit(1);
+});
