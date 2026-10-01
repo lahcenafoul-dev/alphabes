@@ -1,6 +1,6 @@
 # Spanish version of AlphaBes: plan and status
 
-Last updated: 2026-10-01 (decisions made; phase 0). Read this first when continuing the Spanish work, together with CLAUDE.md and [french-plan.md](french-plan.md) (the Spanish work reuses everything built there).
+Last updated: 2026-10-01 (phase 2 done). Read this first when continuing the Spanish work, together with CLAUDE.md and [french-plan.md](french-plan.md) (the Spanish work reuses everything built there).
 
 ## Goal
 
@@ -138,7 +138,7 @@ What children actually use at school differs by country:
 
 Options:
 - **A. Print only**: *letra script* (Andika, already used) on *doble raya* guide lines (top, dashed middle, base, descender line). Simplest, universal.
-- **B. Print + cursive (chosen)**: A, plus a cursive version of each letter sheet on the same *doble raya*, in **Playwrite MX** (TypeTogether's Mexican school cursive, Google Fonts, SIL OFL 1.1 like Playwrite FR Trad; licence to be checked before use, same rule as French: free only if commercial use in a paid product is clearly allowed). Numbers and shapes on *cuadrícula*. The tracing canvas gets the same *script* / *cursiva* toggle as French.
+- **B. Print + cursive (chosen)**: A, plus a cursive version of each letter sheet on the same *doble raya*, in **Playwrite MX** (TypeTogether's Mexican school cursive, Google Fonts, SIL OFL 1.1 like Playwrite FR Trad; **licence checked 2026-10-01**: SIL OFL 1.1, copyright The Playwrite Project Authors, no Reserved Font Name; use, embedding and selling with software are allowed, only selling the font file on its own is not, and the OFL doesn't cover documents made with it. It has every Spanish character (ñ Ñ á é í ó ú ü ¿ ¡) and its capitals are exactly twice its x-height, which fits four-line *doble raya*. Loaded by `next/font` (`lib/fonts/cursive-es.ts`); phase 4 embeds the TTF in the PDF generator). Numbers and shapes on *cuadrícula*. The tracing canvas gets the same *script* / *cursiva* toggle as French.
 - **C. B + uppercase print sheets** (*imprenta mayúscula*) for Argentina/Uruguay. Adds about 27 PDFs.
 
 Other cursive models I can show you before choosing: Playwrite ES (Spain), Playwrite CL, Playwrite AR, Playwrite CO.
@@ -191,13 +191,22 @@ The French work assumed exactly two languages in several places; phase 1 makes t
 - The English and French cookie and privacy pages still say "EN / FR" buttons (left unchanged so their text doesn't change); the Spanish ones say "EN / FR / ES". Update all three together later if wanted.
 - Open Graph locale for Spanish pages is `es_LA` (Facebook's Latin American Spanish); the organization JSON-LD lists Mexico, the US, Colombia, Argentina, Peru, Chile, Venezuela, Ecuador, Guatemala and Spain.
 
+## Phase 2 notes
+
+- **Letters** (`lib/letters-es.ts`): the 27 letters of the approved sample, in order a…n, ñ, o…z. Each has its RAE name plus `otherNames` shown after it ("se llama «uve» (también: «ve», «ve corta», «ve chica»…)"), its IPA, the syllables the "sound" button reads (consonants are heard as ma, me, mi, mo, mu, the way Spanish schools teach them), a note "Para mamá y papá" and an FAQ. Seseo and yeísmo are the default, with Spain's pronunciation mentioned for c/z and the sh-like y of Argentina and Uruguay. R has *pera* and *perro* as inside words, Y has *rey*. `letterWithWord()` says "A de avión", or "Ñ, como en araña" when the word doesn't start with the letter (ñ, q's mosquito, w, x).
+- **Pages:** `/es/abecedario` (27 cards, name under each letter, link to the tilde page), `/es/abecedario/[letter]` (`letter-es.tsx`; "A" works like "a"; ñ is `enie`, `/es/abecedario/ñ` 404s), `/es/abecedario/tilde` (`tilde-es.tsx`: tilde, tilde diacrítica, diéresis, and a box explaining that ñ's mark is not an accent), `/es/abecedario/[letter]/ficha` (tracing in script or cursiva on *doble raya*, plus a listen button), `/es/tarjetas`.
+- **Not yet:** the letter and ficha pages have no PDF downloads and no "Fichas para imprimir" section; phase 4 adds them (the French equivalents are `FicheActions` and the fiches section of `letter-fr.tsx`).
+- **Speech:** `ListenButton` and `useSpeech(locale)` take `locale="es"`; `useFrenchSpeech()` is unchanged for the French games. The Spanish no-voice notice gives Android, iPhone/iPad and Windows steps. Browser checks confirm es-MX is chosen over es-US and es-ES, es-ES is used when it's the only Spanish voice, and a French or English voice never reads Spanish.
+- **Tracing:** `TracingCanvas` takes `cursive.ruling = "doble-raya"` (capital line, dashed middle line, baseline, descender line). French keeps Seyès (the default).
+- **Routing:** `enie` and `tilde` are Spanish-only (`LOCALE_ONLY_PARAMS.es`), `SPANISH_VALIDATORS` lists the letter params. Switching language on ñ or the tilde page goes to the other language's alphabet; French-only letters go to `/es/abecedario`.
+
 ## Phases
 
 | Phase | Content | Status |
 |---|---|---|
 | 0 | Baseline snapshots from `main`: English (existing script) **and French** (extend `snapshot.mjs`/`compare.mjs` to the French sitemap URLs); generalize `frcheck.mjs` into a per-language check (`localecheck.mjs fr|es`). | **Done** (2026-10-01), not pushed. Baseline in `../snap-es-base` (878 routes: 496 English, 382 French, from `main` 4894cd3); a second snapshot of the same build is identical, so the comparison is repeatable. `localecheck.mjs fr` passes on `main` (480 checks). |
 | 1 | Three-language foundation (section above), header with EN/FR/ES, Spanish UI pages: home, quiénes somos, precios, contacto, iniciar sesión, registro, mi cuenta, legal pages (placeholders), cookies, Spanish 404, API errors. | **Done** (2026-10-01), not pushed. English and French identical to the baseline (878 routes) apart from hreflang: the 7 English and 7 French twins of the Spanish pages each gained one `hreflang="es"` line, nothing else; the sitemap gained the 7 Spanish URLs with three-way alternates. `localecheck.mjs es` and `fr` pass, browser checks pass (164), 120 unit tests. Build: 1,612 pages (was ~1,140). See "Phase 1 notes". |
-| 2 | Abecedario: `lib/letters-es.ts` (27 letters + tilde page), chart, letter pages, `/es/tarjetas`, Spanish speech with voice fallback and no-voice message, tracing canvas with *script* / *cursiva*. | |
+| 2 | Abecedario: `lib/letters-es.ts` (27 letters + tilde page), chart, letter pages, `/es/tarjetas`, Spanish speech with voice fallback and no-voice message, tracing canvas with *script* / *cursiva*. | **Done** (2026-10-01), not pushed. English and French identical to the baseline apart from hreflang: since phase 1, 58 pages gained one `hreflang="es"` line (the 26 letters, the alphabet, the cards and the A tracing page, in English and French). Sitemap: 37 Spanish URLs. `localecheck es` and `fr` pass, 185 browser checks, 135 unit tests, build 1,615 pages. See "Phase 2 notes". |
 | 3 | Sílabas: ~20 pages + index, syllable builder, word builder, syllable clapping, picture hunt. | |
 | 4 | Fichas: Spanish PDFs and *paquetes* (handwriting per D7), generator made language-aware, letter pages link their *ficha*. | |
 | 5 | Cuentos (the `ES` migration was done in phase 1): 8 stories, list filtered by language, reader with browser Spanish voice ("Escuchar" / "⏹ Detener"). | |
@@ -229,4 +238,5 @@ As in french-plan.md, plus:
 
 ## Open issues
 
+- Content review: the letter tips and FAQs (`lib/letters-es.ts`), the alphabet and tilde pages should get the native-teacher review (D12) with the syllable pages.
 - `localecheck.mjs` lists English words that are also words in the checked language (`sameWords`: *parent(s)*, *sons*, *session* for French) and uses letter-aware word boundaries, so French no longer reports false positives. Add Spanish ones there if they appear.
