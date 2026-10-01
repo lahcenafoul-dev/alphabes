@@ -74,7 +74,7 @@ See CLAUDE.md, "Languages", for the rules. In short:
 | 3 | Sons (phonics): 19 sound pages + index (`/fr/sons`), speakable words and sentences, "Où est le son ?" picture hunt, syllable builder | **Done**, pushed. |
 | 4 | Worksheets: 238 French PDFs (6 types × 30 letters, nombres, formes, couleurs, mots-outils, syllabes, sons), 43 packs (`/fr/fiches/packs`), cursive on Seyès lines, pre-rendered with Chromium | **Done**, pushed. |
 | 5 | Stories: DB migration, 8 original French stories (same illustration scenes), story list filtered by language, reader in French, audio via Google Cloud TTS (cost estimate first) | **Done**, pushed. Migration applied to the Neon `dev` branch only (production in phase 7). Audio: **browser French voice** (owner's decision, 2026-10-01: Google TTS skipped, billing won't activate). "Écouter" becomes "⏹ Arrêter" while reading; turning the page or leaving stops it. No MP3s generated. |
-| 6 | Games (5 French games), child language preference (dashboard forms + links), maternelle, grande section, activities | **Done**, committed, not pushed (waiting for the owner's OK). |
+| 6 | Games (5 French games), child language preference (dashboard forms + links), maternelle, grande section, activities | **Done**, pushed. |
 | 7 | Launch: production DB migration (with OK), merge to `main`, submit the French sitemap in Search Console. French blog optional (new writing). | To do |
 
 ### Database changes (phase 5, additive)
