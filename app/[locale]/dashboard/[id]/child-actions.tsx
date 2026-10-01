@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
+import type { Locale as DbLocale } from "@prisma/client";
 import { localizedPath } from "@/lib/i18n/routes";
 import { useApiErrorMessage } from "@/lib/i18n/use-api-error";
 
@@ -10,7 +11,7 @@ type Props = {
   childId: string;
   firstName: string;
   ageBand: string;
-  language: "EN" | "FR";
+  language: DbLocale;
 };
 
 export default function ChildActions({ childId, firstName, ageBand, language }: Props) {

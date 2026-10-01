@@ -41,6 +41,12 @@ function notFound(req: NextRequest, locale: Locale) {
   return NextResponse.rewrite(new URL("/_not-found", req.url), { request: { headers } });
 }
 
+// The language of an unknown URL, from its prefix ("/es/xyz" → es).
+function prefixLocale(pathname: string): Locale {
+  const first = pathname.split("/")[1];
+  return isLocale(first) && first !== "en" ? first : routing.defaultLocale;
+}
+
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
@@ -66,8 +72,8 @@ export async function middleware(req: NextRequest) {
 
   const match = matchPath(pathname);
 
-  // Unknown URLs, unknown letters/games/worksheets, and French pages that
-  // haven't been written yet get the 404 page in the right language (never
+  // Unknown URLs, unknown letters/games/worksheets, and French or Spanish
+  // pages that haven't been written yet get the 404 page in the right language (never
   // English content under a French URL). "/en/..." is left to next-intl,
   // which redirects it to the unprefixed URL.
   if (
@@ -75,7 +81,7 @@ export async function middleware(req: NextRequest) {
       ? !/^\/en(\/|$)/.test(pathname)
       : !isAvailable(match.locale, match.pathname) || !paramsExist(match.pathname, match.params, match.locale)
   ) {
-    return notFound(req, match?.locale ?? (/^\/fr(\/|$)/.test(pathname) ? "fr" : routing.defaultLocale));
+    return notFound(req, match?.locale ?? prefixLocale(pathname));
   }
   // Stories live in the database, so they're checked with a (cached) query.
   if (match?.pathname === "/stories/[slug]" && (await storyExists(match.params.slug, match.locale)) === false) {

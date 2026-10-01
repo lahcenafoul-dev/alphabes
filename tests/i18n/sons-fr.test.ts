@@ -4,7 +4,7 @@ import {
   FRENCH_SOUND_SLUGS,
   alternatesFor,
   counterpartPath,
-  isFrenchOnly,
+  isLocaleOnly,
   localizedPath,
   matchPath,
   sectionFallbackPath,
@@ -107,7 +107,7 @@ describe("French sound data", () => {
 describe("French sound routes", () => {
   it("lists exactly the sound pages in routes.ts", () => {
     expect([...FRENCH_SOUND_SLUGS].sort()).toEqual(frenchSounds.map((s) => s.slug).sort());
-    for (const slug of FRENCH_SOUND_SLUGS) expect(isFrenchOnly("/phonics/[skill]", { skill: slug })).toBe(true);
+    for (const slug of FRENCH_SOUND_SLUGS) expect(isLocaleOnly("fr", "/phonics/[skill]", { skill: slug })).toBe(true);
   });
 
   it("accepts French sounds only in French, English skills only in English", () => {

@@ -28,6 +28,12 @@ const nunito = Nunito({
 // from a nested <ClientMessages> on their own page.
 const CLIENT_NAMESPACES = ["Common", "Header", "LanguageSwitcher", "CookieConsent"] as const;
 
+// Where each language's families live (organization JSON-LD).
+const AREA_SERVED: Record<Exclude<Locale, "en">, string[]> = {
+  fr: ["FR", "MA", "BE", "CH", "CA"],
+  es: ["MX", "US", "CO", "AR", "PE", "CL", "VE", "EC", "GT", "ES"],
+};
+
 /** Site-wide default metadata for a language (pages override what they need). */
 export async function buildLocaleMetadata(locale: Locale): Promise<Metadata> {
   const t = await getTranslations({ locale, namespace: "Metadata" });
@@ -46,6 +52,7 @@ export async function buildLocaleMetadata(locale: Locale): Promise<Metadata> {
       title: t("defaultTitle"),
       description: t("ogDescription"),
       ...(locale === "fr" && { locale: "fr_FR" }),
+      ...(locale === "es" && { locale: "es_LA" }),
     },
     twitter: {
       card: "summary_large_image",
@@ -95,8 +102,8 @@ export default async function LocaleDocument({
           name: "AlphaBes",
           url: `${SITE_URL}/${locale}`,
           description: t("orgDescription"),
-          inLanguage: "fr",
-          areaServed: ["FR", "MA", "BE", "CH", "CA"],
+          inLanguage: locale,
+          areaServed: AREA_SERVED[locale],
         };
 
   return (

@@ -3,13 +3,15 @@ import bcrypt from "bcryptjs";
 import { z } from "zod";
 import { Prisma } from "@prisma/client";
 import { getPrisma } from "@/lib/prisma";
+import { routing } from "@/i18n/routing";
+import { toDbLocale } from "@/lib/i18n/db-locale";
 
 const schema = z.object({
   name: z.string().min(1).max(100),
   email: z.string().email(),
   password: z.string().min(8).max(100),
   // The site language at sign-up, for future emails; older clients don't send it.
-  locale: z.enum(["en", "fr"]).optional(),
+  locale: z.enum(routing.locales).optional(),
 });
 
 export async function POST(req: NextRequest) {
@@ -37,7 +39,7 @@ export async function POST(req: NextRequest) {
         name,
         email: normalizedEmail,
         passwordHash,
-        locale: locale === "fr" ? "FR" : "EN",
+        locale: toDbLocale(locale ?? "en"),
         subscription: {
           create: { plan: "FREE", status: "ACTIVE" },
         },

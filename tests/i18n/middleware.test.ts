@@ -208,3 +208,56 @@ describe("API rate limiting", () => {
     expect(rewrite(res)).toBeNull();
   });
 });
+
+describe("Spanish routing", () => {
+  it("maps Spanish URLs to the internal routes", async () => {
+    const home = await middleware(request("/es"));
+    expect(home.status).toBe(200);
+    expect(redirect(home)).toBeNull();
+    expect(rewrite(home) ?? "/es").toBe("/es");
+    expect(rewrite(await middleware(request("/es/precios")))).toBe("/es/pricing");
+    expect(rewrite(await middleware(request("/es/quienes-somos")))).toBe("/es/about");
+    expect(rewrite(await middleware(request("/es/terminos-de-uso")))).toBe("/es/terms");
+  });
+
+  it("serves the Spanish 404 page for unknown and unwritten Spanish pages", async () => {
+    for (const path of ["/es/xyz", "/es/pricing", "/es/tarifs", "/es/blog"]) {
+      const res = await middleware(request(path));
+      expect(rewrite(res), path).toBe("/_not-found");
+      expect(notFoundLocale(res), path).toBe("es");
+    }
+  });
+
+  it("404s Spanish content pages until they are written, never serving English there", async () => {
+    // Pages whose Spanish version comes in a later phase (docs/spanish-plan.md).
+    for (const path of ["/es/abecedario/a", "/es/juegos/find-the-letter", "/es/fichas/letter-a-tracing", "/es/cuentos/the-little-apple"]) {
+      const res = await middleware(request(path));
+      expect(rewrite(res), path).toBe("/_not-found");
+      expect(notFoundLocale(res), path).toBe("es");
+    }
+  });
+
+  it("sends a visitor who chose Spanish to the Spanish twin of a page", async () => {
+    expect(redirect(await middleware(request("/pricing", "NEXT_LOCALE=es")))).toBe("/es/precios");
+    expect(redirect(await middleware(request("/fr/a-propos", "NEXT_LOCALE=es")))).toBe("/es/quienes-somos");
+    expect(redirect(await middleware(request("/es/precios", "NEXT_LOCALE=fr")))).toBe("/fr/tarifs");
+    expect(redirect(await middleware(request("/es/precios", "NEXT_LOCALE=en")))).toBe("/pricing");
+  });
+
+  it("stays on pages that have no Spanish twin yet", async () => {
+    for (const path of ["/blog", "/games", "/fr/jeux"]) {
+      expect(redirect(await middleware(request(path, "NEXT_LOCALE=es"))), path).toBeNull();
+    }
+  });
+
+  it("sends signed-out visitors to the Spanish login page", async () => {
+    expect(redirect(await middleware(request("/es/mi-cuenta")))).toBe("/es/iniciar-sesion?next=%2Fes%2Fmi-cuenta");
+  });
+
+  it("never redirects on a Spanish Accept-Language alone", async () => {
+    const res = await middleware(
+      new NextRequest("https://alphabes.com/pricing", { headers: { "accept-language": "es-MX,es;q=0.9" } }),
+    );
+    expect(redirect(res)).toBeNull();
+  });
+});

@@ -34,6 +34,19 @@ const LABELS = {
     dashboard: "Tableau de bord",
     endLabel: "Fin",
   },
+  es: {
+    readingAs: "Lectura para",
+    back: "← Atrás",
+    page: "Página",
+    of: "de",
+    next: "Siguiente →",
+    finish: "Terminar 🎉",
+    greatJob: "¡Muy bien!",
+    finished: (title: string) => `¡Terminaste «${title}»!`,
+    more: "Más cuentos",
+    dashboard: "Mi cuenta",
+    endLabel: "Fin",
+  },
 };
 type Page = {
   id: string;

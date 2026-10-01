@@ -49,6 +49,24 @@ const RULES_FR = [
   ["/pricing", { headers: { "accept-language": "fr-FR,fr;q=0.9" } }, 200, null, "no Accept-Language redirect"],
 ];
 
+const RULES_ES = [
+  ["/es/xyz", {}, 404, null, "unknown Spanish URL"],
+  ["/es/pricing", {}, 404, null, "English word under /es"],
+  ["/es/tarifs", {}, 404, null, "French word under /es"],
+  ["/es/blog", {}, 404, null, "page with no Spanish version"],
+  ["/es/mi-cuenta", {}, 307, "/es/iniciar-sesion?next=%2Fes%2Fmi-cuenta", "Spanish dashboard needs login"],
+  ["/pricing", { headers: { cookie: "NEXT_LOCALE=es" } }, 307, "/es/precios", "remembered Spanish choice"],
+  ["/fr/a-propos", { headers: { cookie: "NEXT_LOCALE=es" } }, 307, "/es/quienes-somos", "French page, Spanish chosen"],
+  ["/es/precios", { headers: { cookie: "NEXT_LOCALE=fr" } }, 307, "/fr/tarifs", "Spanish page, French chosen"],
+  ["/es/precios", { headers: { cookie: "NEXT_LOCALE=en" } }, 307, "/pricing", "Spanish page, English chosen"],
+  ["/blog", { headers: { cookie: "NEXT_LOCALE=es" } }, 200, null, "no Spanish twin: stay"],
+  ["/pricing", { headers: { "accept-language": "es-MX,es;q=0.9" } }, 200, null, "no Accept-Language redirect"],
+  // Spanish phase 1: content pages come in later phases, never English under /es.
+  ["/es/abecedario/a", {}, 404, null, "Spanish alphabet not written yet"],
+  ["/es/juegos", {}, 404, null, "Spanish games not written yet"],
+  ["/es/cuentos/the-little-apple", {}, 404, null, "English story under /es/cuentos"],
+];
+
 const LANGS = {
   fr: {
     // Where a signed-out visitor is redirected (307) instead of a 200.
@@ -79,8 +97,12 @@ const LANGS = {
   es: {
     loginRedirect: "mi-cuenta",
     sameWords: [],
-    pages: [],
-    rules: [],
+    pages: [
+      // Spanish phase 1: home, UI pages, legal pages.
+      "/es", "/es/precios", "/es/quienes-somos", "/es/contacto", "/es/politica-de-privacidad", "/es/terminos-de-uso",
+      "/es/cookies", "/es/iniciar-sesion", "/es/registro",
+    ],
+    rules: RULES_ES,
   },
 };
 

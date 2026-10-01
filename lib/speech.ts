@@ -13,7 +13,16 @@ export function speak(text: string, rate = 0.8) {
 /** "no-voice": the device has voices, but none for the language. */
 export type SpeakResult = "ok" | "unsupported" | "no-voice";
 
-const LANG_TAG: Record<Locale, string> = { en: "en-US", fr: "fr-FR" };
+// Voices to try, best first; then any voice in the language. Spanish targets
+// Latin America (docs/spanish-plan.md, D11): Mexico, then US Spanish, then
+// other Latin American voices, then Spain.
+const LATIN_AMERICA = ["419", "ar", "bo", "cl", "co", "cr", "cu", "do", "ec", "gt", "hn", "ni", "pa", "pe", "pr", "py", "sv", "uy", "ve"];
+const VOICE_PREFERENCES: Record<Locale, string[][]> = {
+  en: [["en-us"]],
+  fr: [["fr-fr"]],
+  es: [["es-mx"], ["es-us"], LATIN_AMERICA.map((r) => `es-${r}`), ["es-es"]],
+};
+const LANG_TAG: Record<Locale, string> = { en: "en-US", fr: "fr-FR", es: "es-MX" };
 
 // Chrome loads its voice list asynchronously: getVoices() is empty until
 // "voiceschanged" fires. Wait for it, but not forever (some browsers never
@@ -37,13 +46,14 @@ export function warmUpVoices() {
   if (typeof window !== "undefined" && window.speechSynthesis) void loadVoices(window.speechSynthesis);
 }
 
-/** Best voice for a language: exact region first (fr-FR), then any (fr-CA, fr-BE…). */
+/** Best voice for a language: preferred regions first (fr-FR; es-MX, es-US…), then any (fr-CA, es-ES…). */
 export function pickVoice(voices: SpeechSynthesisVoice[], locale: Locale): SpeechSynthesisVoice | null {
-  const tag = LANG_TAG[locale].toLowerCase();
   const norm = (v: SpeechSynthesisVoice) => v.lang.replace("_", "-").toLowerCase();
-  const exact = voices.filter((v) => norm(v) === tag);
-  const any = voices.filter((v) => norm(v).split("-")[0] === locale);
-  const pool = exact.length ? exact : any;
+  const tiers = [
+    ...VOICE_PREFERENCES[locale].map((tags) => voices.filter((v) => tags.includes(norm(v)))),
+    voices.filter((v) => norm(v).split("-")[0] === locale),
+  ];
+  const pool = tiers.find((t) => t.length) ?? [];
   // Prefer the higher-quality voices some systems ship next to basic ones.
   return pool.find((v) => /natural|neural|premium|enhanced|google/i.test(v.name)) ?? pool[0] ?? null;
 }

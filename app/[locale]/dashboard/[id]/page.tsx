@@ -7,6 +7,7 @@ import { getPrisma } from "@/lib/prisma";
 import NextLink from "next/link";
 import { Link } from "@/i18n/navigation";
 import type { AppPathname } from "@/i18n/routing";
+import { fromDbLocale } from "@/lib/i18n/db-locale";
 import { isAvailable, localizedPath } from "@/lib/i18n/routes";
 import { initLocale } from "@/lib/i18n/server";
 import ClientMessages from "@/components/ClientMessages";
@@ -48,7 +49,7 @@ export default async function ChildDashboardPage(props: Props) {
 
   if (!child || child.parent.email !== email) notFound();
 
-  const childLocale = child.language === "FR" ? "fr" : "en";
+  const childLocale = fromDbLocale(child.language);
   const childLinks: { pathname: AppPathname; label: "startAlphabet" | "games" | "storyTime"; color: string }[] = [
     { pathname: "/alphabet", label: "startAlphabet", color: "bg-crayon-green" },
     { pathname: "/games", label: "games", color: "bg-crayon-purple" },

@@ -4,19 +4,17 @@ import { authOptions } from "@/lib/auth";
 import { getPrisma } from "@/lib/prisma";
 import Link from "next/link";
 import type { Metadata } from "next";
-import type { Locale } from "@/i18n/routing";
-import { absoluteUrl, alternatesFor, localizedPath } from "@/lib/i18n/routes";
+import { routing, type Locale } from "@/i18n/routing";
+import { DB_LOCALE, fromDbLocale } from "@/lib/i18n/db-locale";
+import { absoluteUrl, alternatesFor, localizedPath, type RouteParams } from "@/lib/i18n/routes";
 import { initLocale } from "@/lib/i18n/server";
 import StoryReader from "./story-reader";
 
 type Props = { params: Promise<{ locale: string; slug: string }> };
 
-const DB_LOCALE = { en: "EN", fr: "FR" } as const;
-const OTHER: Record<Locale, Locale> = { en: "fr", fr: "en" };
-
 // A story exists only in its own language (the middleware already 404s the
-// others). Its twin is the same tale in the other language, found through
-// translationGroup, so both pages carry hreflang to each other.
+// others). Its twins are the same tale in the other languages, found through
+// translationGroup, so they all carry hreflang to each other.
 async function findStoryMeta(slug: string, locale: Locale) {
   const prisma = getPrisma();
   const story = await prisma.story.findFirst({
@@ -24,11 +22,18 @@ async function findStoryMeta(slug: string, locale: Locale) {
     select: { title: true, translationGroup: true, pages: { select: { text: true }, orderBy: { pageNumber: "asc" }, take: 2 } },
   });
   if (!story) return null;
-  const other = OTHER[locale];
-  const twin = story.translationGroup
-    ? await prisma.story.findFirst({ where: { translationGroup: story.translationGroup, locale: DB_LOCALE[other] }, select: { slug: true } })
-    : null;
-  return { story, otherParams: twin ? { [other]: { slug: twin.slug } } : undefined };
+  const twins = story.translationGroup
+    ? await prisma.story.findMany({
+        where: { translationGroup: story.translationGroup, locale: { not: DB_LOCALE[locale] } },
+        select: { slug: true, locale: true },
+      })
+    : [];
+  const otherParams: Partial<Record<Locale, RouteParams>> = {};
+  for (const twin of twins) {
+    const l = fromDbLocale(twin.locale);
+    if (routing.locales.includes(l)) otherParams[l] = { slug: twin.slug };
+  }
+  return { story, otherParams };
 }
 
 export async function generateMetadata(props: Props): Promise<Metadata> {
@@ -38,9 +43,18 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
   const alternates = alternatesFor(locale, "/stories/[slug]", { slug }, found?.otherParams);
   // Without its own canonical, a story inherited the home page's.
   if (locale === "en" || !found) return { alternates };
-  const title = `${found.story.title} : une histoire à lire et à écouter`;
-  const description = `${found.story.pages.map((p) => p.text).join(" ")} Une histoire illustrée pour les enfants, à lire ensemble ou à écouter.`;
-  return { title, description, alternates, openGraph: { title, description, url: absoluteUrl("fr", "/stories/[slug]", { slug }) } };
+  const text = found.story.pages.map((p) => p.text).join(" ");
+  const { title, description } =
+    locale === "fr"
+      ? {
+          title: `${found.story.title} : une histoire à lire et à écouter`,
+          description: `${text} Une histoire illustrée pour les enfants, à lire ensemble ou à écouter.`,
+        }
+      : {
+          title: `${found.story.title}: un cuento para leer y escuchar`,
+          description: `${text} Un cuento ilustrado para niños, para leer juntos o escuchar.`,
+        };
+  return { title, description, alternates, openGraph: { title, description, url: absoluteUrl(locale, "/stories/[slug]", { slug }) } };
 }
 
 export default async function StoryPage(props: Props) {
@@ -75,6 +89,10 @@ export default async function StoryPage(props: Props) {
       {locale === "fr" ? (
         <nav aria-label="Fil d'Ariane" className="text-sm text-chalkboard/60">
           <Link href={localizedPath("fr", "/")}>Accueil</Link> / <Link href={localizedPath("fr", "/stories")}>Histoires</Link>
+        </nav>
+      ) : locale === "es" ? (
+        <nav aria-label="Ruta de navegación" className="text-sm text-chalkboard/60">
+          <Link href={localizedPath("es", "/")}>Inicio</Link> / <Link href={localizedPath("es", "/stories")}>Cuentos</Link>
         </nav>
       ) : (
         <nav className="text-sm text-chalkboard/60">

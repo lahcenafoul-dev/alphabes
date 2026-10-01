@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { paramsExist } from "@/lib/i18n/known-params";
-import { alternatesFor, counterpartPath, isFrenchOnly, localizedPath, matchPath } from "@/lib/i18n/routes";
+import { alternatesFor, counterpartPath, isLocaleOnly, localizedPath, matchPath } from "@/lib/i18n/routes";
 import {
   ACCENTS_SLUG,
   frenchLetterParams,
@@ -75,10 +75,10 @@ describe("French alphabet routes", () => {
 
   it("lists exactly the French-only letters in routes.ts", () => {
     const accentSlugs = frenchLetters.filter(isAccentLetter).map((l) => l.slug);
-    for (const slug of [...accentSlugs, ACCENTS_SLUG]) expect(isFrenchOnly("/alphabet/[letter]", { letter: slug })).toBe(true);
-    for (const slug of accentSlugs) expect(isFrenchOnly("/alphabet/[letter]/worksheet", { letter: slug })).toBe(true);
+    for (const slug of [...accentSlugs, ACCENTS_SLUG]) expect(isLocaleOnly("fr", "/alphabet/[letter]", { letter: slug })).toBe(true);
+    for (const slug of accentSlugs) expect(isLocaleOnly("fr", "/alphabet/[letter]/worksheet", { letter: slug })).toBe(true);
     for (const l of frenchLetters.filter((l) => !isAccentLetter(l)))
-      expect(isFrenchOnly("/alphabet/[letter]", { letter: l.slug })).toBe(false);
+      expect(isLocaleOnly("fr", "/alphabet/[letter]", { letter: l.slug })).toBe(false);
   });
 
   it("pairs shared letters with hreflang, but not French-only ones", () => {

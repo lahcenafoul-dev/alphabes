@@ -26,7 +26,8 @@
   "LanguageSwitcher": {
     "label": "Choisir la langue",
     "en": "English",
-    "fr": "Français"
+    "fr": "Français",
+    "es": "Español"
   },
   "Footer": {
     "learn": "Apprendre",
@@ -162,7 +163,7 @@
     "ages": "{band} ans",
     "lessonsCompleted": "{count, plural, =0 {Aucune leçon terminée} one {# leçon terminée} other {# leçons terminées}}",
     "storyTime": "📚 Histoires",
-    "language": "{language, select, FR {Apprend en français} other {Apprend en anglais}}",
+    "language": "{language, select, FR {Apprend en français} ES {Apprend en espagnol} other {Apprend en anglais}}",
     "upsell": "Débloquez toutes les fiches, tous les jeux et toutes les leçons de sons.",
     "seePlans": "Voir les formules Pro"
   },
@@ -174,7 +175,7 @@
     "startAlphabet": "Commencer l'alphabet →",
     "storyTime": "📚 Histoires",
     "games": "🎮 Jeux",
-    "language": "{language, select, FR {Apprend en français.} other {Apprend en anglais : les liens ci-dessous ouvrent les pages en anglais.}}",
+    "language": "{language, select, FR {Apprend en français.} ES {Apprend en espagnol : les liens ci-dessous ouvrent les pages en espagnol.} other {Apprend en anglais : les liens ci-dessous ouvrent les pages en anglais.}}",
     "lessonsCompleted": "Leçons terminées",
     "quizAverage": "Moyenne aux quiz",
     "storiesRead": "Histoires lues",

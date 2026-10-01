@@ -26,7 +26,8 @@
   "LanguageSwitcher": {
     "label": "Choose language",
     "en": "English",
-    "fr": "Français"
+    "fr": "Français",
+    "es": "Español"
   },
   "Footer": {
     "learn": "Learn",
@@ -162,7 +163,7 @@
     "ages": "Ages {band}",
     "lessonsCompleted": "{count} lessons completed",
     "storyTime": "📚 Story Time",
-    "language": "{language, select, FR {Learns in French} other {Learns in English}}",
+    "language": "{language, select, FR {Learns in French} ES {Learns in Spanish} other {Learns in English}}",
     "upsell": "Unlock every worksheet, game, and phonics lesson.",
     "seePlans": "See Pro Plans"
   },
@@ -174,7 +175,7 @@
     "startAlphabet": "Start Learning the Alphabet →",
     "storyTime": "📚 Story Time",
     "games": "🎮 Games",
-    "language": "{language, select, FR {Learns in French: the links below open the French pages.} other {Learns in English.}}",
+    "language": "{language, select, FR {Learns in French: the links below open the French pages.} ES {Learns in Spanish: the links below open the Spanish pages.} other {Learns in English.}}",
     "lessonsCompleted": "Lessons Completed",
     "quizAverage": "Quiz Average",
     "storiesRead": "Stories Read",

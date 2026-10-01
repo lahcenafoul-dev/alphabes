@@ -30,9 +30,9 @@ describe("French games data", () => {
     expect(frenchGames).toHaveLength(5);
     for (const g of frenchGames) {
       expect(getGame(g.en), g.slug).not.toBeNull();
-      expect(TRANSLATED_PARAMS["/games/[slug]"]!.enToFr[g.en]).toBe(g.slug);
+      expect(TRANSLATED_PARAMS["/games/[slug]"]!.groups.find((group) => group.en === g.en)?.fr).toBe(g.slug);
     }
-    expect(Object.keys(TRANSLATED_PARAMS["/games/[slug]"]!.enToFr)).toHaveLength(frenchGames.length);
+    expect(TRANSLATED_PARAMS["/games/[slug]"]!.groups.filter((group) => group.fr)).toHaveLength(frenchGames.length);
   });
 
   it("uses the 26 letters of the alphabet, in order", () => {
@@ -94,9 +94,9 @@ describe("French school topics", () => {
   it("pairs exactly the topics with an English twin", () => {
     for (const level of ["maternelle", "grande-section"] as const) {
       const pathname = SCHOOL_HUBS[level].topicPathname;
-      const map = TRANSLATED_PARAMS[pathname]!.enToFr;
+      const pairs = TRANSLATED_PARAMS[pathname]!.groups.filter((g) => g.en && g.fr).map((g) => [g.en!, g.fr!]);
       const twins = topicsOf(level).filter((t) => t.en);
-      expect(Object.entries(map).sort()).toEqual(twins.map((t) => [t.en!, t.slug]).sort());
+      expect(pairs.sort()).toEqual(twins.map((t) => [t.en!, t.slug]).sort());
       const exists = level === "maternelle" ? getPreschoolTopic : getKindergartenTopic;
       for (const t of twins) expect(exists(t.en!), t.en).not.toBeNull();
     }

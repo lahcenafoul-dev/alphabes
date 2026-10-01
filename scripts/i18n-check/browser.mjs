@@ -130,6 +130,87 @@ console.log("Mobile (390px)");
   await context.close();
 }
 
+console.log("Spanish: switcher, forms and mobile (Spanish phase 1)");
+{
+  const { context, page, errors } = await newPage();
+  await page.goto(base + "/pricing");
+  await page.waitForLoadState("networkidle");
+  check((await switcherHref(page, "es")) === "/es/precios", "ES link on /pricing points to /es/precios");
+  await page.goto(base + "/games");
+  await page.waitForLoadState("networkidle");
+  check((await switcherHref(page, "es")) === "/es", "ES link on /games (no Spanish version yet) falls back to /es");
+  await page.goto(base + "/fr/a-propos");
+  await page.waitForLoadState("networkidle");
+  check((await switcherHref(page, "es")) === "/es/quienes-somos", "ES link on /fr/a-propos points to /es/quienes-somos");
+  await Promise.all([page.waitForURL("**/es/quienes-somos"), page.locator("[role=group] a[hreflang=es]").click()]);
+  check((await cookie(context)) === "es", "clicking ES sets NEXT_LOCALE=es");
+  check((await page.getAttribute("html", "lang")) === "es", "Spanish page has lang=es");
+  check((await switcherHref(page, "en")) === "/about" && (await switcherHref(page, "fr")) === "/fr/a-propos", "EN and FR links on /es/quienes-somos point to their twins");
+  await page.goto(base + "/terms");
+  check(page.url().endsWith("/es/terminos-de-uso"), "with the ES cookie, /terms redirects to /es/terminos-de-uso");
+  await page.goto(base + "/games");
+  check(new URL(page.url()).pathname === "/games", "with the ES cookie, /games (no Spanish version yet) stays");
+
+  await page.goto(base + "/es");
+  await page.waitForLoadState("networkidle");
+  check(await page.getByRole("button", { name: "Aceptar" }).isVisible(), "cookie banner is in Spanish (Aceptar)");
+  const bannerHref = await page.getByRole("region", { name: "Consentimiento de cookies" }).getByRole("link").getAttribute("href");
+  check(bannerHref === "/es/cookies", `banner link is /es/cookies (${bannerHref})`);
+  await page.getByRole("button", { name: "Rechazar" }).click();
+  await page.screenshot({ path: `${shots}/es-home.png`, clip: { x: 0, y: 0, width: 1280, height: 900 } });
+  await page.screenshot({ path: `${shots}/es-home-full.png`, fullPage: true });
+
+  await page.goto(base + "/es/iniciar-sesion");
+  await page.waitForLoadState("networkidle");
+  await page.getByLabel("Correo electrónico").fill("persona-desconocida@example.com");
+  await page.getByLabel("Contraseña").fill("contrasena-incorrecta");
+  await page.getByRole("button", { name: "Iniciar sesión" }).last().click();
+  const loginError = page.getByText("Correo electrónico o contraseña incorrectos.");
+  await loginError.waitFor({ timeout: 15000 }).catch(() => {});
+  check(await loginError.isVisible(), "login shows the Spanish error for wrong credentials");
+
+  if (!process.env.LIVE) {
+    await page.goto(base + "/es/contacto");
+    await page.waitForLoadState("networkidle");
+    await page.getByLabel("Nombre").fill("Prueba");
+    await page.getByLabel("Correo electrónico").fill("test@example.com");
+    await page.getByLabel("Mensaje").fill("Hola, esto es una prueba.");
+    await page.getByRole("button", { name: "Enviar el mensaje" }).click();
+    const sent = page.getByText("¡Gracias! Te responderemos muy pronto.");
+    await sent.waitFor({ timeout: 15000 }).catch(() => {});
+    check(await sent.isVisible(), "contact form shows the Spanish confirmation");
+  }
+
+  await page.goto(base + "/es/registro");
+  await page.waitForLoadState("networkidle");
+  check(await page.getByText("Mínimo 8 caracteres.").isVisible(), "register form is in Spanish");
+
+  await page.goto(base + "/es/xyz");
+  await page.waitForLoadState("networkidle");
+  check((await page.getAttribute("html", "lang")) === "es", "Spanish 404 page has lang=es");
+  check(await page.getByRole("heading", { name: "Ups, no encontramos esta página" }).isVisible(), "Spanish 404 page text");
+  check(errors.filter((e) => !/401|404|Unauthorized|status of 40[14]/.test(e)).length === 0, `no unexpected console errors${errors.length ? ": " + errors.slice(0, 3).join(" | ") : ""}`);
+  await context.close();
+}
+{
+  const { context, page, errors } = await newPage({ width: 390, height: 844 });
+  for (const p of ["/es", "/es/precios", "/es/politica-de-privacidad", "/es/iniciar-sesion", "/fr", "/"]) {
+    await page.goto(base + p);
+    await page.waitForLoadState("networkidle");
+    const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+    check(overflow <= 0, `${p}: no horizontal scroll at 390px (overflow ${overflow}px)`);
+  }
+  await page.goto(base + "/es");
+  await page.waitForLoadState("networkidle");
+  check((await page.locator("[role=group] a, [role=group] span").count()) === 3, "switcher shows EN / FR / ES");
+  await page.screenshot({ path: `${shots}/es-mobile.png` });
+  await page.getByRole("button", { name: "Menú" }).click();
+  check(await page.locator("#mobile-menu").getByRole("link", { name: "Mi cuenta" }).isVisible(), "mobile menu has 'Mi cuenta'");
+  await page.screenshot({ path: `${shots}/es-mobile-menu.png` });
+  check(errors.length === 0, `no console/page errors${errors.length ? ": " + errors.slice(0, 3).join(" | ") : ""}`);
+  await context.close();
+}
+
 // Fake voices: the device has only the voices listed; speech is recorded, not played.
 const fakeVoices = (langs) => `(() => {
   const voices = ${JSON.stringify(langs)}.map((lang) => ({ lang, name: "Voix " + lang, localService: true, default: false, voiceURI: lang }));

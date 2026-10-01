@@ -13,9 +13,9 @@ export const LOCALE_COOKIE_MAX_AGE = 60 * 60 * 24 * 365;
 // Set by the middleware on 404 rewrites so app/global-not-found.tsx knows the language.
 export const LOCALE_HEADER = "x-alphabes-locale";
 
-// Internal pathnames that have a real French page. This grows phase by
-// phase; every other /fr URL answers 404, and only these get hreflang and
-// French sitemap entries.
+// Internal pathnames that have a real page in each non-default language.
+// These grow phase by phase; every other /fr or /es URL answers 404, and only
+// these get hreflang and sitemap entries in that language.
 export const FRENCH_PATHNAMES: ReadonlySet<AppPathname> = new Set<AppPathname>([
   "/",
   "/about",
@@ -49,6 +49,26 @@ export const FRENCH_PATHNAMES: ReadonlySet<AppPathname> = new Set<AppPathname>([
   "/worksheets/bundles/[bundleSlug]",
 ]);
 
+// Spanish pages written so far (docs/spanish-plan.md).
+export const SPANISH_PATHNAMES: ReadonlySet<AppPathname> = new Set<AppPathname>([
+  "/",
+  "/about",
+  "/contact",
+  "/cookies",
+  "/dashboard",
+  "/dashboard/[id]",
+  "/login",
+  "/pricing",
+  "/privacy-policy",
+  "/register",
+  "/terms",
+]);
+
+const LOCALE_PATHNAMES: Record<Exclude<Locale, "en">, ReadonlySet<AppPathname>> = {
+  fr: FRENCH_PATHNAMES,
+  es: SPANISH_PATHNAMES,
+};
+
 // Private or thin pages: never given hreflang or French sitemap entries.
 export const NOINDEX_PATHNAMES: ReadonlySet<AppPathname> = new Set<AppPathname>([
   "/login",
@@ -70,50 +90,63 @@ const PARAMS_DIFFER: ReadonlySet<AppPathname> = new Set<AppPathname>([
 
 export type RouteParams = Record<string, string>;
 
-// Pages whose French params are translations of the English ones: the
-// games and the school-level topics. A slug missing from the map has no
-// twin (French-only topics such as "graphisme"). Checked against
+// Pages whose params are translated by language: the games and the
+// school-level topics. Each group lists one page's slug in every language it
+// exists in; a slug in no group, or a group without the target language, has
+// no twin there (French-only topics such as "graphisme"). Checked against
 // lib/games-fr.ts and lib/ecole-fr.ts by tests/i18n.
-export const TRANSLATED_PARAMS: Partial<Record<AppPathname, { key: string; enToFr: Record<string, string> }>> = {
+export type ParamGroup = Partial<Record<Locale, string>>;
+export const TRANSLATED_PARAMS: Partial<Record<AppPathname, { key: string; groups: ParamGroup[] }>> = {
   "/games/[slug]": {
     key: "slug",
-    enToFr: {
-      "find-the-letter": "trouve-la-lettre",
-      "match-letter-picture": "lettre-et-image",
-      "beginning-sound": "premier-son",
-      "letter-tracing": "trace-la-lettre",
-      "alphabet-quiz": "quiz-alphabet",
-    },
+    groups: [
+      { en: "find-the-letter", fr: "trouve-la-lettre" },
+      { en: "match-letter-picture", fr: "lettre-et-image" },
+      { en: "beginning-sound", fr: "premier-son" },
+      { en: "letter-tracing", fr: "trace-la-lettre" },
+      { en: "alphabet-quiz", fr: "quiz-alphabet" },
+    ],
   },
-  "/preschool/[topic]": { key: "topic", enToFr: { "letter-tracing": "tracer-les-lettres", coloring: "coloriage" } },
-  "/kindergarten/[topic]": { key: "topic", enToFr: { "sight-words": "mots-outils", handwriting: "ecriture-cursive" } },
+  "/preschool/[topic]": {
+    key: "topic",
+    groups: [
+      { en: "letter-tracing", fr: "tracer-les-lettres" },
+      { en: "coloring", fr: "coloriage" },
+    ],
+  },
+  "/kindergarten/[topic]": {
+    key: "topic",
+    groups: [
+      { en: "sight-words", fr: "mots-outils" },
+      { en: "handwriting", fr: "ecriture-cursive" },
+    ],
+  },
 };
 
 /** The params of a page's twin in another language, or null if it has none. */
 function translateParams(pathname: AppPathname, params: RouteParams, from: Locale, to: Locale): RouteParams | null {
   const map = TRANSLATED_PARAMS[pathname];
   if (!map || from === to) return params;
-  const value = params[map.key];
-  const twin =
-    to === "fr"
-      ? map.enToFr[value]
-      : Object.entries(map.enToFr).find(([, fr]) => fr === value)?.[0];
+  const twin = map.groups.find((g) => g[from] === params[map.key])?.[to];
   return twin ? { ...params, [map.key]: twin } : null;
 }
 
-// Pages that exist only in French: the letters with accents and the accents
-// page (lib/letters-fr.ts), and every French sound page (lib/sons-fr.ts).
-// Both lists are checked against the data by tests/i18n. They get no English
-// hreflang, and the switcher can't map them to English.
+// Params that exist in only one language: the French letters with accents
+// and the accents page (lib/letters-fr.ts), and every French sound page
+// (lib/sons-fr.ts). Both lists are checked against the data by tests/i18n.
+// Such pages get no hreflang, and the switcher can't map them to another
+// language.
 const FRENCH_ONLY_LETTERS = ["e-accent-aigu", "e-accent-grave", "e-accent-circonflexe", "c-cedille"];
 export const FRENCH_SOUND_SLUGS = [
   "voyelles", "premier-son", "syllabes", "ou", "on", "an", "in", "oi", "ch", "gn", "eu", "o-au-eau",
   "e-accent-aigu", "e-accent-grave", "ill", "c-et-g", "s-et-ss", "lettres-muettes", "mots-outils",
 ];
-const FRENCH_ONLY_PARAMS: Partial<Record<AppPathname, { key: string; values: ReadonlySet<string> }>> = {
-  "/alphabet/[letter]": { key: "letter", values: new Set([...FRENCH_ONLY_LETTERS, "accents"]) },
-  "/alphabet/[letter]/worksheet": { key: "letter", values: new Set(FRENCH_ONLY_LETTERS) },
-  "/phonics/[skill]": { key: "skill", values: new Set(FRENCH_SOUND_SLUGS) },
+const LOCALE_ONLY_PARAMS: Partial<Record<Locale, Partial<Record<AppPathname, { key: string; values: ReadonlySet<string> }>>>> = {
+  fr: {
+    "/alphabet/[letter]": { key: "letter", values: new Set([...FRENCH_ONLY_LETTERS, "accents"]) },
+    "/alphabet/[letter]/worksheet": { key: "letter", values: new Set(FRENCH_ONLY_LETTERS) },
+    "/phonics/[skill]": { key: "skill", values: new Set(FRENCH_SOUND_SLUGS) },
+  },
 };
 
 // Where the language switcher sends a page that has no twin in the other
@@ -130,8 +163,9 @@ const SECTION_INDEX: Partial<Record<AppPathname, AppPathname>> = {
   "/worksheets/bundles/[bundleSlug]": "/worksheets/bundles",
 };
 
-export function isFrenchOnly(pathname: AppPathname, params: RouteParams): boolean {
-  const only = FRENCH_ONLY_PARAMS[pathname];
+/** True for a page that exists only in `locale` (a French accented letter, a French sound…). */
+export function isLocaleOnly(locale: Locale, pathname: AppPathname, params: RouteParams): boolean {
+  const only = LOCALE_ONLY_PARAMS[locale]?.[pathname];
   return !!only && only.values.has(params[only.key]);
 }
 
@@ -140,7 +174,7 @@ export function isLocale(value: unknown): value is Locale {
 }
 
 export function isAvailable(locale: Locale, pathname: AppPathname): boolean {
-  return locale === routing.defaultLocale || FRENCH_PATHNAMES.has(pathname);
+  return locale === "en" || LOCALE_PATHNAMES[locale].has(pathname);
 }
 
 function template(locale: Locale, pathname: AppPathname): string {
@@ -166,9 +200,9 @@ export function absoluteUrl(locale: Locale, pathname: AppPathname, params: Route
 }
 
 /**
- * canonical + hreflang for a page. hreflang is only emitted when the page
- * really exists in French; `otherParams` covers pages whose params differ
- * by language (story slugs).
+ * canonical + hreflang for a page. hreflang lists every language the page
+ * really exists in (when that's more than one), with English as x-default;
+ * `otherParams` covers pages whose params differ by language (story slugs).
  */
 export function alternatesFor(
   locale: Locale,
@@ -177,19 +211,19 @@ export function alternatesFor(
   otherParams?: Partial<Record<Locale, RouteParams>>,
 ): NonNullable<Metadata["alternates"]> {
   const canonical = absoluteUrl(locale, pathname, params);
-  if (!FRENCH_PATHNAMES.has(pathname) || isFrenchOnly(pathname, params)) return { canonical };
-  const paramsFor = (l: Locale) =>
-    l === locale
-      ? params
-      : otherParams?.[l] ?? (PARAMS_DIFFER.has(pathname) ? null : translateParams(pathname, params, locale, l));
-  const en = paramsFor("en");
-  const fr = paramsFor("fr");
-  if (!en || !fr) return { canonical };
-  const enUrl = absoluteUrl("en", pathname, en);
-  return {
-    canonical,
-    languages: { en: enUrl, fr: absoluteUrl("fr", pathname, fr), "x-default": enUrl },
-  };
+  if (isLocaleOnly(locale, pathname, params)) return { canonical };
+  const languages: Record<string, string> = {};
+  for (const l of routing.locales) {
+    if (!isAvailable(l, pathname)) continue;
+    const p =
+      l === locale
+        ? params
+        : otherParams?.[l] ?? (PARAMS_DIFFER.has(pathname) ? null : translateParams(pathname, params, locale, l));
+    if (p) languages[l] = absoluteUrl(l, pathname, p);
+  }
+  if (Object.keys(languages).length < 2) return { canonical };
+  if (languages.en) languages["x-default"] = languages.en;
+  return { canonical, languages };
 }
 
 type CompiledRoute = { pathname: AppPathname; regex: RegExp; keys: string[]; dynamic: number };
@@ -246,7 +280,7 @@ export function counterpartPath(match: MatchedPath, target: Locale): string | nu
   if (match.locale === target) return null;
   if (!isAvailable(target, match.pathname) || !isAvailable(match.locale, match.pathname)) return null;
   if (PARAMS_DIFFER.has(match.pathname)) return null;
-  if (target !== "fr" && isFrenchOnly(match.pathname, match.params)) return null;
+  if (isLocaleOnly(match.locale, match.pathname, match.params)) return null;
   const params = translateParams(match.pathname, match.params, match.locale, target);
   return params && localizedPath(target, match.pathname, params);
 }

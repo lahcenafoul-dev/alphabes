@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { routing, type AppPathname } from "@/i18n/routing";
 import {
   FRENCH_PATHNAMES,
+  SPANISH_PATHNAMES,
   absoluteUrl,
   alternatesFor,
   counterpartPath,
@@ -32,6 +33,20 @@ describe("localizedPath / absoluteUrl", () => {
     expect(localizedPath("fr", "/login")).toBe("/fr/connexion");
     expect(localizedPath("fr", "/preschool")).toBe("/fr/maternelle");
     expect(localizedPath("fr", "/kindergarten")).toBe("/fr/grande-section");
+  });
+
+  it("puts Spanish under /es with Spanish path words", () => {
+    expect(localizedPath("es", "/")).toBe("/es");
+    expect(localizedPath("es", "/pricing")).toBe("/es/precios");
+    expect(localizedPath("es", "/alphabet/[letter]", { letter: "enie" })).toBe("/es/abecedario/enie");
+    expect(localizedPath("es", "/games")).toBe("/es/juegos");
+    expect(localizedPath("es", "/stories")).toBe("/es/cuentos");
+    expect(localizedPath("es", "/phonics")).toBe("/es/silabas");
+    expect(localizedPath("es", "/worksheets/bundles")).toBe("/es/fichas/paquetes");
+    expect(localizedPath("es", "/login")).toBe("/es/iniciar-sesion");
+    expect(localizedPath("es", "/dashboard")).toBe("/es/mi-cuenta");
+    expect(localizedPath("es", "/preschool")).toBe("/es/preescolar");
+    expect(localizedPath("es", "/kindergarten")).toBe("/es/kinder");
   });
 
   it("builds absolute URLs, with no trailing slash on the English home page", () => {
@@ -77,20 +92,37 @@ describe("matchPath", () => {
     expect(matchPath("/en/pricing")).toBeNull();
     expect(matchPath("/fr/pricing")).toBeNull();
     expect(matchPath("/tarifs")).toBeNull();
+    expect(matchPath("/es/pricing")).toBeNull();
+    expect(matchPath("/es/tarifs")).toBeNull();
+    expect(matchPath("/precios")).toBeNull();
   });
 });
 
 describe("alternatesFor", () => {
-  it("adds hreflang only for pages that exist in French", () => {
-    expect(alternatesFor("en", "/about")).toEqual({
-      canonical: "https://alphabes.com/about",
-      languages: {
-        en: "https://alphabes.com/about",
-        fr: "https://alphabes.com/fr/a-propos",
-        "x-default": "https://alphabes.com/about",
-      },
-    });
+  it("lists every language a page exists in", () => {
+    const languages = {
+      en: "https://alphabes.com/about",
+      fr: "https://alphabes.com/fr/a-propos",
+      es: "https://alphabes.com/es/quienes-somos",
+      "x-default": "https://alphabes.com/about",
+    };
+    expect(alternatesFor("en", "/about")).toEqual({ canonical: "https://alphabes.com/about", languages });
+    expect(alternatesFor("es", "/about")).toEqual({ canonical: "https://alphabes.com/es/quienes-somos", languages });
     expect(alternatesFor("fr", "/")).toMatchObject({ canonical: "https://alphabes.com/fr" });
+  });
+
+  it("leaves out languages where the page isn't written yet", () => {
+    // Games exist in English and French; Spanish games come in a later phase.
+    if (SPANISH_PATHNAMES.has("/games")) return;
+    expect(alternatesFor("en", "/games").languages).toEqual({
+      en: "https://alphabes.com/games",
+      fr: "https://alphabes.com/fr/jeux",
+      "x-default": "https://alphabes.com/games",
+    });
+  });
+
+  it("keeps a plain canonical for pages that exist only in one language", () => {
+    expect(alternatesFor("fr", "/phonics/[skill]", { skill: "ou" })).toEqual({ canonical: "https://alphabes.com/fr/sons/ou" });
   });
 
   it("keeps a plain canonical for English-only pages", () => {
@@ -110,6 +142,19 @@ describe("counterpartPath", () => {
     expect(counterpartPath(matchPath("/pricing")!, "fr")).toBe("/fr/tarifs");
     expect(counterpartPath(matchPath("/fr/a-propos")!, "en")).toBe("/about");
     expect(counterpartPath(matchPath("/fr")!, "en")).toBe("/");
+  });
+
+  it("maps between all three languages", () => {
+    expect(counterpartPath(matchPath("/pricing")!, "es")).toBe("/es/precios");
+    expect(counterpartPath(matchPath("/es/precios")!, "fr")).toBe("/fr/tarifs");
+    expect(counterpartPath(matchPath("/es")!, "en")).toBe("/");
+    expect(counterpartPath(matchPath("/fr/conditions-utilisation")!, "es")).toBe("/es/terminos-de-uso");
+  });
+
+  it("returns null when the target language doesn't have the page yet", () => {
+    if (SPANISH_PATHNAMES.has("/games")) return;
+    expect(counterpartPath(matchPath("/games")!, "es")).toBeNull();
+    expect(counterpartPath(matchPath("/fr/jeux")!, "es")).toBeNull();
   });
 
   it("returns null without a twin, for the same language, or when slugs differ", () => {

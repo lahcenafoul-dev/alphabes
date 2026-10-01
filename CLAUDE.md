@@ -17,6 +17,8 @@ The site (alphabes.com) is hosted on **Cloudflare Workers**, built with OpenNext
 
 Neon PostgreSQL through Prisma 5 with the Neon driver adapter (`previewFeatures = ["driverAdapters"]`). On Workers a database connection can't be shared between requests, so always get the client with `getPrisma()` from `lib/prisma.ts` inside the request (route handler, server component, or auth callback), never at module level. The local `.env` points at the Neon `dev` branch.
 
+- **Never use a real database as a Prisma shadow database.** A shadow database is reset (every table emptied), so never pass `DATABASE_URL`, `dev`, `production` or any other real Neon branch as `--shadow-database-url` or `shadowDatabaseUrl`, and don't run `prisma migrate dev`, `migrate reset` or `db push` against them. On 2026-10-01 `prisma migrate diff --shadow-database-url <dev>` wiped the `dev` branch (it was then reset from `production`). Write migration SQL by hand or with `migrate diff --from-schema-datamodel/--to-schema-datamodel` (no database), and apply it with `prisma migrate deploy` only.
+
 ## Languages (English + French)
 
 **The French plan, the owner's decisions, phase status, branch workflow and open issues are in [docs/french-plan.md](docs/french-plan.md). Read it before any French work.**

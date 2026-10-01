@@ -58,8 +58,16 @@ const VALIDATORS: Partial<Record<AppPathname, Validator>> = {
     locale === "fr" ? !!getFichePack(bundleSlug) : !!getBundleBySlug(bundleSlug),
 };
 
+// Spanish params, added phase by phase with the Spanish pages
+// (docs/spanish-plan.md). A route listed above but not here has no Spanish
+// params yet, so every Spanish param 404s rather than falling back to the
+// English check.
+const SPANISH_VALIDATORS: Partial<Record<AppPathname, (params: RouteParams) => boolean>> = {};
+
 /** False only when we know the params don't exist; true for routes we can't check. */
 export function paramsExist(pathname: AppPathname, params: RouteParams, locale: Locale): boolean {
   const validate = VALIDATORS[pathname];
-  return validate ? validate(params, locale) : true;
+  if (!validate) return true;
+  if (locale === "es") return SPANISH_VALIDATORS[pathname]?.(params) ?? false;
+  return validate(params, locale);
 }

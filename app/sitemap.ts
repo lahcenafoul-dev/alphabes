@@ -16,12 +16,15 @@ import { staticWorksheets } from "@/lib/static-worksheets-data";
 import { preschoolTopics } from "@/lib/preschool-data";
 import { kindergartenTopics } from "@/lib/kindergarten-data";
 import { getPrisma } from "@/lib/prisma";
+import { routing } from "@/i18n/routing";
+import { fromDbLocale } from "@/lib/i18n/db-locale";
 import {
-  FRENCH_PATHNAMES,
   NOINDEX_PATHNAMES,
   SITE_URL,
   absoluteUrl,
+  alternatesFor,
   counterpartPath,
+  isAvailable,
   matchPath,
 } from "@/lib/i18n/routes";
 
@@ -31,25 +34,29 @@ const baseUrl = SITE_URL;
 // stories appear without a rebuild and the build never needs the database.
 export const dynamic = "force-dynamic";
 
-// Each story under its own language's URL; stories with a twin in the
-// other language (same translationGroup) list each other as alternates.
+// Each story under its own language's URL; stories with twins in other
+// languages (same translationGroup) list each other as alternates.
 async function getStoryRoutes(): Promise<MetadataRoute.Sitemap> {
   try {
     const stories = await getPrisma().story.findMany({
       select: { slug: true, updatedAt: true, locale: true, translationGroup: true },
       orderBy: [{ locale: "asc" }, { order: "asc" }],
     });
-    const urlOf = (s: (typeof stories)[number]) => absoluteUrl(s.locale === "FR" ? "fr" : "en", "/stories/[slug]", { slug: s.slug });
+    const urlOf = (s: (typeof stories)[number]) => absoluteUrl(fromDbLocale(s.locale), "/stories/[slug]", { slug: s.slug });
     return stories.map((s) => {
-      const twin = s.translationGroup ? stories.find((o) => o.translationGroup === s.translationGroup && o.locale !== s.locale) : undefined;
-      const en = s.locale === "EN" ? s : twin;
-      const fr = s.locale === "FR" ? s : twin;
+      const group = s.translationGroup ? stories.filter((o) => o.translationGroup === s.translationGroup) : [s];
+      const languages: Record<string, string> = {};
+      for (const l of routing.locales) {
+        const twin = group.find((o) => fromDbLocale(o.locale) === l);
+        if (twin) languages[l] = urlOf(twin);
+      }
+      if (languages.en) languages["x-default"] = languages.en;
       return {
         url: urlOf(s),
         lastModified: s.updatedAt,
         changeFrequency: "monthly" as const,
         priority: 0.6,
-        ...(en && fr && { alternates: { languages: { en: urlOf(en), fr: urlOf(fr), "x-default": urlOf(en) } } }),
+        ...(Object.keys(languages).length > 2 && { alternates: { languages } }),
       };
     });
   } catch (err) {
@@ -192,16 +199,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ];
 
   // The French games. Their English twins aren't in the sitemap, but the
-  // pages exist, so both are given as alternates.
+  // pages exist, so they are given as alternates.
   const frenchGameEntries: MetadataRoute.Sitemap = frenchGames.map((g) => {
-    const fr = absoluteUrl("fr", "/games/[slug]", { slug: g.slug });
-    const en = absoluteUrl("en", "/games/[slug]", { slug: g.en });
+    const { canonical, languages } = alternatesFor("fr", "/games/[slug]", { slug: g.slug });
     return {
-      url: fr,
+      url: canonical as string,
       lastModified: new Date(),
       changeFrequency: "monthly" as const,
       priority: 0.6,
-      alternates: { languages: { en, fr, "x-default": en } },
+      ...(languages && { alternates: { languages: languages as Record<string, string> } }),
     };
   });
 
@@ -243,27 +249,31 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       })),
   ];
 
-  return [...withFrench(englishEntries), ...frenchGameEntries, ...frenchOnlyEntries, ...(await getStoryRoutes())];
+  return [...withTwins(englishEntries), ...frenchGameEntries, ...frenchOnlyEntries, ...(await getStoryRoutes())];
 }
 
-// Every English page that also exists in French gets hreflang alternates,
-// and its French URL is listed as an entry of its own.
-function withFrench(entries: MetadataRoute.Sitemap): MetadataRoute.Sitemap {
+// Every English page that also exists in other languages gets hreflang
+// alternates, and each twin URL is listed as an entry of its own.
+function withTwins(entries: MetadataRoute.Sitemap): MetadataRoute.Sitemap {
   const out: MetadataRoute.Sitemap = [];
   for (const entry of entries) {
     const path = entry.url.slice(SITE_URL.length) || "/";
     const match = matchPath(path);
-    const frPath =
-      match && FRENCH_PATHNAMES.has(match.pathname) && !NOINDEX_PATHNAMES.has(match.pathname)
-        ? counterpartPath(match, "fr")
-        : null;
-    if (!frPath) {
+    const twins: Record<string, string> = {};
+    if (match && !NOINDEX_PATHNAMES.has(match.pathname)) {
+      for (const l of routing.locales) {
+        if (l === "en" || !isAvailable(l, match.pathname)) continue;
+        const twinPath = counterpartPath(match, l);
+        if (twinPath) twins[l] = `${SITE_URL}${twinPath}`;
+      }
+    }
+    if (!Object.keys(twins).length) {
       out.push(entry);
       continue;
     }
-    const languages = { en: entry.url, fr: `${SITE_URL}${frPath}`, "x-default": entry.url };
+    const languages = { en: entry.url, ...twins, "x-default": entry.url };
     out.push({ ...entry, alternates: { languages } });
-    out.push({ ...entry, url: languages.fr, alternates: { languages } });
+    for (const url of Object.values(twins)) out.push({ ...entry, url, alternates: { languages } });
   }
   return out;
 }
