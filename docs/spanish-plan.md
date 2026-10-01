@@ -158,12 +158,14 @@ Other cursive models I can show you before choosing: Playwrite ES (Spain), Playw
 | owl | Tito, el búho sabio | `tito-el-buho-sabio` |
 | lion | La siesta de Leo | `la-siesta-de-leo` |
 
-### Database change (phase 5, additive)
+### Database change (done in phase 1, additive)
 
 ```prisma
 enum Locale { EN FR ES }
 ```
-One migration (`ALTER TYPE "Locale" ADD VALUE 'ES'`), nothing else changes: `Story.locale`, `ChildProfile.language` and `User.locale` already use the enum. Applied to the Neon `dev` branch in phase 5; production only at launch, by the owner (phase 7). `npm run db:seed` then upserts 24 stories (English and French text unchanged).
+One migration, `20261001220000_locale_es` (`ALTER TYPE "Locale" ADD VALUE 'ES'`); nothing else changes: `Story.locale`, `ChildProfile.language` and `User.locale` already use the enum. **Moved to phase 1** because Spanish sign-ups store `User.locale = ES`. Applied to the Neon `dev` branch on 2026-10-01 with `prisma migrate deploy`; production only at launch, by the owner (phase 7). After phase 5, `npm run db:seed` upserts 24 stories (English and French text unchanged).
+
+**Incident, 2026-10-01:** while preparing this migration, `prisma migrate diff --shadow-database-url <dev DATABASE_URL>` reset the `dev` branch (all rows and the migration history were deleted; production and the French backup branch were not touched, checked read-only). With the owner's OK, `dev` was reset from `production` (Neon "reset from parent"), then the migration was applied with `prisma migrate deploy`. `dev` now holds a copy of production's data, including the real user accounts. CLAUDE.md now forbids using a real database as a shadow database.
 
 ## Technical work: from two languages to three (phase 1)
 
@@ -172,23 +174,33 @@ The French work assumed exactly two languages in several places; phase 1 makes t
 - `i18n/routing.ts`: `locales: ["en", "fr", "es"]`, Spanish path words.
 - `lib/i18n/routes.ts`: `FRENCH_PATHNAMES` becomes a per-language list (`LOCALE_PATHNAMES.fr` / `.es`); `TRANSLATED_PARAMS` maps groups (`{ en, fr, es }`) instead of `enToFr`; `FRENCH_ONLY_PARAMS` becomes "only in language X" (French accented letters and sounds, Spanish ñ/tilde pages and syllables); `alternatesFor` lists every language where the page exists (en, fr, es, x-default = en). English and French pages that get a Spanish twin gain one `hreflang="es"` line, nothing else.
 - `middleware.ts`, `lib/i18n/known-params.ts`, `lib/story-exists.ts`: Spanish 404s, Spanish params; DB ↔ URL locale through one helper instead of `locale === "FR" ? "fr" : "en"`.
-- The ~50 `locale === "fr" ? <Fr/> : <En/>` choices in pages: one small helper (`byLocale(locale, { en, fr, es })`) so a missing Spanish component is a type error, not a silent English fallback.
+- The ~50 `locale === "fr" ? <Fr/> : <En/>` choices in pages: each page gets a per-language object (`{ en: AboutEn, fr: AboutFr, es: AboutEs }[locale]`) when its Spanish version is written, so a missing Spanish component is a type error. Pages not written in Spanish yet keep the old ternary (they render English for `es`, but the middleware 404s them).
 - `app/sitemap.ts`: Spanish URLs, three-way story alternates.
 - `LanguageSwitcher`: EN / FR / ES (already loops over the locales; check it fits the 390 px header and the mobile menu).
 - `lib/speech.ts`: a preferred-voices list per language (D11).
 - `messages/es.json` (same keys, checked by `tests/i18n/messages.test.ts`), Spanish 404 page, Spanish API error texts.
 - The build pre-renders about 1,700 pages instead of about 1,140 (Spanish copies of English-only pages until each phase adds content, as in French).
 
+## Phase 1 notes (things later phases must remember)
+
+- **Adding a Spanish page:** write the `*-es.tsx` component, route it in `page.tsx` with the per-language object, add the pathname to `SPANISH_PATHNAMES` (`lib/i18n/routes.ts`), add its param validator to `SPANISH_VALIDATORS` (`lib/i18n/known-params.ts`; until then every Spanish param 404s), Spanish-only params to `LOCALE_ONLY_PARAMS.es`, translated slugs to the `TRANSLATED_PARAMS` groups, and its pages and rules to `LANGS.es` in `localecheck.mjs` (remove the phase 1 "not written yet" rules there as pages arrive).
+- Each dynamic page's `generateStaticParams` must return the Spanish list for `es` once it exists (same rule as French).
+- **Spanish home page** (`app/[locale]/home-es.tsx`): every section is written; links appear by themselves when their page exists (`MaybeLink`, `has()`). Phase 3 should point the four syllable cards at their skill pages (they link to `/phonics` for now); phase 4 can add "Fichas populares"; phase 6 can list the games as in French.
+- **Child language:** the add/edit child forms still offer English and French only, and a profile created on the Spanish site defaults to English. Phase 6 adds "Español" to the forms (`ChildForm.langES`), to the children API's `z.enum(["EN", "FR"])` (`app/api/children/**`) and to `add-child-form.tsx`'s default. The dashboard messages already have an `ES` branch.
+- The story page (`stories/[slug]/page.tsx`) already finds twins in all languages and has Spanish metadata, breadcrumb and reader labels; the Spanish audio button (browser voice) comes in phase 5 (`story-reader.tsx` still picks `StoryAudioFr` only for French).
+- The English and French cookie and privacy pages still say "EN / FR" buttons (left unchanged so their text doesn't change); the Spanish ones say "EN / FR / ES". Update all three together later if wanted.
+- Open Graph locale for Spanish pages is `es_LA` (Facebook's Latin American Spanish); the organization JSON-LD lists Mexico, the US, Colombia, Argentina, Peru, Chile, Venezuela, Ecuador, Guatemala and Spain.
+
 ## Phases
 
 | Phase | Content | Status |
 |---|---|---|
 | 0 | Baseline snapshots from `main`: English (existing script) **and French** (extend `snapshot.mjs`/`compare.mjs` to the French sitemap URLs); generalize `frcheck.mjs` into a per-language check (`localecheck.mjs fr|es`). | **Done** (2026-10-01), not pushed. Baseline in `../snap-es-base` (878 routes: 496 English, 382 French, from `main` 4894cd3); a second snapshot of the same build is identical, so the comparison is repeatable. `localecheck.mjs fr` passes on `main` (480 checks). |
-| 1 | Three-language foundation (section above), header with EN/FR/ES, Spanish UI pages: home, quiénes somos, precios, contacto, iniciar sesión, registro, mi cuenta, legal pages (placeholders), cookies, Spanish 404, API errors. | |
+| 1 | Three-language foundation (section above), header with EN/FR/ES, Spanish UI pages: home, quiénes somos, precios, contacto, iniciar sesión, registro, mi cuenta, legal pages (placeholders), cookies, Spanish 404, API errors. | **Done** (2026-10-01), not pushed. See "Phase 1 notes". |
 | 2 | Abecedario: `lib/letters-es.ts` (27 letters + tilde page), chart, letter pages, `/es/tarjetas`, Spanish speech with voice fallback and no-voice message, tracing canvas with *script* / *cursiva*. | |
 | 3 | Sílabas: ~20 pages + index, syllable builder, word builder, syllable clapping, picture hunt. | |
 | 4 | Fichas: Spanish PDFs and *paquetes* (handwriting per D7), generator made language-aware, letter pages link their *ficha*. | |
-| 5 | Cuentos: `ES` migration (dev branch only), 8 stories, list filtered by language, reader with browser Spanish voice ("Escuchar" / "⏹ Detener"). | |
+| 5 | Cuentos (the `ES` migration was done in phase 1): 8 stories, list filtered by language, reader with browser Spanish voice ("Escuchar" / "⏹ Detener"). | |
 | 6 | Juegos (5 twins + *aplaude-las-silabas* per D10), preescolar, kínder, actividades, "Español" in the child language select. | |
 | 7 | Launch (below). | |
 
