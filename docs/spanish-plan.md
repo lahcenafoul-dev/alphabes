@@ -1,6 +1,6 @@
 # Spanish version of AlphaBes: plan and status
 
-Last updated: 2026-10-01 (phase 2 done). Read this first when continuing the Spanish work, together with CLAUDE.md and [french-plan.md](french-plan.md) (the Spanish work reuses everything built there).
+Last updated: 2026-10-02 (phase 3 done). Read this first when continuing the Spanish work, together with CLAUDE.md and [french-plan.md](french-plan.md) (the Spanish work reuses everything built there).
 
 ## Goal
 
@@ -99,30 +99,14 @@ Plus the "La tilde" page: á é í ó ú (Mamá 👩, Café ☕, Maíz 🌽, Avi
 
 ## The syllables section (`/es/silabas`)
 
-Spanish is read syllable by syllable, and spelling is regular, so the section follows the order of the *método silábico* used in schools (vowels → m, p, s, l → the rest) and ends with the tricky spellings. About 20 pages:
+Spanish is read syllable by syllable, and spelling is regular, so the section follows the order of the *método silábico* used in schools (vowels → direct syllables → inverse, mixed and blended ones → the letters whose sound depends on their neighbours). **Built in phase 3** (`lib/silabas-es.ts`), 20 pages in four groups, URL `/es/silabas/<slug>`:
 
-1. **Las vocales** (a, e, i, o, u; songs and gestures)
-2. **Sílabas directas** (consonant + vowel: ma me mi mo mu, pa pe pi po pu…), with the **syllable builder** (pick a consonant, hear and read the five syllables, join two to make a word: *ma + no = mano*)
-3. **Sílabas inversas** (vowel + consonant: al, en, is, or, un: *al-ba*, *is-la*)
-4. **Sílabas mixtas** (consonant + vowel + consonant: *sol*, *pan*, *mar*)
-5. **Sílabas trabadas con l**: bl, cl, fl, gl, pl (*blusa*, *clavo*, *flor*, *globo*, *plato*)
-6. **Sílabas trabadas con r**: br, cr, dr, fr, gr, pr, tr (*brazo*, *cruz*, *dragón*, *fruta*, *grillo*, *premio*, *tren*)
-7. **ch** (*chocolate*, *leche*, *noche*)
-8. **ll y y** (*llave*, *lluvia*, *yoyó*: same sound for most speakers)
-9. **r suave, r fuerte y rr** (*pera* / *ratón*, *perro*, *Enrique*)
-10. **c fuerte: ca, co, cu** and **que, qui** (*casa*, *cuna*, *queso*, *quince*; why the u in *qu* is silent)
-11. **c suave, s y z** (*cereza*, *cine*, *sapo*, *zapato*: one sound in Latin America; note for Spain)
-12. **g fuerte: ga, go, gu, gue, gui** (*gato*, *gusano*, *guitarra*)
-13. **g suave y j: ge, gi, ja, je, ji, jo, ju** (*gema*, *girasol*, *jirafa*)
-14. **güe, güi** (*pingüino*, *cigüeña*)
-15. **La h muda** (*hada*, *helado*, *búho*; *hue-*: *huevo*)
-16. **b y v** (same sound: *bota* / *vaca*; why spelling must be learned)
-17. **ñ** (*niño*, *araña*, *piña* in text only)
-18. **x** (*taxi*, *examen*, *México*, *xilófono*)
-19. **Contar sílabas** (clap the syllables: *sol* 1, *ca-sa* 2, *ma-ri-po-sa* 4)
-20. **Palabras frecuentes** (el, la, los, las, un, una, y, es, en, mi, con, que, de, no, sí, yo…)
+- **Las vocales y las sílabas:** `vocales`, `silabas-directas` (with the syllable builder and "Arma la palabra"), `silabas-inversas`, `silabas-mixtas`, `contar-silabas` ("Aplaude las sílabas").
+- **Las sílabas trabadas:** `trabadas-con-l` (bl, cl, fl, gl, pl), `trabadas-con-r` (br, cr, dr, fr, gr, pr, tr).
+- **Letras y sonidos especiales:** `ch`, `ll-y-y`, `r-y-rr`, `ca-co-cu-que-qui`, `ce-ci-y-z` (seseo, with Spain noted), `ga-go-gu-gue-gui` (the "g suave"), `ge-gi-y-j` (the "g fuerte"), `dieresis`, `h-muda`, `b-y-v`, `enie`, `x`.
+- **Leer de corrido:** `palabras-frecuentes`.
 
-Each page: explanation for parents, speakable syllables and words (`spokenText` for anything the browser might misread, as in French), short sentences to read, and a "¿Dónde está la sílaba?" picture hunt (reusing `components/sons/SoundHunt.tsx`). Good news: Spanish spelling is regular, so browser voices read syllables like *ma*, *pla*, *gue* reliably (much better than French sounds); items like a lone *y* or *bl* still get a spoken form ("bla, ble, bli").
+Each page: level by age, a listen button, the explanation, rules where useful, syllable tables to hear, words with the studied letters highlighted (or split into coloured syllables), a sentence, a picture hunt on 10 pages (with minimal pairs: pato/plato, mono/moño, pera/perro, guitarra/pingüino), a note for parents, two FAQs and related pages. The plan's names "g fuerte: ga, go, gu" were corrected: Spanish schools call ga, go, gu, gue, gui the soft g and ge, gi the strong g.
 
 ## Worksheets (`/es/fichas`)
 
@@ -185,7 +169,7 @@ The French work assumed exactly two languages in several places; phase 1 makes t
 
 - **Adding a Spanish page:** write the `*-es.tsx` component, route it in `page.tsx` with the per-language object, add the pathname to `SPANISH_PATHNAMES` (`lib/i18n/routes.ts`), add its param validator to `SPANISH_VALIDATORS` (`lib/i18n/known-params.ts`; until then every Spanish param 404s), Spanish-only params to `LOCALE_ONLY_PARAMS.es`, translated slugs to the `TRANSLATED_PARAMS` groups, and its pages and rules to `LANGS.es` in `localecheck.mjs` (remove the phase 1 "not written yet" rules there as pages arrive).
 - Each dynamic page's `generateStaticParams` must return the Spanish list for `es` once it exists (same rule as French).
-- **Spanish home page** (`app/[locale]/home-es.tsx`): every section is written; links appear by themselves when their page exists (`MaybeLink`, `has()`). Phase 3 should point the four syllable cards at their skill pages (they link to `/phonics` for now); phase 4 can add "Fichas populares"; phase 6 can list the games as in French.
+- **Spanish home page** (`app/[locale]/home-es.tsx`): every section is written; links appear by themselves when their page exists (`MaybeLink`, `has()`). The four syllable cards link to their pages (done in phase 3); phase 4 can add "Fichas populares"; phase 6 can list the games as in French.
 - **Child language:** the add/edit child forms still offer English and French only, and a profile created on the Spanish site defaults to English. Phase 6 adds "Español" to the forms (`ChildForm.langES`), to the children API's `z.enum(["EN", "FR"])` (`app/api/children/**`) and to `add-child-form.tsx`'s default. The dashboard messages already have an `ES` branch.
 - The story page (`stories/[slug]/page.tsx`) already finds twins in all languages and has Spanish metadata, breadcrumb and reader labels; the Spanish audio button (browser voice) comes in phase 5 (`story-reader.tsx` still picks `StoryAudioFr` only for French).
 - The English and French cookie and privacy pages still say "EN / FR" buttons (left unchanged so their text doesn't change); the Spanish ones say "EN / FR / ES". Update all three together later if wanted.
@@ -200,6 +184,14 @@ The French work assumed exactly two languages in several places; phase 1 makes t
 - **Tracing:** `TracingCanvas` takes `cursive.ruling = "doble-raya"` (capital line, dashed middle line, baseline, descender line). French keeps Seyès (the default).
 - **Routing:** `enie` and `tilde` are Spanish-only (`LOCALE_ONLY_PARAMS.es`), `SPANISH_VALIDATORS` lists the letter params. Switching language on ñ or the tilde page goes to the other language's alphabet; French-only letters go to `/es/abecedario`.
 
+## Phase 3 notes
+
+- **Data:** `lib/silabas-es.ts` (`spanishSyllablePages`, `SYLLABLE_GROUPS`, builder letters `ES_BUILDER_CONSONANTS` with ch and ll). The slugs are also listed in `SPANISH_SYLLABLE_SLUGS` (`lib/i18n/routes.ts`, Spanish-only, checked by the tests). Word markup is the French one (`[ch]ocolate`, `ma|no`), shown by the shared `components/sons/MarkedWord`.
+- **Exercises:** `components/sons/SoundHunt` and `SyllableBuilder` take `locale` (and the builder its letters); French pages pass nothing and are unchanged. New Spanish-only `components/silabas/WordBuilder` ("Arma la palabra": tiles in a fixed shuffled order so server and browser match; a wrong syllable is refused with a hint; the finished word is read by syllables) and `SyllableClap` (count 1–5; the right answer shows coloured syllables and reads them).
+- **Links:** each letter page links to its syllable page (`SYLLABLE_PAGE` in `letter-es.tsx`; letters without a special page go to `silabas-directas`). The switcher on a syllable page goes to `/phonics` or `/fr/sons`.
+- **Content checks in the tests:** built words are spelled exactly by their syllables, decoys are distinct, hunt answers match the rule (ch, ñ, ü, vowels, blends), no regional words, no look-alike Cyrillic letters (one had slipped into a FAQ and was fixed).
+- **Phase 4** should add the syllable worksheets (one per consonant: ma me mi mo mu…, and trabadas) and link them from these pages, as the French sound pages link their fiche.
+
 ## Phases
 
 | Phase | Content | Status |
@@ -207,7 +199,7 @@ The French work assumed exactly two languages in several places; phase 1 makes t
 | 0 | Baseline snapshots from `main`: English (existing script) **and French** (extend `snapshot.mjs`/`compare.mjs` to the French sitemap URLs); generalize `frcheck.mjs` into a per-language check (`localecheck.mjs fr|es`). | **Done** (2026-10-01), not pushed. Baseline in `../snap-es-base` (878 routes: 496 English, 382 French, from `main` 4894cd3); a second snapshot of the same build is identical, so the comparison is repeatable. `localecheck.mjs fr` passes on `main` (480 checks). |
 | 1 | Three-language foundation (section above), header with EN/FR/ES, Spanish UI pages: home, quiénes somos, precios, contacto, iniciar sesión, registro, mi cuenta, legal pages (placeholders), cookies, Spanish 404, API errors. | **Done** (2026-10-01), not pushed. English and French identical to the baseline (878 routes) apart from hreflang: the 7 English and 7 French twins of the Spanish pages each gained one `hreflang="es"` line, nothing else; the sitemap gained the 7 Spanish URLs with three-way alternates. `localecheck.mjs es` and `fr` pass, browser checks pass (164), 120 unit tests. Build: 1,612 pages (was ~1,140). See "Phase 1 notes". |
 | 2 | Abecedario: `lib/letters-es.ts` (27 letters + tilde page), chart, letter pages, `/es/tarjetas`, Spanish speech with voice fallback and no-voice message, tracing canvas with *script* / *cursiva*. | **Done** (2026-10-01), not pushed. English and French identical to the baseline apart from hreflang: since phase 1, 58 pages gained one `hreflang="es"` line (the 26 letters, the alphabet, the cards and the A tracing page, in English and French). Sitemap: 37 Spanish URLs. `localecheck es` and `fr` pass, 185 browser checks, 135 unit tests, build 1,615 pages. See "Phase 2 notes". |
-| 3 | Sílabas: ~20 pages + index, syllable builder, word builder, syllable clapping, picture hunt. | |
+| 3 | Sílabas: ~20 pages + index, syllable builder, word builder, syllable clapping, picture hunt. | **Done** (2026-10-02), not pushed. English and French identical to the baseline apart from hreflang: since phase 2 only `/phonics` and `/fr/sons` gained `hreflang="es"` (the syllable pages are Spanish-only). Sitemap: 58 Spanish URLs. `localecheck es` and `fr` pass, 208 browser checks (the exercises are played with a fake es-MX voice), 151 unit tests, build 1,627 pages. See "Phase 3 notes". |
 | 4 | Fichas: Spanish PDFs and *paquetes* (handwriting per D7), generator made language-aware, letter pages link their *ficha*. | |
 | 5 | Cuentos (the `ES` migration was done in phase 1): 8 stories, list filtered by language, reader with browser Spanish voice ("Escuchar" / "⏹ Detener"). | |
 | 6 | Juegos (5 twins + *aplaude-las-silabas* per D10), preescolar, kínder, actividades, "Español" in the child language select. | |
@@ -238,5 +230,5 @@ As in french-plan.md, plus:
 
 ## Open issues
 
-- Content review: the letter tips and FAQs (`lib/letters-es.ts`), the alphabet and tilde pages should get the native-teacher review (D12) with the syllable pages.
+- Content review: the letter tips and FAQs (`lib/letters-es.ts`), the alphabet and tilde pages and the 20 syllable pages (`lib/silabas-es.ts`) should get the native-teacher review (D12), ideally from a teacher who uses the syllable method.
 - `localecheck.mjs` lists English words that are also words in the checked language (`sameWords`: *parent(s)*, *sons*, *session* for French) and uses letter-aware word boundaries, so French no longer reports false positives. Add Spanish ones there if they appear.
