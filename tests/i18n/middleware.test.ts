@@ -230,7 +230,7 @@ describe("Spanish routing", () => {
 
   it("404s Spanish content pages until they are written, never serving English there", async () => {
     // Pages whose Spanish version comes in a later phase (docs/spanish-plan.md).
-    for (const path of ["/es/abecedario/a", "/es/juegos/find-the-letter", "/es/fichas/letter-a-tracing", "/es/cuentos/the-little-apple"]) {
+    for (const path of ["/es/juegos/find-the-letter", "/es/fichas/letter-a-tracing", "/es/cuentos/the-little-apple"]) {
       const res = await middleware(request(path));
       expect(rewrite(res), path).toBe("/_not-found");
       expect(notFoundLocale(res), path).toBe("es");

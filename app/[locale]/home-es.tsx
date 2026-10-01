@@ -213,6 +213,14 @@ export default function HomeEs() {
             líneas punteadas para seguir antes de escribir solos. Y para ir más lejos, fichas de
             letra cursiva en doble raya, como en el cuaderno de la escuela.
           </p>
+          {has("/alphabet/[letter]/worksheet") && (
+            <Link
+              href={{ pathname: "/alphabet/[letter]/worksheet", params: { letter: "a" } }}
+              className="mt-6 inline-block rounded-block bg-chalkboard text-paper font-display font-bold px-6 py-3 shadow-block hover:shadow-blockHover transition"
+            >
+              Trazar la letra A
+            </Link>
+          )}
         </div>
       </section>
 

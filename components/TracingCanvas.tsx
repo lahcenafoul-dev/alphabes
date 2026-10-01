@@ -4,6 +4,14 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 type Style = "script" | "cursive";
 
+/**
+ * School ruling drawn behind cursive: French Seyès lines (baseline, x-height
+ * and two lines above, one below), or the four guide lines of Spanish-language
+ * "doble raya" notebooks (capital line, dashed middle line, baseline,
+ * descender line).
+ */
+export type Ruling = "seyes" | "doble-raya";
+
 type Labels = {
   clear: string;
   styleGroup: string;
@@ -18,7 +26,7 @@ type Props = {
   /** Exact text to trace in print ("A a"); overrides `letter`. */
   text?: string;
   /** Adds a print/cursive toggle; `fontFamily` must be loaded by the page. */
-  cursive?: { text: string; fontFamily: string };
+  cursive?: { text: string; fontFamily: string; ruling?: Ruling };
   /** Visible text; defaults to the English page's labels. */
   labels?: Partial<Labels>;
 };
@@ -38,7 +46,14 @@ const INK_COLOR = "#2563eb";
 // Draws the dotted guide the child traces over, scaled to fit the canvas.
 // In cursive, school-style ruling (baseline, x-height, ascender line) is
 // drawn behind the letters.
-function drawGuide(ctx: CanvasRenderingContext2D, w: number, h: number, text: string, font: string | null) {
+function drawGuide(
+  ctx: CanvasRenderingContext2D,
+  w: number,
+  h: number,
+  text: string,
+  font: string | null,
+  ruling: Ruling = "seyes",
+) {
   ctx.clearRect(0, 0, w, h);
   const family = font ?? "sans-serif";
   const weight = font ? "" : "bold ";
@@ -57,11 +72,27 @@ function drawGuide(ctx: CanvasRenderingContext2D, w: number, h: number, text: st
     const baseline = h / 2 + (ascent - m.actualBoundingBoxDescent) / 2;
     ctx.strokeStyle = LINE_COLOR;
     ctx.lineWidth = 1;
-    for (const y of [baseline, baseline - xHeight, baseline - xHeight * 2, baseline - xHeight * 3, baseline + xHeight]) {
-      ctx.beginPath();
-      ctx.moveTo(0, y);
-      ctx.lineTo(w, y);
-      ctx.stroke();
+    if (ruling === "doble-raya") {
+      for (const [y, dashed] of [
+        [baseline - xHeight * 2, false],
+        [baseline - xHeight, true],
+        [baseline, false],
+        [baseline + xHeight, false],
+      ] as const) {
+        ctx.setLineDash(dashed ? [8, 6] : []);
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(w, y);
+        ctx.stroke();
+      }
+      ctx.setLineDash([]);
+    } else {
+      for (const y of [baseline, baseline - xHeight, baseline - xHeight * 2, baseline - xHeight * 3, baseline + xHeight]) {
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(w, y);
+        ctx.stroke();
+      }
     }
     ctx.textBaseline = "alphabetic";
     ctx.strokeStyle = GUIDE_COLOR;
@@ -87,6 +118,7 @@ export default function TracingCanvas({ letter = "", text, cursive, labels }: Pr
   const printText = text ?? letter.toUpperCase();
   const guideText = style === "cursive" && cursive ? cursive.text : printText;
   const guideFont = style === "cursive" && cursive ? cursive.fontFamily : null;
+  const ruling = cursive?.ruling;
 
   const reset = useCallback(() => {
     const canvas = canvasRef.current;
@@ -97,8 +129,8 @@ export default function TracingCanvas({ letter = "", text, cursive, labels }: Pr
     canvas.width = rect.width * dpr;
     canvas.height = rect.height * dpr;
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    drawGuide(ctx, rect.width, rect.height, guideText, guideFont);
-  }, [guideText, guideFont]);
+    drawGuide(ctx, rect.width, rect.height, guideText, guideFont, ruling);
+  }, [guideText, guideFont, ruling]);
 
   useEffect(() => {
     let cancelled = false;

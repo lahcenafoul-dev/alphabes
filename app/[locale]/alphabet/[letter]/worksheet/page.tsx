@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import { frenchLetterParams } from "@/lib/letters-fr";
+import { spanishLetterParams } from "@/lib/letters-es";
 import { initLocale } from "@/lib/i18n/server";
 import WorksheetEn, { englishWorksheetParams, worksheetMetadataEn } from "./worksheet-en";
 import WorksheetFr, { worksheetMetadataFr } from "./worksheet-fr";
+import WorksheetEs, { worksheetMetadataEs } from "./worksheet-es";
 
 type Props = { params: Promise<{ locale: string; letter: string }> };
 
@@ -11,20 +13,22 @@ type Props = { params: Promise<{ locale: string; letter: string }> };
 // an empty error shell in the server HTML with this Next.js version.)
 export const dynamicParams = false;
 
-// /fr/alphabet/[letter]/fiche also covers é, è, ê and ç.
+// /fr/alphabet/[letter]/fiche also covers é, è, ê and ç; /es/abecedario/[letter]/ficha covers ñ.
 export function generateStaticParams({ params }: { params: { locale: string } }) {
-  const letters = params.locale === "fr" ? frenchLetterParams() : englishWorksheetParams();
+  const letters =
+    params.locale === "fr" ? frenchLetterParams() : params.locale === "es" ? spanishLetterParams() : englishWorksheetParams();
   return letters.map((letter) => ({ letter }));
 }
 
 export async function generateMetadata(props: Props): Promise<Metadata> {
   const { locale: param, letter } = await props.params;
   const locale = initLocale(param);
-  return locale === "fr" ? worksheetMetadataFr(letter) : worksheetMetadataEn(letter);
+  return { en: worksheetMetadataEn, fr: worksheetMetadataFr, es: worksheetMetadataEs }[locale](letter);
 }
 
 export default async function LetterWorksheetPage(props: Props) {
   const { locale: param, letter } = await props.params;
   const locale = initLocale(param);
-  return locale === "fr" ? <WorksheetFr letter={letter} /> : <WorksheetEn letter={letter} />;
+  const Page = { en: WorksheetEn, fr: WorksheetFr, es: WorksheetEs }[locale];
+  return <Page letter={letter} />;
 }

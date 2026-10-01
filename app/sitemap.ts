@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { getAllLetterSlugs } from "@/lib/letters-data";
 import { ACCENTS_SLUG, frenchLetters, isAccentLetter } from "@/lib/letters-fr";
+import { TILDE_SLUG } from "@/lib/letters-es";
 import { phonicsSkills } from "@/lib/phonics-data";
 import { frenchSounds } from "@/lib/sons-fr";
 import { FICHE_CATEGORIES, fichePacks, fiches } from "@/lib/fiches-fr";
@@ -249,7 +250,21 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       })),
   ];
 
-  return [...withTwins(englishEntries), ...frenchGameEntries, ...frenchOnlyEntries, ...(await getStoryRoutes())];
+  // Spanish pages with no twin: the ñ and the tilde page.
+  const spanishOnlyEntries: MetadataRoute.Sitemap = ["enie", TILDE_SLUG].map((letter) => ({
+    url: absoluteUrl("es", "/alphabet/[letter]", { letter }),
+    lastModified: new Date(),
+    changeFrequency: "monthly" as const,
+    priority: 0.8,
+  }));
+
+  return [
+    ...withTwins(englishEntries),
+    ...frenchGameEntries,
+    ...frenchOnlyEntries,
+    ...spanishOnlyEntries,
+    ...(await getStoryRoutes()),
+  ];
 }
 
 // Every English page that also exists in other languages gets hreflang

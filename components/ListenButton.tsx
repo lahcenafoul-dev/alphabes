@@ -1,25 +1,30 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import type { Locale } from "@/i18n/routing";
 import { speakIn, warmUpVoices, type SpeakResult } from "@/lib/speech";
 
-// Read-aloud button for the French pages. Speaks with a French voice only;
-// when the device has none, it shows how to install one instead of letting
-// an English voice mangle the words.
+type SpeechLocale = Exclude<Locale, "en">;
+
+// Read-aloud button for the French and Spanish pages. Speaks with a voice in
+// the page's language only; when the device has none, it shows how to
+// install one instead of letting an English voice mangle the words.
 export default function ListenButton({
   text,
   children,
   className,
   ariaLabel,
   rate,
+  locale = "fr",
 }: {
   text: string;
   children: React.ReactNode;
   className?: string;
   ariaLabel?: string;
   rate?: number;
+  locale?: SpeechLocale;
 }) {
-  const { say, notice } = useFrenchSpeech();
+  const { say, notice } = useSpeech(locale);
 
   return (
     <>
@@ -32,24 +37,70 @@ export default function ListenButton({
 }
 
 /**
- * French speech for interactive components: `say(text)` reads it with a
- * French voice, and `notice` (render it) explains how to install one when
+ * Speech for interactive components: `say(text)` reads it with a voice in
+ * the language, and `notice` (render it) explains how to install one when
  * the device has none.
  */
-export function useFrenchSpeech() {
+export function useSpeech(locale: SpeechLocale) {
   const [problem, setProblem] = useState<Exclude<SpeakResult, "ok"> | null>(null);
 
   useEffect(warmUpVoices, []);
 
   /** Resolves true when the text is being read; `onEnd` runs when it stops. */
   async function say(text: string, rate?: number, onEnd?: () => void) {
-    const result = await speakIn("fr", text, rate, onEnd);
+    const result = await speakIn(locale, text, rate, onEnd);
     setProblem(result === "ok" ? null : result);
     return result === "ok";
   }
 
-  const notice = problem ? <NoVoiceNotice kind={problem} onClose={() => setProblem(null)} /> : null;
+  const Notice = locale === "es" ? NoVoiceNoticeEs : NoVoiceNotice;
+  const notice = problem ? <Notice kind={problem} onClose={() => setProblem(null)} /> : null;
   return { say, notice };
+}
+
+/** French speech (the French games and pages). */
+export function useFrenchSpeech() {
+  return useSpeech("fr");
+}
+
+const noticeClass =
+  "fixed inset-x-4 bottom-4 z-[60] mx-auto max-w-md rounded-block border-2 border-crayon-yellow bg-paper p-4 text-left text-sm text-chalkboard shadow-blockHover sm:inset-x-auto sm:right-4";
+
+function NoVoiceNoticeEs({ kind, onClose }: { kind: Exclude<SpeakResult, "ok">; onClose: () => void }) {
+  return (
+    <div role="status" className={noticeClass}>
+      {kind === "unsupported" ? (
+        <p className="font-display font-bold">
+          Este navegador no puede leer en voz alta. Prueba con Chrome, Edge, Safari o Firefox.
+        </p>
+      ) : (
+        <>
+          <p className="font-display font-bold">Este dispositivo no tiene ninguna voz en español.</p>
+          <p className="mt-1 text-chalkboard/80">Para escuchar las letras y las palabras, agrega una:</p>
+          <ul className="mt-2 list-disc space-y-1 pl-5 text-chalkboard/80">
+            <li>
+              <strong>Android</strong>: Ajustes › Accesibilidad › Texto a voz, y elige el español (motor de Google).
+            </li>
+            <li>
+              <strong>iPhone, iPad</strong>: Ajustes › Accesibilidad › Contenido leído › Voces › Español.
+            </li>
+            <li>
+              <strong>Windows</strong>: Configuración › Hora e idioma › Idioma y región, agrega el español con la
+              opción de voz.
+            </li>
+          </ul>
+          <p className="mt-2 text-chalkboard/60">Después, vuelve a cargar la página.</p>
+        </>
+      )}
+      <button
+        type="button"
+        onClick={onClose}
+        className="mt-3 rounded-block bg-chalkboard px-4 py-1.5 font-display font-bold text-paper"
+      >
+        Cerrar
+      </button>
+    </div>
+  );
 }
 
 function NoVoiceNotice({ kind, onClose }: { kind: Exclude<SpeakResult, "ok">; onClose: () => void }) {

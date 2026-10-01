@@ -53,10 +53,14 @@ export const FRENCH_PATHNAMES: ReadonlySet<AppPathname> = new Set<AppPathname>([
 export const SPANISH_PATHNAMES: ReadonlySet<AppPathname> = new Set<AppPathname>([
   "/",
   "/about",
+  "/alphabet",
+  "/alphabet/[letter]",
+  "/alphabet/[letter]/worksheet",
   "/contact",
   "/cookies",
   "/dashboard",
   "/dashboard/[id]",
+  "/flashcards",
   "/login",
   "/pricing",
   "/privacy-policy",
@@ -132,8 +136,9 @@ function translateParams(pathname: AppPathname, params: RouteParams, from: Local
 }
 
 // Params that exist in only one language: the French letters with accents
-// and the accents page (lib/letters-fr.ts), and every French sound page
-// (lib/sons-fr.ts). Both lists are checked against the data by tests/i18n.
+// and the accents page (lib/letters-fr.ts), every French sound page
+// (lib/sons-fr.ts), and the Spanish ñ and tilde pages (lib/letters-es.ts).
+// The lists are checked against the data by tests/i18n.
 // Such pages get no hreflang, and the switcher can't map them to another
 // language.
 const FRENCH_ONLY_LETTERS = ["e-accent-aigu", "e-accent-grave", "e-accent-circonflexe", "c-cedille"];
@@ -146,6 +151,10 @@ const LOCALE_ONLY_PARAMS: Partial<Record<Locale, Partial<Record<AppPathname, { k
     "/alphabet/[letter]": { key: "letter", values: new Set([...FRENCH_ONLY_LETTERS, "accents"]) },
     "/alphabet/[letter]/worksheet": { key: "letter", values: new Set(FRENCH_ONLY_LETTERS) },
     "/phonics/[skill]": { key: "skill", values: new Set(FRENCH_SOUND_SLUGS) },
+  },
+  es: {
+    "/alphabet/[letter]": { key: "letter", values: new Set(["enie", "tilde"]) },
+    "/alphabet/[letter]/worksheet": { key: "letter", values: new Set(["enie"]) },
   },
 };
 

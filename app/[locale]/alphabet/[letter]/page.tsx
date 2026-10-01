@@ -1,9 +1,12 @@
 import type { Metadata } from "next";
 import { ACCENTS_SLUG, frenchLetterParams } from "@/lib/letters-fr";
+import { TILDE_SLUG, spanishLetterParams } from "@/lib/letters-es";
 import { initLocale } from "@/lib/i18n/server";
 import AccentsFr, { accentsMetadataFr } from "./accents-fr";
 import LetterEn, { englishLetterParams, letterMetadataEn } from "./letter-en";
 import LetterFr, { letterMetadataFr } from "./letter-fr";
+import LetterEs, { letterMetadataEs } from "./letter-es";
+import TildeEs, { tildeMetadataEs } from "./tilde-es";
 
 type Props = { params: Promise<{ locale: string; letter: string }> };
 
@@ -13,9 +16,15 @@ type Props = { params: Promise<{ locale: string; letter: string }> };
 export const dynamicParams = false;
 
 // French has its own alphabet: é, è, ê, ç get pages of their own, plus a
-// page for the other accents. Keep in sync with lib/i18n/known-params.ts.
+// page for the other accents. Spanish has 27 letters (ñ is "enie") and a
+// page for the tilde. Keep in sync with lib/i18n/known-params.ts.
 export function generateStaticParams({ params }: { params: { locale: string } }) {
-  const letters = params.locale === "fr" ? [...frenchLetterParams(), ACCENTS_SLUG] : englishLetterParams();
+  const letters =
+    params.locale === "fr"
+      ? [...frenchLetterParams(), ACCENTS_SLUG]
+      : params.locale === "es"
+        ? [...spanishLetterParams(), TILDE_SLUG]
+        : englishLetterParams();
   return letters.map((letter) => ({ letter }));
 }
 
@@ -23,6 +32,7 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
   const { locale: param, letter } = await props.params;
   const locale = initLocale(param);
   if (locale === "en") return letterMetadataEn(letter);
+  if (locale === "es") return letter === TILDE_SLUG ? tildeMetadataEs : letterMetadataEs(letter);
   return letter === ACCENTS_SLUG ? accentsMetadataFr : letterMetadataFr(letter);
 }
 
@@ -30,5 +40,6 @@ export default async function LetterPage(props: Props) {
   const { locale: param, letter } = await props.params;
   const locale = initLocale(param);
   if (locale === "en") return <LetterEn letter={letter} />;
+  if (locale === "es") return letter === TILDE_SLUG ? <TildeEs /> : <LetterEs letter={letter} />;
   return letter === ACCENTS_SLUG ? <AccentsFr /> : <LetterFr letter={letter} />;
 }

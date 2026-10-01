@@ -320,6 +320,103 @@ console.log("Alphabet (phase 2)");
   }
 }
 
+console.log("Spanish alphabet (Spanish phase 2)");
+{
+  const { context, page, errors } = await newPage();
+  await page.goto(base + "/alphabet/b");
+  await page.waitForLoadState("networkidle");
+  check((await switcherHref(page, "es")) === "/es/abecedario/b", "ES link on /alphabet/b points to /es/abecedario/b");
+  await page.goto(base + "/es/abecedario/enie");
+  await page.waitForLoadState("networkidle");
+  check((await switcherHref(page, "en")) === "/alphabet" && (await switcherHref(page, "fr")) === "/fr/alphabet", "EN/FR links on ñ go to the alphabet");
+  check(await page.getByRole("heading", { name: "La letra Ñ ñ" }).isVisible(), "ñ page heading");
+  await page.goto(base + "/fr/alphabet/c-cedille");
+  await page.waitForLoadState("networkidle");
+  check((await switcherHref(page, "es")) === "/es/abecedario", "ES link on a French-only letter goes to /es/abecedario");
+  await page.goto(base + "/es/tarjetas");
+  await page.waitForLoadState("networkidle");
+  check((await switcherHref(page, "fr")) === "/fr/imagier", "FR link on /es/tarjetas points to /fr/imagier");
+
+  // Tracing on doble raya: draw a stroke, switch to cursive (Playwrite MX).
+  await page.goto(base + "/es/abecedario/enie/ficha");
+  await page.waitForLoadState("networkidle");
+  const canvas = page.getByLabel("Espacio para trazar la letra Ñ");
+  const box = await canvas.boundingBox();
+  await page.mouse.move(box.x + 100, box.y + 100);
+  await page.mouse.down();
+  await page.mouse.move(box.x + 300, box.y + 150, { steps: 10 });
+  await page.mouse.up();
+  const inked = await canvas.evaluate((c) => {
+    const d = c.getContext("2d").getImageData(0, 0, c.width, c.height).data;
+    for (let i = 0; i < d.length; i += 4) if (d[i] === 37 && d[i + 1] === 99 && d[i + 2] === 235) return true;
+    return false;
+  });
+  check(inked, "drawing on the Spanish canvas leaves blue ink");
+  await page.getByRole("button", { name: "Cursiva" }).click();
+  check((await page.getByRole("button", { name: "Cursiva" }).getAttribute("aria-pressed")) === "true", "cursiva toggle is pressed");
+  const fontLoaded = () => [...document.fonts].some((f) => /Playwrite MX/.test(f.family) && f.status === "loaded");
+  await page.waitForFunction(fontLoaded, null, { timeout: 15000 }).catch(() => {});
+  check(await page.evaluate(fontLoaded), "cursive font (Playwrite MX) loaded");
+  await page.waitForTimeout(300);
+  await canvas.screenshot({ path: `${shots}/es-ficha-cursiva-canvas.png` });
+  await page.screenshot({ path: `${shots}/es-ficha.png`, fullPage: true });
+  check(errors.length === 0, `no console/page errors${errors.length ? ": " + errors.slice(0, 3).join(" | ") : ""}`);
+  await context.close();
+
+  // Speech: a Mexican voice first, Spanish text.
+  {
+    const { context, page } = await newPage();
+    await context.addInitScript(fakeVoices(["en-US", "es-ES", "es-US", "es-MX"]));
+    await page.goto(base + "/es/abecedario/b");
+    await page.waitForLoadState("networkidle");
+    await page.getByRole("button", { name: "🔊 Sus sílabas" }).click();
+    await page.getByRole("button", { name: "Escuchar: un barco" }).click();
+    const spoken = await page.evaluate(() => window.__spoken);
+    check(spoken[0]?.text === "ba, be, bi, bo, bu. Como en ballena, barco." && spoken[0]?.lang === "es-MX", `syllables read with the es-MX voice (${JSON.stringify(spoken[0])})`);
+    check(spoken[1]?.text === "un barco", "word read with its article");
+    await context.close();
+  }
+  // Only a voice from Spain: it is used.
+  {
+    const { context, page } = await newPage();
+    await context.addInitScript(fakeVoices(["en-US", "es-ES"]));
+    await page.goto(base + "/es/abecedario/enie");
+    await page.waitForLoadState("networkidle");
+    await page.getByRole("button", { name: "🔊 El nombre de la letra" }).click();
+    const spoken = await page.evaluate(() => window.__spoken);
+    check(spoken[0]?.text === "eñe" && spoken[0]?.lang === "es-ES", `falls back to es-ES (${JSON.stringify(spoken[0])})`);
+    await context.close();
+  }
+  // No Spanish voice: nothing said, Spanish help shown.
+  {
+    const { context, page } = await newPage({ width: 390, height: 844 });
+    await context.addInitScript(fakeVoices(["en-US", "fr-FR"]));
+    await page.goto(base + "/es/abecedario/b");
+    await page.waitForLoadState("networkidle");
+    await page.getByRole("button", { name: "🔊 El nombre de la letra" }).click();
+    const notice = page.getByText("Este dispositivo no tiene ninguna voz en español.");
+    check(await notice.isVisible(), "Spanish missing-voice message appears");
+    check((await page.evaluate(() => window.__spoken.length)) === 0, "a French or English voice never reads Spanish");
+    await page.screenshot({ path: `${shots}/es-no-voice.png` });
+    await page.getByRole("button", { name: "Cerrar", exact: true }).click();
+    check(!(await notice.isVisible()), "Spanish missing-voice message closes");
+    await context.close();
+  }
+  // Layout at 390px.
+  {
+    const { context, page, errors } = await newPage({ width: 390, height: 844 });
+    for (const p of ["/es/abecedario", "/es/abecedario/w", "/es/abecedario/enie/ficha", "/es/abecedario/tilde", "/es/tarjetas"]) {
+      await page.goto(base + p);
+      await page.waitForLoadState("networkidle");
+      const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+      check(overflow <= 0, `${p}: no horizontal scroll (overflow ${overflow}px)`);
+      await page.screenshot({ path: `${shots}/m${p.replaceAll("/", "_")}.png`, fullPage: true });
+    }
+    check(errors.length === 0, `no console/page errors${errors.length ? ": " + errors.slice(0, 3).join(" | ") : ""}`);
+    await context.close();
+  }
+}
+
 console.log("Sounds (phase 3)");
 {
   const { context, page, errors } = await newPage();

@@ -49,6 +49,8 @@ const RULES_FR = [
   ["/pricing", { headers: { "accept-language": "fr-FR,fr;q=0.9" } }, 200, null, "no Accept-Language redirect"],
 ];
 
+const esLetters = [..."abcdefghijklmn", "enie", ..."opqrstuvwxyz"];
+
 const RULES_ES = [
   ["/es/xyz", {}, 404, null, "unknown Spanish URL"],
   ["/es/pricing", {}, 404, null, "English word under /es"],
@@ -61,8 +63,18 @@ const RULES_ES = [
   ["/es/precios", { headers: { cookie: "NEXT_LOCALE=en" } }, 307, "/pricing", "Spanish page, English chosen"],
   ["/blog", { headers: { cookie: "NEXT_LOCALE=es" } }, 200, null, "no Spanish twin: stay"],
   ["/pricing", { headers: { "accept-language": "es-MX,es;q=0.9" } }, 200, null, "no Accept-Language redirect"],
-  // Spanish phase 1: content pages come in later phases, never English under /es.
-  ["/es/abecedario/a", {}, 404, null, "Spanish alphabet not written yet"],
+  // Spanish phase 2: the alphabet.
+  ["/es/abecedario/c-cedille", {}, 404, null, "French-only letter under /es"],
+  ["/es/abecedario/accents", {}, 404, null, "French accents page under /es"],
+  ["/es/abecedario/ñ", {}, 404, null, "ñ is /es/abecedario/enie"],
+  ["/es/abecedario/tilde/ficha", {}, 404, null, "no ficha for the tilde page"],
+  ["/alphabet/enie", {}, 404, null, "Spanish-only letter under an English URL"],
+  ["/fr/alphabet/tilde", {}, 404, null, "Spanish tilde page under /fr"],
+  ["/alphabet/b", { headers: { cookie: "NEXT_LOCALE=es" } }, 307, "/es/abecedario/b", "letter twin in Spanish"],
+  ["/fr/imagier", { headers: { cookie: "NEXT_LOCALE=es" } }, 307, "/es/tarjetas", "cards twin in Spanish"],
+  ["/es/abecedario/enie", { headers: { cookie: "NEXT_LOCALE=en" } }, 200, null, "Spanish-only letter, English chosen: stay"],
+  ["/fr/alphabet/c-cedille", { headers: { cookie: "NEXT_LOCALE=es" } }, 200, null, "French-only letter, Spanish chosen: stay"],
+  // Spanish content pages that come in later phases: never English under /es.
   ["/es/juegos", {}, 404, null, "Spanish games not written yet"],
   ["/es/cuentos/the-little-apple", {}, 404, null, "English story under /es/cuentos"],
 ];
@@ -101,6 +113,9 @@ const LANGS = {
       // Spanish phase 1: home, UI pages, legal pages.
       "/es", "/es/precios", "/es/quienes-somos", "/es/contacto", "/es/politica-de-privacidad", "/es/terminos-de-uso",
       "/es/cookies", "/es/iniciar-sesion", "/es/registro",
+      // Spanish phase 2: the alphabet (27 letters with ñ), the tilde page and the cards.
+      "/es/abecedario", "/es/abecedario/tilde", "/es/tarjetas",
+      ...esLetters.flatMap((l) => [`/es/abecedario/${l}`, `/es/abecedario/${l}/ficha`]),
     ],
     rules: RULES_ES,
   },
