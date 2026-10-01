@@ -48,13 +48,29 @@ export function pickVoice(voices: SpeechSynthesisVoice[], locale: Locale): Speec
   return pool.find((v) => /natural|neural|premium|enhanced|google/i.test(v.name)) ?? pool[0] ?? null;
 }
 
-function utter(synth: SpeechSynthesis, text: string, locale: Locale, rate: number, voice: SpeechSynthesisVoice | null) {
+function utter(
+  synth: SpeechSynthesis,
+  text: string,
+  locale: Locale,
+  rate: number,
+  voice: SpeechSynthesisVoice | null,
+  onEnd?: () => void,
+) {
   synth.cancel();
   const utterance = new SpeechSynthesisUtterance(text);
   utterance.lang = voice?.lang ?? LANG_TAG[locale];
   if (voice) utterance.voice = voice;
   utterance.rate = rate;
+  if (onEnd) {
+    utterance.onend = onEnd;
+    utterance.onerror = onEnd;
+  }
   synth.speak(utterance);
+}
+
+/** Stops whatever the browser is reading aloud. */
+export function stopSpeaking() {
+  if (typeof window !== "undefined" && window.speechSynthesis) window.speechSynthesis.cancel();
 }
 
 /**
@@ -63,7 +79,12 @@ function utter(synth: SpeechSynthesis, text: string, locale: Locale, rate: numbe
  * language, nothing is said and "no-voice" is returned so the page can
  * explain how to install one.
  */
-export async function speakIn(locale: Locale, text: string, rate = 0.85): Promise<SpeakResult> {
+export async function speakIn(
+  locale: Locale,
+  text: string,
+  rate = 0.85,
+  onEnd?: () => void,
+): Promise<SpeakResult> {
   if (typeof window === "undefined" || !window.speechSynthesis) return "unsupported";
   const synth = window.speechSynthesis;
   // When the voices are already known, speak synchronously: iOS only allows
@@ -73,6 +94,6 @@ export async function speakIn(locale: Locale, text: string, rate = 0.85): Promis
   const voice = pickVoice(voices, locale);
   if (!voice && voices.length) return "no-voice";
   // No voice list at all (some browsers never expose one): try the language tag.
-  utter(synth, text, locale, rate, voice);
+  utter(synth, text, locale, rate, voice, onEnd);
   return "ok";
 }

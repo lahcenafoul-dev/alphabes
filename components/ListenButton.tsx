@@ -41,9 +41,11 @@ export function useFrenchSpeech() {
 
   useEffect(warmUpVoices, []);
 
-  async function say(text: string, rate?: number) {
-    const result = await speakIn("fr", text, rate);
+  /** Resolves true when the text is being read; `onEnd` runs when it stops. */
+  async function say(text: string, rate?: number, onEnd?: () => void) {
+    const result = await speakIn("fr", text, rate, onEnd);
     setProblem(result === "ok" ? null : result);
+    return result === "ok";
   }
 
   const notice = problem ? <NoVoiceNotice kind={problem} onClose={() => setProblem(null)} /> : null;

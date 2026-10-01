@@ -1,6 +1,6 @@
 # French version of AlphaBes: plan and status
 
-Last updated: 2026-09-30. Read this first when continuing the French work.
+Last updated: 2026-10-01. Read this first when continuing the French work.
 
 ## Goal
 
@@ -36,7 +36,7 @@ Hard rule: **English URLs and content stay exactly as they are** (no redirects, 
 | Flashcards | `/fr/imagier` (French word for a picture word book). |
 | Remembering the language | The switcher sets a `NEXT_LOCALE` cookie (1 year); the middleware sends the visitor to the same page in that language when it exists. |
 | Pricing | Keep USD for now (French format: "7,99 $", with a note "Prix en dollars américains (USD)"). Stripe is paused (not available in Morocco). |
-| Story audio | **Google Cloud Text-to-Speech**, fr-FR Neural2 or WaveNet voice (owner already has a Google Cloud project). Stay inside the free tier and **tell the owner the expected cost before generating**. Browser speech (Web Speech API, fr-FR) as fallback when a page has no audio file. |
+| Story audio | **Google Cloud Text-to-Speech**, fr-FR Neural2 or WaveNet voice (owner already has a Google Cloud project). Stay inside the free tier and **tell the owner the expected cost before generating**. Browser speech (Web Speech API, fr-FR) as fallback when a page has no audio file. **2026-10-01: TTS skipped for now** (Google Cloud billing won't activate): French stories launch with browser speech only; the TTS script stays ready for later. |
 | Cursive font | Use a free font **only if its license clearly allows commercial use in a paid product**. If none qualifies, show the owner the paid options with prices **before buying**. **Chosen: Playwrite FR Trad** (TypeTogether, SIL OFL 1.1: commercial use and embedding allowed, the OFL doesn't cover documents made with it). Its proportions match Seyès exactly (x-height = 1 interline, loops = 3). Worksheets on Seyès ruling (grands carreaux). |
 | Letter E | The letter's name is [ə], but *Escargot* and *Elfe* start with the è sound [ɛ]. The E page must say so for parents. |
 | Accents | Full letter pages for **é, è, ê, ç** (they change the sound). **à, ù, â, î, ô, û, ë, ï, œ** go on one "Les accents" page (à and ù don't change the sound). |
@@ -73,7 +73,7 @@ See CLAUDE.md, "Languages", for the rules. In short:
 | 2 | Alphabet: French letter data (26 + é è ê ç), "Les accents" page, alphabet chart, letter pages, flashcards (`/fr/imagier`), `speak()` with French voice + no-voice message, tracing canvas with script/cursive toggle | **Done**, pushed. |
 | 3 | Sons (phonics): 19 sound pages + index (`/fr/sons`), speakable words and sentences, "Où est le son ?" picture hunt, syllable builder | **Done**, pushed. |
 | 4 | Worksheets: 238 French PDFs (6 types × 30 letters, nombres, formes, couleurs, mots-outils, syllabes, sons), 43 packs (`/fr/fiches/packs`), cursive on Seyès lines, pre-rendered with Chromium | **Done**, pushed. |
-| 5 | Stories: DB migration, 8 original French stories (same illustration scenes), story list filtered by language, reader in French, audio via Google Cloud TTS (cost estimate first) | **Code done**, committed, not pushed. Migration applied to the Neon `dev` branch only. Audio **not generated**: waiting for the owner's OK (estimate: 2,186 characters, $0). Until then pages use the browser's French voice. |
+| 5 | Stories: DB migration, 8 original French stories (same illustration scenes), story list filtered by language, reader in French, audio via Google Cloud TTS (cost estimate first) | **Done**, pushed. Migration applied to the Neon `dev` branch only (production in phase 7). Audio: **browser French voice** (owner's decision, 2026-10-01: Google TTS skipped, billing won't activate). "Écouter" becomes "⏹ Arrêter" while reading; turning the page or leaving stops it. No MP3s generated. |
 | 6 | Games (5 French games), child language preference (dashboard forms + links), maternelle, grande section, activities | To do |
 | 7 | Launch: production DB migration (with OK), merge to `main`, submit the French sitemap in Search Console. French blog optional (new writing). | To do |
 
@@ -90,6 +90,7 @@ Slugs stay globally unique. Migration `20260930050000_story_locale`, **applied t
 - Story content lives in `prisma/stories-data.ts` (both languages, `translationGroup` pairs twins); `npm run db:seed` upserts it. Twins get hreflang to each other (page metadata and sitemap).
 - Stories exist only in their language: the lists filter by `locale`, and `storyExists(slug, locale)` in the middleware 404s a story under the other language's URL.
 - Audio: `npm run tts:histoires` prints the estimate and sends nothing. `-- --list-voices` / `-- --generate [--voice fr-FR-Neural2-A]` need `GOOGLE_TTS_API_KEY` (key restricted to Text-to-Speech) and write `public/audio/histoires/<slug>-<page>.mp3`; then `npm run db:seed` fills `StoryPage.audioUrl`. Without a file, "Écouter" uses the browser's French voice.
+- **TTS for later** (not run, Google Cloud billing not active): estimate 2,186 characters for the 40 pages, inside the 1M free characters/month for Neural2/WaveNet (≈ $0.04 even at list price, about $16 per 1M; check Google's pricing page). Planned voice: a slow female fr-FR voice (fr-FR-Neural2-A, rate ≈ 0.85). The owner wants **one sample page first**, then an OK before the other 39: `--generate` currently does all pages, so add a one-page option before running it. MP3s, once there, take priority over browser speech automatically (`components/StoryAudioFr.tsx`).
 
 ### Things later phases must remember
 

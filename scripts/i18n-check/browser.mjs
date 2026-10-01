@@ -131,9 +131,15 @@ console.log("Mobile (390px)");
 const fakeVoices = (langs) => `(() => {
   const voices = ${JSON.stringify(langs)}.map((lang) => ({ lang, name: "Voix " + lang, localService: true, default: false, voiceURI: lang }));
   window.__spoken = [];
+  window.__cancels = 0;
+  let current = null;
+  // Like a real browser: an utterance ends (onend) or is cancelled (onerror).
+  window.__finishSpeech = () => { const u = current; current = null; u?.onend?.(); };
   window.SpeechSynthesisUtterance = class { constructor(text) { this.text = text; } };
   Object.defineProperty(window, "speechSynthesis", { value: {
-    getVoices: () => voices, cancel() {}, speak: (u) => window.__spoken.push({ text: u.text, lang: u.lang }),
+    getVoices: () => voices,
+    cancel() { window.__cancels++; const u = current; current = null; u?.onerror?.(); },
+    speak: (u) => { current = u; window.__spoken.push({ text: u.text, lang: u.lang }); },
     addEventListener() {}, removeEventListener() {},
   } });
 })()`;
@@ -339,6 +345,23 @@ console.log("Stories (phase 5)");
   await page.getByRole("button", { name: "Écouter la page" }).click();
   const spoken = await page.evaluate(() => window.__spoken.map((u) => `${u.lang}|${u.text}`));
   check(spoken[0] === "fr-FR|Il était une fois une petite pomme rouge, toute ronde.", `page read with a French voice (${spoken[0]})`);
+  const listen = page.getByRole("button", { name: "Écouter la page" });
+  const stopBtn = page.getByRole("button", { name: "Arrêter la lecture" });
+  check(await stopBtn.isVisible(), "while reading, the button becomes Arrêter");
+  await stopBtn.click();
+  check(await listen.isVisible(), "Arrêter stops and shows Écouter again");
+  await listen.click();
+  await page.evaluate(() => window.__finishSpeech());
+  check(await listen.isVisible(), "button returns to Écouter when the page has been read");
+  await listen.click();
+  const cancelsBefore = await page.evaluate(() => window.__cancels);
+  await page.getByRole("button", { name: "Suivant →" }).click();
+  check((await page.evaluate(() => window.__cancels)) > cancelsBefore, "turning the page stops the reading");
+  check(await listen.isVisible(), "next page shows Écouter");
+  await listen.click();
+  const spoken2 = await page.evaluate(() => window.__spoken.at(-1));
+  check(spoken2.lang === "fr-FR" && spoken2.text !== spoken[0].split("|")[1], `page 2 reads its own text (${spoken2.text})`);
+  await page.getByRole("button", { name: "← Retour" }).click();
   for (let i = 0; i < 4; i++) await page.getByRole("button", { name: "Suivant →" }).click();
   check(await page.getByText("Page 5 sur 5").isVisible(), "French page counter");
   check(await page.getByText("Fin", { exact: true }).isVisible(), "last picture says Fin");
