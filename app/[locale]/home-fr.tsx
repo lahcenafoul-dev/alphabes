@@ -4,6 +4,7 @@ import { getAllLetterSlugs } from "@/lib/letters-data";
 import { alternatesFor } from "@/lib/i18n/routes";
 import { FicheCard } from "@/components/fiches/FicheParts";
 import { getFiche } from "@/lib/fiches-fr";
+import { frenchGames } from "@/lib/games-fr";
 import { frenchLetters, isAccentLetter } from "@/lib/letters-fr";
 
 const title = "Apprendre l'alphabet : fiches et jeux gratuits | AlphaBes";
@@ -234,19 +235,17 @@ export default function HomeFr() {
         <div className="mx-auto max-w-6xl px-6 py-16">
           <h2 className="text-3xl font-bold">Des jeux pour apprendre</h2>
           <div className="mt-8 grid sm:grid-cols-2 md:grid-cols-5 gap-4">
-            {[
-              "Trouve la lettre",
-              "Associe la lettre et l'image",
-              "Le premier son",
-              "Trace la lettre",
-              "Quiz de l'alphabet",
-            ].map((name) => (
-              <div
-                key={name}
-                className="rounded-block bg-paper p-5 shadow-block font-display font-bold text-center"
+            {frenchGames.map((g) => (
+              <Link
+                key={g.slug}
+                href={{ pathname: "/games/[slug]", params: { slug: g.slug } }}
+                className="rounded-block bg-paper p-5 shadow-block hover:shadow-blockHover transition font-display font-bold text-center"
               >
-                {name}
-              </div>
+                <span className="block text-3xl" aria-hidden="true">
+                  {g.emoji}
+                </span>
+                {g.title}
+              </Link>
             ))}
           </div>
           <Link

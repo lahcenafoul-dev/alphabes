@@ -19,6 +19,11 @@ const pages = [
   "/fr/fiches/couleur-rouge", "/fr/fiches/packs/pack-alphabet-complet", "/fr/fiches/packs/pack-lettre-c-cedille",
   // Phase 5: stories (from the database).
   "/fr/histoires", "/fr/histoires/la-petite-pomme", "/fr/histoires/la-sieste-de-leon",
+  // Phase 6: games, school levels and activities.
+  "/fr/jeux", "/fr/jeux/trouve-la-lettre", "/fr/jeux/lettre-et-image", "/fr/jeux/premier-son", "/fr/jeux/trace-la-lettre", "/fr/jeux/quiz-alphabet",
+  "/fr/maternelle", "/fr/maternelle/graphisme", "/fr/maternelle/tracer-les-lettres", "/fr/maternelle/coloriage",
+  "/fr/grande-section", "/fr/grande-section/syllabes", "/fr/grande-section/mots-outils", "/fr/grande-section/ecriture-cursive",
+  "/fr/activites",
 ];
 const decode = (s) => s.replace(/&amp;/g, "&").replace(/&#x27;|&#39;/g, "'").replace(/&quot;/g, '"').replace(/&nbsp;/g, " ");
 // English words that shouldn't appear in French page text.
@@ -62,7 +67,7 @@ for (const l of [...links].sort()) {
 
 console.log("\nRouting rules:");
 const rules = [
-  ["/fr/jeux", {}, 404, null, "French page not written yet"],
+  ["/fr/blog", {}, 404, null, "French page not written yet"],
   ["/fr/xyz", {}, 404, null, "unknown French URL"],
   ["/does-not-exist", {}, 404, null, "unknown English URL"],
   ["/en/pricing", {}, 307, "/pricing", "/en prefix removed"],
@@ -70,7 +75,15 @@ const rules = [
   ["/fr/tableau-de-bord", {}, 307, "/fr/connexion?next=%2Ffr%2Ftableau-de-bord", "French dashboard needs login"],
   ["/dashboard", {}, 307, "/login?next=%2Fdashboard", "English dashboard needs login"],
   ["/pricing", { headers: { cookie: "NEXT_LOCALE=fr" } }, 307, "/fr/tarifs", "remembered French choice"],
-  ["/games", { headers: { cookie: "NEXT_LOCALE=fr" } }, 200, null, "no French twin yet: stay"],
+  ["/blog", { headers: { cookie: "NEXT_LOCALE=fr" } }, 200, null, "no French twin: stay"],
+  ["/games", { headers: { cookie: "NEXT_LOCALE=fr" } }, 307, "/fr/jeux", "games index has a French twin"],
+  ["/games/find-the-letter", { headers: { cookie: "NEXT_LOCALE=fr" } }, 307, "/fr/jeux/trouve-la-lettre", "game twin with a French slug"],
+  ["/fr/jeux/find-the-letter", {}, 404, null, "English game slug under /fr/jeux"],
+  ["/games/trouve-la-lettre", {}, 404, null, "French game slug under an English URL"],
+  ["/kindergarten/sight-words", { headers: { cookie: "NEXT_LOCALE=fr" } }, 307, "/fr/grande-section/mots-outils", "topic twin with a French slug"],
+  ["/fr/maternelle/graphisme", { headers: { cookie: "NEXT_LOCALE=en" } }, 200, null, "French-only topic, English chosen: stay"],
+  ["/preschool/graphisme", {}, 404, null, "French topic under an English URL"],
+  ["/activities", { headers: { cookie: "NEXT_LOCALE=fr" } }, 307, "/fr/activites", "activities have a French twin"],
   ["/alphabet/c-cedille", {}, 404, null, "French-only letter under an English URL"],
   ["/fr/alphabet/c-cedille", { headers: { cookie: "NEXT_LOCALE=en" } }, 200, null, "French-only letter, English chosen: stay"],
   ["/fr/sons/blending", {}, 404, null, "English phonics skill under /fr/sons"],

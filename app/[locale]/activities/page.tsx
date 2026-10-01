@@ -1,43 +1,14 @@
-import Link from "next/link";
 import type { Metadata } from "next";
+import { initLocale, type LocaleParams } from "@/lib/i18n/server";
+import ActivitiesEn, { activitiesMetadataEn } from "./activities-en";
+import ActivitiesFr, { activitiesMetadataFr } from "./activities-fr";
 
-export const metadata: Metadata = {
-  title: "Activities",
-  description: "Hands-on alphabet and phonics activities for home or classroom use.",
-  alternates: { canonical: "https://alphabes.com/activities" },
-};
+export async function generateMetadata({ params }: { params: LocaleParams }): Promise<Metadata> {
+  const locale = initLocale((await params).locale);
+  return locale === "fr" ? activitiesMetadataFr : activitiesMetadataEn;
+}
 
-const activities = [
-  { title: "Letter Recognition", description: "Find and circle a target letter across a page of mixed letters.", isPremium: false },
-  { title: "Tracing Practice", description: "Trace dotted uppercase and lowercase letters.", isPremium: false },
-  { title: "Beginning Sound Sort", description: "Sort picture cards by their beginning sound.", isPremium: true },
-  { title: "Coloring by Letter", description: "Color a scene where each section is labeled with a letter.", isPremium: true },
-];
-
-export default function ActivitiesPage() {
-  return (
-    <main id="main-content" className="mx-auto max-w-5xl px-6 py-12">
-      <h1 className="text-4xl font-extrabold">Activities</h1>
-      <p className="mt-2 text-chalkboard/70 max-w-2xl">
-        Simple, screen-optional activities that pair with any letter lesson.
-      </p>
-      <div className="mt-8 grid sm:grid-cols-2 gap-5">
-        {activities.map((a) => (
-          <div key={a.title} className="rounded-block border border-chalkboard/10 p-6 shadow-block">
-            <h2 className="font-display font-bold text-lg">{a.title}</h2>
-            <p className="mt-2 text-sm text-chalkboard/70">{a.description}</p>
-            <span className={`mt-3 inline-block rounded-full px-3 py-1 text-xs font-bold ${a.isPremium ? "bg-crayon-purple/20 text-crayon-purple" : "bg-crayon-green/20 text-crayon-green"}`}>
-              {a.isPremium ? "Pro" : "Free"}
-            </span>
-          </div>
-        ))}
-      </div>
-      <Link
-        href="/worksheets"
-        className="mt-8 inline-block rounded-block bg-crayon-green text-paper font-display font-bold px-5 py-2.5 shadow-block hover:shadow-blockHover transition"
-      >
-        Get Printable Versions
-      </Link>
-    </main>
-  );
+export default async function ActivitiesPage({ params }: { params: LocaleParams }) {
+  const locale = initLocale((await params).locale);
+  return locale === "fr" ? <ActivitiesFr /> : <ActivitiesEn />;
 }

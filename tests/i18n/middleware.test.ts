@@ -90,9 +90,18 @@ describe("middleware routing", () => {
   });
 
   it("serves the French 404 page for French pages not written yet", async () => {
-    const res = await middleware(request("/fr/jeux"));
+    const res = await middleware(request("/fr/blog"));
     expect(rewrite(res)).toBe("/_not-found");
     expect(notFoundLocale(res)).toBe("fr");
+  });
+
+  it("serves French games and topics only under their French slugs", async () => {
+    for (const path of ["/fr/jeux/trouve-la-lettre", "/fr/maternelle/graphisme", "/fr/grande-section/mots-outils", "/fr/activites"]) {
+      expect(rewrite(await middleware(request(path))), path).not.toBe("/_not-found");
+    }
+    for (const path of ["/fr/jeux/find-the-letter", "/games/trouve-la-lettre", "/fr/maternelle/coloring", "/preschool/graphisme"]) {
+      expect(rewrite(await middleware(request(path))), path).toBe("/_not-found");
+    }
   });
 
   it("serves the 404 page for letters of the other alphabet", async () => {
@@ -154,9 +163,19 @@ describe("remembered language", () => {
   });
 
   it("stays on English pages that have no French twin", async () => {
-    const res = await middleware(request("/games", "NEXT_LOCALE=fr"));
+    const res = await middleware(request("/blog", "NEXT_LOCALE=fr"));
     expect(redirect(res)).toBeNull();
-    expect(rewrite(res)).toBe("/en/games");
+    expect(rewrite(res)).toBe("/en/blog");
+  });
+
+  it("maps games and topics to their translated slugs", async () => {
+    expect(redirect(await middleware(request("/games/find-the-letter", "NEXT_LOCALE=fr")))).toBe("/fr/jeux/trouve-la-lettre");
+    expect(redirect(await middleware(request("/preschool/coloring", "NEXT_LOCALE=fr")))).toBe("/fr/maternelle/coloriage");
+    expect(redirect(await middleware(request("/fr/grande-section/ecriture-cursive", "NEXT_LOCALE=en")))).toBe(
+      "/kindergarten/handwriting",
+    );
+    // A French-only topic stays put for a visitor who chose English.
+    expect(redirect(await middleware(request("/fr/maternelle/graphisme", "NEXT_LOCALE=en")))).toBeNull();
   });
 
   it("stays on French-only letters for a visitor who chose English", async () => {

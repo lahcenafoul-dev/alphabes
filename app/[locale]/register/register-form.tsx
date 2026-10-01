@@ -1,14 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { signIn } from "next-auth/react";
 import { useLocale, useTranslations } from "next-intl";
 import { localizedPath, safeNextPath } from "@/lib/i18n/routes";
 import { useApiErrorMessage } from "@/lib/i18n/use-api-error";
 
 export default function RegisterForm() {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const locale = useLocale();
   const t = useTranslations("Register");
@@ -31,7 +30,7 @@ export default function RegisterForm() {
     const res = await fetch("/api/register", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
+      body: JSON.stringify({ ...payload, locale }),
     });
 
     if (!res.ok) {
@@ -52,7 +51,10 @@ export default function RegisterForm() {
       setError(t("autoLoginFailed"));
       return;
     }
-    router.push(safeNextPath(searchParams.get("next")) ?? localizedPath(locale, "/dashboard"));
+    // A full page load, not router.push: the client router may still hold
+    // the dashboard's pre-sign-in redirect to the login page (the header's
+    // account link is prefetched while signed out).
+    window.location.assign(safeNextPath(searchParams.get("next")) ?? localizedPath(locale, "/dashboard"));
   }
 
   return (

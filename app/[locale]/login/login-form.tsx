@@ -1,13 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { signIn } from "next-auth/react";
 import { useLocale, useTranslations } from "next-intl";
 import { localizedPath, safeNextPath } from "@/lib/i18n/routes";
 
 export default function LoginForm() {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const locale = useLocale();
   const t = useTranslations("Login");
@@ -32,7 +31,10 @@ export default function LoginForm() {
       setError(result.status === 429 ? te("rate_limited") : t("invalidCredentials"));
       return;
     }
-    router.push(safeNextPath(searchParams.get("next")) ?? localizedPath(locale, "/dashboard"));
+    // A full page load, not router.push: the client router may still hold
+    // the dashboard's pre-sign-in redirect to the login page (the header's
+    // account link is prefetched while signed out).
+    window.location.assign(safeNextPath(searchParams.get("next")) ?? localizedPath(locale, "/dashboard"));
   }
 
   return (

@@ -8,6 +8,8 @@ const schema = z.object({
   name: z.string().min(1).max(100),
   email: z.string().email(),
   password: z.string().min(8).max(100),
+  // The site language at sign-up, for future emails; older clients don't send it.
+  locale: z.enum(["en", "fr"]).optional(),
 });
 
 export async function POST(req: NextRequest) {
@@ -19,7 +21,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Please check your name, email, and password.", code: "invalid_registration" }, { status: 400 });
   }
 
-  const { name, email, password } = parsed.data;
+  const { name, email, password, locale } = parsed.data;
   const normalizedEmail = email.toLowerCase();
 
   const existing = await prisma.user.findUnique({ where: { email: normalizedEmail } });
@@ -35,6 +37,7 @@ export async function POST(req: NextRequest) {
         name,
         email: normalizedEmail,
         passwordHash,
+        locale: locale === "fr" ? "FR" : "EN",
         subscription: {
           create: { plan: "FREE", status: "ACTIVE" },
         },

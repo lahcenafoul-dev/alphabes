@@ -139,6 +139,6 @@ describe("French sound routes", () => {
     expect(sectionFallbackPath(matchPath("/fr/sons/ou")!, "en")).toBe("/phonics");
     expect(sectionFallbackPath(matchPath("/phonics/blending")!, "fr")).toBe("/fr/sons");
     expect(sectionFallbackPath(matchPath("/fr/alphabet/c-cedille")!, "en")).toBe("/alphabet");
-    expect(sectionFallbackPath(matchPath("/games/find-the-letter")!, "fr")).toBeNull();
+    expect(sectionFallbackPath(matchPath("/blog/some-post")!, "fr")).toBeNull();
   });
 });

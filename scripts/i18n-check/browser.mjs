@@ -35,9 +35,9 @@ console.log("Language switcher (desktop)");
   await page.waitForLoadState("networkidle");
   check((await switcherHref(page, "fr")) === "/fr/a-propos", "FR link on /about points to /fr/a-propos");
 
-  await page.goto(base + "/games");
+  await page.goto(base + "/blog");
   await page.waitForLoadState("networkidle");
-  check((await switcherHref(page, "fr")) === "/fr", "FR link on /games (no French yet) falls back to /fr");
+  check((await switcherHref(page, "fr")) === "/fr", "FR link on /blog (no French version) falls back to /fr");
 
   await page.goto(base + "/pricing");
   await page.waitForLoadState("networkidle");
@@ -49,8 +49,8 @@ console.log("Language switcher (desktop)");
 
   await page.goto(base + "/contact");
   check(page.url().endsWith("/fr/contact"), "with the cookie, /contact redirects to /fr/contact");
-  await page.goto(base + "/games");
-  check(new URL(page.url()).pathname === "/games", "with the cookie, /games (no French yet) stays English");
+  await page.goto(base + "/blog");
+  check(new URL(page.url()).pathname === "/blog", "with the cookie, /blog (no French version) stays English");
 
   await page.goto(base + "/fr/tarifs");
   await page.waitForLoadState("networkidle");
@@ -352,6 +352,8 @@ console.log("Stories (phase 5)");
   check(await listen.isVisible(), "Arrêter stops and shows Écouter again");
   await listen.click();
   await page.evaluate(() => window.__finishSpeech());
+  // The end of speech comes from outside React: wait for the re-render.
+  await listen.waitFor({ timeout: 3000 }).catch(() => {});
   check(await listen.isVisible(), "button returns to Écouter when the page has been read");
   await listen.click();
   const cancelsBefore = await page.evaluate(() => window.__cancels);
@@ -378,6 +380,160 @@ console.log("Stories (phase 5)");
     check(overflow <= 0, `${p}: no horizontal scroll (overflow ${overflow}px)`);
   }
   check(errors.length === 0, `no console/page errors${errors.length ? ": " + errors.slice(0, 3).join(" | ") : ""}`);
+  await context.close();
+}
+
+console.log("Games, school levels and activities (phase 6)");
+{
+  const { context, page, errors } = await newPage();
+  await context.addInitScript(fakeVoices(["en-US", "fr-FR"]));
+  const lastSpoken = () => page.evaluate(() => window.__spoken.at(-1) ?? null);
+  const choiceButtons = () => page.locator("main .grid button");
+
+  await page.goto(base + "/games");
+  await page.waitForLoadState("networkidle");
+  check((await switcherHref(page, "fr")) === "/fr/jeux", "FR link on /games points to /fr/jeux");
+  await page.goto(base + "/games/alphabet-quiz");
+  await page.waitForLoadState("networkidle");
+  check((await switcherHref(page, "fr")) === "/fr/jeux/quiz-alphabet", "FR link on an English game points to its French twin");
+
+  await page.goto(base + "/fr/jeux");
+  await page.waitForLoadState("networkidle");
+  check((await page.getByRole("link", { name: "▶ Jouer" }).count()) === 5, "French games page lists 5 games");
+
+  // Trouve la lettre: hear the letter, a wrong pick, then the right one.
+  await page.goto(base + "/fr/jeux/trouve-la-lettre");
+  await page.waitForLoadState("networkidle");
+  check((await switcherHref(page, "en")) === "/games/find-the-letter", "EN link on a French game points to its English twin");
+  const target = (await page.locator("p", { hasText: "Trouve la lettre" }).locator(".letter-block").innerText()).trim();
+  await page.getByRole("button", { name: "Écouter la lettre à trouver" }).click();
+  const asked = await lastSpoken();
+  check(asked?.lang === "fr-FR" && /^Trouve la lettre .+\.$/.test(asked.text), `the letter is asked with a French voice (${asked?.text})`);
+  const letters = await choiceButtons().allInnerTexts();
+  await choiceButtons().nth(letters.findIndex((t) => t.trim() !== target)).click();
+  check(await page.getByText("Cherche encore !").isVisible(), "a wrong letter says « Cherche encore »");
+  await choiceButtons().nth(letters.findIndex((t) => t.trim() === target)).click();
+  check(await page.getByText(/Bravo, c'est bien le/).isVisible(), "the right letter says Bravo");
+  await page.getByText("Manche 2/10").waitFor({ timeout: 5000 }).catch(() => {});
+  check(await page.getByText("Manche 2/10").isVisible(), "next round after a right answer");
+  await page.getByRole("button", { name: "minuscules" }).click();
+  const grid = await choiceButtons().allInnerTexts();
+  check(grid.length === 16 && grid.every((t) => t === t.toLowerCase()), "minuscules shows the grid in lowercase");
+
+  // Associe la lettre et l'image: tap pictures until the right one.
+  await page.goto(base + "/fr/jeux/lettre-et-image");
+  await page.waitForLoadState("networkidle");
+  check((await choiceButtons().count()) === 4, "four pictures to choose from");
+  for (let i = 0; i < 4 && !(await page.getByText(/^✓ Oui !/).isVisible()); i++) await choiceButtons().nth(i).click();
+  check(await page.getByText(/^✓ Oui ! .+ commence par [A-Z]\.$/).isVisible(), "finding the picture says which letter it starts with");
+  check((await lastSpoken())?.text.startsWith("Oui !"), "the picture's name is read aloud");
+
+  // Le premier son.
+  await page.goto(base + "/fr/jeux/premier-son");
+  await page.waitForLoadState("networkidle");
+  await page.getByRole("button", { name: "🔊 Écouter le mot" }).click();
+  const word = await lastSpoken();
+  check(word?.lang === "fr-FR" && /^[a-zàâéèêîôûç]+$/.test(word.text), `the word is read alone (${word?.text})`);
+  check(!(await page.locator("main").getByText(word?.text ?? "∅", { exact: true }).count()), "the word isn't written on the page");
+  for (let i = 0; i < 4 && !(await page.getByText(/^✓ Bravo/).isVisible()); i++) await choiceButtons().nth(i).click();
+  check(await page.getByText(`« ${word?.text} » commence par`, { exact: false }).isVisible(), "the right letter is praised");
+
+  // Trace la lettre: cursive, minuscule, next letter, and a stroke.
+  await page.goto(base + "/fr/jeux/trace-la-lettre");
+  await page.waitForLoadState("networkidle");
+  await page.getByRole("button", { name: "Cursive" }).click();
+  await page.getByRole("button", { name: "Minuscule" }).click();
+  await page.getByRole("button", { name: "✅ Lettre suivante →" }).click();
+  check(await page.getByText("Lettre 2 sur 30").isVisible(), "next letter (30 letters with é è ê ç)");
+  const box = await page.locator("canvas").boundingBox();
+  await page.mouse.move(box.x + 100, box.y + 100);
+  await page.mouse.down();
+  await page.mouse.move(box.x + 200, box.y + 150, { steps: 5 });
+  await page.mouse.up();
+  await page.waitForTimeout(800);
+  await page.screenshot({ path: `${shots}/fr-jeu-trace.png` });
+
+  // Le quiz: ten answers, then the end screen.
+  await page.goto(base + "/fr/jeux/quiz-alphabet");
+  await page.waitForLoadState("networkidle");
+  const feedback = page.getByText(/^✓ Bonne réponse|^✗ La bonne réponse était/);
+  for (let i = 0; i < 10; i++) {
+    await choiceButtons().first().click();
+    await feedback.waitFor();
+    await feedback.waitFor({ state: "detached", timeout: 5000 }).catch(() => {});
+  }
+  check(await page.getByRole("button", { name: "Rejouer" }).isVisible(), "the quiz ends with a score and « Rejouer »");
+  await page.screenshot({ path: `${shots}/fr-jeu-quiz-fin.png` });
+
+  // Maternelle, grande section, activités.
+  await page.goto(base + "/fr/maternelle");
+  await page.waitForLoadState("networkidle");
+  check((await switcherHref(page, "en")) === "/preschool", "EN link on /fr/maternelle points to /preschool");
+  check((await page.locator("#topics-heading + div a").count()) === 3, "maternelle hub lists 3 topics");
+  await page.screenshot({ path: `${shots}/fr-maternelle.png`, fullPage: true });
+  await page.goto(base + "/fr/maternelle/graphisme");
+  await page.waitForLoadState("networkidle");
+  check((await switcherHref(page, "en")) === "/preschool", "EN link on a French-only topic goes to /preschool");
+  await page.goto(base + "/fr/grande-section/mots-outils");
+  await page.waitForLoadState("networkidle");
+  check((await switcherHref(page, "en")) === "/kindergarten/sight-words", "EN link on a twin topic points to its English twin");
+  await page.goto(base + "/fr/activites");
+  await page.waitForLoadState("networkidle");
+  check((await page.locator("main ul > li[id]").count()) === 8, "8 activities");
+  check(errors.length === 0, `no console/page errors${errors.length ? ": " + errors.slice(0, 3).join(" | ") : ""}`);
+  await context.close();
+}
+{
+  const { context, page, errors } = await newPage({ width: 390, height: 844 });
+  for (const p of ["/fr/jeux", "/fr/jeux/trouve-la-lettre", "/fr/jeux/lettre-et-image", "/fr/jeux/premier-son", "/fr/jeux/trace-la-lettre", "/fr/jeux/quiz-alphabet", "/fr/maternelle", "/fr/grande-section/ecriture-cursive", "/fr/activites", "/games"]) {
+    await page.goto(base + p);
+    await page.waitForLoadState("networkidle");
+    const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+    check(overflow <= 0, `${p}: no horizontal scroll (overflow ${overflow}px)`);
+    if (p === "/fr/jeux/trouve-la-lettre") await page.screenshot({ path: `${shots}/fr-jeu-mobile.png`, fullPage: true });
+  }
+  check(errors.length === 0, `no console/page errors${errors.length ? ": " + errors.slice(0, 3).join(" | ") : ""}`);
+  await context.close();
+}
+
+// Child language (needs the database): CHECK_ACCOUNTS=1 makes a throwaway
+// account on the dev branch; remove it with cleanup-accounts.mjs.
+if (process.env.CHECK_ACCOUNTS) {
+  console.log("Child language (dev database)");
+  const { context, page, errors } = await newPage();
+  const email = `i18n-check-${Date.now()}@example.com`;
+  await page.goto(base + "/fr/inscription");
+  await page.waitForLoadState("networkidle");
+  await page.getByLabel("Votre nom").fill("Test");
+  await page.getByLabel("Adresse e-mail").fill(email);
+  await page.getByLabel("Mot de passe").fill("motdepasse-test-123");
+  await page.getByRole("button", { name: "Commencer gratuitement" }).click();
+  await page.waitForURL("**/fr/tableau-de-bord", { timeout: 30000 });
+  await page.getByRole("button", { name: "Ajouter un profil enfant" }).click();
+  check((await page.getByLabel("Langue d'apprentissage").inputValue()) === "FR", "a profile added on the French site learns in French by default");
+  await page.getByLabel("Prénom de l'enfant").fill("Léa");
+  await page.getByRole("button", { name: "Ajouter", exact: true }).click();
+  await page.getByText("Apprend en français").waitFor({ timeout: 15000 }).catch(() => {});
+  check(await page.getByText("Apprend en français").isVisible(), "the child card shows « Apprend en français »");
+  await page.getByRole("link", { name: /Léa/ }).click();
+  await page.waitForURL("**/fr/tableau-de-bord/*");
+  const hrefs = () => page.locator("main a[class*='px-6 py-3']").evaluateAll((as) => as.map((a) => a.getAttribute("href")).join(" "));
+  let links = await hrefs();
+  check(links === "/fr/alphabet /fr/jeux /fr/histoires", `French child: links to the French pages (${links})`);
+  await page.getByRole("button", { name: "Modifier le profil" }).click();
+  await page.getByLabel("Langue d'apprentissage").selectOption("EN");
+  await page.getByRole("button", { name: "Enregistrer" }).click();
+  await page.getByText(/^Apprend en anglais/).waitFor({ timeout: 15000 }).catch(() => {});
+  links = await hrefs();
+  check(links === "/alphabet /games /stories", `English child: links to the English pages (${links})`);
+  await page.screenshot({ path: `${shots}/fr-enfant-langue.png`, fullPage: true });
+  await page.goto(base + "/dashboard");
+  await page.waitForLoadState("networkidle");
+  check(await page.getByText("Learns in English").isVisible(), "the English dashboard shows « Learns in English »");
+  await page.getByRole("button", { name: "Add Child Profile" }).click();
+  check((await page.getByLabel("Learning language").inputValue()) === "EN", "a profile added on the English site learns in English by default");
+  check(errors.length === 0, `no console/page errors${errors.length ? ": " + errors.slice(0, 3).join(" | ") : ""}`);
+  console.log(`  (test account: ${email})`);
   await context.close();
 }
 

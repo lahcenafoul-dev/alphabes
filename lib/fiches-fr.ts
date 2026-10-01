@@ -103,7 +103,7 @@ export const LETTER_IMAGES: Record<string, LetterImages> = {
 };
 
 // Sounds too close to tell apart for a young child: never distractors for each other.
-const CLOSE_KEYS: Record<string, string[]> = { "è": ["é"], "é": ["è"], k: ["g"], g: ["k"], s: ["z"], z: ["s"], i: ["y"], y: ["i"] };
+export const CLOSE_KEYS: Record<string, string[]> = { "è": ["é"], "é": ["è"], k: ["g"], g: ["k"], s: ["z"], z: ["s"], i: ["y"], y: ["i"] };
 
 /** Six other pictures for a "son" worksheet, the same on every run. */
 export function imageDistractors(letter: string, count = 6): FrenchWord[] {

@@ -66,7 +66,9 @@ export default async function DashboardPage({ params }: { params: LocaleParams }
                 className="rounded-block border border-chalkboard/10 p-6 shadow-block"
               >
                 <h2 className="font-display font-bold text-xl">{child.firstName}</h2>
-                <p className="text-sm text-chalkboard/60">{t("ages", { band: child.ageBand })}</p>
+                <p className="text-sm text-chalkboard/60">
+                  {t("ages", { band: child.ageBand })} · {t("language", { language: child.language })}
+                </p>
                 <p className="mt-4 text-chalkboard/80">
                   {t("lessonsCompleted", { count: child.progress.length })}
                 </p>

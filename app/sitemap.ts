@@ -4,6 +4,8 @@ import { ACCENTS_SLUG, frenchLetters, isAccentLetter } from "@/lib/letters-fr";
 import { phonicsSkills } from "@/lib/phonics-data";
 import { frenchSounds } from "@/lib/sons-fr";
 import { FICHE_CATEGORIES, fichePacks, fiches } from "@/lib/fiches-fr";
+import { frenchGames } from "@/lib/games-fr";
+import { schoolTopics } from "@/lib/ecole-fr";
 import { worksheetCategories } from "@/lib/worksheet-categories";
 import { WORKSHEET_TYPES } from "@/lib/worksheet-types";
 import { worksheets } from "@/lib/worksheets-data";
@@ -189,8 +191,23 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...kindergartenRoutes,
   ];
 
+  // The French games. Their English twins aren't in the sitemap, but the
+  // pages exist, so both are given as alternates.
+  const frenchGameEntries: MetadataRoute.Sitemap = frenchGames.map((g) => {
+    const fr = absoluteUrl("fr", "/games/[slug]", { slug: g.slug });
+    const en = absoluteUrl("en", "/games/[slug]", { slug: g.en });
+    return {
+      url: fr,
+      lastModified: new Date(),
+      changeFrequency: "monthly" as const,
+      priority: 0.6,
+      alternates: { languages: { en, fr, "x-default": en } },
+    };
+  });
+
   // Pages with no English twin: the letters with accents, the accents page,
-  // the French sound pages and the French worksheets and packs.
+  // the French sound pages, the French worksheets and packs, and the school
+  // topics written only in French.
   const frenchOnlyEntries: MetadataRoute.Sitemap = [
     ...[...frenchLetters.filter(isAccentLetter).map((l) => l.slug), ACCENTS_SLUG].map((letter) => ({
       url: absoluteUrl("fr", "/alphabet/[letter]", { letter }),
@@ -216,9 +233,17 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "monthly" as const,
       priority: 0.5,
     })),
+    ...schoolTopics
+      .filter((t) => !t.en)
+      .map((t) => ({
+        url: absoluteUrl("fr", t.level === "maternelle" ? "/preschool/[topic]" : "/kindergarten/[topic]", { topic: t.slug }),
+        lastModified: new Date(),
+        changeFrequency: "monthly" as const,
+        priority: 0.6,
+      })),
   ];
 
-  return [...withFrench(englishEntries), ...frenchOnlyEntries, ...(await getStoryRoutes())];
+  return [...withFrench(englishEntries), ...frenchGameEntries, ...frenchOnlyEntries, ...(await getStoryRoutes())];
 }
 
 // Every English page that also exists in French gets hreflang alternates,

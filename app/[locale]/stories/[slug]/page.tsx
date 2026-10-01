@@ -61,9 +61,13 @@ export default async function StoryPage(props: Props) {
   if (email) {
     const user = await prisma.user.findUnique({
       where: { email },
-      include: { children: { select: { id: true, firstName: true } } },
+      include: { children: { select: { id: true, firstName: true, language: true } } },
     });
-    children = user?.children ?? [];
+    // Children who learn in the story's language come first (preselected).
+    const all = user?.children ?? [];
+    children = [...all.filter((c) => c.language === story.locale), ...all.filter((c) => c.language !== story.locale)].map(
+      ({ id, firstName }) => ({ id, firstName }),
+    );
   }
 
   return (

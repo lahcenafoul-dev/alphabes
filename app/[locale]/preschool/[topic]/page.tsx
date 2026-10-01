@@ -1,89 +1,30 @@
-import Link from "next/link";
-import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { preschoolTopics, getPreschoolTopic } from "@/lib/preschool-data";
-import { buildBreadcrumbJsonLd, buildLearningResourceJsonLd } from "@/lib/json-ld";
+import SchoolTopicFr, { schoolTopicMetadataFr } from "@/components/ecole/SchoolTopicFr";
+import { topicsOf } from "@/lib/ecole-fr";
+import { initLocale } from "@/lib/i18n/server";
+import PreschoolTopicEn, { englishTopicParams, topicMetadataEn } from "./topic-en";
 
-const BASE_URL = "https://alphabes.com";
-
-type Props = { params: Promise<{ topic: string }> };
+type Props = { params: Promise<{ locale: string; topic: string }> };
 
 // Every valid page is listed in generateStaticParams, so unknown params go
 // straight to the 404 page. (Calling notFound() inside the page instead leaves
 // an empty error shell in the server HTML with this Next.js version.)
 export const dynamicParams = false;
 
-export function generateStaticParams() {
-  return preschoolTopics.map((t) => ({ topic: t.slug }));
+// French topics have their own slugs. Keep in sync with lib/i18n/known-params.ts.
+export function generateStaticParams({ params }: { params: { locale: string } }) {
+  const topics = params.locale === "fr" ? topicsOf("maternelle").map((t) => t.slug) : englishTopicParams();
+  return topics.map((topic) => ({ topic }));
 }
 
 export async function generateMetadata(props: Props): Promise<Metadata> {
-  const params = await props.params;
-  const topic = getPreschoolTopic(params.topic);
-  if (!topic) return {};
-  return {
-    title: topic.title,
-    description: topic.summary,
-    alternates: { canonical: `${BASE_URL}/preschool/${topic.slug}` },
-  };
+  const { locale: param, topic } = await props.params;
+  const locale = initLocale(param);
+  return locale === "fr" ? schoolTopicMetadataFr("maternelle", topic) : topicMetadataEn(topic);
 }
 
 export default async function PreschoolTopicPage(props: Props) {
-  const params = await props.params;
-  const topic = getPreschoolTopic(params.topic);
-  if (!topic) notFound();
-
-  const breadcrumbJsonLd = buildBreadcrumbJsonLd([
-    { name: "Home", url: BASE_URL },
-    { name: "Preschool", url: `${BASE_URL}/preschool` },
-    { name: topic.title, url: `${BASE_URL}/preschool/${topic.slug}` },
-  ]);
-
-  const learningResourceJsonLd = buildLearningResourceJsonLd({
-    title: topic.title,
-    description: topic.description,
-    url: `${BASE_URL}/preschool/${topic.slug}`,
-    skills: [topic.title],
-    ageLevelLabel: "Preschool",
-  });
-
-  return (
-    <main id="main-content" className="mx-auto max-w-3xl px-6 py-12">
-      <nav aria-label="Breadcrumb" className="text-sm text-chalkboard/60">
-        <ol className="flex gap-2">
-          <li><Link href="/">Home</Link> /</li>
-          <li><Link href="/preschool">Preschool</Link> /</li>
-          <li aria-current="page" className="font-bold">{topic.title}</li>
-        </ol>
-      </nav>
-
-      <h1 className="mt-4 text-4xl font-extrabold">{topic.title}</h1>
-      <p className="mt-3 text-chalkboard/70">{topic.description}</p>
-
-      <section className="mt-8 rounded-block bg-crayon-yellow/15 p-6">
-        <h2 className="font-display font-bold text-lg">Tips</h2>
-        <ul className="mt-3 space-y-2 text-chalkboard/80">
-          {topic.tips.map((tip) => (
-            <li key={tip}>• {tip}</li>
-          ))}
-        </ul>
-      </section>
-
-      <Link
-        href={topic.relatedHref}
-        className="mt-8 inline-block rounded-block bg-chalkboard text-paper font-display font-bold px-5 py-2.5 shadow-block hover:shadow-blockHover transition-shadow"
-      >
-        {topic.relatedLabel}
-      </Link>
-
-      <p className="mt-6">
-        <Link href="/preschool" className="font-bold underline">
-          Back to the Preschool Learning Hub
-        </Link>
-      </p>
-
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(learningResourceJsonLd) }} />
-    </main>
-  );
+  const { locale: param, topic } = await props.params;
+  const locale = initLocale(param);
+  return locale === "fr" ? <SchoolTopicFr level={"maternelle"} slug={topic} /> : <PreschoolTopicEn slug={topic} />;
 }

@@ -19,6 +19,7 @@ export const LOCALE_HEADER = "x-alphabes-locale";
 export const FRENCH_PATHNAMES: ReadonlySet<AppPathname> = new Set<AppPathname>([
   "/",
   "/about",
+  "/activities",
   "/alphabet",
   "/alphabet/[letter]",
   "/alphabet/[letter]/worksheet",
@@ -27,9 +28,15 @@ export const FRENCH_PATHNAMES: ReadonlySet<AppPathname> = new Set<AppPathname>([
   "/dashboard",
   "/dashboard/[id]",
   "/flashcards",
+  "/games",
+  "/games/[slug]",
+  "/kindergarten",
+  "/kindergarten/[topic]",
   "/login",
   "/phonics",
   "/phonics/[skill]",
+  "/preschool",
+  "/preschool/[topic]",
   "/pricing",
   "/privacy-policy",
   "/register",
@@ -63,6 +70,37 @@ const PARAMS_DIFFER: ReadonlySet<AppPathname> = new Set<AppPathname>([
 
 export type RouteParams = Record<string, string>;
 
+// Pages whose French params are translations of the English ones: the
+// games and the school-level topics. A slug missing from the map has no
+// twin (French-only topics such as "graphisme"). Checked against
+// lib/games-fr.ts and lib/ecole-fr.ts by tests/i18n.
+export const TRANSLATED_PARAMS: Partial<Record<AppPathname, { key: string; enToFr: Record<string, string> }>> = {
+  "/games/[slug]": {
+    key: "slug",
+    enToFr: {
+      "find-the-letter": "trouve-la-lettre",
+      "match-letter-picture": "lettre-et-image",
+      "beginning-sound": "premier-son",
+      "letter-tracing": "trace-la-lettre",
+      "alphabet-quiz": "quiz-alphabet",
+    },
+  },
+  "/preschool/[topic]": { key: "topic", enToFr: { "letter-tracing": "tracer-les-lettres", coloring: "coloriage" } },
+  "/kindergarten/[topic]": { key: "topic", enToFr: { "sight-words": "mots-outils", handwriting: "ecriture-cursive" } },
+};
+
+/** The params of a page's twin in another language, or null if it has none. */
+function translateParams(pathname: AppPathname, params: RouteParams, from: Locale, to: Locale): RouteParams | null {
+  const map = TRANSLATED_PARAMS[pathname];
+  if (!map || from === to) return params;
+  const value = params[map.key];
+  const twin =
+    to === "fr"
+      ? map.enToFr[value]
+      : Object.entries(map.enToFr).find(([, fr]) => fr === value)?.[0];
+  return twin ? { ...params, [map.key]: twin } : null;
+}
+
 // Pages that exist only in French: the letters with accents and the accents
 // page (lib/letters-fr.ts), and every French sound page (lib/sons-fr.ts).
 // Both lists are checked against the data by tests/i18n. They get no English
@@ -83,7 +121,10 @@ const FRENCH_ONLY_PARAMS: Partial<Record<AppPathname, { key: string; values: Rea
 const SECTION_INDEX: Partial<Record<AppPathname, AppPathname>> = {
   "/alphabet/[letter]": "/alphabet",
   "/alphabet/[letter]/worksheet": "/alphabet",
+  "/games/[slug]": "/games",
+  "/kindergarten/[topic]": "/kindergarten",
   "/phonics/[skill]": "/phonics",
+  "/preschool/[topic]": "/preschool",
   "/stories/[slug]": "/stories",
   "/worksheets/[category]": "/worksheets",
   "/worksheets/bundles/[bundleSlug]": "/worksheets/bundles",
@@ -137,7 +178,10 @@ export function alternatesFor(
 ): NonNullable<Metadata["alternates"]> {
   const canonical = absoluteUrl(locale, pathname, params);
   if (!FRENCH_PATHNAMES.has(pathname) || isFrenchOnly(pathname, params)) return { canonical };
-  const paramsFor = (l: Locale) => (l === locale ? params : otherParams?.[l] ?? (PARAMS_DIFFER.has(pathname) ? null : params));
+  const paramsFor = (l: Locale) =>
+    l === locale
+      ? params
+      : otherParams?.[l] ?? (PARAMS_DIFFER.has(pathname) ? null : translateParams(pathname, params, locale, l));
   const en = paramsFor("en");
   const fr = paramsFor("fr");
   if (!en || !fr) return { canonical };
@@ -203,7 +247,8 @@ export function counterpartPath(match: MatchedPath, target: Locale): string | nu
   if (!isAvailable(target, match.pathname) || !isAvailable(match.locale, match.pathname)) return null;
   if (PARAMS_DIFFER.has(match.pathname)) return null;
   if (target !== "fr" && isFrenchOnly(match.pathname, match.params)) return null;
-  return localizedPath(target, match.pathname, match.params);
+  const params = translateParams(match.pathname, match.params, match.locale, target);
+  return params && localizedPath(target, match.pathname, params);
 }
 
 /** For a page with no twin in `target`: its section index there, if that exists. */

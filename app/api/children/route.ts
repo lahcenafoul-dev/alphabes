@@ -7,6 +7,8 @@ import { getPrisma } from "@/lib/prisma";
 const schema = z.object({
   firstName: z.string().min(1).max(50),
   ageBand: z.enum(["3-4", "5-6", "7-8"]),
+  // Language of the child's activities; older clients don't send it.
+  language: z.enum(["EN", "FR"]).optional(),
 });
 
 export async function POST(req: NextRequest) {
@@ -32,6 +34,7 @@ export async function POST(req: NextRequest) {
       parentId: user.id,
       firstName: parsed.data.firstName,
       ageBand: parsed.data.ageBand,
+      language: parsed.data.language ?? "EN",
     },
   });
 

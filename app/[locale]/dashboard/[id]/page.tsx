@@ -4,8 +4,10 @@ import { getServerSession } from "next-auth";
 import { getTranslations } from "next-intl/server";
 import { authOptions } from "@/lib/auth";
 import { getPrisma } from "@/lib/prisma";
+import NextLink from "next/link";
 import { Link } from "@/i18n/navigation";
-import { isAvailable } from "@/lib/i18n/routes";
+import type { AppPathname } from "@/i18n/routing";
+import { isAvailable, localizedPath } from "@/lib/i18n/routes";
 import { initLocale } from "@/lib/i18n/server";
 import ClientMessages from "@/components/ClientMessages";
 import ChildActions from "./child-actions";
@@ -46,6 +48,13 @@ export default async function ChildDashboardPage(props: Props) {
 
   if (!child || child.parent.email !== email) notFound();
 
+  const childLocale = child.language === "FR" ? "fr" : "en";
+  const childLinks: { pathname: AppPathname; label: "startAlphabet" | "games" | "storyTime"; color: string }[] = [
+    { pathname: "/alphabet", label: "startAlphabet", color: "bg-crayon-green" },
+    { pathname: "/games", label: "games", color: "bg-crayon-purple" },
+    { pathname: "/stories", label: "storyTime", color: "bg-crayon-blue" },
+  ];
+
   const totalCompleted = child.progress.length;
   const quizResults = child.progress.filter((p) => p.score !== null);
   const avgScore =
@@ -65,23 +74,22 @@ export default async function ChildDashboardPage(props: Props) {
       <h1 className="mt-4 text-4xl font-extrabold">{child.firstName}</h1>
       <p className="mt-1 text-chalkboard/70">{t("ages", { band: child.ageBand })}</p>
 
+      <p className="mt-1 text-sm text-chalkboard/60">{t("language", { language: child.language })}</p>
+
+      {/* The child's pages open in the child's learning language, whatever the dashboard's. */}
       <div className="mt-4 flex flex-wrap gap-3">
-        {isAvailable(locale, "/alphabet") && (
-          <Link
-            href="/alphabet"
-            className="inline-block rounded-block bg-crayon-green text-white px-6 py-3 font-display font-bold"
-          >
-            {t("startAlphabet")}
-          </Link>
-        )}
-        {isAvailable(locale, "/stories") && (
-          <Link
-            href="/stories"
-            className="inline-block rounded-block bg-crayon-blue text-white px-6 py-3 font-display font-bold"
-          >
-            {t("storyTime")}
-          </Link>
-        )}
+        {childLinks
+          .filter((l) => isAvailable(childLocale, l.pathname))
+          .map((l) => (
+            <NextLink
+              key={l.pathname}
+              href={localizedPath(childLocale, l.pathname)}
+              hrefLang={childLocale === locale ? undefined : childLocale}
+              className={`inline-block rounded-block ${l.color} text-white px-6 py-3 font-display font-bold`}
+            >
+              {t(l.label)}
+            </NextLink>
+          ))}
       </div>
 
       {/* Progress overview */}
@@ -154,7 +162,7 @@ export default async function ChildDashboardPage(props: Props) {
       <div className="mt-10">
         <h2 className="text-xl font-bold">{t("settings")}</h2>
         <ClientMessages locale={locale} namespaces={["ChildForm", "Errors"]}>
-          <ChildActions childId={child.id} firstName={child.firstName} ageBand={child.ageBand} />
+          <ChildActions childId={child.id} firstName={child.firstName} ageBand={child.ageBand} language={child.language} />
         </ClientMessages>
       </div>
     </main>

@@ -9,8 +9,10 @@
 import type { AppPathname, Locale } from "@/i18n/routing";
 import { getLetterData } from "@/lib/alphabet-data";
 import { getBlogCategory, getBlogPost } from "@/lib/blog-data";
+import { getSchoolTopic } from "@/lib/ecole-fr";
 import { getFiche, getFicheCategory, getFichePack } from "@/lib/fiches-fr";
 import { getGame } from "@/lib/games-data";
+import { getFrenchGame } from "@/lib/games-fr";
 import { getKindergartenTopic } from "@/lib/kindergarten-data";
 import { getLetterContent } from "@/lib/letters-data";
 import { ACCENTS_SLUG, frenchLetterParams } from "@/lib/letters-fr";
@@ -36,10 +38,12 @@ const VALIDATORS: Partial<Record<AppPathname, Validator>> = {
   "/alphabet/[letter]/worksheet": ({ letter }, locale) =>
     locale === "fr" ? FRENCH_LETTERS.has(letter) : !!getLetterData(letter),
   "/blog/[slug]": ({ slug }) => !!(getBlogCategory(slug) || getBlogPost(slug)),
-  "/games/[slug]": ({ slug }) => !!getGame(slug),
-  "/kindergarten/[topic]": ({ topic }) => !!getKindergartenTopic(topic),
+  "/games/[slug]": ({ slug }, locale) => (locale === "fr" ? !!getFrenchGame(slug) : !!getGame(slug)),
+  "/kindergarten/[topic]": ({ topic }, locale) =>
+    locale === "fr" ? !!getSchoolTopic("grande-section", topic) : !!getKindergartenTopic(topic),
   "/phonics/[skill]": ({ skill }, locale) => (locale === "fr" ? !!getFrenchSound(skill) : !!getPhonicsSkill(skill)),
-  "/preschool/[topic]": ({ topic }) => !!getPreschoolTopic(topic),
+  "/preschool/[topic]": ({ topic }, locale) =>
+    locale === "fr" ? !!getSchoolTopic("maternelle", topic) : !!getPreschoolTopic(topic),
   "/worksheets/[category]": ({ category }, locale) =>
     locale === "fr"
       ? !!(getFicheCategory(category) || getFiche(category))

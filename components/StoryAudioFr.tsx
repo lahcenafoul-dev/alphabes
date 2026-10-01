@@ -32,8 +32,10 @@ export default function StoryAudioFr({ text, audioUrl }: { text: string; audioUr
     [text],
   );
 
+  // "Playing" first: the reading can end (or fail) before say() resolves.
   async function speak() {
-    setPlaying(await say(text, 0.85, () => setPlaying(false)));
+    setPlaying(true);
+    if (!(await say(text, 0.85, () => setPlaying(false)))) setPlaying(false);
   }
 
   function play() {

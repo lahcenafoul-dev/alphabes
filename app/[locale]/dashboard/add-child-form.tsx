@@ -2,12 +2,14 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useApiErrorMessage } from "@/lib/i18n/use-api-error";
 
 export default function AddChildForm() {
   const router = useRouter();
   const t = useTranslations("ChildForm");
+  // A new profile learns in the language of the page it was created on.
+  const defaultLanguage = useLocale() === "fr" ? "FR" : "EN";
   const apiError = useApiErrorMessage();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -25,6 +27,7 @@ export default function AddChildForm() {
       body: JSON.stringify({
         firstName: form.get("firstName"),
         ageBand: form.get("ageBand"),
+        language: form.get("language"),
       }),
     });
 
@@ -83,6 +86,24 @@ export default function AddChildForm() {
           <option value="5-6">{t("age56")}</option>
           <option value="7-8">{t("age78")}</option>
         </select>
+      </div>
+      <div className="mt-4">
+        <label htmlFor="language" className="block text-sm font-bold">
+          {t("language")}
+        </label>
+        <select
+          id="language"
+          name="language"
+          defaultValue={defaultLanguage}
+          aria-describedby="language-hint"
+          className="mt-1 w-full rounded-block border border-chalkboard/20 px-3 py-2"
+        >
+          <option value="FR">{t("langFR")}</option>
+          <option value="EN">{t("langEN")}</option>
+        </select>
+        <p id="language-hint" className="mt-1 text-xs text-chalkboard/60">
+          {t("languageHint")}
+        </p>
       </div>
       {error && <p className="mt-3 text-sm text-crayon-red">{error}</p>}
       <div className="mt-5 flex gap-3">

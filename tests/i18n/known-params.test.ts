@@ -4,6 +4,8 @@ import { getAllLetterSlugs } from "@/lib/letters-data";
 import { alphabetData } from "@/lib/alphabet-data";
 import { blogCategories, blogPosts } from "@/lib/blog-data";
 import { games } from "@/lib/games-data";
+import { frenchGames } from "@/lib/games-fr";
+import { schoolTopics } from "@/lib/ecole-fr";
 import { kindergartenTopics } from "@/lib/kindergarten-data";
 import { phonicsSkills } from "@/lib/phonics-data";
 import { preschoolTopics } from "@/lib/preschool-data";
@@ -46,6 +48,15 @@ describe("paramsExist accepts every real page", () => {
       expect(paramsExist(pathname, { [key]: "does-not-exist" }, "en")).toBe(false);
     });
   }
+
+  it("checks French games and topics against the French data", () => {
+    for (const g of frenchGames) expect(paramsExist("/games/[slug]", { slug: g.slug }, "fr"), g.slug).toBe(true);
+    for (const t of schoolTopics) {
+      const pathname = t.level === "maternelle" ? "/preschool/[topic]" : "/kindergarten/[topic]";
+      expect(paramsExist(pathname, { topic: t.slug }, "fr"), t.slug).toBe(true);
+    }
+    expect(paramsExist("/games/[slug]", { slug: "find-the-letter" }, "fr")).toBe(false);
+  });
 
   it("doesn't judge routes it can't check (database-backed)", () => {
     expect(paramsExist("/stories/[slug]", { slug: "anything" }, "en")).toBe(true);

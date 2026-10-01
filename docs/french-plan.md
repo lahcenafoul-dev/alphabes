@@ -1,6 +1,6 @@
 # French version of AlphaBes: plan and status
 
-Last updated: 2026-10-01. Read this first when continuing the French work.
+Last updated: 2026-10-01 (phase 6). Read this first when continuing the French work.
 
 ## Goal
 
@@ -74,7 +74,7 @@ See CLAUDE.md, "Languages", for the rules. In short:
 | 3 | Sons (phonics): 19 sound pages + index (`/fr/sons`), speakable words and sentences, "Où est le son ?" picture hunt, syllable builder | **Done**, pushed. |
 | 4 | Worksheets: 238 French PDFs (6 types × 30 letters, nombres, formes, couleurs, mots-outils, syllabes, sons), 43 packs (`/fr/fiches/packs`), cursive on Seyès lines, pre-rendered with Chromium | **Done**, pushed. |
 | 5 | Stories: DB migration, 8 original French stories (same illustration scenes), story list filtered by language, reader in French, audio via Google Cloud TTS (cost estimate first) | **Done**, pushed. Migration applied to the Neon `dev` branch only (production in phase 7). Audio: **browser French voice** (owner's decision, 2026-10-01: Google TTS skipped, billing won't activate). "Écouter" becomes "⏹ Arrêter" while reading; turning the page or leaving stops it. No MP3s generated. |
-| 6 | Games (5 French games), child language preference (dashboard forms + links), maternelle, grande section, activities | To do |
+| 6 | Games (5 French games), child language preference (dashboard forms + links), maternelle, grande section, activities | **Done**, committed, not pushed (waiting for the owner's OK). |
 | 7 | Launch: production DB migration (with OK), merge to `main`, submit the French sitemap in Search Console. French blog optional (new writing). | To do |
 
 ### Database changes (phase 5, additive)
@@ -100,6 +100,16 @@ Slugs stay globally unique. Migration `20260930050000_story_locale`, **applied t
 - Phase 2 uses **Playwrite FR Trad** (Google Fonts, SIL OFL 1.1, commercial use allowed) for cursive, in `lib/fonts/cursive.ts`. Phase 4's jsPDF templates need the same font embedded (TTF) for cursive worksheets.
 - French-only letters (é è ê ç) have no English twin: the switcher sends them to `/alphabet`, and `/alphabet/c-cedille` etc. 404.
 
+## Games, school levels, activities and child language (phase 6)
+
+- **Games** (`/fr/jeux`): `lib/games-fr.ts` (pages and round builders) and `components/games-fr/`. Five French games with French slugs, each the twin of an English game: *trouve-la-lettre* (find-the-letter), *lettre-et-image* (match-letter-picture), *premier-son* (beginning-sound), *trace-la-lettre* (letter-tracing), *quiz-alphabet* (alphabet-quiz). Same Free/Pro badges as English (not enforced, as in English). Every instruction can be heard (browser French voice); the picture words come from `LETTER_IMAGES` (`lib/fiches-fr.ts`), so first letters and first sounds are known. *Le premier son* never asks c, k, q, e or y (their first sound isn't clear by ear) and never offers two close sounds together (`CLOSE_KEYS`). *Trace la lettre* reuses `TracingCanvas` (script/cursive on Seyès-like lines), 30 letters in order. 10 rounds per game, kind end screen.
+- **Translated slugs**: `TRANSLATED_PARAMS` in `lib/i18n/routes.ts` pairs English and French params for `/games/[slug]`, `/preschool/[topic]` and `/kindergarten/[topic]`. It drives hreflang, the switcher, the cookie redirect and the sitemap. A French slug missing from the map has no twin (French-only topic: canonical only, switcher falls back to the section index). Tests check the map against the data.
+- **Maternelle / grande section** (`/fr/maternelle`, `/fr/grande-section`): content in `lib/ecole-fr.ts`, pages in `components/ecole/`. Three topics each: maternelle *graphisme* (French only), *tracer-les-lettres* (↔ letter-tracing), *coloriage* (↔ coloring); grande section *syllabes* (French only), *mots-outils* (↔ sight-words), *ecriture-cursive* (↔ handwriting). Each topic: intro, tips, an activity to do at home, links to fiches, games and sound pages.
+- **Activités** (`/fr/activites`): 8 screen-free activities (materials + steps), each linked to a fiche, game or sound page.
+- **Child language**: the add/edit child forms have a "Langue d'apprentissage" select (`ChildProfile.language`, default = the site language the profile is created on). The child page's buttons (alphabet, games, stories) open in the child's language, whatever the dashboard's; the dashboard cards show it. On a story page, children learning in the story's language are offered first. `User.locale` is set at sign-up from the page language (for future emails).
+- **Sign-in fix**: after login or sign-up, the forms now do a full page load to the dashboard. With `router.push`, the client router reused the dashboard's pre-sign-in redirect (the header's account link is prefetched while signed out), so new users landed on the login page. Only on this branch (`main` has no site header).
+- English pages for games, preschool, kindergarten and activities moved to `*-en.tsx` unchanged; they now get hreflang. English output identical (491 routes, plus the 5 game pages checked separately).
+
 ## Worksheets (phase 4)
 
 - Catalogue: `lib/fiches-fr.ts` (categories, worksheets, packs, and the content they draw: letter pictures, numbers, shapes, colours, mots-outils, syllables). Pages: `app/[locale]/worksheets/**/*-fr.tsx`.
@@ -114,13 +124,14 @@ Scripts in `scripts/i18n-check/` (run against `next start`, usually on port 3100
 
 - `snapshot.mjs <outDir> [baseUrl]`: saves a digest (title, meta, canonical, JSON-LD, links, visible text) and the HTML of every English URL in the sitemap.
 - `compare.mjs <baselineDir> <currentDir>`: route-by-route diff (hreflang ignored, header excluded). Make the baseline from `main` built in a worktree at the start of a phase; English must stay identical apart from intended changes.
-- `frcheck.mjs [baseUrl]`: French pages (status, `lang="fr"`, titles, canonical/hreflang), every internal link on them, and the routing rules (404s, `/en` redirect, dashboard login, language cookie, no Accept-Language redirect). Its "English-looking text" check has false positives (French words like *parents*, *session*, *sons*).
-- `browser.mjs [baseUrl] [shotsDir]`: Playwright checks of the switcher, cookie, French forms, cookie banner, mobile menu and 390px layout, with screenshots.
+- `frcheck.mjs [baseUrl]`: French pages (status, `lang="fr"`, titles, canonical/hreflang), every internal link on them, and the routing rules (404s, `/en` redirect, dashboard login, language cookie, no Accept-Language redirect). Its "English-looking text" check has false positives (French words like *parents*, *session*, *sons*, and words like *préparent*: `é` breaks its word boundary).
+- `browser.mjs [baseUrl] [shotsDir]`: Playwright checks of the switcher, cookie, French forms, cookie banner, mobile menu and 390px layout, each phase's pages (games are played with fake voices), with screenshots. With `CHECK_ACCOUNTS=1` it also signs up a throwaway account (`i18n-check-<time>@example.com`) on the database in `.env` (Neon **dev** only) to test the child language; delete those accounts afterwards with `node scripts/i18n-check/cleanup-accounts.mjs`.
+- The English snapshot only covers sitemap URLs: the English game pages (`/games/<slug>`) aren't in the sitemap, so compare them separately when touching games.
 - Unit tests: `npx vitest run` (`tests/i18n/`).
 
 ## Open issues
 
-- The French home page links to sections built in phases 5–6 (jeux, maternelle, grande section, activités); they 404 until then (the header and footer only show French pages that exist).
+- The phase 6 texts (maternelle and grande section hubs and topics, activities, game help for parents) should get the same native-teacher review as the stories and sound pages.
 - English and French pages share one route bundle, so the English worksheet pages now load next-intl's localized `Link` too (about +14 kB of JavaScript, as on the alphabet pages).
 - Regenerating the worksheets rewrites every PDF (Chromium stamps a creation date), so only re-run it when something changed.
 - The English 404 page no longer has `og:image`/`twitter:image` tags (`global-not-found` doesn't get root file metadata). Harmless on a noindex page.
