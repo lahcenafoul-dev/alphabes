@@ -1,6 +1,6 @@
 # French version of AlphaBes: plan and status
 
-Last updated: 2026-10-01 (phase 6). Read this first when continuing the French work.
+Last updated: 2026-10-01 (launched). Read this first when continuing the French work.
 
 ## Goal
 
@@ -10,8 +10,7 @@ Hard rule: **English URLs and content stay exactly as they are** (no redirects, 
 
 ## Branch workflow
 
-- All French work happens on **`french-version`** (pushed to GitHub). Pushing that branch doesn't deploy; Cloudflare Workers Builds only deploys `main`.
-- **Don't merge `french-version` into `main` until every phase is done** and the owner approves: the French home page links to sections built in later phases.
+- **Launched 2026-10-01**: `french-version` was fast-forwarded into `main` and deployed. From now on, French and English work both go on small branches from `main`, merged into `main` (pushing `main` deploys). Keep running the English comparison and the French checks before merging.
 - Fixes for the live English site go on a small branch from `main`, merged into `main` and pushed (that deploys), then `main` is merged into `french-version`.
 - At the end of each phase: `npx tsc --noEmit`, `npm run lint`, `npm run build`, `npx vitest run`, the English comparison, the French checks and the browser checks. Then commit and **wait for the owner's OK before pushing** and before starting the next phase.
 - The owner often runs `npm run dev` in the repo folder, which shares `.next` with builds. Build and test in a separate git worktree instead:
@@ -75,7 +74,7 @@ See CLAUDE.md, "Languages", for the rules. In short:
 | 4 | Worksheets: 238 French PDFs (6 types × 30 letters, nombres, formes, couleurs, mots-outils, syllabes, sons), 43 packs (`/fr/fiches/packs`), cursive on Seyès lines, pre-rendered with Chromium | **Done**, pushed. |
 | 5 | Stories: DB migration, 8 original French stories (same illustration scenes), story list filtered by language, reader in French, audio via Google Cloud TTS (cost estimate first) | **Done**, pushed. Migration applied to the Neon `dev` branch only (production in phase 7). Audio: **browser French voice** (owner's decision, 2026-10-01: Google TTS skipped, billing won't activate). "Écouter" becomes "⏹ Arrêter" while reading; turning the page or leaving stops it. No MP3s generated. |
 | 6 | Games (5 French games), child language preference (dashboard forms + links), maternelle, grande section, activities | **Done**, pushed. |
-| 7 | Launch: production DB migration (with OK), merge to `main`, submit the French sitemap in Search Console. French blog optional (new writing). | To do |
+| 7 | Launch: production DB migration (with OK), merge to `main`, submit the French sitemap in Search Console. French blog optional (new writing). | **Done** 2026-10-01, except Search Console (owner: resubmit `https://alphabes.com/sitemap.xml`, which now lists the French pages). The owner ran `prisma migrate deploy` and `db:seed` on production (16 stories, English text unchanged); Neon backup branch `backup-before-french-launch-2026-10-01` (no compute) holds production as it was before. Live checks passed: English identical apart from hreflang and the known phase 1 changes, French checks and browser checks (`LIVE=1`) on alphabes.com. |
 
 ### Database changes (phase 5, additive)
 
@@ -125,7 +124,7 @@ Scripts in `scripts/i18n-check/` (run against `next start`, usually on port 3100
 - `snapshot.mjs <outDir> [baseUrl]`: saves a digest (title, meta, canonical, JSON-LD, links, visible text) and the HTML of every English URL in the sitemap.
 - `compare.mjs <baselineDir> <currentDir>`: route-by-route diff (hreflang ignored, header excluded). Make the baseline from `main` built in a worktree at the start of a phase; English must stay identical apart from intended changes.
 - `frcheck.mjs [baseUrl]`: French pages (status, `lang="fr"`, titles, canonical/hreflang), every internal link on them, and the routing rules (404s, `/en` redirect, dashboard login, language cookie, no Accept-Language redirect). Its "English-looking text" check has false positives (French words like *parents*, *session*, *sons*, and words like *préparent*: `é` breaks its word boundary).
-- `browser.mjs [baseUrl] [shotsDir]`: Playwright checks of the switcher, cookie, French forms, cookie banner, mobile menu and 390px layout, each phase's pages (games are played with fake voices), with screenshots. With `CHECK_ACCOUNTS=1` it also signs up a throwaway account (`i18n-check-<time>@example.com`) on the database in `.env` (Neon **dev** only) to test the child language; delete those accounts afterwards with `node scripts/i18n-check/cleanup-accounts.mjs`.
+- `browser.mjs [baseUrl] [shotsDir]`: Playwright checks of the switcher, cookie, French forms, cookie banner, mobile menu and 390px layout, each phase's pages (games are played with fake voices), with screenshots. `LIVE=1` skips the contact form (for checks against alphabes.com). With `CHECK_ACCOUNTS=1` (never on production) it also signs up a throwaway account (`i18n-check-<time>@example.com`) on the database in `.env` (Neon **dev** only) to test the child language; delete those accounts afterwards with `node scripts/i18n-check/cleanup-accounts.mjs`.
 - The English snapshot only covers sitemap URLs: the English game pages (`/games/<slug>`) aren't in the sitemap, so compare them separately when touching games.
 - Unit tests: `npx vitest run` (`tests/i18n/`).
 

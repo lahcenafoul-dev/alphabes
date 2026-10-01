@@ -84,6 +84,8 @@ console.log("French UI and forms");
   await loginError.waitFor({ timeout: 15000 }).catch(() => {});
   check(await loginError.isVisible(), "login shows the French error for wrong credentials");
 
+  // LIVE=1 (checking alphabes.com): don't send a test message.
+  if (!process.env.LIVE) {
   await page.goto(base + "/fr/contact");
   await page.waitForLoadState("networkidle");
   await page.getByLabel("Nom").fill("Test");
@@ -93,6 +95,7 @@ console.log("French UI and forms");
   const sent = page.getByText("Merci ! Nous vous répondrons très vite.");
   await sent.waitFor({ timeout: 15000 }).catch(() => {});
   check(await sent.isVisible(), "contact form shows the French confirmation");
+  }
 
   await page.goto(base + "/fr/inscription");
   await page.waitForLoadState("networkidle");
