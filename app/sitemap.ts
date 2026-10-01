@@ -3,6 +3,7 @@ import { getAllLetterSlugs } from "@/lib/letters-data";
 import { ACCENTS_SLUG, frenchLetters, isAccentLetter } from "@/lib/letters-fr";
 import { TILDE_SLUG } from "@/lib/letters-es";
 import { spanishSyllablePages } from "@/lib/silabas-es";
+import { fichaCategoryParams, fichaPacks } from "@/lib/fichas-es";
 import { phonicsSkills } from "@/lib/phonics-data";
 import { frenchSounds } from "@/lib/sons-fr";
 import { FICHE_CATEGORIES, fichePacks, fiches } from "@/lib/fiches-fr";
@@ -251,7 +252,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       })),
   ];
 
-  // Spanish pages with no twin: the ñ, the tilde page and the syllable pages.
+  // Spanish pages with no twin: the ñ, the tilde page, the syllable pages,
+  // the Spanish worksheets and packs.
   const spanishOnlyEntries: MetadataRoute.Sitemap = [
     ...["enie", TILDE_SLUG].map((letter) => ({
       url: absoluteUrl("es", "/alphabet/[letter]", { letter }),
@@ -264,6 +266,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: new Date(),
       changeFrequency: "monthly" as const,
       priority: 0.7,
+    })),
+    ...fichaCategoryParams().map((category) => ({
+      url: absoluteUrl("es", "/worksheets/[category]", { category }),
+      lastModified: new Date(),
+      changeFrequency: "monthly" as const,
+      priority: 0.6,
+    })),
+    ...fichaPacks.map((p) => ({
+      url: absoluteUrl("es", "/worksheets/bundles/[bundleSlug]", { bundleSlug: p.slug }),
+      lastModified: new Date(),
+      changeFrequency: "monthly" as const,
+      priority: 0.5,
     })),
   ];
 

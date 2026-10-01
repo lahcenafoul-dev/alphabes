@@ -3,6 +3,8 @@ import type { ReactNode } from "react";
 import { Link } from "@/i18n/navigation";
 import type { AppPathname } from "@/i18n/routing";
 import { alternatesFor, isAvailable } from "@/lib/i18n/routes";
+import { FicheCard } from "@/components/fiches/FicheParts";
+import { getFicha } from "@/lib/fichas-es";
 
 const title = "Aprender el abecedario: fichas y juegos gratis | AlphaBes";
 const description =
@@ -193,6 +195,16 @@ export default function HomeEs() {
           para mamás y papás, para la educación en casa y para maestras y maestros de preescolar
           y primaria que quieren una ficha lista para usar, sin preparación.
         </p>
+        {has("/worksheets/[category]") && (
+          <>
+            <h3 className="mt-8 font-display font-bold text-xl">Fichas populares</h3>
+            <ul className="mt-4 grid grid-cols-2 md:grid-cols-4 gap-4">
+              {["letra-a-cursiva", "silabas-m", "letra-m-silaba", "numero-5"].map((slug) => (
+                <FicheCard key={slug} fiche={getFicha(slug)!} locale="es" />
+              ))}
+            </ul>
+          </>
+        )}
         {has("/worksheets") && (
           <div className="mt-6 flex flex-wrap items-center gap-4">
             <Link

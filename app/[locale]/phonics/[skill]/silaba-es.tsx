@@ -6,6 +6,8 @@ import SoundHunt from "@/components/sons/SoundHunt";
 import SyllableBuilder from "@/components/sons/SyllableBuilder";
 import SyllableClap from "@/components/silabas/SyllableClap";
 import WordBuilder from "@/components/silabas/WordBuilder";
+import { FicheCard } from "@/components/fiches/FicheParts";
+import { fichasForSyllablePage } from "@/lib/fichas-es";
 import { absoluteUrl, alternatesFor } from "@/lib/i18n/routes";
 import { buildBreadcrumbJsonLd } from "@/lib/json-ld";
 import {
@@ -68,6 +70,7 @@ export default function SilabaEs({ slug }: { slug: string }) {
   const { prev, next } = syllablePageNeighbors(p.slug);
   const url = absoluteUrl("es", "/phonics/[skill]", { skill: p.slug });
   const related = p.related.map((r) => getSpanishSyllablePage(r)!);
+  const sheets = fichasForSyllablePage(p.slug);
 
   const lessonJsonLd = {
     "@context": "https://schema.org",
@@ -240,6 +243,22 @@ export default function SilabaEs({ slug }: { slug: string }) {
           <div className="mt-3">
             <SoundHunt hunt={p.hunt} locale="es" />
           </div>
+        </section>
+      )}
+
+      {sheets.length > 0 && (
+        <section className="mt-10" aria-labelledby="fichas-heading">
+          <h2 id="fichas-heading" className="text-2xl font-bold">
+            {sheets.length > 1 ? "Las fichas para imprimir" : "La ficha para imprimir"}
+          </h2>
+          <p className="mt-1 text-chalkboard/70">
+            Las sílabas para leer, palabras partidas en sílabas y sílabas para escribir en cursiva, en una hoja A4.
+          </p>
+          <ul className="mt-4 grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 gap-4">
+            {sheets.map((f) => (
+              <FicheCard key={f.slug} fiche={f} locale="es" />
+            ))}
+          </ul>
         </section>
       )}
 

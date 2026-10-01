@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Link } from "@/i18n/navigation";
 import ListenButton from "@/components/ListenButton";
+import { FicheCard } from "@/components/fiches/FicheParts";
+import { fichasForLetter, getFichaCategory } from "@/lib/fichas-es";
 import { cursivaFont } from "@/lib/fonts/cursive-es";
 import { absoluteUrl, alternatesFor } from "@/lib/i18n/routes";
 import { buildBreadcrumbJsonLd } from "@/lib/json-ld";
@@ -232,6 +234,23 @@ export default function LetterEs({ letter }: { letter: string }) {
             <p className="mt-1 text-sm text-chalkboard/70">Sílabas para escuchar, palabras y una oración para leer.</p>
           </Link>
         </div>
+      </section>
+
+      <section className="mt-10" aria-labelledby="fichas-heading">
+        <h2 id="fichas-heading" className="text-2xl font-bold">
+          Las fichas para imprimir
+        </h2>
+        <ul className="mt-4 grid grid-cols-2 sm:grid-cols-3 gap-4">
+          {fichasForLetter(l.slug).map((f) => (
+            <FicheCard key={f.slug} fiche={{ ...f, label: getFichaCategory(f.category)!.name }} locale="es" />
+          ))}
+        </ul>
+        <Link
+          href={{ pathname: "/worksheets/bundles/[bundleSlug]", params: { bundleSlug: `paquete-letra-${l.slug}` } }}
+          className="mt-4 inline-block font-display font-bold text-crayon-purple hover:underline"
+        >
+          Todas las fichas de la letra {l.upper} en un solo PDF →
+        </Link>
       </section>
 
       {related.length > 0 && (

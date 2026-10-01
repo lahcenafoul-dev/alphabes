@@ -6,12 +6,13 @@ import { cursivaFont } from "@/lib/fonts/cursive-es";
 import { absoluteUrl, alternatesFor } from "@/lib/i18n/routes";
 import { buildBreadcrumbJsonLd } from "@/lib/json-ld";
 import { getSpanishLetter } from "@/lib/letters-es";
+import { getFicha } from "@/lib/fichas-es";
 
 export function worksheetMetadataEs(param: string): Metadata {
   const l = getSpanishLetter(param);
   if (!l) return {};
   const title = `Letra ${l.upper}: ficha de trazo en letra script y cursiva`;
-  const description = `Traza la letra ${l.upper} ${l.lower} en la pantalla, con el dedo o el ratón, en letra script o cursiva sobre doble raya, y escucha su nombre y sus sílabas.`;
+  const description = `Traza la letra ${l.upper} ${l.lower} en la pantalla, con el dedo o el ratón, en letra script o cursiva sobre doble raya, escucha su nombre y descarga una ficha PDF gratis para imprimir.`;
   return {
     title,
     description,
@@ -25,6 +26,8 @@ export default function WorksheetEs({ letter }: { letter: string }) {
   const l = getSpanishLetter(letter)!;
   const word = l.words[0];
   const pair = `${l.upper} ${l.lower}`;
+  const trazo = getFicha(`letra-${l.slug}-trazo`)!;
+  const cursiva = getFicha(`letra-${l.slug}-cursiva`)!;
 
   const breadcrumbJsonLd = buildBreadcrumbJsonLd([
     { name: "Inicio", url: absoluteUrl("es", "/") },
@@ -48,7 +51,7 @@ export default function WorksheetEs({ letter }: { letter: string }) {
 
       <h1 className="mt-4 text-4xl font-extrabold">La letra {pair}: ficha de trazo</h1>
       <p className="mt-2 text-chalkboard/70">
-        Escucha la letra y trázala con el dedo o con el ratón, en letra script o en cursiva.
+        Escucha la letra, trázala con el dedo o con el ratón, en letra script o en cursiva, y después imprime la ficha para practicar con lápiz.
       </p>
 
       <div className="mt-10 grid gap-6 rounded-block border border-chalkboard/20 p-8 text-center sm:grid-cols-3 sm:items-center">
@@ -97,7 +100,23 @@ export default function WorksheetEs({ letter }: { letter: string }) {
         >
           🔊 Escuchar
         </ListenButton>
+        <a href={trazo.pdf} download={`ficha-letra-${l.slug}.pdf`} className="rounded-block bg-crayon-green text-white px-6 py-3 font-bold shadow-block hover:shadow-blockHover transition">
+          ⬇️ Ficha de trazo (PDF)
+        </a>
+        <a href={cursiva.pdf} download={`ficha-cursiva-letra-${l.slug}.pdf`} className="rounded-block bg-crayon-purple text-white px-6 py-3 font-bold shadow-block hover:shadow-blockHover transition">
+          ⬇️ Ficha en cursiva (PDF)
+        </a>
       </div>
+      <p className="mt-3 text-sm text-chalkboard/60">
+        Todas las fichas de la letra {l.upper} (reconocer, colorear, sílabas, palabras…) están en{" "}
+        <Link
+          href={{ pathname: "/worksheets/bundles/[bundleSlug]", params: { bundleSlug: `paquete-letra-${l.slug}` } }}
+          className="font-bold underline"
+        >
+          su paquete de fichas
+        </Link>
+        .
+      </p>
 
       <p className="mt-10">
         <Link

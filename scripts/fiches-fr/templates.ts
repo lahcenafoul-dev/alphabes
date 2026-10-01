@@ -1,4 +1,5 @@
-// HTML/SVG templates for the French worksheet PDFs (see generate.ts).
+// HTML/SVG templates for the French worksheet PDFs (see generate.ts). The
+// Spanish templates (scripts/fichas-es) reuse the exported helpers.
 // Every sheet is one A4 page, 180 mm wide inside its margins. SVG blocks use
 // millimetres as user units, so font sizes and line positions are exact.
 //
@@ -21,15 +22,15 @@ import {
   type Fiche,
 } from "../../lib/fiches-fr";
 
-const W = 180; // inner width, mm
+export const W = 180; // inner width, mm
 const GREY = "#b9b9b9";
-const OUTLINE = "#8c9bab";
-const BLUE_LINE = "#8fb3dc";
-const LIGHT_LINE = "#cfe0f2";
+export const OUTLINE = "#8c9bab";
+export const BLUE_LINE = "#8fb3dc";
+export const LIGHT_LINE = "#cfe0f2";
 
 // Andika proportions (em): capital height and x-height.
-const CAP = 0.725;
-const XH = 0.508;
+export const CAP = 0.725;
+export const XH = 0.508;
 
 export const esc = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 
@@ -72,10 +73,14 @@ svg { display: block; overflow: visible }
 
 // ------------------------------------------------------------------ writing rows
 
-type FillKind = "model-grey" | "model-blank" | "grey" | "outline" | "model-outline";
+export type FillKind = "model-grey" | "model-blank" | "grey" | "outline" | "model-outline";
 
-/** A writing row filled in the browser: model in black, then grey or outlined copies. */
-function fill(opts: { text: string; x0: number; x1: number; y: number; size: number; font: "cur" | "script"; kind: FillKind; gap: number; max?: number }): string {
+/**
+ * A writing row filled in the browser: model in black, then grey or outlined
+ * copies. "cur" is the French cursive, "cur-es" the Spanish one
+ * (scripts/fichas-es).
+ */
+export function fill(opts: { text: string; x0: number; x1: number; y: number; size: number; font: "cur" | "cur-es" | "script"; kind: FillKind; gap: number; max?: number }): string {
   const { text, x0, x1, y, size, font, kind, gap, max } = opts;
   return `<g class="fill" data-text="${esc(text)}" data-x0="${x0}" data-x1="${x1}" data-y="${y}" data-size="${size}" data-font="${font}" data-kind="${kind}" data-gap="${gap}" data-max="${max ?? 99}"></g>`;
 }
@@ -83,7 +88,7 @@ function fill(opts: { text: string; x0: number; x1: number; y: number; size: num
 /** Runs in the page (via page.evaluate) once the fonts are ready. */
 export function layoutFills(): void {
   const NS = "http://www.w3.org/2000/svg";
-  const families: Record<string, string> = { cur: "cursive-fr", script: "script" };
+  const families: Record<string, string> = { cur: "cursive-fr", "cur-es": "cursive-es", script: "script" };
   document.querySelectorAll<SVGGElement>("g.fill").forEach((g) => {
     const d = g.dataset;
     const x1 = Number(d.x1);
@@ -162,14 +167,14 @@ function guideRows(rows: number, size: number, pitch: number): { svg: (content: 
 // ------------------------------------------------------------------ helpers
 
 /** Letters that go below the baseline need a higher baseline in fixed boxes. */
-const hasTail = (ch: string) => /[gjpqyçÇ]/.test(ch);
+export const hasTail = (ch: string) => /[gjpqyçÇ]/.test(ch);
 
 function letterOf(f: Fiche): FrenchLetter {
   return getFrenchLetter(f.letter!)!;
 }
 
 /** Deterministic pseudo-random numbers, so every run draws the same sheet. */
-function rng(seedText: string): () => number {
+export function rng(seedText: string): () => number {
   let a = [...seedText].reduce((n, ch) => (n * 31 + ch.charCodeAt(0)) >>> 0, 2166136261);
   return () => {
     a = (a + 0x6d2b79f5) >>> 0;
@@ -180,7 +185,7 @@ function rng(seedText: string): () => number {
   };
 }
 
-function shuffle<T>(items: T[], rand: () => number): T[] {
+export function shuffle<T>(items: T[], rand: () => number): T[] {
   const a = [...items];
   for (let i = a.length - 1; i > 0; i--) {
     const j = Math.floor(rand() * (i + 1));
@@ -364,7 +369,7 @@ function nombre(f: Fiche): string {
     ${wordRows([word], 3, 3)}`;
 }
 
-function shapePath(slug: string, cx: number, cy: number, r: number): string {
+export function shapePath(slug: string, cx: number, cy: number, r: number): string {
   switch (slug) {
     case "rond":
       return `<circle cx="${cx}" cy="${cy}" r="${r}"/>`;
