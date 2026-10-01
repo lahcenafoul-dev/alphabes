@@ -165,13 +165,19 @@ export default function HomeEs() {
             ll, rr, que, gue y la h muda.
           </p>
           <div className="mt-8 grid sm:grid-cols-2 md:grid-cols-4 gap-4">
-            {["Las vocales", "Sílabas directas", "Sílabas trabadas", "La h muda"].map((label) => (
+            {[
+              { label: "Las vocales", skill: "vocales" },
+              { label: "Sílabas directas", skill: "silabas-directas" },
+              { label: "Sílabas trabadas", skill: "trabadas-con-l" },
+              { label: "La h muda", skill: "h-muda" },
+            ].map((item) => (
               <MaybeLink
-                key={label}
-                pathname="/phonics"
+                key={item.skill}
+                pathname="/phonics/[skill]"
+                params={{ skill: item.skill }}
                 className="rounded-block bg-paper p-5 shadow-block hover:shadow-blockHover transition font-display font-bold"
               >
-                {label}
+                {item.label}
               </MaybeLink>
             ))}
           </div>

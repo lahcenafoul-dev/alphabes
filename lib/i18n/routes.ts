@@ -62,6 +62,8 @@ export const SPANISH_PATHNAMES: ReadonlySet<AppPathname> = new Set<AppPathname>(
   "/dashboard/[id]",
   "/flashcards",
   "/login",
+  "/phonics",
+  "/phonics/[skill]",
   "/pricing",
   "/privacy-policy",
   "/register",
@@ -137,7 +139,8 @@ function translateParams(pathname: AppPathname, params: RouteParams, from: Local
 
 // Params that exist in only one language: the French letters with accents
 // and the accents page (lib/letters-fr.ts), every French sound page
-// (lib/sons-fr.ts), and the Spanish ñ and tilde pages (lib/letters-es.ts).
+// (lib/sons-fr.ts), the Spanish ñ and tilde pages (lib/letters-es.ts) and
+// every Spanish syllable page (lib/silabas-es.ts).
 // The lists are checked against the data by tests/i18n.
 // Such pages get no hreflang, and the switcher can't map them to another
 // language.
@@ -145,6 +148,11 @@ const FRENCH_ONLY_LETTERS = ["e-accent-aigu", "e-accent-grave", "e-accent-circon
 export const FRENCH_SOUND_SLUGS = [
   "voyelles", "premier-son", "syllabes", "ou", "on", "an", "in", "oi", "ch", "gn", "eu", "o-au-eau",
   "e-accent-aigu", "e-accent-grave", "ill", "c-et-g", "s-et-ss", "lettres-muettes", "mots-outils",
+];
+export const SPANISH_SYLLABLE_SLUGS = [
+  "vocales", "silabas-directas", "silabas-inversas", "silabas-mixtas", "contar-silabas", "trabadas-con-l",
+  "trabadas-con-r", "ch", "ll-y-y", "r-y-rr", "ca-co-cu-que-qui", "ce-ci-y-z", "ga-go-gu-gue-gui", "ge-gi-y-j",
+  "dieresis", "h-muda", "b-y-v", "enie", "x", "palabras-frecuentes",
 ];
 const LOCALE_ONLY_PARAMS: Partial<Record<Locale, Partial<Record<AppPathname, { key: string; values: ReadonlySet<string> }>>>> = {
   fr: {
@@ -155,6 +163,7 @@ const LOCALE_ONLY_PARAMS: Partial<Record<Locale, Partial<Record<AppPathname, { k
   es: {
     "/alphabet/[letter]": { key: "letter", values: new Set(["enie", "tilde"]) },
     "/alphabet/[letter]/worksheet": { key: "letter", values: new Set(["enie"]) },
+    "/phonics/[skill]": { key: "skill", values: new Set(SPANISH_SYLLABLE_SLUGS) },
   },
 };
 

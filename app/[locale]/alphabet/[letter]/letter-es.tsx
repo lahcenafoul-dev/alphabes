@@ -12,6 +12,30 @@ import {
   type SpanishWord,
 } from "@/lib/letters-es";
 
+// The syllable page (lib/silabas-es.ts) that practises each letter.
+const SYLLABLE_PAGE: Record<string, { skill: string; label: string }> = {
+  a: { skill: "vocales", label: "Las vocales" },
+  e: { skill: "vocales", label: "Las vocales" },
+  i: { skill: "vocales", label: "Las vocales" },
+  o: { skill: "vocales", label: "Las vocales" },
+  u: { skill: "vocales", label: "Las vocales" },
+  b: { skill: "b-y-v", label: "La b y la v" },
+  v: { skill: "b-y-v", label: "La b y la v" },
+  c: { skill: "ca-co-cu-que-qui", label: "ca, co, cu, que, qui" },
+  k: { skill: "ca-co-cu-que-qui", label: "ca, co, cu, que, qui" },
+  q: { skill: "ca-co-cu-que-qui", label: "ca, co, cu, que, qui" },
+  s: { skill: "ce-ci-y-z", label: "La c suave, la s y la z" },
+  z: { skill: "ce-ci-y-z", label: "La c suave, la s y la z" },
+  g: { skill: "ga-go-gu-gue-gui", label: "ga, go, gu, gue, gui" },
+  j: { skill: "ge-gi-y-j", label: "ge, gi y la j" },
+  h: { skill: "h-muda", label: "La h muda" },
+  l: { skill: "ll-y-y", label: "La ll y la y" },
+  y: { skill: "ll-y-y", label: "La ll y la y" },
+  r: { skill: "r-y-rr", label: "La r y la rr" },
+  enie: { skill: "enie", label: "Las sílabas con ñ" },
+  x: { skill: "x", label: "Los sonidos de la x" },
+};
+
 /** «be» (also «be larga», «be grande»): the name line under the title. */
 function nameLine(l: SpanishLetter): string {
   const others = l.otherNames?.length ? ` (también: ${l.otherNames.map((n) => `«${n}»`).join(", ")})` : "";
@@ -69,6 +93,7 @@ export default function LetterEs({ letter }: { letter: string }) {
   const url = absoluteUrl("es", "/alphabet/[letter]", { letter: l.slug });
   const related = (l.related ?? []).map((slug) => (slug === TILDE_SLUG ? null : getSpanishLetter(slug)!));
   const faq = [{ question: `¿Cómo suena la letra ${l.upper}?`, answer: l.sound }, l.faq];
+  const syllables = SYLLABLE_PAGE[l.slug] ?? { skill: "silabas-directas", label: "Las sílabas directas" };
 
   const lessonJsonLd = {
     "@context": "https://schema.org",
@@ -198,6 +223,13 @@ export default function LetterEs({ letter }: { letter: string }) {
           >
             <p className="font-display font-bold">🖼️ Las tarjetas del abecedario</p>
             <p className="mt-1 text-sm text-chalkboard/70">Todas las palabras de la A a la Z, con dibujos, para escuchar.</p>
+          </Link>
+          <Link
+            href={{ pathname: "/phonics/[skill]", params: { skill: syllables.skill } }}
+            className="block rounded-block border border-chalkboard/10 p-4 shadow-block hover:border-crayon-blue hover:shadow-blockHover transition sm:col-span-2"
+          >
+            <p className="font-display font-bold">🗣️ A leer: {syllables.label}</p>
+            <p className="mt-1 text-sm text-chalkboard/70">Sílabas para escuchar, palabras y una oración para leer.</p>
           </Link>
         </div>
       </section>

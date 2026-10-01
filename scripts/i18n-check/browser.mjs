@@ -417,6 +417,78 @@ console.log("Spanish alphabet (Spanish phase 2)");
   }
 }
 
+console.log("Spanish syllables (Spanish phase 3)");
+{
+  const { context, page, errors } = await newPage();
+  await context.addInitScript(fakeVoices(["en-US", "es-MX"]));
+  const spoken = () => page.evaluate(() => window.__spoken.map((s) => `${s.lang}|${s.text}`));
+  const last = async () => (await spoken()).at(-1);
+
+  await page.goto(base + "/phonics");
+  await page.waitForLoadState("networkidle");
+  check((await switcherHref(page, "es")) === "/es/silabas", "ES link on /phonics points to /es/silabas");
+  await page.goto(base + "/es/silabas/ch");
+  await page.waitForLoadState("networkidle");
+  check((await switcherHref(page, "fr")) === "/fr/sons" && (await switcherHref(page, "en")) === "/phonics", "FR/EN links on a syllable page go to the sound indexes");
+
+  // The hunt: a right card turns green, a wrong one explains, the counter moves.
+  const hunt = page.getByRole("region", { name: "¡Te toca!" });
+  await hunt.getByRole("button", { name: "Escuchar: una leche" }).click();
+  check((await last()) === "es-MX|una leche", "hunt card read with the Mexican voice");
+  check(await page.getByText("Sí: en «leche» suena ch.").isVisible(), "right hunt card says why");
+  await hunt.getByRole("button", { name: "Escuchar: una luna" }).click();
+  check(await page.getByText("No: en «luna» no hay ch.").isVisible(), "wrong hunt card says why");
+  check(await page.getByText("Encontradas: 1 de 3").isVisible(), "hunt counter in Spanish");
+  await page.screenshot({ path: `${shots}/es-silaba-ch.png`, fullPage: true });
+
+  // The syllable builder: ch + a = cha.
+  await page.goto(base + "/es/silabas/silabas-directas");
+  await page.waitForLoadState("networkidle");
+  await page.getByRole("button", { name: "ch", exact: true }).click();
+  check((await last()) === "es-MX|cha", "builder reads ch + a");
+  await page.getByRole("button", { name: "o", exact: true }).click();
+  check((await last()) === "es-MX|cho", "builder reads ch + o");
+
+  // Arma la palabra: a wrong syllable is refused, the right ones build "mano".
+  await page.getByRole("group", { name: "Sílabas" }).getByRole("button", { name: "mi", exact: true }).click();
+  check(await page.getByText("«mi» no va aquí.", { exact: false }).isVisible(), "word builder refuses a wrong syllable");
+  await page.getByRole("group", { name: "Sílabas" }).getByRole("button", { name: "ma", exact: true }).click();
+  await page.getByRole("group", { name: "Sílabas" }).getByRole("button", { name: "no", exact: true }).click();
+  check(await page.getByText("¡Muy bien! ma + no = mano").isVisible(), "word builder builds mano");
+  check((await last()) === "es-MX|ma, no. mano", `finished word read by syllables (${await last()})`);
+  await page.getByRole("button", { name: "Otra palabra →" }).click();
+  check(await page.getByRole("img", { name: "Dibujo: luna" }).isVisible(), "next word to build is luna");
+  await page.screenshot({ path: `${shots}/es-silabas-directas.png`, fullPage: true });
+
+  // Aplaude las sílabas: sol has one syllable; mariposa is reached later.
+  await page.goto(base + "/es/silabas/contar-silabas");
+  await page.waitForLoadState("networkidle");
+  await page.getByRole("button", { name: "2", exact: true }).click();
+  check(await page.getByText("Casi. Escucha otra vez").isVisible(), "clap: wrong count gets a hint");
+  await page.getByRole("button", { name: "1", exact: true }).click();
+  check(await page.getByText("¡Sí! sol tiene 1 sílaba.").isVisible(), "clap: one syllable for sol");
+  for (let i = 0; i < 3; i++) await page.getByRole("button", { name: "Otra palabra →" }).click();
+  await page.getByRole("button", { name: "4", exact: true }).click();
+  check(await page.getByText("¡Sí! mariposa tiene 4 sílabas.").isVisible(), "clap: four syllables for mariposa");
+  check((await last()) === "es-MX|ma, ri, po, sa. mariposa", "clap reads the word by syllables");
+  check(errors.length === 0, `no console/page errors${errors.length ? ": " + errors.slice(0, 3).join(" | ") : ""}`);
+  await context.close();
+
+  // Layout at 390px.
+  {
+    const { context, page, errors } = await newPage({ width: 390, height: 844 });
+    for (const p of ["/es/silabas", "/es/silabas/silabas-directas", "/es/silabas/trabadas-con-r", "/es/silabas/contar-silabas", "/es/silabas/palabras-frecuentes"]) {
+      await page.goto(base + p);
+      await page.waitForLoadState("networkidle");
+      const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+      check(overflow <= 0, `${p}: no horizontal scroll (overflow ${overflow}px)`);
+      await page.screenshot({ path: `${shots}/m${p.replaceAll("/", "_")}.png`, fullPage: true });
+    }
+    check(errors.length === 0, `no console/page errors${errors.length ? ": " + errors.slice(0, 3).join(" | ") : ""}`);
+    await context.close();
+  }
+}
+
 console.log("Sounds (phase 3)");
 {
   const { context, page, errors } = await newPage();

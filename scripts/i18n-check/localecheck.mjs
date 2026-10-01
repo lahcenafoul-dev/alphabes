@@ -50,6 +50,11 @@ const RULES_FR = [
 ];
 
 const esLetters = [..."abcdefghijklmn", "enie", ..."opqrstuvwxyz"];
+const esSyllables = [
+  "vocales", "silabas-directas", "silabas-inversas", "silabas-mixtas", "contar-silabas", "trabadas-con-l",
+  "trabadas-con-r", "ch", "ll-y-y", "r-y-rr", "ca-co-cu-que-qui", "ce-ci-y-z", "ga-go-gu-gue-gui", "ge-gi-y-j",
+  "dieresis", "h-muda", "b-y-v", "enie", "x", "palabras-frecuentes",
+];
 
 const RULES_ES = [
   ["/es/xyz", {}, 404, null, "unknown Spanish URL"],
@@ -74,6 +79,14 @@ const RULES_ES = [
   ["/fr/imagier", { headers: { cookie: "NEXT_LOCALE=es" } }, 307, "/es/tarjetas", "cards twin in Spanish"],
   ["/es/abecedario/enie", { headers: { cookie: "NEXT_LOCALE=en" } }, 200, null, "Spanish-only letter, English chosen: stay"],
   ["/fr/alphabet/c-cedille", { headers: { cookie: "NEXT_LOCALE=es" } }, 200, null, "French-only letter, Spanish chosen: stay"],
+  // Spanish phase 3: the syllables.
+  ["/es/silabas/ou", {}, 404, null, "French sound under /es/silabas"],
+  ["/es/silabas/blending", {}, 404, null, "English skill under /es/silabas"],
+  ["/phonics/vocales", {}, 404, null, "Spanish syllable page under an English URL"],
+  ["/fr/sons/silabas-directas", {}, 404, null, "Spanish syllable page under /fr/sons"],
+  ["/phonics", { headers: { cookie: "NEXT_LOCALE=es" } }, 307, "/es/silabas", "phonics index twin in Spanish"],
+  ["/fr/sons", { headers: { cookie: "NEXT_LOCALE=es" } }, 307, "/es/silabas", "French sounds index, Spanish chosen"],
+  ["/es/silabas/ch", { headers: { cookie: "NEXT_LOCALE=fr" } }, 200, null, "Spanish-only page, French chosen: stay"],
   // Spanish content pages that come in later phases: never English under /es.
   ["/es/juegos", {}, 404, null, "Spanish games not written yet"],
   ["/es/cuentos/the-little-apple", {}, 404, null, "English story under /es/cuentos"],
@@ -116,6 +129,9 @@ const LANGS = {
       // Spanish phase 2: the alphabet (27 letters with ñ), the tilde page and the cards.
       "/es/abecedario", "/es/abecedario/tilde", "/es/tarjetas",
       ...esLetters.flatMap((l) => [`/es/abecedario/${l}`, `/es/abecedario/${l}/ficha`]),
+      // Spanish phase 3: the syllables (lib/silabas-es.ts).
+      "/es/silabas",
+      ...esSyllables.map((s) => `/es/silabas/${s}`),
     ],
     rules: RULES_ES,
   },
