@@ -1,11 +1,16 @@
-// Usage: node snapshot.mjs <outDir> [baseUrl]
+// Usage: node snapshot.mjs <outDir> [baseUrl] [--langs=en,fr]
 // Fetches every URL in sitemap.xml (rewritten to baseUrl) plus extras, and
 // writes, per route: a normalized "SEO + text" digest, and full HTML.
+// --langs picks the languages to snapshot (default: English and French, the
+// languages whose pages must not change when another language is added).
 import { mkdirSync, writeFileSync } from "fs";
 import { join } from "path";
 
-const outDir = process.argv[2];
-const base = process.argv[3] ?? "http://localhost:3100";
+const args = process.argv.slice(2).filter((a) => !a.startsWith("--"));
+const outDir = args[0];
+const base = args[1] ?? "http://localhost:3100";
+const langs = (process.argv.find((a) => a.startsWith("--langs="))?.slice(8) ?? "en,fr").split(",");
+const langOf = (p) => p.match(/^\/(fr|es)(\/|$)/)?.[1] ?? "en";
 mkdirSync(join(outDir, "digest"), { recursive: true });
 mkdirSync(join(outDir, "html"), { recursive: true });
 
@@ -17,9 +22,22 @@ writeFileSync(join(outDir, "robots.txt"), robots);
 const paths = new Set(
   [...sm.matchAll(/<loc>https:\/\/alphabes\.com([^<]*)<\/loc>/g)]
     .map((m) => m[1] || "/")
-    .filter((p) => !p.startsWith("/fr")),
+    .filter((p) => langs.includes(langOf(p))),
 );
-["/dashboard", "/does-not-exist", "/stories/the-little-apple", "/alphabet/a/worksheet"].forEach((p) => paths.add(p));
+// Pages missing from the sitemap: private pages, 404s, a sample story, and
+// the English game pages (only the French ones are in the sitemap).
+const EXTRAS = {
+  en: [
+    "/dashboard", "/does-not-exist", "/stories/the-little-apple", "/alphabet/a/worksheet",
+    ...["find-the-letter", "match-letter-picture", "beginning-sound", "letter-tracing", "alphabet-quiz"].map((g) => `/games/${g}`),
+  ],
+  fr: [
+    "/fr/tableau-de-bord", "/fr/does-not-exist", "/fr/histoires/la-petite-pomme", "/fr/alphabet/a/fiche",
+    ...["trouve-la-lettre", "lettre-et-image", "premier-son", "trace-la-lettre", "quiz-alphabet"].map((g) => `/fr/jeux/${g}`),
+  ],
+  es: [],
+};
+langs.forEach((l) => EXTRAS[l]?.forEach((p) => paths.add(p)));
 
 const decode = (s) =>
   s.replace(/&amp;/g, "&").replace(/&#x27;|&#39;/g, "'").replace(/&quot;/g, '"').replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&nbsp;/g, " ");
