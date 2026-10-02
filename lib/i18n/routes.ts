@@ -67,6 +67,8 @@ export const SPANISH_PATHNAMES: ReadonlySet<AppPathname> = new Set<AppPathname>(
   "/pricing",
   "/privacy-policy",
   "/register",
+  "/stories",
+  "/stories/[slug]",
   "/terms",
   "/worksheets",
   "/worksheets/[category]",

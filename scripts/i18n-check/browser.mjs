@@ -539,6 +539,79 @@ console.log("Spanish worksheets (Spanish phase 4)");
   }
 }
 
+console.log("Spanish stories (Spanish phase 5)");
+{
+  const { context, page, errors } = await newPage();
+  await context.addInitScript(fakeVoices(["en-US", "fr-FR", "es-ES", "es-MX"]));
+  await page.goto(base + "/stories");
+  await page.waitForLoadState("networkidle");
+  check((await switcherHref(page, "es")) === "/es/cuentos", "ES link on /stories points to /es/cuentos");
+  check(!(await page.getByText("La manzanita roja").count()), "English story list has no Spanish story");
+  await page.goto(base + "/es/cuentos");
+  await page.waitForLoadState("networkidle");
+  check((await page.locator("main").getByRole("heading", { level: 2 }).count()) === 8, "Spanish story list shows 8 stories");
+  check(!(await page.getByText("The Little Apple").count()) && !(await page.getByText("La petite pomme").count()), "Spanish story list has no English or French story");
+  check(await page.getByText("De 3 a 5 años").first().isVisible(), "ages in Spanish");
+  await page.getByRole("link", { name: /La manzanita roja/ }).click();
+  await page.waitForURL("**/es/cuentos/la-manzanita-roja");
+  await page.waitForLoadState("networkidle");
+  check(new URL(page.url()).pathname === "/es/cuentos/la-manzanita-roja", "story opens at /es/cuentos/la-manzanita-roja");
+  check((await switcherHref(page, "en")) === "/stories" && (await switcherHref(page, "fr")) === "/fr/histoires", "EN/FR links on a Spanish story go to the story lists");
+  const alt = async (l) => page.locator(`link[rel=alternate][hreflang=${l}]`).getAttribute("href");
+  check((await alt("en")) === "https://alphabes.com/stories/the-little-apple" && (await alt("fr")) === "https://alphabes.com/fr/histoires/la-petite-pomme", "hreflang pairs the English and French twins");
+  const listen = page.getByRole("button", { name: "Escuchar la página" });
+  const stopBtn = page.getByRole("button", { name: "Detener la lectura" });
+  check(await page.getByRole("button", { name: "Escuchar la página" }).getByText("🔊 Escuchar").isVisible(), "button says Escuchar");
+  await listen.click();
+  const spoken = await page.evaluate(() => window.__spoken.map((u) => `${u.lang}|${u.text}`));
+  check(spoken[0] === "es-MX|Había una vez una manzanita roja, redonda y bonita.", `page read with the Mexican voice (${spoken[0]})`);
+  check(await stopBtn.getByText("⏹ Detener").isVisible(), "while reading, the button becomes Detener");
+  await stopBtn.click();
+  check(await listen.isVisible(), "Detener stops and shows Escuchar again");
+  await listen.click();
+  await page.evaluate(() => window.__finishSpeech());
+  await listen.waitFor({ timeout: 3000 }).catch(() => {});
+  check(await listen.isVisible(), "button returns to Escuchar when the page has been read");
+  await listen.click();
+  const cancelsBefore = await page.evaluate(() => window.__cancels);
+  await page.getByRole("button", { name: "Siguiente →" }).click();
+  check((await page.evaluate(() => window.__cancels)) > cancelsBefore, "turning the page stops the reading");
+  await listen.click();
+  const spoken2 = await page.evaluate(() => window.__spoken.at(-1));
+  check(spoken2.lang === "es-MX" && spoken2.text === "La manzanita vive arriba, en un árbol muy, muy alto.", `page 2 reads its own text (${spoken2.text})`);
+  for (let i = 0; i < 3; i++) await page.getByRole("button", { name: "Siguiente →" }).click();
+  check(await page.getByText("Página 5 de 5").isVisible(), "Spanish page counter");
+  check(await page.getByText("Fin", { exact: true }).isVisible(), "last picture says Fin");
+  await page.screenshot({ path: `${shots}/es-cuento.png`, fullPage: true });
+  check(errors.length === 0, `no console/page errors${errors.length ? ": " + errors.slice(0, 3).join(" | ") : ""}`);
+  await context.close();
+}
+{
+  // No Spanish voice: nothing is read, the Spanish help appears.
+  const { context, page, errors } = await newPage();
+  await context.addInitScript(fakeVoices(["en-US", "fr-FR"]));
+  await page.goto(base + "/es/cuentos/la-siesta-de-leo");
+  await page.waitForLoadState("networkidle");
+  await page.getByRole("button", { name: "Escuchar la página" }).click();
+  check(await page.getByText("Este dispositivo no tiene ninguna voz en español.").isVisible(), "story without a Spanish voice shows the Spanish help");
+  check((await page.evaluate(() => window.__spoken.length)) === 0, "a French or English voice never reads a Spanish story");
+  check(await page.getByRole("button", { name: "Escuchar la página" }).isVisible(), "button stays on Escuchar");
+  check(errors.length === 0, `no console/page errors${errors.length ? ": " + errors.slice(0, 3).join(" | ") : ""}`);
+  await context.close();
+}
+{
+  const { context, page, errors } = await newPage({ width: 390, height: 844 });
+  for (const p of ["/es/cuentos", "/es/cuentos/tito-el-buho-sabio", "/es/cuentos/lupita-la-patita-timida"]) {
+    await page.goto(base + p);
+    await page.waitForLoadState("networkidle");
+    const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+    check(overflow <= 0, `${p}: no horizontal scroll (overflow ${overflow}px)`);
+    await page.screenshot({ path: `${shots}/m${p.replaceAll("/", "_")}.png`, fullPage: true });
+  }
+  check(errors.length === 0, `no console/page errors${errors.length ? ": " + errors.slice(0, 3).join(" | ") : ""}`);
+  await context.close();
+}
+
 console.log("Sounds (phase 3)");
 {
   const { context, page, errors } = await newPage();

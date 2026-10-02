@@ -55,6 +55,11 @@ const esSyllables = [
   "trabadas-con-r", "ch", "ll-y-y", "r-y-rr", "ca-co-cu-que-qui", "ce-ci-y-z", "ga-go-gu-gue-gui", "ge-gi-y-j",
   "dieresis", "h-muda", "b-y-v", "enie", "x", "palabras-frecuentes",
 ];
+// prisma/stories-data.ts (the database must be seeded).
+const esStories = [
+  "la-manzanita-roja", "bruno-el-osito-valiente", "mia-la-gatita-curiosa", "canelo-y-su-pelota",
+  "lupita-la-patita-timida", "burbujas-el-pececito", "tito-el-buho-sabio", "la-siesta-de-leo",
+];
 
 const RULES_ES = [
   ["/es/xyz", {}, 404, null, "unknown Spanish URL"],
@@ -99,6 +104,12 @@ const RULES_ES = [
   // Spanish content pages that come in later phases: never English under /es.
   ["/es/juegos", {}, 404, null, "Spanish games not written yet"],
   ["/es/cuentos/the-little-apple", {}, 404, null, "English story under /es/cuentos"],
+  ["/es/cuentos/la-petite-pomme", {}, 404, null, "French story under /es/cuentos"],
+  ["/stories/la-manzanita-roja", {}, 404, null, "Spanish story under an English URL"],
+  ["/fr/histoires/la-manzanita-roja", {}, 404, null, "Spanish story under /fr/histoires"],
+  ["/es/cuentos/no-existe", {}, 404, null, "unknown Spanish story"],
+  ["/stories", { headers: { cookie: "NEXT_LOCALE=es" } }, 307, "/es/cuentos", "story list twin in Spanish"],
+  ["/fr/histoires", { headers: { cookie: "NEXT_LOCALE=es" } }, 307, "/es/cuentos", "French story list, Spanish chosen"],
 ];
 
 const LANGS = {
@@ -146,6 +157,8 @@ const LANGS = {
       "/es/fichas/silabas-trabadas", "/es/fichas/letra-a-cursiva", "/es/fichas/letra-enie-trazo", "/es/fichas/letra-m-silaba",
       "/es/fichas/silabas-m", "/es/fichas/silabas-que-qui", "/es/fichas/trabadas-tr", "/es/fichas/numero-15",
       "/es/fichas/color-rojo", "/es/fichas/paquetes/paquete-abecedario-completo", "/es/fichas/paquetes/paquete-letra-enie",
+      // Spanish phase 5: stories (from the database).
+      "/es/cuentos", ...esStories.map((s) => `/es/cuentos/${s}`),
     ],
     rules: RULES_ES,
   },

@@ -1,18 +1,21 @@
-// The stories, in both languages. Used by prisma/seed-stories.ts (which
+// The stories, in all three languages. Used by prisma/seed-stories.ts (which
 // writes them to the database) and scripts/tts-histoires.ts (which makes
 // the French audio). Pure data, no imports.
 //
 // Each story has one picture per page (components/StoryIllustration.tsx,
 // by scene name). The French stories are written in French for the same
 // pictures, not translated: simple present-tense sentences a child in
-// grande section or CP can follow, and read.
+// grande section or CP can follow, and read. The Spanish ones are written
+// the same way, in neutral Latin American Spanish (no words that change by
+// country), with many direct syllables (ma, pa, lo…) a beginning reader can
+// sound out.
 
 export type SeedPage = { pageNumber: number; text: string; scene: string };
 
 export type SeedStory = {
   slug: string;
-  locale: "EN" | "FR";
-  /** Same tale, same pictures, in the other language. */
+  locale: "EN" | "FR" | "ES";
+  /** Same tale, same pictures, in the other languages. */
   translationGroup: string;
   title: string;
   ageRangeMin: number;
@@ -303,7 +306,146 @@ export const frenchStories: SeedStory[] = [
   },
 ];
 
-export const allStories: SeedStory[] = [...englishStories, ...frenchStories];
+export const spanishStories: SeedStory[] = [
+  {
+    slug: "la-manzanita-roja",
+    locale: "ES",
+    translationGroup: "apple",
+    title: "La manzanita roja",
+    ageRangeMin: 3,
+    ageRangeMax: 5,
+    order: 1,
+    coverScene: "apple-1",
+    pages: pages("apple", [
+      "Había una vez una manzanita roja, redonda y bonita.",
+      "La manzanita vive arriba, en un árbol muy, muy alto.",
+      "Un día sopla el viento… ¡y pum! La manzanita cae al suelo.",
+      "Lola la levanta y sonríe: «¡Qué manzana tan bonita!».",
+      "«¡Gracias, arbolito!», dice Lola. Y ñam, ñam, se come la manzana.",
+    ]),
+  },
+  {
+    slug: "bruno-el-osito-valiente",
+    locale: "ES",
+    translationGroup: "bear",
+    title: "Bruno, el osito valiente",
+    ageRangeMin: 3,
+    ageRangeMax: 6,
+    order: 2,
+    coverScene: "bear-1",
+    pages: pages("bear", [
+      "En un bosque muy bonito vive un osito. Se llama Bruno.",
+      "Bruno tiene miedo de la oscuridad. ¡De noche, el bosque está tan oscuro!",
+      "Una noche oye un grito: «¡Ayuda!». Es Pepe, su amigo.",
+      "Bruno respira hondo. Y se mete en el bosque oscuro, paso a paso.",
+      "Bruno encuentra a Pepe. Desde ese día, los dos amigos van siempre juntos.",
+    ]),
+  },
+  {
+    slug: "mia-la-gatita-curiosa",
+    locale: "ES",
+    translationGroup: "cat",
+    title: "Mía, la gatita curiosa",
+    ageRangeMin: 4,
+    ageRangeMax: 7,
+    order: 3,
+    coverScene: "cat-1",
+    pages: pages("cat", [
+      "Mía es una gatita. ¡Le encanta explorar todo!",
+      "Una mañana, en el jardín, encuentra una caja misteriosa.",
+      "Dentro de la caja hay un ovillo de lana, suave y de colores.",
+      "Mía juega con el ovillo toda la tarde. ¡Rueda, rueda y rueda!",
+      "Por la noche se acurruca, cansada y feliz. ¡Buenas noches, Mía!",
+    ]),
+  },
+  {
+    slug: "canelo-y-su-pelota",
+    locale: "ES",
+    translationGroup: "dog",
+    title: "Canelo y su pelota",
+    ageRangeMin: 3,
+    ageRangeMax: 6,
+    order: 4,
+    coverScene: "dog-1",
+    pages: pages("dog", [
+      "Canelo es un perrito. Le encanta jugar en el parque.",
+      "Un día, su pelota rueda muy lejos.",
+      "Canelo corre rápido, rápido, rápido para alcanzarla.",
+      "Mira debajo de un árbol grande.",
+      "¡Ahí está! Canelo mueve la cola: ¡está muy contento!",
+    ]),
+  },
+  {
+    slug: "lupita-la-patita-timida",
+    locale: "ES",
+    translationGroup: "duck",
+    title: "Lupita, la patita tímida",
+    ageRangeMin: 3,
+    ageRangeMax: 5,
+    order: 5,
+    coverScene: "duck-1",
+    pages: pages("duck", [
+      "Lupita es una patita. Vive junto a un estanque tranquilo.",
+      "Es muy tímida y no se atreve a nadar con los demás.",
+      "Una ranita le dice: «¡Ven a nadar conmigo!».",
+      "Lupita junta todo su valor… ¡y salta al agua!",
+      "Se divierte tanto que ya no es nada tímida.",
+    ]),
+  },
+  {
+    slug: "burbujas-el-pececito",
+    locale: "ES",
+    translationGroup: "fish",
+    title: "Burbujas, el pececito",
+    ageRangeMin: 3,
+    ageRangeMax: 5,
+    order: 6,
+    coverScene: "fish-1",
+    pages: pages("fish", [
+      "Burbujas es un pececito. Vive entre los corales.",
+      "Todo el día nada en círculos: vueltas y más vueltas.",
+      "Un día conoce a un nuevo amigo: un cangrejito.",
+      "Juegan a esconderse entre los corales.",
+      "Burbujas está feliz: ¡tiene un mejor amigo!",
+    ]),
+  },
+  {
+    slug: "tito-el-buho-sabio",
+    locale: "ES",
+    translationGroup: "owl",
+    title: "Tito, el búho sabio",
+    ageRangeMin: 4,
+    ageRangeMax: 7,
+    order: 7,
+    coverScene: "owl-1",
+    pages: pages("owl", [
+      "Tito el búho vive en lo alto de un árbol muy viejo.",
+      "Cada noche mira cómo se encienden las estrellas.",
+      "Un ratoncito le pregunta: «Tito, ¿me ayudas? No encuentro mi casa».",
+      "Tito vuela bajito y le enseña el camino.",
+      "«¡Gracias, Tito!», dice el ratoncito. Tito es el más sabio del bosque.",
+    ]),
+  },
+  {
+    slug: "la-siesta-de-leo",
+    locale: "ES",
+    translationGroup: "lion",
+    title: "La siesta de Leo",
+    ageRangeMin: 3,
+    ageRangeMax: 6,
+    order: 8,
+    coverScene: "lion-1",
+    pages: pages("lion", [
+      "A Leo el león le encanta dormir la siesta al sol.",
+      "Pero los pajaritos cantan muy fuerte. ¡Así no se puede dormir!",
+      "Leo les pide con cariño: «¿Pueden cantar un poquito más lejos?».",
+      "Los pajaritos encuentran otro árbol, lejos, muy lejos.",
+      "Por fin, Leo puede dormir. Shhh… ¡qué siesta tan larga!",
+    ]),
+  },
+];
+
+export const allStories: SeedStory[] = [...englishStories, ...frenchStories, ...spanishStories];
 
 /** Where a French page's audio file goes (scripts/tts-histoires.ts writes it). */
 export const frenchAudioPath = (slug: string, pageNumber: number) => `/audio/histoires/${slug}-${pageNumber}.mp3`;

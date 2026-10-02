@@ -6,9 +6,10 @@ import { allStories, frenchAudioPath } from "./stories-data";
 const prisma = new PrismaClient();
 
 // French pages get an audioUrl once their MP3 exists (scripts/tts-histoires.ts);
-// until then the reader falls back to the browser's French voice. English
+// until then the reader falls back to the browser's French voice. Spanish
+// pages are read by the browser's Spanish voice (no recorded audio). English
 // audio is found by scene name (components/AudioButton.tsx), as before.
-function audioUrlFor(locale: "EN" | "FR", slug: string, pageNumber: number): string | null {
+function audioUrlFor(locale: "EN" | "FR" | "ES", slug: string, pageNumber: number): string | null {
   if (locale !== "FR") return null;
   const path = frenchAudioPath(slug, pageNumber);
   return existsSync(join(process.cwd(), "public", path)) ? path : null;
@@ -33,7 +34,7 @@ async function main() {
 
     for (const page of story.pages) {
       // English pages keep whatever audioUrl they have.
-      const audio = story.locale === "FR" ? { audioUrl: audioUrlFor(story.locale, story.slug, page.pageNumber) } : {};
+      const audio = story.locale !== "EN" ? { audioUrl: audioUrlFor(story.locale, story.slug, page.pageNumber) } : {};
       await prisma.storyPage.upsert({
         where: {
           storyId_pageNumber: {

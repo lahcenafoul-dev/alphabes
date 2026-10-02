@@ -3,7 +3,7 @@ import Link from "next/link";
 import { useState } from "react";
 import StoryIllustration from "@/components/StoryIllustration";
 import AudioButton from "@/components/AudioButton";
-import StoryAudioFr from "@/components/StoryAudioFr";
+import StoryAudio from "@/components/StoryAudio";
 import type { Locale } from "@/i18n/routing";
 import { localizedPath } from "@/lib/i18n/routes";
 
@@ -158,7 +158,11 @@ if (finished) {
   <div className="p-8 text-center">
     <p className="text-2xl font-display">{page.text}</p>
     <div className="mt-3 flex justify-center">
-      {locale === "fr" ? <StoryAudioFr text={page.text} audioUrl={page.audioUrl} /> : <AudioButton scene={page.imageUrl} />}
+      {locale === "en" ? (
+        <AudioButton scene={page.imageUrl} />
+      ) : (
+        <StoryAudio text={page.text} audioUrl={page.audioUrl} locale={locale} />
+      )}
     </div>
   </div>
 </div>

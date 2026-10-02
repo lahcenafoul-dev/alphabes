@@ -1,16 +1,31 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { useFrenchSpeech } from "@/components/ListenButton";
+import { useSpeech } from "@/components/ListenButton";
 import { stopSpeaking } from "@/lib/speech";
 
-// "Écouter" on a French story page: plays the page's recorded MP3 when it
-// has one (scripts/tts-histoires.ts), otherwise reads the text with the
-// browser's French voice. A missing or broken file also falls back to it.
-// While reading, the button becomes "Arrêter"; turning the page or leaving
-// the story stops the reading.
-export default function StoryAudioFr({ text, audioUrl }: { text: string; audioUrl: string | null }) {
-  const { say, notice } = useFrenchSpeech();
+const LABELS = {
+  fr: { listen: "🔊 Écouter", stop: "⏹ Arrêter", listenAria: "Écouter la page", stopAria: "Arrêter la lecture" },
+  es: { listen: "🔊 Escuchar", stop: "⏹ Detener", listenAria: "Escuchar la página", stopAria: "Detener la lectura" },
+};
+
+// "Écouter" / "Escuchar" on a French or Spanish story page: plays the page's
+// recorded MP3 when it has one (French only, scripts/tts-histoires.ts),
+// otherwise reads the text with the browser's voice in the story's language.
+// A missing or broken file also falls back to it. While reading, the button
+// becomes "Arrêter" / "Detener"; turning the page or leaving the story stops
+// the reading.
+export default function StoryAudio({
+  text,
+  audioUrl,
+  locale,
+}: {
+  text: string;
+  audioUrl: string | null;
+  locale: keyof typeof LABELS;
+}) {
+  const t = LABELS[locale];
+  const { say, notice } = useSpeech(locale);
   const [playing, setPlaying] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
@@ -61,10 +76,10 @@ export default function StoryAudioFr({ text, audioUrl }: { text: string; audioUr
       <button
         type="button"
         onClick={play}
-        aria-label={playing ? "Arrêter la lecture" : "Écouter la page"}
+        aria-label={playing ? t.stopAria : t.listenAria}
         className="rounded-block bg-crayon-blue text-white px-4 py-2 font-bold flex items-center gap-2"
       >
-        {playing ? "⏹ Arrêter" : "🔊 Écouter"}
+        {playing ? t.stop : t.listen}
       </button>
       {notice}
     </>
