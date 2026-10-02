@@ -1,6 +1,6 @@
 # Spanish version of AlphaBes: plan and status
 
-Last updated: 2026-10-02 (phase 4 done). Read this first when continuing the Spanish work, together with CLAUDE.md and [french-plan.md](french-plan.md) (the Spanish work reuses everything built there).
+Last updated: 2026-10-02 (phase 5 done; phase 4 pushed). Read this first when continuing the Spanish work, together with CLAUDE.md and [french-plan.md](french-plan.md) (the Spanish work reuses everything built there).
 
 ## Goal
 
@@ -137,7 +137,7 @@ Other cursive models I can show you before choosing: Playwrite ES (Spain), Playw
 
 ## Stories (`/es/cuentos`)
 
-8 original Spanish stories, same illustration scenes as the English and French ones (paired by `translationGroup`, so twins get hreflang to each other in all three languages), stored with `locale = ES`. Short sentences built from direct syllables first (*pato*, *mamá*, *luna*), so a beginning reader can read some of them. Proposed titles (approve in phase 5):
+8 original Spanish stories, same illustration scenes as the English and French ones (paired by `translationGroup`, so twins get hreflang to each other in all three languages), stored with `locale = ES`. Short sentences built from direct syllables first (*pato*, *mamá*, *luna*), so a beginning reader can read some of them. **Written in phase 5** with these titles (the owner can still change any of them; only the slug is in URLs):
 
 | Group | Title | Slug |
 |---|---|---|
@@ -208,6 +208,14 @@ The French work assumed exactly two languages in several places; phase 1 makes t
 - **Printing:** sheets are A4. The FAQ tells families with US Letter printers to choose "ajustar a la página".
 - **Tests:** `tests/i18n/fichas-es.test.ts` checks the catalogue (239/40), every PDF and preview on disk, the first-syllable splits, that each syllable sheet's words use its syllables, that sheets and syllable pages link both ways, that templates render in Spanish with the Spanish cursive, and the routes.
 
+## Phase 5 notes
+
+- **Stories:** `spanishStories` in `prisma/stories-data.ts`, same 8 pictures and order as English and French (`translationGroup` apple … lion). Neutral words (no *pasto*/*césped*, *escondidas*/*escondite*; *estanque*, *ovillo*, *jugar a esconderse*), *ustedes* (Leo: «¿Pueden cantar…?»), Spanish ¿ ¡ « ». Characters: Lola (apple), Bruno and his friend Pepe, Mía, Canelo, Lupita, Burbujas, Tito, Leo.
+- **Database:** `npm run db:seed` needs `DATABASE_URL` in the environment (tsx doesn't read `.env`): `node --env-file=.env node_modules/tsx/dist/cli.mjs prisma/seed-stories.ts`. Run on the Neon `dev` branch on 2026-10-02 (endpoint checked to be `dev`): 24 stories. Production at launch (phase 7).
+- **Audio:** `components/StoryAudioFr.tsx` became `components/StoryAudio.tsx` (`locale` "fr" | "es"): "🔊 Escuchar" / "⏹ Detener", browser voice through `useSpeech("es")` (es-MX first, D11), the Spanish no-voice help otherwise. No recorded Spanish audio; French keeps MP3-first then browser voice, labels unchanged.
+- **Pages:** `/es/cuentos` (`stories-es.tsx`), `/es/cuentos/[slug]` (the existing story page). The 8 English and 8 French stories and both lists gained `hreflang="es"`.
+- **Tests:** `tests/i18n/stories.test.ts` (8 stories × 3 languages, unique slugs, twins share pictures, approved slugs, no regional words or *vosotros*, ¿/¡ pairs).
+
 ## Phases
 
 | Phase | Content | Status |
@@ -217,7 +225,7 @@ The French work assumed exactly two languages in several places; phase 1 makes t
 | 2 | Abecedario: `lib/letters-es.ts` (27 letters + tilde page), chart, letter pages, `/es/tarjetas`, Spanish speech with voice fallback and no-voice message, tracing canvas with *script* / *cursiva*. | **Done** (2026-10-01), not pushed. English and French identical to the baseline apart from hreflang: since phase 1, 58 pages gained one `hreflang="es"` line (the 26 letters, the alphabet, the cards and the A tracing page, in English and French). Sitemap: 37 Spanish URLs. `localecheck es` and `fr` pass, 185 browser checks, 135 unit tests, build 1,615 pages. See "Phase 2 notes". |
 | 3 | Sílabas: ~20 pages + index, syllable builder, word builder, syllable clapping, picture hunt. | **Done** (2026-10-02), not pushed. English and French identical to the baseline apart from hreflang: since phase 2 only `/phonics` and `/fr/sons` gained `hreflang="es"` (the syllable pages are Spanish-only). Sitemap: 58 Spanish URLs. `localecheck es` and `fr` pass, 208 browser checks (the exercises are played with a fake es-MX voice), 151 unit tests, build 1,627 pages. See "Phase 3 notes". |
 | 4 | Fichas: Spanish PDFs and *paquetes* (handwriting per D7), generator made language-aware, letter pages link their *ficha*. | **Done** (2026-10-02), not pushed. 239 sheets + 40 packs, including one syllable sheet per consonant group linked from the syllable pages. English and French identical to the baseline apart from hreflang (since phase 3 only `/worksheets`, `/worksheets/bundles`, `/fr/fiches`, `/fr/fiches/packs` gained `hreflang="es"`). Sitemap: 351 Spanish URLs. `localecheck es` and `fr` pass, 224 browser checks (a Spanish PDF downloaded and checked), 166 unit tests, build 1,512 pages. See "Phase 4 notes". |
-| 5 | Cuentos (the `ES` migration was done in phase 1): 8 stories, list filtered by language, reader with browser Spanish voice ("Escuchar" / "⏹ Detener"). | |
+| 5 | Cuentos (the `ES` migration was done in phase 1): 8 stories, list filtered by language, reader with browser Spanish voice ("Escuchar" / "⏹ Detener"). | **Done** (2026-10-02), not pushed (phases 0–4 pushed 2026-10-02). English and French identical to phase 4 apart from hreflang: only `/stories`, `/fr/histoires` and the 16 English and French stories gained `hreflang="es"` (18 lines). Sitemap: 360 Spanish URLs. `localecheck es` and `fr` pass, 250 browser checks (Spanish story read with a fake es-MX voice; no-voice help), 172 unit tests, build 1,512 pages. Seeded on `dev` only. See "Phase 5 notes". |
 | 6 | Juegos (5 twins + *aplaude-las-silabas* per D10), preescolar, kínder, actividades, "Español" in the child language select. | |
 | 7 | Launch (below). | |
 
@@ -246,5 +254,5 @@ As in french-plan.md, plus:
 
 ## Open issues
 
-- Content review: the letter tips and FAQs (`lib/letters-es.ts`), the alphabet and tilde pages and the 20 syllable pages (`lib/silabas-es.ts`) should get the native-teacher review (D12), ideally from a teacher who uses the syllable method.
+- Content review: the 8 Spanish stories (`prisma/stories-data.ts`), the letter tips and FAQs (`lib/letters-es.ts`), the alphabet and tilde pages and the 20 syllable pages (`lib/silabas-es.ts`) should get the native-teacher review (D12), ideally from a teacher who uses the syllable method.
 - `localecheck.mjs` lists English words that are also words in the checked language (`sameWords`: *parent(s)*, *sons*, *session* for French) and uses letter-aware word boundaries, so French no longer reports false positives. Add Spanish ones there if they appear.
