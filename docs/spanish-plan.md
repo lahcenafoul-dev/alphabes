@@ -1,6 +1,6 @@
 # Spanish version of AlphaBes: plan and status
 
-Last updated: 2026-10-02 (phases 0–6 done and pushed; phase 7, launch, not started). Read this first when continuing the Spanish work, together with CLAUDE.md and [french-plan.md](french-plan.md) (the Spanish work reuses everything built there).
+Last updated: 2026-10-02 (phases 0–6 done and pushed; phase 7, launch, in progress: preparation done, waiting for the owner's OK to push and run the production steps). Read this first when continuing the Spanish work, together with CLAUDE.md and [french-plan.md](french-plan.md) (the Spanish work reuses everything built there).
 
 ## Goal
 
@@ -240,22 +240,32 @@ The French work assumed exactly two languages in several places; phase 1 makes t
 | 4 | Fichas: Spanish PDFs and *paquetes* (handwriting per D7), generator made language-aware, letter pages link their *ficha*. | **Done** (2026-10-02), not pushed. 239 sheets + 40 packs, including one syllable sheet per consonant group linked from the syllable pages. English and French identical to the baseline apart from hreflang (since phase 3 only `/worksheets`, `/worksheets/bundles`, `/fr/fiches`, `/fr/fiches/packs` gained `hreflang="es"`). Sitemap: 351 Spanish URLs. `localecheck es` and `fr` pass, 224 browser checks (a Spanish PDF downloaded and checked), 166 unit tests, build 1,512 pages. See "Phase 4 notes". |
 | 5 | Cuentos (the `ES` migration was done in phase 1): 8 stories, list filtered by language, reader with browser Spanish voice ("Escuchar" / "⏹ Detener"). | **Done** (2026-10-02), not pushed (phases 0–4 pushed 2026-10-02). English and French identical to phase 4 apart from hreflang: only `/stories`, `/fr/histoires` and the 16 English and French stories gained `hreflang="es"` (18 lines). Sitemap: 360 Spanish URLs. `localecheck es` and `fr` pass, 250 browser checks (Spanish story read with a fake es-MX voice; no-voice help), 172 unit tests, build 1,512 pages. Seeded on `dev` only. See "Phase 5 notes". |
 | 6 | Juegos (5 twins + *aplaude-las-silabas* per D10), preescolar, kínder, actividades, "Español" in the child language select. | **Done and pushed** (2026-10-02). English and French identical to phase 5 apart from hreflang: only the 13 English and 13 French twins (games index and 5 games, preschool/maternelle hub and 2 topics, kindergarten/grande section hub and 2 topics, activities) gained one `hreflang="es"` line each; the French-only topics are unchanged. Sitemap: 376 Spanish URLs. `localecheck es` and `fr` pass, 298 browser checks (every game played with a fake es-MX voice) plus the child-language flow on `dev` (throwaway account removed), 189 unit tests, build 1,515 pages. See "Phase 6 notes". |
-| 7 | Launch (below). | |
+| 7 | Launch (below). | **In progress** (2026-10-02). Owner's decisions: fix the 320 px header first, launch without waiting for the teacher review (D12, done later), I create the backup branch, order migrate → deploy → seed. Done: backup branch, header fix (committed, not pushed), all checks. Next: owner's OK, then steps 2–6 below. |
 
 ### Launch (phase 7)
 
-1. I create a Neon backup branch of production, `backup-before-spanish-launch-<date>` (no compute), with your OK (or you create it: Neon console → Branches → New branch from `production`).
-2. You run, from the repo folder with the **production** connection string (never stored in `.env`):
+**Production checked read-only on 2026-10-02** (before any change): migrations `0_baseline`, `20260908075129_cascade_story_deletes`, `20260930050000_story_locale` applied; `Locale` = EN, FR; 8 EN + 8 FR stories. `main` is still 4894cd3, so merging `spanish-version` is a fast-forward.
+
+**Order changed (owner's OK, 2026-10-02): migrate, deploy, then seed.** The live sitemap on `main` reads every story without a language filter, and its Prisma client only knows EN and FR. With Spanish stories in the database before the deploy, the live sitemap would list them under English URLs with wrong alternates, or Prisma would reject `ES` and the sitemap would drop every story. Adding `ES` to the enum (the migration) is harmless for the live code. Seeding after the deploy leaves `/es/cuentos` empty for a few minutes only.
+
+1. **Done 2026-10-02:** backup branch `backup-before-spanish-launch-2026-10-02` (`br-quiet-morning-b1k4ij8n`, no compute) from `production`.
+2. **Header fix before launch (done, 2026-10-02):** below 390 px the header uses 16 px side padding, smaller gaps, a smaller logo word and narrower switcher buttons (`max-[389px]:` classes in `SiteHeader.tsx` and `LanguageSwitcher.tsx`). Measured: the normal header needs 379 px, so at 360 and 375 px it had also lost its right padding (menu button 5 px from the edge). Now the menu button keeps 16 px at 320, 360 and 375 px; 390 px and wider are unchanged. `browser.mjs` checks it ("Header on small phones"). Checks: tsc, lint, 189 unit tests, build, 334 browser checks, `localecheck es` and `fr`, 878 English/French routes identical to phase 6 (the comparison ignores the header).
+3. Push `spanish-version` (owner's OK). Owner runs, from the repo folder, with the **production** connection string (never stored in `.env`):
    ```powershell
    $env:DATABASE_URL = "<production connection string>"
    npx prisma migrate deploy      # adds ES to the Locale enum
+   Remove-Item Env:DATABASE_URL
+   ```
+4. Fast-forward `main` to `spanish-version` and push (Cloudflare Workers Builds deploys). Wait for the deploy to finish.
+5. Owner seeds production right away:
+   ```powershell
+   $env:DATABASE_URL = "<production connection string>"
    npm run db:seed                # upserts 24 stories; English and French unchanged
    Remove-Item Env:DATABASE_URL
    ```
-   (Exact commands confirmed at launch time, as last time.)
-3. Merge `spanish-version` into `main` and push (Cloudflare Workers Builds deploys).
-4. Live checks on alphabes.com (`LIVE=1`): English and French identical apart from hreflang and the switcher, Spanish checks, browser checks.
-5. You resubmit `https://alphabes.com/sitemap.xml` in Search Console.
+   Then I check production read-only (4 migrations, `Locale` = EN, FR, ES, 8 stories per language).
+6. Live checks on alphabes.com (`LIVE=1`): English and French identical apart from hreflang and the header, Spanish checks, browser checks.
+7. Owner resubmits `https://alphabes.com/sitemap.xml` in Search Console.
 
 ## Testing
 
@@ -267,7 +277,5 @@ As in french-plan.md, plus:
 
 ## Open issues
 
-- **Fix before launch: the site header is too wide at 320 px.** On every page (English and French included), the logo, the EN/FR/ES switcher and the menu button need 355 px, so a 320 px phone (iPhone SE 1st gen., small Androids) can scroll sideways by 35 px, and with phone emulation the cookie banner's buttons end up below the screen. 360 px and wider are fine. It comes from the third switcher button (phase 1; the checks only went down to 390 px). The game content itself fits at 320 px. A header change is allowed by the hard rules (only hreflang and the header may differ), but it touches every page, so it waits for the owner's OK.
-
-- Content review: the phase 6 texts (games' help for parents, preescolar and kínder hubs and topics, activities) and the 8 Spanish stories (`prisma/stories-data.ts`), the letter tips and FAQs (`lib/letters-es.ts`), the alphabet and tilde pages and the 20 syllable pages (`lib/silabas-es.ts`) should get the native-teacher review (D12), ideally from a teacher who uses the syllable method.
+- Content review (owner, 2026-10-02: launch first, review after; corrections ship as normal updates): the phase 6 texts (games' help for parents, preescolar and kínder hubs and topics, activities) and the 8 Spanish stories (`prisma/stories-data.ts`), the letter tips and FAQs (`lib/letters-es.ts`), the alphabet and tilde pages and the 20 syllable pages (`lib/silabas-es.ts`) should get the native-teacher review (D12), ideally from a teacher who uses the syllable method.
 - `localecheck.mjs` lists English words that are also words in the checked language (`sameWords`: *parent(s)*, *sons*, *session* for French) and uses letter-aware word boundaries, so French no longer reports false positives. Add Spanish ones there if they appear.
