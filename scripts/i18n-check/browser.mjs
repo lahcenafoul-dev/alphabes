@@ -889,6 +889,8 @@ console.log("Stories (phase 5)");
   const cancelsBefore = await page.evaluate(() => window.__cancels);
   await page.getByRole("button", { name: "Suivant →" }).click();
   check((await page.evaluate(() => window.__cancels)) > cancelsBefore, "turning the page stops the reading");
+  // On alphabes.com the new page can re-render a moment after the click.
+  await listen.waitFor({ timeout: 3000 }).catch(() => {});
   check(await listen.isVisible(), "next page shows Écouter");
   await listen.click();
   const spoken2 = await page.evaluate(() => window.__spoken.at(-1));

@@ -1,6 +1,6 @@
 # Spanish version of AlphaBes: plan and status
 
-Last updated: 2026-10-02 (phases 0–6 done and pushed; phase 7, launch, in progress: preparation done, waiting for the owner's OK to push and run the production steps). Read this first when continuing the Spanish work, together with CLAUDE.md and [french-plan.md](french-plan.md) (the Spanish work reuses everything built there).
+Last updated: 2026-10-02 (**the Spanish version is live**: phases 0–7 done; only the Search Console resubmission, by the owner, and the teacher review (D12) remain). Read this first when continuing the Spanish work, together with CLAUDE.md and [french-plan.md](french-plan.md) (the Spanish work reuses everything built there).
 
 ## Goal
 
@@ -12,6 +12,7 @@ Hard rules:
 
 ## Branch workflow
 
+- **Launched 2026-10-02**: `spanish-version` was fast-forwarded into `main` (054c86b) and deployed. From now on all work (English, French, Spanish) goes on small branches from `main`, merged into `main` (pushing `main` deploys). Keep running the English and French comparison and the French and Spanish checks before merging.
 - Branch `spanish-version`, created from `origin/main` (4894cd3) on 2026-10-01. Pushing it doesn't deploy (only `main` deploys).
 - Fixes for the live site go on small branches from `main`; then `main` is merged into `spanish-version`.
 - At the end of each phase: `npx tsc --noEmit`, `npm run lint`, `npm run build`, `npx vitest run`, the English **and French** comparisons, the Spanish checks and the browser checks. Then commit and **wait for the owner's OK before pushing** and before starting the next phase.
@@ -240,7 +241,7 @@ The French work assumed exactly two languages in several places; phase 1 makes t
 | 4 | Fichas: Spanish PDFs and *paquetes* (handwriting per D7), generator made language-aware, letter pages link their *ficha*. | **Done** (2026-10-02), not pushed. 239 sheets + 40 packs, including one syllable sheet per consonant group linked from the syllable pages. English and French identical to the baseline apart from hreflang (since phase 3 only `/worksheets`, `/worksheets/bundles`, `/fr/fiches`, `/fr/fiches/packs` gained `hreflang="es"`). Sitemap: 351 Spanish URLs. `localecheck es` and `fr` pass, 224 browser checks (a Spanish PDF downloaded and checked), 166 unit tests, build 1,512 pages. See "Phase 4 notes". |
 | 5 | Cuentos (the `ES` migration was done in phase 1): 8 stories, list filtered by language, reader with browser Spanish voice ("Escuchar" / "⏹ Detener"). | **Done** (2026-10-02), not pushed (phases 0–4 pushed 2026-10-02). English and French identical to phase 4 apart from hreflang: only `/stories`, `/fr/histoires` and the 16 English and French stories gained `hreflang="es"` (18 lines). Sitemap: 360 Spanish URLs. `localecheck es` and `fr` pass, 250 browser checks (Spanish story read with a fake es-MX voice; no-voice help), 172 unit tests, build 1,512 pages. Seeded on `dev` only. See "Phase 5 notes". |
 | 6 | Juegos (5 twins + *aplaude-las-silabas* per D10), preescolar, kínder, actividades, "Español" in the child language select. | **Done and pushed** (2026-10-02). English and French identical to phase 5 apart from hreflang: only the 13 English and 13 French twins (games index and 5 games, preschool/maternelle hub and 2 topics, kindergarten/grande section hub and 2 topics, activities) gained one `hreflang="es"` line each; the French-only topics are unchanged. Sitemap: 376 Spanish URLs. `localecheck es` and `fr` pass, 298 browser checks (every game played with a fake es-MX voice) plus the child-language flow on `dev` (throwaway account removed), 189 unit tests, build 1,515 pages. See "Phase 6 notes". |
-| 7 | Launch (below). | **In progress** (2026-10-02). Owner's decisions: fix the 320 px header first, launch without waiting for the teacher review (D12, done later), I create the backup branch, order migrate → deploy → seed. Done: backup branch, header fix (committed, not pushed), all checks. Next: owner's OK, then steps 2–6 below. |
+| 7 | Launch (below). | **Done** (2026-10-02), except Search Console (owner). Owner's decisions: fix the 320 px header first, launch without waiting for the teacher review (D12, done later), I create the backup branch, order migrate → deploy → seed. Backup branch `backup-before-spanish-launch-2026-10-02`; owner ran `prisma migrate deploy` and then, after the deploy, `db:seed` on production (24 stories); `main` fast-forwarded to 054c86b and deployed by Workers Builds. Live checks passed (see Launch, step 6). |
 
 ### Launch (phase 7)
 
@@ -250,22 +251,23 @@ The French work assumed exactly two languages in several places; phase 1 makes t
 
 1. **Done 2026-10-02:** backup branch `backup-before-spanish-launch-2026-10-02` (`br-quiet-morning-b1k4ij8n`, no compute) from `production`.
 2. **Header fix before launch (done, 2026-10-02):** below 390 px the header uses 16 px side padding, smaller gaps, a smaller logo word and narrower switcher buttons (`max-[389px]:` classes in `SiteHeader.tsx` and `LanguageSwitcher.tsx`). Measured: the normal header needs 379 px, so at 360 and 375 px it had also lost its right padding (menu button 5 px from the edge). Now the menu button keeps 16 px at 320, 360 and 375 px; 390 px and wider are unchanged. `browser.mjs` checks it ("Header on small phones"). Checks: tsc, lint, 189 unit tests, build, 334 browser checks, `localecheck es` and `fr`, 878 English/French routes identical to phase 6 (the comparison ignores the header).
-3. Push `spanish-version` (owner's OK). Owner runs, from the repo folder, with the **production** connection string (never stored in `.env`):
+3. **Done 2026-10-02.** Pushed `spanish-version`; owner ran, from the repo folder, with the **production** connection string (never stored in `.env`):
    ```powershell
    $env:DATABASE_URL = "<production connection string>"
    npx prisma migrate deploy      # adds ES to the Locale enum
    Remove-Item Env:DATABASE_URL
    ```
-4. Fast-forward `main` to `spanish-version` and push (Cloudflare Workers Builds deploys). Wait for the deploy to finish.
-5. Owner seeds production right away:
+   Checked read-only afterwards: 4 migrations, `Locale` = EN, FR, ES, still 8 + 8 stories.
+4. **Done 2026-10-02.** `main` fast-forwarded 4894cd3 → 054c86b and pushed; Workers Builds deployed it in about 3 minutes (`/es` answered 200 with `lang="es"`).
+5. **Done 2026-10-02.** Owner seeded production right after the deploy:
    ```powershell
    $env:DATABASE_URL = "<production connection string>"
    npm run db:seed                # upserts 24 stories; English and French unchanged
    Remove-Item Env:DATABASE_URL
    ```
-   Then I check production read-only (4 migrations, `Locale` = EN, FR, ES, 8 stories per language).
-6. Live checks on alphabes.com (`LIVE=1`): English and French identical apart from hreflang and the header, Spanish checks, browser checks.
-7. Owner resubmits `https://alphabes.com/sitemap.xml` in Search Console.
+   Checked read-only: 8 stories per language, 5 pages each, 8 translation groups.
+6. **Done 2026-10-02.** Live checks on alphabes.com: the 878 English and French routes are identical to the phase 7 local build (so identical to `main` before the launch apart from hreflang and the header), `localecheck es` and `fr` pass, the sitemap has 1,243 URLs including 376 Spanish ones (stories with en/fr/es alternates), and `LIVE=1 browser.mjs` passed 331 of 332. The one failure ("next page shows Écouter", French story) was a timing race: on the live site the button sometimes re-renders a moment after the page turn; 5 out of 5 repeats showed it within 3 s. The check now waits for it.
+7. **To do (owner):** resubmit `https://alphabes.com/sitemap.xml` in Search Console.
 
 ## Testing
 
