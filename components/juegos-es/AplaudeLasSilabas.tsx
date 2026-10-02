@@ -94,16 +94,17 @@ export default function AplaudeLasSilabas() {
         </div>
       </div>
 
+      {/* The five counts stay on one row and shrink with the screen (44 px at 320 px wide). */}
       <fieldset className="mt-6 text-center">
         <legend className="mx-auto text-lg font-display font-bold">¿Cuántas palmadas? ¿Cuántas sílabas tiene?</legend>
-        <div className="mt-3 flex flex-wrap justify-center gap-3">
+        <div className="mt-3 flex justify-center gap-2 sm:gap-3">
           {[1, 2, 3, 4, 5].map((n) => (
             <button
               key={n}
               type="button"
               onClick={() => choose(n)}
               aria-label={n === 1 ? "1 sílaba" : `${n} sílabas`}
-              className="letter-block bg-wood h-12 w-12 text-2xl sm:h-16 sm:w-16 sm:text-3xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-crayon-blue"
+              className="letter-block bg-wood aspect-square min-w-0 flex-1 max-w-16 text-2xl sm:text-3xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-crayon-blue"
             >
               {n}
             </button>

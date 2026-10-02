@@ -66,7 +66,7 @@ export default function GameEs({ slug }: { slug: string }) {
   };
 
   return (
-    <main id="main-content" className="mx-auto max-w-4xl px-6 py-12">
+    <main id="main-content" className="mx-auto max-w-4xl px-4 sm:px-6 py-12">
       <nav aria-label="Ruta de navegación" className="text-sm text-chalkboard/60">
         <ol className="flex flex-wrap gap-2">
           <li><Link href="/">Inicio</Link> /</li>
@@ -81,7 +81,7 @@ export default function GameEs({ slug }: { slug: string }) {
       </h1>
       <p className="mt-2 text-chalkboard/70 max-w-2xl">{g.description}</p>
 
-      <div className="mt-8 rounded-block border border-chalkboard/10 p-6 shadow-block">
+      <div className="mt-8 rounded-block border border-chalkboard/10 p-4 sm:p-6 shadow-block">
         <ClientOnly fallback={<p className="text-chalkboard/50">Cargando el juego…</p>}>
           <GameBody slug={g.slug} />
         </ClientOnly>
