@@ -103,7 +103,7 @@ export default function AplaudeLasSilabas() {
               type="button"
               onClick={() => choose(n)}
               aria-label={n === 1 ? "1 sílaba" : `${n} sílabas`}
-              className="letter-block bg-wood h-16 w-16 text-3xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-crayon-blue"
+              className="letter-block bg-wood h-12 w-12 text-2xl sm:h-16 sm:w-16 sm:text-3xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-crayon-blue"
             >
               {n}
             </button>
