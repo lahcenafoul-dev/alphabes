@@ -15,7 +15,7 @@ const NAV = [
 ] as const;
 
 // Site-wide header: logo, main sections, parent account link, language switch.
-// Below 360 px the spacing and logo shrink so it fits a 320 px phone.
+// Below 390 px the spacing and logo shrink so it fits a 320 px phone.
 // Static (no session lookup) so every page stays prerenderable; "My Account"
 // leads to the dashboard, which sends signed-out visitors to the login page.
 // Links are built from the locale prop rather than next-intl's <Link>, so the
@@ -27,12 +27,12 @@ export default async function SiteHeader({ locale }: { locale: Locale }) {
 
   return (
     <header data-site-header className="relative border-b border-chalkboard/10 bg-paper print:hidden">
-      <div className="mx-auto max-w-6xl px-6 py-3 flex items-center justify-between gap-4 max-[359px]:px-4 max-[359px]:gap-2">
+      <div className="mx-auto max-w-6xl px-6 py-3 flex items-center justify-between gap-4 max-[389px]:px-4 max-[389px]:gap-2">
         <Link href={localizedPath(locale, "/")} aria-label={t("homeLabel")} className="flex items-center gap-2 shrink-0">
           <span aria-hidden="true" className="letter-block h-9 w-9 text-xl">
             A
           </span>
-          <span className="font-display text-2xl font-extrabold max-[359px]:text-xl">AlphaBes</span>
+          <span className="font-display text-2xl font-extrabold max-[389px]:text-xl">AlphaBes</span>
         </Link>
 
         <nav aria-label={t("mainNav")} className="hidden md:block">
@@ -47,7 +47,7 @@ export default async function SiteHeader({ locale }: { locale: Locale }) {
           </ul>
         </nav>
 
-        <div className="flex items-center gap-3 max-[359px]:gap-1.5">
+        <div className="flex items-center gap-3 max-[389px]:gap-1.5">
           <Link
             href={localizedPath(locale, "/dashboard")}
             className="hidden sm:inline-block rounded-block bg-crayon-yellow px-4 py-2 font-display font-bold shadow-block hover:shadow-blockHover transition"

@@ -59,7 +59,7 @@ export default function LanguageSwitcher() {
             lang={l}
             title={t(l)}
             aria-current="true"
-            className="rounded-full bg-chalkboard px-2.5 py-1 text-paper max-[359px]:px-2"
+            className="rounded-full bg-chalkboard px-2.5 py-1 text-paper max-[389px]:px-2"
           >
             {l.toUpperCase()}
           </span>
@@ -71,7 +71,7 @@ export default function LanguageSwitcher() {
             lang={l}
             title={t(l)}
             onClick={() => rememberLocale(l)}
-            className="rounded-full px-2.5 py-1 text-chalkboard/70 hover:text-chalkboard max-[359px]:px-2"
+            className="rounded-full px-2.5 py-1 text-chalkboard/70 hover:text-chalkboard max-[389px]:px-2"
           >
             {l.toUpperCase()}
           </a>

@@ -1086,5 +1086,27 @@ if (process.env.CHECK_ACCOUNTS) {
   await context.close();
 }
 
+console.log("Header on small phones (320, 360 and 375px, phase 7)");
+for (const width of [320, 360, 375]) {
+  const { context, page, errors } = await newPage({ width, height: 640 });
+  for (const p of ["/", "/fr", "/es", "/es/juegos/aplaude-las-silabas", "/alphabet/a"]) {
+    await page.goto(base + p);
+    await page.waitForLoadState("networkidle");
+    const { overflow, right } = await page.evaluate(() => ({
+      overflow: document.documentElement.scrollWidth - window.innerWidth,
+      right: Math.max(...[...document.querySelectorAll("[data-site-header] [role=group], [data-site-header] button")].map((e) => e.getBoundingClientRect().right)),
+    }));
+    check(overflow <= 0, `${width}px ${p}: no horizontal scroll (overflow ${overflow}px)`);
+    check(right <= width - 16, `${width}px ${p}: menu button keeps a 16px margin (right edge ${Math.round(right)}px)`);
+  }
+  await page.goto(base + "/es");
+  await page.waitForLoadState("networkidle");
+  await page.getByRole("button", { name: "Menú" }).click();
+  check(await page.locator("#mobile-menu").isVisible(), `${width}px: Spanish mobile menu opens`);
+  await page.screenshot({ path: `${shots}/es-header-${width}.png` });
+  check(errors.length === 0, `no console/page errors${errors.length ? ": " + errors.slice(0, 3).join(" | ") : ""}`);
+  await context.close();
+}
+
 await browser.close();
 console.log(problems ? `\n${problems} problem(s)` : "\nall browser checks passed");
