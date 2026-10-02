@@ -118,7 +118,18 @@ export const SHAPES: Shape[] = [
   { slug: "corazon", name: "corazón", withArticle: "el corazón", draw: "coeur" },
 ];
 
-export type Colour = { slug: string; name: string; hex: string; thing: SpanishWord };
+export type Colour = {
+  slug: string;
+  /** The word written on the sheet's cursive row. */
+  name: string;
+  /** Another name used in other countries, shown in brackets: "café (marrón)". */
+  alt?: string;
+  hex: string;
+  thing: SpanishWord;
+};
+
+/** "café (marrón)" for a colour with another regional name, else the name. */
+export const colourLabel = (c: Colour) => (c.alt ? `${c.name} (${c.alt})` : c.name);
 export const COLOURS: Colour[] = [
   { slug: "rojo", name: "rojo", hex: "#E53935", thing: w("manzana", "la manzana", "🍎") },
   { slug: "azul", name: "azul", hex: "#1E88E5", thing: w("ballena", "la ballena", "🐳") },
@@ -127,7 +138,7 @@ export const COLOURS: Colour[] = [
   { slug: "naranja", name: "naranja", hex: "#FB8C00", thing: w("zanahoria", "la zanahoria", "🥕") },
   { slug: "morado", name: "morado", hex: "#8E24AA", thing: w("uvas", "las uvas", "🍇") },
   { slug: "rosa", name: "rosa", hex: "#F48FB1", thing: w("flamenco", "el flamenco", "🦩") },
-  { slug: "cafe", name: "café", hex: "#795548", thing: w("oso", "el oso", "🐻") },
+  { slug: "cafe", name: "café", alt: "marrón", hex: "#795548", thing: w("oso", "el oso", "🐻") },
   { slug: "gris", name: "gris", hex: "#9E9E9E", thing: w("elefante", "el elefante", "🐘") },
   { slug: "negro", name: "negro", hex: "#212121", thing: w("sombrero", "el sombrero", "🎩") },
 ];
@@ -467,10 +478,10 @@ function buildFichas(): Ficha[] {
   for (const c of COLOURS) {
     out.push({
       ...common(colores, `color-${c.slug}`),
-      label: cap(c.name),
-      title: `El color ${c.name}: colorea ${c.thing.withArticle}`,
-      description: `Ficha gratis del color ${c.name}: colorear ${c.thing.withArticle} de color ${c.name} y escribir la palabra «${c.name}».`,
-      consigna: `Colorea ${c.thing.withArticle} de color ${c.name} y después escribe la palabra ${c.name}.`,
+      label: cap(colourLabel(c)),
+      title: `El color ${colourLabel(c)}: colorea ${c.thing.withArticle}`,
+      description: `Ficha gratis del color ${colourLabel(c)}: colorear ${c.thing.withArticle} de color ${colourLabel(c)} y escribir la palabra «${c.name}».`,
+      consigna: `Colorea ${c.thing.withArticle} de color ${colourLabel(c)} y después escribe la palabra ${c.name}.`,
     });
   }
   const frecuentes = theme("palabras-frecuentes");

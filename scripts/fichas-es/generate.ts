@@ -1,4 +1,4 @@
-// npm run fichas:es [-- <filter>] [--no-packs] [--no-previews]
+// npm run fichas:es [-- <filter>] [--no-packs] [--no-previews] [--packs=<slug,slug>]
 //
 // Renders the Spanish worksheet PDFs listed in lib/fichas-es.ts with Chromium
 // (Playwright), which shapes the cursive font properly. Writes, under
@@ -8,7 +8,8 @@
 //   paquetes/<slug>.pdf            the packs, one PDF with all their pages
 //
 // <filter> renders only worksheets whose slug contains it, or one of its
-// comma-separated parts (packs are skipped then). Re-run after changing a
+// comma-separated parts (packs are skipped then, unless listed with
+// --packs=, which renders only those packs). Re-run after changing a
 // template or the catalogue, and commit the files: the site serves them as
 // static assets. Fonts: Playwrite MX from scripts/fichas-es/fonts, Andika and
 // Noto Emoji shared with the French worksheets (scripts/fiches-fr/fonts).
@@ -26,7 +27,8 @@ const FONTS_SHARED = join(ROOT, "scripts", "fiches-fr", "fonts");
 
 const args = process.argv.slice(2);
 const filter = args.find((a) => !a.startsWith("--"));
-const withPacks = !filter && !args.includes("--no-packs");
+const onlyPacks = args.find((a) => a.startsWith("--packs="))?.slice(8).split(",");
+const withPacks = (!filter || !!onlyPacks) && !args.includes("--no-packs");
 const withPreviews = !args.includes("--no-previews");
 
 function fontFace(family: string, dir: string, file: string, weight = 400): string {
@@ -88,7 +90,8 @@ async function main() {
   if (withPacks) {
     const bySlug = new Map(fichas.map((f) => [f.slug, f]));
     let packTotal = 0;
-    for (const pack of fichaPacks) {
+    const packs = fichaPacks.filter((p) => !onlyPacks || onlyPacks.includes(p.slug));
+    for (const pack of packs) {
       const html = pack.fichas.map((slug) => {
         const f = bySlug.get(slug)!;
         return pageHtml(f, fichaBody(f));
@@ -98,7 +101,7 @@ async function main() {
       packTotal += kb(pdf);
       console.log(`  ${pack.slug}: ${pack.fichas.length} pages, ${kb(pdf)} KB`);
     }
-    console.log(`Packs: ${fichaPacks.length} PDFs, ${packTotal} KB`);
+    console.log(`Packs: ${packs.length} PDFs, ${packTotal} KB`);
   }
 
   await browser.close();

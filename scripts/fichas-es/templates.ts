@@ -11,6 +11,7 @@
 import { getSpanishLetter, type SpanishLetter, type SpanishWord } from "../../lib/letters-es";
 import {
   COLOURS,
+  colourLabel,
   FIRST_SYLLABLE_WORDS,
   FREQUENT_WORD_GROUPS,
   LOOK_ALIKES,
@@ -334,10 +335,10 @@ function color(f: Ficha): string {
   const c = COLOURS.find((x) => `color-${x.slug}` === f.slug)!;
   return `<div style="display:flex;align-items:center;gap:6mm">
       <div style="width:18mm;height:18mm;border-radius:50%;background:${c.hex};border:0.35mm solid #1f2a44"></div>
-      <div style="font-size:12mm;font-weight:700;color:${c.hex === "#FDD835" ? "#b89a00" : c.hex}">${esc(c.name)}</div>
+      <div style="font-size:12mm;font-weight:700;color:${c.hex === "#FDD835" ? "#b89a00" : c.hex}">${esc(c.name)}${c.alt ? `<span style="font-size:6mm;font-weight:400;color:#555"> (${esc(c.alt)})</span>` : ""}</div>
       <div class="cur-es" style="font-size:12mm;line-height:1.8">${esc(c.name)}</div></div>
     <svg width="${W}mm" height="140mm" viewBox="0 0 ${W} 140"><text x="${W / 2}" y="122" text-anchor="middle" font-family="emoji" font-size="128" fill="none" stroke="#1f2a44" stroke-width="0.5">${c.thing.emoji}</text></svg>
-    <p style="font-size:4.6mm;margin:0 0 1mm">${esc(c.thing.withArticle.charAt(0).toUpperCase() + c.thing.withArticle.slice(1))} ${c.thing.withArticle.startsWith("las ") ? "son" : "es"} de color ${esc(c.name)}. Escribe la palabra:</p>
+    <p style="font-size:4.6mm;margin:0 0 1mm">${esc(c.thing.withArticle.charAt(0).toUpperCase() + c.thing.withArticle.slice(1))} ${c.thing.withArticle.startsWith("las ") ? "son" : "es"} de color ${esc(colourLabel(c))}. Escribe la palabra:</p>
     ${cursiveRows([c.name], 3.2, 3)}`;
 }
 
