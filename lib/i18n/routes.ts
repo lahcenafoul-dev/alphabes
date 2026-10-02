@@ -53,6 +53,7 @@ export const FRENCH_PATHNAMES: ReadonlySet<AppPathname> = new Set<AppPathname>([
 export const SPANISH_PATHNAMES: ReadonlySet<AppPathname> = new Set<AppPathname>([
   "/",
   "/about",
+  "/activities",
   "/alphabet",
   "/alphabet/[letter]",
   "/alphabet/[letter]/worksheet",
@@ -61,9 +62,15 @@ export const SPANISH_PATHNAMES: ReadonlySet<AppPathname> = new Set<AppPathname>(
   "/dashboard",
   "/dashboard/[id]",
   "/flashcards",
+  "/games",
+  "/games/[slug]",
+  "/kindergarten",
+  "/kindergarten/[topic]",
   "/login",
   "/phonics",
   "/phonics/[skill]",
+  "/preschool",
+  "/preschool/[topic]",
   "/pricing",
   "/privacy-policy",
   "/register",
@@ -105,32 +112,33 @@ export type RouteParams = Record<string, string>;
 // Pages whose params are translated by language: the games and the
 // school-level topics. Each group lists one page's slug in every language it
 // exists in; a slug in no group, or a group without the target language, has
-// no twin there (French-only topics such as "graphisme"). Checked against
-// lib/games-fr.ts and lib/ecole-fr.ts by tests/i18n.
+// no twin there (French-only topics such as "graphisme", the Spanish-only
+// game "aplaude-las-silabas"). Checked against lib/games-fr.ts,
+// lib/ecole-fr.ts, lib/juegos-es.ts and lib/escuela-es.ts by tests/i18n.
 export type ParamGroup = Partial<Record<Locale, string>>;
 export const TRANSLATED_PARAMS: Partial<Record<AppPathname, { key: string; groups: ParamGroup[] }>> = {
   "/games/[slug]": {
     key: "slug",
     groups: [
-      { en: "find-the-letter", fr: "trouve-la-lettre" },
-      { en: "match-letter-picture", fr: "lettre-et-image" },
-      { en: "beginning-sound", fr: "premier-son" },
-      { en: "letter-tracing", fr: "trace-la-lettre" },
-      { en: "alphabet-quiz", fr: "quiz-alphabet" },
+      { en: "find-the-letter", fr: "trouve-la-lettre", es: "encuentra-la-letra" },
+      { en: "match-letter-picture", fr: "lettre-et-image", es: "letra-y-dibujo" },
+      { en: "beginning-sound", fr: "premier-son", es: "primera-silaba" },
+      { en: "letter-tracing", fr: "trace-la-lettre", es: "traza-la-letra" },
+      { en: "alphabet-quiz", fr: "quiz-alphabet", es: "quiz-del-abecedario" },
     ],
   },
   "/preschool/[topic]": {
     key: "topic",
     groups: [
-      { en: "letter-tracing", fr: "tracer-les-lettres" },
-      { en: "coloring", fr: "coloriage" },
+      { en: "letter-tracing", fr: "tracer-les-lettres", es: "traza-las-letras" },
+      { en: "coloring", fr: "coloriage", es: "colorear" },
     ],
   },
   "/kindergarten/[topic]": {
     key: "topic",
     groups: [
-      { en: "sight-words", fr: "mots-outils" },
-      { en: "handwriting", fr: "ecriture-cursive" },
+      { en: "sight-words", fr: "mots-outils", es: "palabras-frecuentes" },
+      { en: "handwriting", fr: "ecriture-cursive", es: "letra-cursiva" },
     ],
   },
 };

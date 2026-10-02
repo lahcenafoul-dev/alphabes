@@ -5,6 +5,7 @@ import type { AppPathname } from "@/i18n/routing";
 import { alternatesFor, isAvailable } from "@/lib/i18n/routes";
 import { FicheCard } from "@/components/fiches/FicheParts";
 import { getFicha } from "@/lib/fichas-es";
+import { spanishGames } from "@/lib/juegos-es";
 
 const title = "Aprender el abecedario: fichas y juegos gratis | AlphaBes";
 const description =
@@ -251,6 +252,20 @@ export default function HomeEs() {
             palabra, trazar letras y aplaudir las sílabas: juegos cortos, con instrucciones que se
             pueden escuchar.
           </p>
+          <div className="mt-8 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4">
+            {spanishGames.map((g) => (
+              <Link
+                key={g.slug}
+                href={{ pathname: "/games/[slug]", params: { slug: g.slug } }}
+                className="rounded-block bg-paper p-5 shadow-block hover:shadow-blockHover transition font-display font-bold text-center"
+              >
+                <span className="block text-3xl" aria-hidden="true">
+                  {g.emoji}
+                </span>
+                {g.title}
+              </Link>
+            ))}
+          </div>
           {has("/games") && (
             <Link
               href="/games"

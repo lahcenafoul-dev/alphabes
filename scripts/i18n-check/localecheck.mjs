@@ -101,8 +101,22 @@ const RULES_ES = [
   ["/worksheets", { headers: { cookie: "NEXT_LOCALE=es" } }, 307, "/es/fichas", "worksheet index twin in Spanish"],
   ["/fr/fiches/packs", { headers: { cookie: "NEXT_LOCALE=es" } }, 307, "/es/fichas/paquetes", "pack index twin in Spanish"],
   ["/es/fichas/silabas-m", { headers: { cookie: "NEXT_LOCALE=en" } }, 200, null, "Spanish-only worksheet, English chosen: stay"],
-  // Spanish content pages that come in later phases: never English under /es.
-  ["/es/juegos", {}, 404, null, "Spanish games not written yet"],
+  // Spanish phase 6: games, school levels and activities.
+  ["/es/juegos/find-the-letter", {}, 404, null, "English game slug under /es/juegos"],
+  ["/es/juegos/trouve-la-lettre", {}, 404, null, "French game slug under /es/juegos"],
+  ["/games/aplaude-las-silabas", {}, 404, null, "Spanish-only game under an English URL"],
+  ["/fr/jeux/aplaude-las-silabas", {}, 404, null, "Spanish-only game under /fr/jeux"],
+  ["/es/preescolar/graphisme", {}, 404, null, "French-only topic under /es/preescolar"],
+  ["/es/kinder/sight-words", {}, 404, null, "English topic under /es/kinder"],
+  ["/preschool/trazos", {}, 404, null, "Spanish-only topic under an English URL"],
+  ["/games/find-the-letter", { headers: { cookie: "NEXT_LOCALE=es" } }, 307, "/es/juegos/encuentra-la-letra", "game twin with a Spanish slug"],
+  ["/fr/jeux/premier-son", { headers: { cookie: "NEXT_LOCALE=es" } }, 307, "/es/juegos/primera-silaba", "French game, Spanish chosen"],
+  ["/fr/maternelle/coloriage", { headers: { cookie: "NEXT_LOCALE=es" } }, 307, "/es/preescolar/colorear", "topic twin in Spanish"],
+  ["/kindergarten/handwriting", { headers: { cookie: "NEXT_LOCALE=es" } }, 307, "/es/kinder/letra-cursiva", "kindergarten twin in Spanish"],
+  ["/activities", { headers: { cookie: "NEXT_LOCALE=es" } }, 307, "/es/actividades", "activities twin in Spanish"],
+  ["/es/juegos/aplaude-las-silabas", { headers: { cookie: "NEXT_LOCALE=fr" } }, 200, null, "Spanish-only game, French chosen: stay"],
+  ["/fr/grande-section/syllabes", { headers: { cookie: "NEXT_LOCALE=es" } }, 200, null, "French-only topic, Spanish chosen: stay"],
+  // Stories (phase 5): never another language's story under /es.
   ["/es/cuentos/the-little-apple", {}, 404, null, "English story under /es/cuentos"],
   ["/es/cuentos/la-petite-pomme", {}, 404, null, "French story under /es/cuentos"],
   ["/stories/la-manzanita-roja", {}, 404, null, "Spanish story under an English URL"],
@@ -159,6 +173,12 @@ const LANGS = {
       "/es/fichas/color-rojo", "/es/fichas/paquetes/paquete-abecedario-completo", "/es/fichas/paquetes/paquete-letra-enie",
       // Spanish phase 5: stories (from the database).
       "/es/cuentos", ...esStories.map((s) => `/es/cuentos/${s}`),
+      // Spanish phase 6: games, school levels and activities.
+      "/es/juegos", "/es/juegos/encuentra-la-letra", "/es/juegos/letra-y-dibujo", "/es/juegos/primera-silaba",
+      "/es/juegos/traza-la-letra", "/es/juegos/quiz-del-abecedario", "/es/juegos/aplaude-las-silabas",
+      "/es/preescolar", "/es/preescolar/trazos", "/es/preescolar/traza-las-letras", "/es/preescolar/colorear",
+      "/es/kinder", "/es/kinder/silabas", "/es/kinder/palabras-frecuentes", "/es/kinder/letra-cursiva",
+      "/es/actividades",
     ],
     rules: RULES_ES,
   },

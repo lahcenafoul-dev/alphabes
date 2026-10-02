@@ -4,12 +4,14 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { useApiErrorMessage } from "@/lib/i18n/use-api-error";
+import { toDbLocale } from "@/lib/i18n/db-locale";
+import type { Locale } from "@/i18n/routing";
 
 export default function AddChildForm() {
   const router = useRouter();
   const t = useTranslations("ChildForm");
   // A new profile learns in the language of the page it was created on.
-  const defaultLanguage = useLocale() === "fr" ? "FR" : "EN";
+  const defaultLanguage = toDbLocale(useLocale() as Locale);
   const apiError = useApiErrorMessage();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -100,6 +102,7 @@ export default function AddChildForm() {
         >
           <option value="FR">{t("langFR")}</option>
           <option value="EN">{t("langEN")}</option>
+          <option value="ES">{t("langES")}</option>
         </select>
         <p id="language-hint" className="mt-1 text-xs text-chalkboard/60">
           {t("languageHint")}

@@ -8,7 +8,7 @@ const schema = z.object({
   firstName: z.string().min(1).max(50),
   ageBand: z.enum(["3-4", "5-6", "7-8"]),
   // Language of the child's activities; older clients don't send it.
-  language: z.enum(["EN", "FR"]).optional(),
+  language: z.enum(["EN", "FR", "ES"]).optional(),
 });
 
 export async function POST(req: NextRequest) {

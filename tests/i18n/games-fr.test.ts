@@ -134,12 +134,14 @@ describe("translated params in routes", () => {
       languages: {
         en: "https://alphabes.com/games/find-the-letter",
         fr: "https://alphabes.com/fr/jeux/trouve-la-lettre",
+        es: "https://alphabes.com/es/juegos/encuentra-la-letra",
         "x-default": "https://alphabes.com/games/find-the-letter",
       },
     });
     expect(alternatesFor("fr", "/kindergarten/[topic]", { topic: "mots-outils" }).languages).toEqual({
       en: "https://alphabes.com/kindergarten/sight-words",
       fr: "https://alphabes.com/fr/grande-section/mots-outils",
+      es: "https://alphabes.com/es/kinder/palabras-frecuentes",
       "x-default": "https://alphabes.com/kindergarten/sight-words",
     });
   });

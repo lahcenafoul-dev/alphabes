@@ -244,10 +244,20 @@ describe("Spanish routing", () => {
     expect(redirect(await middleware(request("/es/precios", "NEXT_LOCALE=en")))).toBe("/pricing");
   });
 
-  it("stays on pages that have no Spanish twin yet", async () => {
-    for (const path of ["/blog", "/games", "/fr/jeux"]) {
+  it("stays on pages that have no Spanish twin", async () => {
+    for (const path of ["/blog", "/fr/maternelle/graphisme", "/fr/grande-section/syllabes"]) {
       expect(redirect(await middleware(request(path, "NEXT_LOCALE=es"))), path).toBeNull();
     }
+  });
+
+  it("redirects games and school pages to their Spanish twins", async () => {
+    expect(redirect(await middleware(request("/games", "NEXT_LOCALE=es")))).toBe("/es/juegos");
+    expect(redirect(await middleware(request("/fr/jeux/premier-son", "NEXT_LOCALE=es")))).toBe("/es/juegos/primera-silaba");
+    expect(redirect(await middleware(request("/kindergarten/sight-words", "NEXT_LOCALE=es")))).toBe("/es/kinder/palabras-frecuentes");
+    expect(redirect(await middleware(request("/fr/activites", "NEXT_LOCALE=es")))).toBe("/es/actividades");
+    // Spanish-only pages stay put whatever the language chosen.
+    expect(redirect(await middleware(request("/es/juegos/aplaude-las-silabas", "NEXT_LOCALE=en")))).toBeNull();
+    expect(redirect(await middleware(request("/es/preescolar/trazos", "NEXT_LOCALE=fr")))).toBeNull();
   });
 
   it("sends signed-out visitors to the Spanish login page", async () => {

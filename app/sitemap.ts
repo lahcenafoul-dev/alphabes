@@ -9,6 +9,8 @@ import { frenchSounds } from "@/lib/sons-fr";
 import { FICHE_CATEGORIES, fichePacks, fiches } from "@/lib/fiches-fr";
 import { frenchGames } from "@/lib/games-fr";
 import { schoolTopics } from "@/lib/ecole-fr";
+import { spanishGames } from "@/lib/juegos-es";
+import { schoolTopicsEs } from "@/lib/escuela-es";
 import { worksheetCategories } from "@/lib/worksheet-categories";
 import { WORKSHEET_TYPES } from "@/lib/worksheet-types";
 import { worksheets } from "@/lib/worksheets-data";
@@ -201,18 +203,21 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...kindergartenRoutes,
   ];
 
-  // The French games. Their English twins aren't in the sitemap, but the
-  // pages exist, so they are given as alternates.
-  const frenchGameEntries: MetadataRoute.Sitemap = frenchGames.map((g) => {
-    const { canonical, languages } = alternatesFor("fr", "/games/[slug]", { slug: g.slug });
-    return {
-      url: canonical as string,
-      lastModified: new Date(),
-      changeFrequency: "monthly" as const,
-      priority: 0.6,
-      ...(languages && { alternates: { languages: languages as Record<string, string> } }),
-    };
-  });
+  // The French and Spanish games. Their English twins aren't in the sitemap,
+  // but the pages exist, so they are given as alternates.
+  const gameEntries = (locale: "fr" | "es", slugs: string[]): MetadataRoute.Sitemap =>
+    slugs.map((slug) => {
+      const { canonical, languages } = alternatesFor(locale, "/games/[slug]", { slug });
+      return {
+        url: canonical as string,
+        lastModified: new Date(),
+        changeFrequency: "monthly" as const,
+        priority: 0.6,
+        ...(languages && { alternates: { languages: languages as Record<string, string> } }),
+      };
+    });
+  const frenchGameEntries = gameEntries("fr", frenchGames.map((g) => g.slug));
+  const spanishGameEntries = gameEntries("es", spanishGames.map((g) => g.slug));
 
   // Pages with no English twin: the letters with accents, the accents page,
   // the French sound pages, the French worksheets and packs, and the school
@@ -253,7 +258,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ];
 
   // Spanish pages with no twin: the ñ, the tilde page, the syllable pages,
-  // the Spanish worksheets and packs.
+  // the Spanish worksheets and packs, and the school topics written only in
+  // Spanish.
   const spanishOnlyEntries: MetadataRoute.Sitemap = [
     ...["enie", TILDE_SLUG].map((letter) => ({
       url: absoluteUrl("es", "/alphabet/[letter]", { letter }),
@@ -279,11 +285,20 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "monthly" as const,
       priority: 0.5,
     })),
+    ...schoolTopicsEs
+      .filter((t) => !t.en)
+      .map((t) => ({
+        url: absoluteUrl("es", t.level === "preescolar" ? "/preschool/[topic]" : "/kindergarten/[topic]", { topic: t.slug }),
+        lastModified: new Date(),
+        changeFrequency: "monthly" as const,
+        priority: 0.6,
+      })),
   ];
 
   return [
     ...withTwins(englishEntries),
     ...frenchGameEntries,
+    ...spanishGameEntries,
     ...frenchOnlyEntries,
     ...spanishOnlyEntries,
     ...(await getStoryRoutes()),

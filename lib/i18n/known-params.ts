@@ -13,6 +13,8 @@ import { getSchoolTopic } from "@/lib/ecole-fr";
 import { getFiche, getFicheCategory, getFichePack } from "@/lib/fiches-fr";
 import { getGame } from "@/lib/games-data";
 import { getFrenchGame } from "@/lib/games-fr";
+import { getSpanishGame } from "@/lib/juegos-es";
+import { getSchoolTopicEs } from "@/lib/escuela-es";
 import { getKindergartenTopic } from "@/lib/kindergarten-data";
 import { getLetterContent } from "@/lib/letters-data";
 import { ACCENTS_SLUG, frenchLetterParams } from "@/lib/letters-fr";
@@ -69,7 +71,10 @@ const SPANISH_LETTERS = new Set(spanishLetterParams());
 const SPANISH_VALIDATORS: Partial<Record<AppPathname, (params: RouteParams) => boolean>> = {
   "/alphabet/[letter]": ({ letter }) => SPANISH_LETTERS.has(letter) || letter === TILDE_SLUG,
   "/alphabet/[letter]/worksheet": ({ letter }) => SPANISH_LETTERS.has(letter),
+  "/games/[slug]": ({ slug }) => !!getSpanishGame(slug),
+  "/kindergarten/[topic]": ({ topic }) => !!getSchoolTopicEs("kinder", topic),
   "/phonics/[skill]": ({ skill }) => !!getSpanishSyllablePage(skill),
+  "/preschool/[topic]": ({ topic }) => !!getSchoolTopicEs("preescolar", topic),
   "/worksheets/[category]": ({ category }) => !!(getFichaCategory(category) || getSpanishFicha(category)),
   "/worksheets/bundles/[bundleSlug]": ({ bundleSlug }) => !!getFichaPack(bundleSlug),
 };
