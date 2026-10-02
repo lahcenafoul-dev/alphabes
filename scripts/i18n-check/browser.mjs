@@ -489,6 +489,56 @@ console.log("Spanish syllables (Spanish phase 3)");
   }
 }
 
+console.log("Spanish worksheets (Spanish phase 4)");
+{
+  const { context, page, errors } = await newPage();
+  await page.goto(base + "/worksheets");
+  await page.waitForLoadState("networkidle");
+  check((await switcherHref(page, "es")) === "/es/fichas", "ES link on /worksheets points to /es/fichas");
+  await page.goto(base + "/es/fichas/silabas-que-qui");
+  await page.waitForLoadState("networkidle");
+  check((await switcherHref(page, "fr")) === "/fr/fiches" && (await switcherHref(page, "en")) === "/worksheets", "FR/EN links on a Spanish worksheet go to the worksheet indexes");
+  check(await page.getByRole("img", { name: /Vista previa de la ficha: Leer las sílabas que, qui/ }).isVisible(), "worksheet preview with a Spanish alt text");
+  const [download] = await Promise.all([page.waitForEvent("download"), page.getByRole("link", { name: /Descargar el PDF/ }).click()]);
+  const pdfPath = `${shots}/${download.suggestedFilename()}`;
+  await download.saveAs(pdfPath);
+  const pdf = readFileSync(pdfPath, "latin1");
+  check(download.suggestedFilename() === "alphabes-silabas-que-qui.pdf", `PDF file name (${download.suggestedFilename()})`);
+  check(pdf.startsWith("%PDF") && pdf.length > 10_000, `a real Spanish PDF was downloaded (${pdf.length} bytes)`);
+  await page.screenshot({ path: `${shots}/es-ficha-silabas.png`, fullPage: true });
+
+  // The syllable page links its worksheets, and the worksheet links back.
+  await page.goto(base + "/es/silabas/ca-co-cu-que-qui");
+  await page.waitForLoadState("networkidle");
+  const sheets = page.getByRole("region", { name: "Las fichas para imprimir" });
+  check((await sheets.getByRole("link").count()) === 2, "the ca/que syllable page links its two worksheets");
+  await sheets.getByRole("link", { name: /que, qui/ }).click();
+  await page.waitForURL("**/es/fichas/silabas-que-qui");
+  check(await page.getByRole("link", { name: /para escuchar/ }).first().isVisible(), "the worksheet links back to its syllable page");
+
+  // The tracing page offers its two PDFs.
+  await page.goto(base + "/es/abecedario/enie/ficha");
+  await page.waitForLoadState("networkidle");
+  const [trace] = await Promise.all([page.waitForEvent("download"), page.getByRole("link", { name: "⬇️ Ficha de trazo (PDF)" }).click()]);
+  check(trace.suggestedFilename() === "ficha-letra-enie.pdf", `tracing PDF for ñ (${trace.suggestedFilename()})`);
+  check(errors.length === 0, `no console/page errors${errors.length ? ": " + errors.slice(0, 3).join(" | ") : ""}`);
+  await context.close();
+
+  // Layout at 390px.
+  {
+    const { context, page, errors } = await newPage({ width: 390, height: 844 });
+    for (const p of ["/es/fichas", "/es/fichas/silabas", "/es/fichas/letra-a-cursiva", "/es/fichas/paquetes", "/es/fichas/paquetes/paquete-letra-a", "/es/abecedario/b"]) {
+      await page.goto(base + p);
+      await page.waitForLoadState("networkidle");
+      const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+      check(overflow <= 0, `${p}: no horizontal scroll (overflow ${overflow}px)`);
+      await page.screenshot({ path: `${shots}/m${p.replaceAll("/", "_")}.png`, fullPage: true });
+    }
+    check(errors.length === 0, `no console/page errors${errors.length ? ": " + errors.slice(0, 3).join(" | ") : ""}`);
+    await context.close();
+  }
+}
+
 console.log("Sounds (phase 3)");
 {
   const { context, page, errors } = await newPage();

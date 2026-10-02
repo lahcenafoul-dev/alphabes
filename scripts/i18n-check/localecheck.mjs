@@ -87,6 +87,15 @@ const RULES_ES = [
   ["/phonics", { headers: { cookie: "NEXT_LOCALE=es" } }, 307, "/es/silabas", "phonics index twin in Spanish"],
   ["/fr/sons", { headers: { cookie: "NEXT_LOCALE=es" } }, 307, "/es/silabas", "French sounds index, Spanish chosen"],
   ["/es/silabas/ch", { headers: { cookie: "NEXT_LOCALE=fr" } }, 200, null, "Spanish-only page, French chosen: stay"],
+  // Spanish phase 4: worksheets.
+  ["/es/fichas/lettre-a-cursive", {}, 404, null, "French worksheet under /es/fichas"],
+  ["/es/fichas/letter-a-tracing", {}, 404, null, "English worksheet under /es/fichas"],
+  ["/fr/fiches/letra-a-cursiva", {}, 404, null, "Spanish worksheet under /fr/fiches"],
+  ["/worksheets/silabas-m", {}, 404, null, "Spanish worksheet under an English URL"],
+  ["/es/fichas/paquetes/pack-lettre-a", {}, 404, null, "French pack under /es/fichas/paquetes"],
+  ["/worksheets", { headers: { cookie: "NEXT_LOCALE=es" } }, 307, "/es/fichas", "worksheet index twin in Spanish"],
+  ["/fr/fiches/packs", { headers: { cookie: "NEXT_LOCALE=es" } }, 307, "/es/fichas/paquetes", "pack index twin in Spanish"],
+  ["/es/fichas/silabas-m", { headers: { cookie: "NEXT_LOCALE=en" } }, 200, null, "Spanish-only worksheet, English chosen: stay"],
   // Spanish content pages that come in later phases: never English under /es.
   ["/es/juegos", {}, 404, null, "Spanish games not written yet"],
   ["/es/cuentos/the-little-apple", {}, 404, null, "English story under /es/cuentos"],
@@ -132,6 +141,11 @@ const LANGS = {
       // Spanish phase 3: the syllables (lib/silabas-es.ts).
       "/es/silabas",
       ...esSyllables.map((s) => `/es/silabas/${s}`),
+      // Spanish phase 4: worksheets (a sample; the tests check every catalogue entry).
+      "/es/fichas", "/es/fichas/paquetes", "/es/fichas/letra-cursiva", "/es/fichas/numeros", "/es/fichas/silabas",
+      "/es/fichas/silabas-trabadas", "/es/fichas/letra-a-cursiva", "/es/fichas/letra-enie-trazo", "/es/fichas/letra-m-silaba",
+      "/es/fichas/silabas-m", "/es/fichas/silabas-que-qui", "/es/fichas/trabadas-tr", "/es/fichas/numero-15",
+      "/es/fichas/color-rojo", "/es/fichas/paquetes/paquete-abecedario-completo", "/es/fichas/paquetes/paquete-letra-enie",
     ],
     rules: RULES_ES,
   },
