@@ -941,7 +941,9 @@ console.log("Portuguese worksheets (Portuguese phase 4)");
   // The letter page lists its worksheets; the home page shows popular ones.
   await page.goto(base + "/pt/alfabeto/b");
   await page.waitForLoadState("networkidle");
-  check((await page.getByRole("region", { name: "As atividades para imprimir" }).getByRole("link").count()) === 7, "letter B lists its seven worksheets");
+  const letterSheets = page.getByRole("region", { name: "As atividades para imprimir" });
+  check((await letterSheets.locator("li").count()) === 7, "letter B lists its seven worksheets");
+  check((await letterSheets.getByRole("link", { name: /num só PDF/ }).getAttribute("href")) === "/pt/atividades/pacotes/pacote-letra-b", "letter B links its pack");
   await page.goto(base + "/pt");
   await page.waitForLoadState("networkidle");
   check(await page.getByRole("heading", { name: "Atividades populares" }).isVisible(), "home page shows popular worksheets");

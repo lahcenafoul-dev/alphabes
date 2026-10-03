@@ -1,6 +1,6 @@
 # Portuguese version of AlphaBes: plan and status
 
-Last updated: 2026-10-03 (phases 0–2 pushed; phase 3 done, not pushed). Read this first when continuing the Portuguese work, together with CLAUDE.md, [french-plan.md](french-plan.md) and [spanish-plan.md](spanish-plan.md): the Portuguese work reuses everything built for French and Spanish.
+Last updated: 2026-10-03 (phases 0–3 pushed; phase 4 done, not pushed). Read this first when continuing the Portuguese work, together with CLAUDE.md, [french-plan.md](french-plan.md) and [spanish-plan.md](spanish-plan.md): the Portuguese work reuses everything built for French and Spanish.
 
 ## Goal
 
@@ -177,6 +177,14 @@ One migration written by hand (no shadow database): `ALTER TYPE "Locale" ADD VAL
 - **Links:** letter pages link to their syllable page (`SYLLABLE_PAGE` in `letter-pt.tsx`; k, w, y have none); the home page's syllable cards link to vogais, familias-silabicas, ch and til. `ch` exists in Spanish and Portuguese but they are not twins (the switcher goes to the other index).
 - The syllable pages get their printable sheets in phase 4.
 
+## Phase 4 notes
+
+- **Catalogue** (`lib/atividades-pt.ts`): seven sheets per letter (26 + Ç): `letra-<l>-bastao`, `-forma`, `-cursiva`, `-reconhecer` (the four kinds of letter in one grid), `-silaba` (22 letters: none for Ç, K, Q, W, Y), `-colorir`, `-palavras`; themes `numero-0`…`numero-20` (on quadriculado, “quatorze”), `forma-<shape>` (8), `cor-<colour>` (10: marrom, cinza…), `palavras-frequentes-1`…`5`; syllables: 19 `familia-*` (including ca-co-cu, ce-ci, c-cedilha, ga-go-gu, ge-gi), 7 `digrafo-*`, 3 `nasal-*`, 15 `encontro-*` / `final-r|s|l`. Words on syllable sheets are split the Brazilian way: rr and ss are divided (car-ro, pás-sa-ro); a test checks it. Each syllable sheet lists the syllable pages that show it (`SyllableSheet.pages`), and every syllable page shows its sheets except vogais, encontros-vocalicos, contar-silabas, h-inicial and palavras-frequentes.
+- **Generator:** `scripts/atividades-pt/generate.ts` + `templates.ts`, `npm run atividades:pt` (or `-- familia-b,letra-a-` for a subset, `--packs=pacote-digrafos` for some packs). Font: `scripts/atividades-pt/fonts/PlaywriteBR-Regular.ttf`, a static weight-400 instance of the variable font with overlaps removed (`fonttools varLib.instancer … wght=400 --remove-overlaps`), licence next to it; Andika and Noto Emoji from `scripts/fiches-fr/fonts/`. The shared `fill`/`layoutFills` know a third cursive font, `cur-pt`; no French or Spanish PDF was regenerated. Rendering everything took about 2 minutes here (2026-10-03).
+- **Rulings:** caligrafia = top line 2.3 x-heights above the baseline, dashed middle line at 1, baseline, bottom line 1.3 below (Playwrite BR's loops and tails), 5 x-heights per row. Print sheets (bastão, forma) use the four-line print guide sized to Andika.
+- **Files:** `public/atividades-pdf/<category>/<slug>.pdf`, `previas/<slug>.jpg`, `pacotes/<slug>.pdf`. Some sheet slugs are the same words as Spanish ones (`letra-a-cursiva`, `numero-3`): harmless, they live under `/pt/atividades` and `/es/fichas` and are never paired.
+- **Links:** letter pages list their seven sheets and their pack; the tracing page downloads the bastão, forma and cursive PDFs; syllable pages show their sheets and the sheets link back; the home page shows “Atividades populares”.
+
 ## Phases
 
 | Phase | Content | Status |
@@ -185,7 +193,7 @@ One migration written by hand (no shadow database): `ALTER TYPE "Locale" ADD VAL
 | 1 | Four-language foundation, header switcher (P12), `messages/pt.json`, Portuguese UI pages (home, quem somos, preços, contato, entrar, cadastro, minha conta, legal LGPD placeholders, cookies), Portuguese 404, API errors, `PT` migration on `dev`. | **Done** (2026-10-03), not pushed. English, French and Spanish identical to the baseline (1,256 routes) apart from hreflang: the 7 twins of the Portuguese pages in each language (21 pages) each gained one `hreflang="pt"` line, nothing else. Sitemap: 1,250 URLs, 7 Portuguese ones with four-way alternates. `localecheck pt`, `fr` and `es` pass, 411 browser checks, 205 unit tests, build 2,079 pages (was 1,515). See "Phase 1 notes". |
 | 2 | Alfabeto: `lib/letters-pt.ts` (26 + Ç + acentos), chart, letter pages with the 4 tipos de letra, cartões, speech (P10), tracing canvas bastão/forma/cursiva, Playwrite BR licence check. | **Done** (2026-10-03), not pushed. English, French and Spanish identical to the baseline apart from hreflang: since phase 1, 86 pages gained one `hreflang="pt"` line (the alphabet, the 26 letters and the cards in the three languages, and the sample A tracing page in English and French), nothing removed. Sitemap: 1,280 URLs, 37 Portuguese. `localecheck pt`, `fr`, `es` pass, 440 browser checks, 221 unit tests, build 2,082 pages. See "Phase 2 notes". |
 | 3 | Sílabas: ~25 pages, builders, clapping, picture hunt. | **Done** (2026-10-03), not pushed. 24 pages (see "Phase 3 notes"). English, French and Spanish identical to the baseline apart from hreflang: since phase 2 only `/phonics`, `/fr/sons` and `/es/silabas` gained one `hreflang="pt"` line. Sitemap: 1,305 URLs, 62 Portuguese. `localecheck pt`, `fr`, `es` pass, 466 browser checks (exercises played with a fake pt-BR voice), 240 unit tests, build 2,098 pages (the first build attempt failed fetching Google Fonts in `next/font`, as on 2026-10-02; the retry passed). |
-| 4 | Atividades para imprimir: PDFs and pacotes (P6). | To do |
+| 4 | Atividades para imprimir: PDFs and pacotes (P6). | **Done** (2026-10-03), not pushed. 272 sheets and 43 packs (587 files, 40 MB), see "Phase 4 notes". English, French and Spanish identical to the baseline apart from hreflang: since phase 3 only `/worksheets`, `/worksheets/bundles`, `/fr/fiches`, `/fr/fiches/packs`, `/es/fichas`, `/es/fichas/paquetes` gained one `hreflang="pt"` line. Sitemap: 1,637 URLs, 394 Portuguese. `localecheck pt`, `fr`, `es` pass, 486 browser checks (a Portuguese PDF downloaded and checked), 260 unit tests, build 2,022 pages. |
 | 5 | Histórias: 8 stories, seed `dev`, Portuguese voice reader. | To do |
 | 6 | Jogos (P9), educação infantil, primeiro ano, brincadeiras, "Português" in the child language select, games on the home page. | To do |
 | 7 | Launch (below). | To do |
