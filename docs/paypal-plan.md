@@ -1,6 +1,6 @@
 # PayPal Subscriptions for AlphaBes: plan and status
 
-Last updated: 2026-10-03 (**plan approved by the owner** with the changes in "Decisions"; phases 1–2 done, waiting for the OK to push and start phase 3). Read this first when continuing the billing work, together with CLAUDE.md. Any page work also follows the language rules in [french-plan.md](french-plan.md), [spanish-plan.md](spanish-plan.md) and [portuguese-plan.md](portuguese-plan.md).
+Last updated: 2026-10-03 (**plan approved by the owner** with the changes in "Decisions"; phases 1–2 done and pushed; sandbox plans created; phase 3 in progress). Read this first when continuing the billing work, together with CLAUDE.md. Any page work also follows the language rules in [french-plan.md](french-plan.md), [spanish-plan.md](spanish-plan.md) and [portuguese-plan.md](portuguese-plan.md).
 
 ## Goal
 
@@ -150,9 +150,9 @@ Each phase ends with `npx tsc --noEmit`, `npm run lint`, `npx vitest run`, `npm 
 
 - **Settings** (`.env` locally, Cloudflare in production): `PAYPAL_MODE` (`sandbox`|`live`, anything else = sandbox), `PAYPAL_CLIENT_ID`, `PAYPAL_CLIENT_SECRET`, `PAYPAL_WEBHOOK_ID`, `PAYPAL_PLAN_MONTHLY`, `PAYPAL_PLAN_YEARLY`, and in sandbox only `PAYPAL_PLAN_TEST` (the $1 daily plan; ignored in live mode).
 - **Owner's sandbox setup:**
-  1. `node --env-file=.env scripts/paypal/setup-plans.mjs`: creates the product and the three sandbox plans and writes the three plan variables into `.env` (not printed). Stops if they're already set (`--force` to make a new set).
-  2. Start a tunnel to `npm run dev` (`cloudflared tunnel --url http://localhost:3000`, cloudflared is not installed yet: `winget install --id Cloudflare.cloudflared`), then `node --env-file=.env scripts/paypal/setup-webhook.mjs https://<tunnel>/api/paypal/webhook`. The first run creates the webhook and writes `PAYPAL_WEBHOOK_ID`; later runs (new tunnel address) move the same webhook to the new URL.
-  3. Restart `npm run dev` so it reads the new `.env` values.
+  1. `node --env-file=.env scripts/paypal/setup-plans.mjs`: creates the product and the three sandbox plans and writes the three plan variables into `.env` (not printed). Stops if they're already set (`--force` to make a new set). **Done 2026-10-03** (run by me at the owner's request, nothing printed): the three IDs are in `.env`; PayPal shows *AlphaBes Pro Monthly* 7.99 USD/month, *Yearly* 59.00 USD/year, *Daily (sandbox test)* 1.00 USD/day, all ACTIVE, suspended after 2 failed payments. A create-subscription check through `lib/paypal` in each language (en-US, fr-FR, es-MX, pt-BR) returned `APPROVAL_PENDING` with a sandbox approve link and our `custom_id`; those 4 unapproved subscriptions simply expire.
+  2. (Phase 7.) Start a tunnel to `npm run dev` (`cloudflared tunnel --url http://localhost:3000`, cloudflared is not installed yet: `winget install --id Cloudflare.cloudflared`), then `node --env-file=.env scripts/paypal/setup-webhook.mjs https://<tunnel>/api/paypal/webhook`. The first run creates the webhook and writes `PAYPAL_WEBHOOK_ID`; later runs (new tunnel address) move the same webhook to the new URL.
+  3. (Phase 7.) Restart `npm run dev` so it reads the new `.env` values.
   Live mode (phase 8): same scripts with the live values and `--live`, run by the owner in their own terminal; they print the IDs for Cloudflare.
 - **Who can check out:** while `PAYPAL_MODE=sandbox`, only `ADMIN` accounts (others go back to pricing with `?billing=soon`, shown in phase 3). The daily test plan (`plan=test`) is admin-only and sandbox-only.
 - **Linking:** a subscription carries the parent's `User.id` as `custom_id`; the subscribe route stores nothing. A subscription is written to the database only once PayPal reports it active (approved and paid), by the webhook or by the return to the dashboard (phase 3), whichever comes first.
