@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+import { unstable_cache } from "next/cache";
 import { getAllLetterSlugs } from "@/lib/letters-data";
 import { ACCENTS_SLUG, frenchLetters, isAccentLetter } from "@/lib/letters-fr";
 import { TILDE_SLUG } from "@/lib/letters-es";
@@ -35,18 +36,31 @@ import {
 
 const baseUrl = SITE_URL;
 
-// Stories live in the database, so build the sitemap per request: new
-// stories appear without a rebuild and the build never needs the database.
+// Stories live in the database, so the sitemap is built per request (the
+// build never needs the database), but the story list is cached for an hour
+// (R2 incremental cache on Workers): Googlebot gets a fast answer that
+// doesn't wait for the database, and a new story appears within the hour.
 export const dynamic = "force-dynamic";
+
+const SITEMAP_REVALIDATE_SECONDS = 3600;
+
+// Throws when the database is unreachable, so a failure is never cached.
+// Dates come back from the cache as strings.
+const getCachedStories = unstable_cache(
+  async () =>
+    getPrisma().story.findMany({
+      select: { slug: true, updatedAt: true, locale: true, translationGroup: true },
+      orderBy: [{ locale: "asc" }, { order: "asc" }],
+    }),
+  ["sitemap-stories"],
+  { revalidate: SITEMAP_REVALIDATE_SECONDS },
+);
 
 // Each story under its own language's URL; stories with twins in other
 // languages (same translationGroup) list each other as alternates.
 async function getStoryRoutes(): Promise<MetadataRoute.Sitemap> {
   try {
-    const stories = await getPrisma().story.findMany({
-      select: { slug: true, updatedAt: true, locale: true, translationGroup: true },
-      orderBy: [{ locale: "asc" }, { order: "asc" }],
-    });
+    const stories = await getCachedStories();
     const urlOf = (s: (typeof stories)[number]) => absoluteUrl(fromDbLocale(s.locale), "/stories/[slug]", { slug: s.slug });
     return stories.map((s) => {
       const group = s.translationGroup ? stories.filter((o) => o.translationGroup === s.translationGroup) : [s];
@@ -58,7 +72,7 @@ async function getStoryRoutes(): Promise<MetadataRoute.Sitemap> {
       if (languages.en) languages["x-default"] = languages.en;
       return {
         url: urlOf(s),
-        lastModified: s.updatedAt,
+        lastModified: new Date(s.updatedAt),
         changeFrequency: "monthly" as const,
         priority: 0.6,
         ...(Object.keys(languages).length > 2 && { alternates: { languages } }),

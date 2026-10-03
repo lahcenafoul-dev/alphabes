@@ -35,6 +35,12 @@ const nextConfig = {
           { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=()" },
         ],
       },
+      // Crawlers and proxies may keep the sitemap an hour (its story list is
+      // cached that long on the server too; see app/sitemap.ts).
+      {
+        source: "/sitemap.xml",
+        headers: [{ key: "Cache-Control", value: "public, max-age=3600, stale-while-revalidate=86400" }],
+      },
     ];
   },
 };
