@@ -67,6 +67,8 @@ export function buildVerifyRequestBody(rawBody: string, headers: Headers, webhoo
 // it confirms for our webhook id. Never act on an event without this.
 // rawBody must already have been checked to be a JSON object.
 export async function verifyWebhookSignature(rawBody: string, headers: Headers): Promise<boolean> {
+  // Unsigned requests are refused without asking PayPal.
+  if (!buildVerifyRequestBody(rawBody, headers, "")) return false;
   const webhookId = process.env.PAYPAL_WEBHOOK_ID;
   if (!webhookId) throw new Error("PAYPAL_WEBHOOK_ID is not configured.");
   const body = buildVerifyRequestBody(rawBody, headers, webhookId);
