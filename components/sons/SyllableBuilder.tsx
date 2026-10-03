@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useSpeech } from "@/components/ListenButton";
 import { BUILDER_CONSONANTS, BUILDER_VOWELS } from "@/lib/sons-fr";
+import { ptSyllableSpoken } from "@/lib/silabas-pt";
 
 const LABELS = {
   fr: {
@@ -19,6 +20,13 @@ const LABELS = {
     listenTo: "Escuchar la sílaba",
     listen: "🔊 Escuchar",
   },
+  pt: {
+    intro: "Escolha uma consoante e depois uma vogal: ouça a sílaba.",
+    consonant: "Consoante",
+    vowel: "Vogal",
+    listenTo: "Ouvir a sílaba",
+    listen: "🔊 Ouvir",
+  },
 };
 
 const pick =
@@ -31,7 +39,7 @@ export default function SyllableBuilder({
   consonants = BUILDER_CONSONANTS,
   vowels = BUILDER_VOWELS,
 }: {
-  locale?: "fr" | "es";
+  locale?: "fr" | "es" | "pt";
   consonants?: readonly string[];
   vowels?: readonly string[];
 }) {
@@ -40,11 +48,13 @@ export default function SyllableBuilder({
   const [consonant, setConsonant] = useState(consonants[0]);
   const [vowel, setVowel] = useState(vowels[0]);
   const syllable = consonant + vowel;
+  // Portuguese classrooms say family syllables with open vowels ("bé", "bó").
+  const spoken = (s: string) => (locale === "pt" ? ptSyllableSpoken(s) : s);
 
   function choose(c: string, v: string) {
     setConsonant(c);
     setVowel(v);
-    void say(c + v, 0.7);
+    void say(spoken(c + v), 0.7);
   }
 
   return (
@@ -87,7 +97,7 @@ export default function SyllableBuilder({
         </div>
         <button
           type="button"
-          onClick={() => void say(syllable, 0.7)}
+          onClick={() => void say(spoken(syllable), 0.7)}
           aria-label={`${t.listenTo} ${syllable}`}
           className="self-center justify-self-center rounded-block border-2 border-chalkboard/10 bg-paper px-8 py-4 text-center shadow-block hover:shadow-blockHover transition"
         >

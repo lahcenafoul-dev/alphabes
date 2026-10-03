@@ -21,6 +21,7 @@ import { ACCENTS_SLUG, frenchLetterParams } from "@/lib/letters-fr";
 import { TILDE_SLUG, spanishLetterParams } from "@/lib/letters-es";
 import { getSpanishSyllablePage } from "@/lib/silabas-es";
 import { ACENTOS_SLUG as PT_ACENTOS_SLUG, portugueseLetterParams } from "@/lib/letters-pt";
+import { getPortugueseSyllablePage } from "@/lib/silabas-pt";
 import { getFicha as getSpanishFicha, getFichaCategory, getFichaPack } from "@/lib/fichas-es";
 import { getPhonicsSkill } from "@/lib/phonics-data";
 import { getPreschoolTopic } from "@/lib/preschool-data";
@@ -86,6 +87,7 @@ const PORTUGUESE_LETTERS = new Set(portugueseLetterParams());
 const PORTUGUESE_VALIDATORS: Partial<Record<AppPathname, (params: RouteParams) => boolean>> = {
   "/alphabet/[letter]": ({ letter }) => PORTUGUESE_LETTERS.has(letter) || letter === PT_ACENTOS_SLUG,
   "/alphabet/[letter]/worksheet": ({ letter }) => PORTUGUESE_LETTERS.has(letter),
+  "/phonics/[skill]": ({ skill }) => !!getPortugueseSyllablePage(skill),
 };
 
 /** False only when we know the params don't exist; true for routes we can't check. */

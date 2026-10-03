@@ -4,6 +4,29 @@ import { useState } from "react";
 import { useSpeech } from "@/components/ListenButton";
 import type { BuildWord } from "@/lib/silabas-es";
 
+const LABELS = {
+  es: {
+    intro: "Mira el dibujo y toca las sílabas en orden para armar la palabra.",
+    picture: "Dibujo",
+    yourWord: "Tu palabra",
+    syllables: "Sílabas",
+    done: (parts: string, word: string) => `¡Muy bien! ${parts} = ${word}`,
+    miss: (s: string) => `«${s}» no va aquí. Escucha la palabra y busca la sílaba que sigue.`,
+    listen: "🔊 Escuchar la palabra",
+    next: "Otra palabra →",
+  },
+  pt: {
+    intro: "Olhe a figura e toque nas sílabas na ordem para montar a palavra.",
+    picture: "Figura",
+    yourWord: "Sua palavra",
+    syllables: "Sílabas",
+    done: (parts: string, word: string) => `Muito bem! ${parts} = ${word}`,
+    miss: (s: string) => `“${s}” não vai aqui. Ouça a palavra e procure a próxima sílaba.`,
+    listen: "🔊 Ouvir a palavra",
+    next: "Outra palavra →",
+  },
+};
+
 const tile =
   "min-w-16 rounded-block border-2 px-4 py-2 font-display font-bold text-2xl transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-crayon-blue";
 
@@ -14,11 +37,12 @@ function tilesFor(w: BuildWord): string[] {
   return all.map((s, i) => ({ s, k: score(s, i) })).sort((a, b) => a.k - b.k).map((x) => x.s);
 }
 
-// "Arma la palabra": the picture shows a word; the child taps its syllables
-// in order (ma + no = mano). A wrong syllable is refused with a hint; the
-// finished word is read aloud.
-export default function WordBuilder({ words }: { words: BuildWord[] }) {
-  const { say, notice } = useSpeech("es");
+// "Arma la palabra" / "Monte a palavra": the picture shows a word; the child
+// taps its syllables in order (ma + no = mano). A wrong syllable is refused
+// with a hint; the finished word is read aloud.
+export default function WordBuilder({ words, locale = "es" }: { words: BuildWord[]; locale?: "es" | "pt" }) {
+  const { say, notice } = useSpeech(locale);
+  const t = LABELS[locale];
   const [index, setIndex] = useState(0);
   const [built, setBuilt] = useState<string[]>([]);
   const [miss, setMiss] = useState<string | null>(null);
@@ -47,12 +71,12 @@ export default function WordBuilder({ words }: { words: BuildWord[] }) {
 
   return (
     <div>
-      <p className="text-sm text-chalkboard/70">Mira el dibujo y toca las sílabas en orden para armar la palabra.</p>
+      <p className="text-sm text-chalkboard/70">{t.intro}</p>
       <div className="mt-4 flex flex-wrap items-center gap-6">
-        <div className="text-6xl" role="img" aria-label={`Dibujo: ${w.word}`}>
+        <div className="text-6xl" role="img" aria-label={`${t.picture}: ${w.word}`}>
           {w.emoji}
         </div>
-        <ol className="flex gap-2" aria-label="Tu palabra">
+        <ol className="flex gap-2" aria-label={t.yourWord}>
           {w.syllables.map((s, i) => (
             <li
               key={i}
@@ -65,7 +89,7 @@ export default function WordBuilder({ words }: { words: BuildWord[] }) {
           ))}
         </ol>
       </div>
-      <div className="mt-4 flex flex-wrap gap-2" role="group" aria-label="Sílabas">
+      <div className="mt-4 flex flex-wrap gap-2" role="group" aria-label={t.syllables}>
         {tilesFor(w).map((s, i) => (
           <button
             key={`${s}-${i}`}
@@ -80,9 +104,9 @@ export default function WordBuilder({ words }: { words: BuildWord[] }) {
       </div>
       <p className="mt-3 min-h-6 font-display font-bold" aria-live="polite">
         {done
-          ? `¡Muy bien! ${w.syllables.join(" + ")} = ${w.word}`
+          ? t.done(w.syllables.join(" + "), w.word)
           : miss
-            ? `«${miss}» no va aquí. Escucha la palabra y busca la sílaba que sigue.`
+            ? t.miss(miss)
             : ""}
       </p>
       <div className="mt-2 flex flex-wrap gap-3">
@@ -91,14 +115,14 @@ export default function WordBuilder({ words }: { words: BuildWord[] }) {
           onClick={() => void say(w.withArticle, 0.75)}
           className="rounded-block border-2 border-chalkboard/20 px-4 py-2 font-display font-bold hover:border-crayon-blue transition"
         >
-          🔊 Escuchar la palabra
+          {t.listen}
         </button>
         <button
           type="button"
           onClick={nextWord}
           className="rounded-block bg-crayon-blue text-paper px-4 py-2 font-display font-bold shadow-block hover:shadow-blockHover transition"
         >
-          Otra palabra →
+          {t.next}
         </button>
       </div>
       {notice}

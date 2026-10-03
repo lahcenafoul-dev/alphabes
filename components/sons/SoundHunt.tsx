@@ -19,12 +19,19 @@ const LABELS = {
     progress: (found: number, total: number) => `Encontradas: ${found} de ${total}`,
     again: "Volver a empezar",
   },
+  pt: {
+    tapToListen: "Toque numa figura para ouvir a palavra.",
+    listen: "Ouvir:",
+    done: (total: number) => `Muito bem, você achou as ${total} palavras!`,
+    progress: (found: number, total: number) => `Achadas: ${found} de ${total}`,
+    again: "Começar de novo",
+  },
 };
 
 // "Où est le son ?" / "¿Dónde está?": the child taps the pictures whose word
 // has the sound. Each tap reads the word aloud and turns the card green
 // (right) or grey (no sound), with a short sentence explaining why.
-export default function SoundHunt({ hunt, locale = "fr" }: { hunt: Hunt; locale?: "fr" | "es" }) {
+export default function SoundHunt({ hunt, locale = "fr" }: { hunt: Hunt; locale?: "fr" | "es" | "pt" }) {
   const { say, notice } = useSpeech(locale);
   const t = LABELS[locale];
   const [tapped, setTapped] = useState<ReadonlySet<number>>(new Set());

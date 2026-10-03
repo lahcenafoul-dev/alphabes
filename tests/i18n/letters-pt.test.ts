@@ -20,7 +20,7 @@ const contains = (word: string, letter: string) => (letter === "ç" ? word.toLow
 // Portuguese spelling (docs/portuguese-plan.md, P2).
 const PORTUGAL_ONLY = [
   "autocarro", "comboio", "frigorifico", "chavena", "ananas", "pequeno-almoco", "telemovel", "rebucado", "sumo",
-  "gelado", "casa de banho", "bebe", "camiao", "rapariga", "miudo", "pastilha", "talho", "elastico",
+  "gelado", "casa de banho", "camiao", "rapariga", "miudo", "pastilha", "talho", "elastico",
 ];
 
 describe("Portuguese letter data", () => {

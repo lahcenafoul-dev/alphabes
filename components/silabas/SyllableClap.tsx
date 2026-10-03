@@ -5,11 +5,33 @@ import { useSpeech } from "@/components/ListenButton";
 import type { SoundWord } from "@/lib/sons-fr";
 import { plainWord } from "@/lib/sons-fr";
 
-// "Aplaude las sílabas": the child hears a word split into syllables, claps
-// along, then says how many syllables it has. The answer shows the word in
-// coloured syllables. Words use the "ma|ri|po|sa" markup.
-export default function SyllableClap({ words }: { words: SoundWord[] }) {
-  const { say, notice } = useSpeech("es");
+const LABELS = {
+  es: {
+    intro: "Escucha la palabra por sílabas y aplaude una vez por cada sílaba. ¿Cuántas palmadas diste?",
+    picture: "Dibujo",
+    listen: "👏 Escuchar por sílabas",
+    question: "¿Cuántas sílabas tiene?",
+    right: (word: string, n: number) => `¡Sí! ${word} tiene ${n} ${n === 1 ? "sílaba" : "sílabas"}.`,
+    wrong: "Casi. Escucha otra vez y aplaude con cada sílaba.",
+    next: "Otra palabra →",
+  },
+  pt: {
+    intro: "Ouça a palavra separada em sílabas e bata uma palma para cada sílaba. Quantas palmas você bateu?",
+    picture: "Figura",
+    listen: "👏 Ouvir por sílabas",
+    question: "Quantas sílabas ela tem?",
+    right: (word: string, n: number) => `Isso! ${word} tem ${n} ${n === 1 ? "sílaba" : "sílabas"}.`,
+    wrong: "Quase. Ouça de novo e bata uma palma para cada sílaba.",
+    next: "Outra palavra →",
+  },
+};
+
+// "Aplaude las sílabas" / "Bata palmas": the child hears a word split into
+// syllables, claps along, then says how many syllables it has. The answer
+// shows the word in coloured syllables. Words use the "ma|ri|po|sa" markup.
+export default function SyllableClap({ words, locale = "es" }: { words: SoundWord[]; locale?: "es" | "pt" }) {
+  const { say, notice } = useSpeech(locale);
+  const t = LABELS[locale];
   const [index, setIndex] = useState(0);
   const [answer, setAnswer] = useState<number | null>(null);
   const w = words[index];
@@ -30,10 +52,10 @@ export default function SyllableClap({ words }: { words: SoundWord[] }) {
   return (
     <div>
       <p className="text-sm text-chalkboard/70">
-        Escucha la palabra por sílabas y aplaude una vez por cada sílaba. ¿Cuántas palmadas diste?
+        {t.intro}
       </p>
       <div className="mt-4 flex flex-wrap items-center gap-6">
-        <div className="text-6xl" role="img" aria-label={`Dibujo: ${plain}`}>
+        <div className="text-6xl" role="img" aria-label={`${t.picture}: ${plain}`}>
           {w.emoji}
         </div>
         <div>
@@ -54,12 +76,12 @@ export default function SyllableClap({ words }: { words: SoundWord[] }) {
             onClick={() => void say(`${parts.join(", ")}. ${plain}`, 0.6)}
             className="mt-2 text-sm font-bold text-crayon-blue underline underline-offset-2"
           >
-            👏 Escuchar por sílabas
+            {t.listen}
           </button>
         </div>
       </div>
       <fieldset className="mt-4">
-        <legend className="font-display font-bold">¿Cuántas sílabas tiene?</legend>
+        <legend className="font-display font-bold">{t.question}</legend>
         <div className="mt-2 flex flex-wrap gap-2">
           {[1, 2, 3, 4, 5].map((n) => (
             <button
@@ -84,15 +106,15 @@ export default function SyllableClap({ words }: { words: SoundWord[] }) {
         {answer === null
           ? ""
           : right
-            ? `¡Sí! ${plain} tiene ${parts.length} ${parts.length === 1 ? "sílaba" : "sílabas"}.`
-            : "Casi. Escucha otra vez y aplaude con cada sílaba."}
+            ? t.right(plain, parts.length)
+            : t.wrong}
       </p>
       <button
         type="button"
         onClick={next}
         className="mt-2 rounded-block bg-crayon-blue text-paper px-4 py-2 font-display font-bold shadow-block hover:shadow-blockHover transition"
       >
-        Otra palabra →
+        {t.next}
       </button>
       {notice}
     </div>

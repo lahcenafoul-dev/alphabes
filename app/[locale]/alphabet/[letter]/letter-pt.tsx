@@ -13,6 +13,30 @@ import {
   type PortugueseWord,
 } from "@/lib/letters-pt";
 
+// The syllable page (lib/silabas-pt.ts) that practises each letter; k, w and
+// y have none (they only appear in names and borrowed words).
+const SYLLABLE_PAGE: Record<string, { skill: string; label: string }> = {
+  a: { skill: "vogais", label: "As vogais" },
+  e: { skill: "vogais", label: "As vogais" },
+  i: { skill: "vogais", label: "As vogais" },
+  o: { skill: "vogais", label: "As vogais" },
+  u: { skill: "vogais", label: "As vogais" },
+  c: { skill: "c-e-cedilha", label: "ca, ce, ci e o ç" },
+  "c-cedilha": { skill: "c-e-cedilha", label: "ca, ce, ci e o ç" },
+  q: { skill: "qu", label: "que, qui, qua" },
+  g: { skill: "g-e-j", label: "ga, ge, gi e o j" },
+  j: { skill: "g-e-j", label: "ga, ge, gi e o j" },
+  h: { skill: "h-inicial", label: "O h no começo da palavra" },
+  l: { skill: "al-el-il-ol-ul", label: "O l no fim da sílaba" },
+  m: { skill: "am-em-im-om-um", label: "am, em, im, om, um" },
+  n: { skill: "an-en-in-on-un", label: "an, en, in, on, un" },
+  r: { skill: "rr", label: "O r forte e o rr" },
+  s: { skill: "ss", label: "O ss e o s com som de z" },
+  z: { skill: "ss", label: "O ss e o s com som de z" },
+  x: { skill: "x", label: "Os sons do x" },
+};
+const NO_SYLLABLES = new Set(["k", "w", "y"]);
+
 /** “bê”, or “dáblio” (também: “dábliu”, “vê duplo”): the name line under the title. */
 function nameLine(l: PortugueseLetter): string {
   const others = l.otherNames?.length ? ` (também: ${l.otherNames.map((n) => `“${n}”`).join(", ")})` : "";
@@ -78,6 +102,9 @@ export default function LetterPt({ letter }: { letter: string }) {
   const cedilha = l.slug === CEDILHA_SLUG;
   const faq = [{ question: `Qual é o som ${cedilha ? "do Ç" : `da letra ${l.upper}`}?`, answer: l.sound }, l.faq];
   const short = (x: PortugueseLetter) => (x.slug === CEDILHA_SLUG ? "O Ç" : `Letra ${x.upper}`);
+  const syllables = NO_SYLLABLES.has(l.slug)
+    ? null
+    : (SYLLABLE_PAGE[l.slug] ?? { skill: "familias-silabicas", label: `A família do ${l.upper}` });
 
   const lessonJsonLd = {
     "@context": "https://schema.org",
@@ -209,6 +236,15 @@ export default function LetterPt({ letter }: { letter: string }) {
             <p className="font-display font-bold">🖼️ Os cartões do alfabeto</p>
             <p className="mt-1 text-sm text-chalkboard/70">Todas as palavras de A a Z, com figuras, para ouvir.</p>
           </Link>
+          {syllables && (
+            <Link
+              href={{ pathname: "/phonics/[skill]", params: { skill: syllables.skill } }}
+              className="block rounded-block border border-chalkboard/10 p-4 shadow-block hover:border-crayon-blue hover:shadow-blockHover transition sm:col-span-2"
+            >
+              <p className="font-display font-bold">🗣️ Para ler: {syllables.label}</p>
+              <p className="mt-1 text-sm text-chalkboard/70">Sílabas para ouvir, palavras e uma frase para ler.</p>
+            </Link>
+          )}
         </div>
       </section>
 

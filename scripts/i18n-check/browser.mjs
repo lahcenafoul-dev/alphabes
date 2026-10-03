@@ -767,6 +767,90 @@ console.log("Spanish syllables (Spanish phase 3)");
   }
 }
 
+console.log("Portuguese syllables (Portuguese phase 3)");
+{
+  const { context, page, errors } = await newPage();
+  await context.addInitScript(fakeVoices(["en-US", "es-MX", "pt-PT", "pt-BR"]));
+  const spoken = () => page.evaluate(() => window.__spoken.map((s) => `${s.lang}|${s.text}`));
+  const last = async () => (await spoken()).at(-1);
+
+  await page.goto(base + "/phonics");
+  await page.waitForLoadState("networkidle");
+  check((await switcherHref(page, "pt")) === "/pt/silabas", "PT link on /phonics points to /pt/silabas");
+  await page.goto(base + "/pt/silabas/ch");
+  await page.waitForLoadState("networkidle");
+  check(
+    (await switcherHref(page, "es")) === "/es/silabas" && (await switcherHref(page, "fr")) === "/fr/sons" && (await switcherHref(page, "en")) === "/phonics",
+    "ES/FR/EN links on a Portuguese syllable page go to the indexes (ch is not a twin)",
+  );
+  await page.goto(base + "/pt/alfabeto/r");
+  await page.waitForLoadState("networkidle");
+  check((await page.getByRole("link", { name: /Para ler: O r forte e o rr/ }).getAttribute("href")) === "/pt/silabas/rr", "letter R links to its syllable page");
+
+  // The hunt: a right card turns green, a wrong one explains, the counter moves.
+  await page.goto(base + "/pt/silabas/lh");
+  await page.waitForLoadState("networkidle");
+  const hunt = page.getByRole("region", { name: "Sua vez!" });
+  await hunt.getByRole("button", { name: "Ouvir: uma abelha" }).click();
+  check((await last()) === "pt-BR|uma abelha", "hunt card read with the Brazilian voice");
+  check(await page.getByText("Sim: “abelha” tem lh.").isVisible(), "right hunt card says why");
+  await hunt.getByRole("button", { name: "Ouvir: uma bola" }).click();
+  check(await page.getByText("Não: “bola” não tem lh.").isVisible(), "wrong hunt card says why");
+  check(await page.getByText("Achadas: 1 de 3").isVisible(), "hunt counter in Portuguese");
+  await page.screenshot({ path: `${shots}/pt-silaba-lh.png`, fullPage: true });
+
+  // The syllable builder: lh + a = lha, then lhe said with an open e.
+  await page.goto(base + "/pt/silabas/familias-silabicas");
+  await page.waitForLoadState("networkidle");
+  await page.getByRole("button", { name: "lh", exact: true }).click();
+  check((await last()) === "pt-BR|lha", "builder reads lh + a");
+  await page.getByRole("button", { name: "e", exact: true }).click();
+  check((await last()) === "pt-BR|lhé", `builder reads lh + e with an open e (${await last()})`);
+
+  // Monte a palavra: a wrong syllable is refused, the right ones build "bola".
+  const tiles = page.getByRole("group", { name: "Sílabas" });
+  await tiles.getByRole("button", { name: "ba", exact: true }).click();
+  check(await page.getByText("“ba” não vai aqui.", { exact: false }).isVisible(), "word builder refuses a wrong syllable");
+  await tiles.getByRole("button", { name: "bo", exact: true }).click();
+  await tiles.getByRole("button", { name: "la", exact: true }).click();
+  check(await page.getByText("Muito bem! bo + la = bola").isVisible(), "word builder builds bola");
+  check((await last()) === "pt-BR|bo, la. bola", `finished word read by syllables (${await last()})`);
+  await page.getByRole("button", { name: "Outra palavra →" }).click();
+  check(await page.getByRole("img", { name: "Figura: pato" }).isVisible(), "next word to build is pato");
+  // Family tiles are read with open vowels.
+  await page.getByRole("button", { name: "Ouvir: be", exact: true }).click();
+  check((await last()) === "pt-BR|bé", `family tile “be” read “bé” (${await last()})`);
+  await page.screenshot({ path: `${shots}/pt-familias-silabicas.png`, fullPage: true });
+
+  // Bata palmas: sol has one syllable; borboleta is reached later.
+  await page.goto(base + "/pt/silabas/contar-silabas");
+  await page.waitForLoadState("networkidle");
+  await page.getByRole("button", { name: "2", exact: true }).click();
+  check(await page.getByText("Quase. Ouça de novo").isVisible(), "clap: wrong count gets a hint");
+  await page.getByRole("button", { name: "1", exact: true }).click();
+  check(await page.getByText("Isso! sol tem 1 sílaba.").isVisible(), "clap: one syllable for sol");
+  for (let i = 0; i < 3; i++) await page.getByRole("button", { name: "Outra palavra →" }).click();
+  await page.getByRole("button", { name: "4", exact: true }).click();
+  check(await page.getByText("Isso! borboleta tem 4 sílabas.").isVisible(), "clap: four syllables for borboleta");
+  check((await last()) === "pt-BR|bor, bo, le, ta. borboleta", "clap reads the word by syllables");
+  check(errors.length === 0, `no console/page errors${errors.length ? ": " + errors.slice(0, 3).join(" | ") : ""}`);
+  await context.close();
+
+  // Layout at 390px.
+  {
+    const { context, page, errors } = await newPage({ width: 390, height: 844 });
+    for (const p of ["/pt/silabas", "/pt/silabas/familias-silabicas", "/pt/silabas/encontros-com-r", "/pt/silabas/contar-silabas", "/pt/silabas/x", "/pt/silabas/palavras-frequentes"]) {
+      await page.goto(base + p);
+      await page.waitForLoadState("networkidle");
+      const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+      check(overflow <= 0, `${p}: no horizontal scroll (overflow ${overflow}px)`);
+      await page.screenshot({ path: `${shots}/m${p.replaceAll("/", "_")}.png`, fullPage: true });
+    }
+    check(errors.length === 0, `no console/page errors${errors.length ? ": " + errors.slice(0, 3).join(" | ") : ""}`);
+    await context.close();
+  }
+}
+
 console.log("Spanish worksheets (Spanish phase 4)");
 {
   const { context, page, errors } = await newPage();

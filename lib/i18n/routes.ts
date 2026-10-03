@@ -96,6 +96,8 @@ export const PORTUGUESE_PATHNAMES: ReadonlySet<AppPathname> = new Set<AppPathnam
   "/dashboard/[id]",
   "/flashcards",
   "/login",
+  "/phonics",
+  "/phonics/[skill]",
   "/pricing",
   "/privacy-policy",
   "/register",
@@ -185,8 +187,9 @@ function translateParams(pathname: AppPathname, params: RouteParams, from: Local
 // Params that exist in only one language: the French letters with accents
 // and the accents page (lib/letters-fr.ts), every French sound page
 // (lib/sons-fr.ts), the Spanish ñ and tilde pages (lib/letters-es.ts),
-// every Spanish syllable page (lib/silabas-es.ts) and the Portuguese Ç and
-// accents pages (lib/letters-pt.ts).
+// every Spanish syllable page (lib/silabas-es.ts), the Portuguese Ç and
+// accents pages (lib/letters-pt.ts) and every Portuguese syllable page
+// (lib/silabas-pt.ts).
 // The lists are checked against the data by tests/i18n.
 // Such pages get no hreflang, and the switcher can't map them to another
 // language.
@@ -199,6 +202,11 @@ export const SPANISH_SYLLABLE_SLUGS = [
   "vocales", "silabas-directas", "silabas-inversas", "silabas-mixtas", "contar-silabas", "trabadas-con-l",
   "trabadas-con-r", "ch", "ll-y-y", "r-y-rr", "ca-co-cu-que-qui", "ce-ci-y-z", "ga-go-gu-gue-gui", "ge-gi-y-j",
   "dieresis", "h-muda", "b-y-v", "enie", "x", "palabras-frecuentes",
+];
+export const PORTUGUESE_SYLLABLE_SLUGS = [
+  "vogais", "encontros-vocalicos", "familias-silabicas", "contar-silabas", "ch", "lh", "nh", "rr", "ss", "qu", "gu",
+  "til", "an-en-in-on-un", "am-em-im-om-um", "encontros-com-r", "encontros-com-l", "ar-er-ir-or-ur", "as-es-is-os-us",
+  "al-el-il-ol-ul", "c-e-cedilha", "g-e-j", "x", "h-inicial", "palavras-frequentes",
 ];
 const LOCALE_ONLY_PARAMS: Partial<Record<Locale, Partial<Record<AppPathname, { key: string; values: ReadonlySet<string> }>>>> = {
   fr: {
@@ -214,6 +222,7 @@ const LOCALE_ONLY_PARAMS: Partial<Record<Locale, Partial<Record<AppPathname, { k
   pt: {
     "/alphabet/[letter]": { key: "letter", values: new Set(["c-cedilha", "acentos"]) },
     "/alphabet/[letter]/worksheet": { key: "letter", values: new Set(["c-cedilha"]) },
+    "/phonics/[skill]": { key: "skill", values: new Set(PORTUGUESE_SYLLABLE_SLUGS) },
   },
 };
 

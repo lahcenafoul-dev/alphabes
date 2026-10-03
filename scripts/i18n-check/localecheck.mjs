@@ -127,11 +127,16 @@ const RULES_ES = [
 ];
 
 const ptLetters = [..."abc", "c-cedilha", ..."defghijklmnopqrstuvwxyz"];
+const ptSyllables = [
+  "vogais", "encontros-vocalicos", "familias-silabicas", "contar-silabas", "ch", "lh", "nh", "rr", "ss", "qu", "gu",
+  "til", "an-en-in-on-un", "am-em-im-om-um", "encontros-com-r", "encontros-com-l", "ar-er-ir-or-ur", "as-es-is-os-us",
+  "al-el-il-ol-ul", "c-e-cedilha", "g-e-j", "x", "h-inicial", "palavras-frequentes",
+];
 
 // Portuguese (docs/portuguese-plan.md): every /pt URL answers 404 until its
 // page is written.
 const RULES_PT = [
-  ["/pt/silabas", {}, 404, null, "Portuguese page not written yet (phase 3)"],
+  ["/pt/atividades", {}, 404, null, "Portuguese page not written yet (phase 4)"],
   // Portuguese phase 2: the alphabet.
   ["/pt/alfabeto/ç", {}, 404, null, "ç is /pt/alfabeto/c-cedilha"],
   ["/pt/alfabeto/enie", {}, 404, null, "Spanish ñ under /pt"],
@@ -159,7 +164,17 @@ const RULES_PT = [
   ["/pt/precos", { headers: { cookie: "NEXT_LOCALE=fr" } }, 307, "/fr/tarifs", "Portuguese page, French chosen"],
   ["/pt/precos", { headers: { cookie: "NEXT_LOCALE=es" } }, 307, "/es/precios", "Portuguese page, Spanish chosen"],
   ["/blog", { headers: { cookie: "NEXT_LOCALE=pt" } }, 200, null, "no Portuguese twin: stay"],
-  ["/phonics", { headers: { cookie: "NEXT_LOCALE=pt" } }, 200, null, "Portuguese syllables not written yet: stay"],
+  ["/worksheets", { headers: { cookie: "NEXT_LOCALE=pt" } }, 200, null, "Portuguese worksheets not written yet: stay"],
+  // Portuguese phase 3: the syllables.
+  ["/pt/silabas/vocales", {}, 404, null, "Spanish syllable page under /pt/silabas"],
+  ["/pt/silabas/ou", {}, 404, null, "French sound under /pt/silabas"],
+  ["/pt/silabas/blending", {}, 404, null, "English skill under /pt/silabas"],
+  ["/es/silabas/familias-silabicas", {}, 404, null, "Portuguese syllable page under /es/silabas"],
+  ["/phonics/lh", {}, 404, null, "Portuguese syllable page under an English URL"],
+  ["/phonics", { headers: { cookie: "NEXT_LOCALE=pt" } }, 307, "/pt/silabas", "phonics index twin in Portuguese"],
+  ["/es/silabas", { headers: { cookie: "NEXT_LOCALE=pt" } }, 307, "/pt/silabas", "Spanish syllables index, Portuguese chosen"],
+  ["/pt/silabas/ch", { headers: { cookie: "NEXT_LOCALE=es" } }, 200, null, "Portuguese-only page, Spanish chosen: stay"],
+  ["/es/silabas/ch", { headers: { cookie: "NEXT_LOCALE=pt" } }, 200, null, "Spanish-only page, Portuguese chosen: stay"],
   ["/pricing", { headers: { "accept-language": "pt-BR,pt;q=0.9" } }, 200, null, "no Accept-Language redirect"],
   ["/es/precios", { headers: { "accept-language": "pt-BR,pt;q=0.9" } }, 200, null, "no Accept-Language redirect (Spanish page)"],
 ];
@@ -231,6 +246,9 @@ const LANGS = {
       // Portuguese phase 2: the alphabet (26 letters and Ç), the accents page and the cards.
       "/pt/alfabeto", "/pt/alfabeto/acentos", "/pt/cartoes",
       ...ptLetters.flatMap((l) => [`/pt/alfabeto/${l}`, `/pt/alfabeto/${l}/atividade`]),
+      // Portuguese phase 3: the syllables (lib/silabas-pt.ts).
+      "/pt/silabas",
+      ...ptSyllables.map((s) => `/pt/silabas/${s}`),
     ],
     rules: RULES_PT,
   },

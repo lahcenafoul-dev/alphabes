@@ -145,7 +145,7 @@ describe("Spanish syllable routes", () => {
     expect(paramsExist("/phonics/[skill]", { skill: "vocales" }, "en")).toBe(false);
   });
 
-  it("gives Spanish pages a canonical only, and pairs the index in three languages", () => {
+  it("gives Spanish pages a canonical only, and pairs the index in every language", () => {
     expect(isLocaleOnly("es", "/phonics/[skill]", { skill: "ch" })).toBe(true);
     expect(alternatesFor("es", "/phonics/[skill]", { skill: "silabas-directas" })).toEqual({
       canonical: "https://alphabes.com/es/silabas/silabas-directas",
@@ -154,6 +154,7 @@ describe("Spanish syllable routes", () => {
       en: "https://alphabes.com/phonics",
       fr: "https://alphabes.com/fr/sons",
       es: "https://alphabes.com/es/silabas",
+      pt: "https://alphabes.com/pt/silabas",
       "x-default": "https://alphabes.com/phonics",
     });
   });

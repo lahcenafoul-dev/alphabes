@@ -125,6 +125,7 @@ describe("French sound routes", () => {
       en: "https://alphabes.com/phonics",
       fr: "https://alphabes.com/fr/sons",
       es: "https://alphabes.com/es/silabas",
+      pt: "https://alphabes.com/pt/silabas",
       "x-default": "https://alphabes.com/phonics",
     });
     expect(alternatesFor("fr", "/phonics/[skill]", { skill: "ou" })).toEqual({ canonical: "https://alphabes.com/fr/sons/ou" });
