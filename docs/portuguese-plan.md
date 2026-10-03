@@ -1,6 +1,6 @@
 # Portuguese version of AlphaBes: plan and status
 
-Last updated: 2026-10-03 (plan approved; phase 0 done, not pushed). Read this first when continuing the Portuguese work, together with CLAUDE.md, [french-plan.md](french-plan.md) and [spanish-plan.md](spanish-plan.md): the Portuguese work reuses everything built for French and Spanish.
+Last updated: 2026-10-03 (phase 0 pushed; phase 1 done, not pushed). Read this first when continuing the Portuguese work, together with CLAUDE.md, [french-plan.md](french-plan.md) and [spanish-plan.md](spanish-plan.md): the Portuguese work reuses everything built for French and Spanish.
 
 ## Goal
 
@@ -148,12 +148,24 @@ One migration written by hand (no shadow database): `ALTER TYPE "Locale" ADD VAL
 - `LanguageSwitcher` per P12; `lib/speech.ts` voice preferences per P10.
 - `messages/pt.json`, Portuguese 404, API error texts.
 
+## Phase 1 notes (things later phases must remember)
+
+- **Adding a Portuguese page:** write the `*-pt.tsx` component, add `pt:` to its `byLocale(locale, { en, fr, es })` call in `page.tsx` (`byLocale` in `lib/i18n/routes.ts` falls back to English for a language not written yet; the middleware 404s those URLs), add the pathname to `PORTUGUESE_PATHNAMES`, the param validator to `PORTUGUESE_VALIDATORS` (`lib/i18n/known-params.ts`; until then every Portuguese param 404s), Portuguese-only params to `LOCALE_ONLY_PARAMS.pt`, twins to the `TRANSLATED_PARAMS` groups, sitemap entries for Portuguese-only pages, and the pages and rules to `LANGS.pt` in `localecheck.mjs` (move the "not written yet" rules as pages arrive). Pages that still choose with `if (locale === "fr") … if (locale === "es")` (school levels, letters, dynamic routes' `generateStaticParams`) need a `pt` branch then.
+- **Database:** migration `20261003030000_locale_pt` (`ALTER TYPE "Locale" ADD VALUE 'PT'`), written by hand and checked against `prisma migrate diff --from-schema-datamodel <old> --to-schema-datamodel <new>` (no database involved). Applied to `dev` on 2026-10-03 with `prisma migrate deploy` after `migrate status` (host checked: `ep-shiny-breeze-b1bguixr`, branch `dev`). Portuguese sign-ups store `User.locale = PT` (the register API follows `routing.locales`).
+- **Document language:** `<html lang="pt-BR">` and JSON-LD `inLanguage: "pt-BR"` (`HTML_LANG` in `components/LocaleDocument.tsx`), hreflang `pt`, Open Graph `pt_BR`, organization `areaServed` BR, PT, AO, MZ.
+- **Header (P12):** `LanguageSwitcher` shows four pills from 640 px; below that a button with the current code ("PT ▾", accessible name "Escolher o idioma: PT") opens `#language-menu` (closes on Escape, with focus back on the button, and on a tap outside). Measuring the header showed that between 768 and 1023 px the inline section links already overflowed on `main` (about 110 px in English with three pills), so they are now inline only from 1024 px (`lg`), and the menu button covers everything below. `browser.mjs` checks the header at 320–1280 px in the four languages.
+- **Speech (P10, done early):** `pt: [["pt-br"]]` then any `pt-*` voice, `LANG_TAG` pt-BR, Portuguese no-voice notice in `ListenButton` (Android, iPhone/iPad, Windows). Story reader labels ("Ouvir" / "⏹ Parar", "Próxima →", "Fim") are written; phase 5 checks them on real stories.
+- **Home page** (`app/[locale]/home-pt.tsx`): letter, syllable and school-level cards become links by themselves as pages arrive (`MaybeLink`). Phase 4 adds "Atividades populares", phase 6 the list of games.
+- **Child language:** not offered yet (phase 6, as for Spanish): the add/edit child forms and `Dashboard.language` / `ChildDashboard.language` need a `PT` branch in all four message files, `langPT`, and `PT` in `app/api/children` (`z.enum(["EN", "FR", "ES"])`).
+- The English, French and Spanish cookie and privacy pages still say "EN / FR / ES" buttons (left unchanged so their text doesn't change); the Portuguese ones say "EN / FR / ES / PT".
+- The legal pages cite the LGPD (art. 14 children, art. 18 rights, ANPD, *encarregado*), the ECA, the Código de Defesa do Consumidor (terms), and are marked "Texto provisório" (P11).
+
 ## Phases
 
 | Phase | Content | Status |
 |---|---|---|
 | 0 | Branch; this plan; baseline snapshots of English, French **and Spanish** from `main`; `snapshot.mjs` takes Spanish by default; `localecheck.mjs pt` (handles `lang="pt-BR"`). | **Done** (2026-10-03), not pushed. Baseline in `../snap-pt-base`: 1,256 routes (496 English, 382 French, 378 Spanish) from `main` 3e30909, build 1,515 pages; a second snapshot of the same build is identical, so the comparison is repeatable. On that build `localecheck` passes for `fr`, `es` and `pt` (`pt`: 9 routing rules, every `/pt` URL 404s until phase 1), 334 browser checks pass. tsc, lint and 189 unit tests pass on the branch. |
-| 1 | Four-language foundation, header switcher (P12), `messages/pt.json`, Portuguese UI pages (home, quem somos, preços, contato, entrar, cadastro, minha conta, legal LGPD placeholders, cookies), Portuguese 404, API errors, `PT` migration on `dev`. | To do |
+| 1 | Four-language foundation, header switcher (P12), `messages/pt.json`, Portuguese UI pages (home, quem somos, preços, contato, entrar, cadastro, minha conta, legal LGPD placeholders, cookies), Portuguese 404, API errors, `PT` migration on `dev`. | **Done** (2026-10-03), not pushed. English, French and Spanish identical to the baseline (1,256 routes) apart from hreflang: the 7 twins of the Portuguese pages in each language (21 pages) each gained one `hreflang="pt"` line, nothing else. Sitemap: 1,250 URLs, 7 Portuguese ones with four-way alternates. `localecheck pt`, `fr` and `es` pass, 411 browser checks, 205 unit tests, build 2,079 pages (was 1,515). See "Phase 1 notes". |
 | 2 | Alfabeto: `lib/letters-pt.ts` (26 + Ç + acentos), chart, letter pages with the 4 tipos de letra, cartões, speech (P10), tracing canvas bastão/forma/cursiva, Playwrite BR licence check. | To do |
 | 3 | Sílabas: ~25 pages, builders, clapping, picture hunt. | To do |
 | 4 | Atividades para imprimir: PDFs and pacotes (P6). | To do |
