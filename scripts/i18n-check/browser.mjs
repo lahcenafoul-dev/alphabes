@@ -1762,6 +1762,42 @@ if (process.env.CHECK_ACCOUNTS) {
   await page.waitForLoadState("networkidle");
   check(await page.getByText("Apprend en espagnol").isVisible(), "the French dashboard shows « Apprend en espagnol »");
   await page.screenshot({ path: `${shots}/es-nino-idioma.png`, fullPage: true });
+  // Portuguese: a child switched to Portuguese opens the Portuguese pages.
+  await page.goto(base + "/pt/minha-conta");
+  await page.waitForLoadState("networkidle");
+  await page.getByRole("button", { name: "Adicionar um perfil de criança" }).click();
+  check((await page.getByLabel("Idioma de aprendizagem").inputValue()) === "PT", "a profile added on the Portuguese site learns in Portuguese by default");
+  check((await page.getByLabel("Idioma de aprendizagem").locator("option").allInnerTexts()).includes("Português"), "the select offers Português");
+  await page.getByRole("button", { name: "Cancelar" }).click();
+  await page.getByRole("link", { name: /Léa/ }).click();
+  await page.waitForURL("**/pt/minha-conta/*");
+  await page.getByRole("button", { name: "Editar o perfil" }).click();
+  await page.getByLabel("Idioma de aprendizagem").selectOption("PT");
+  await page.getByRole("button", { name: "Salvar" }).click();
+  await page.getByText("Aprende em português.").waitFor({ timeout: 15000 }).catch(() => {});
+  links = await hrefs();
+  check(links === "/pt/alfabeto /pt/jogos /pt/historias", `Portuguese child: links to the Portuguese pages (${links})`);
+  await page.goto(base + "/es/mi-cuenta");
+  await page.waitForLoadState("networkidle");
+  check(await page.getByText("Aprende en portugués").isVisible(), "the Spanish dashboard shows « Aprende en portugués »");
+  await page.screenshot({ path: `${shots}/pt-crianca-idioma.png`, fullPage: true });
+  check(errors.length === 0, `no console/page errors${errors.length ? ": " + errors.slice(0, 3).join(" | ") : ""}`);
+  console.log(`  (test account: ${email})`);
+  await context.close();
+}
+if (process.env.CHECK_ACCOUNTS) {
+  // A sign-up on the Portuguese site lands on the Portuguese dashboard.
+  const { context, page, errors } = await newPage();
+  const email = `i18n-check-${Date.now()}-pt@example.com`;
+  await page.goto(base + "/pt/cadastro");
+  await page.waitForLoadState("networkidle");
+  await page.getByLabel("Seu nome").fill("Teste");
+  await page.getByLabel("E-mail").fill(email);
+  await page.getByLabel("Senha").fill("senha-de-teste-123");
+  await page.getByRole("button", { name: "Começar grátis" }).click();
+  await page.waitForURL("**/pt/minha-conta", { timeout: 30000 }).catch(() => {});
+  check(new URL(page.url()).pathname === "/pt/minha-conta", `a Portuguese sign-up lands on /pt/minha-conta (${new URL(page.url()).pathname})`);
+  check(await page.getByRole("button", { name: "Adicionar um perfil de criança" }).isVisible(), "the Portuguese dashboard offers « Adicionar um perfil de criança »");
   check(errors.length === 0, `no console/page errors${errors.length ? ": " + errors.slice(0, 3).join(" | ") : ""}`);
   console.log(`  (test account: ${email})`);
   await context.close();
