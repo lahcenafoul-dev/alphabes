@@ -1803,6 +1803,82 @@ if (process.env.CHECK_ACCOUNTS) {
   await context.close();
 }
 
+console.log("Billing: pricing checkout (PayPal phase 3)");
+{
+  const msgs = Object.fromEntries(
+    ["en", "fr", "es", "pt"].map((l) => [l, JSON.parse(readFileSync(`messages/${l}.json`, "utf8"))]),
+  );
+  const PRICING = { en: "/pricing", fr: "/fr/tarifs", es: "/es/precios", pt: "/pt/precos" };
+  const LOGIN = { en: "/login", fr: "/fr/connexion", es: "/es/iniciar-sesion", pt: "/pt/entrar" };
+  const { context, page, errors } = await newPage();
+  for (const [lang, url] of Object.entries(PRICING)) {
+    const m = msgs[lang];
+    await page.goto(base + url);
+    await page.waitForLoadState("networkidle");
+    const forms = await page.locator("main form").evaluateAll((fs) =>
+      fs.map((f) => `${f.getAttribute("action")}|${f.querySelector("[name=plan]")?.value}|${f.querySelector("[name=locale]")?.value}`),
+    );
+    check(
+      forms.join(" ") === `/api/paypal/subscribe|monthly|${lang} /api/paypal/subscribe|yearly|${lang}`,
+      `${url}: two PayPal checkout forms, plan names only (${forms.join(" ")})`,
+    );
+    check(await page.getByText(m.Pricing.billingNote).isVisible(), `${url}: PayPal billing note`);
+    for (const [q, key] of [["canceled", "canceled"], ["soon", "soon"], ["error", "error"], ["invalid_plan", "error"]]) {
+      await page.goto(`${base}${url}?billing=${q}`);
+      await page.getByRole("status").waitFor({ timeout: 10000 }).catch(() => {});
+      check((await page.getByRole("status").innerText().catch(() => "")) === m.Checkout[key], `${url}?billing=${q}: « ${m.Checkout[key]} »`);
+    }
+    await page.goto(base + url);
+    await page.waitForLoadState("networkidle");
+    await Promise.all([page.waitForURL(`**${LOGIN[lang]}?next=*`), page.locator("main form button").first().click()]);
+    const after = new URL(page.url());
+    check(
+      after.pathname === LOGIN[lang] && after.searchParams.get("next") === url,
+      `${url}: logged out, choosing a plan opens ${LOGIN[lang]}?next=${url}`,
+    );
+  }
+  await page.goto(base + "/fr/tarifs?billing=canceled");
+  await page.getByRole("status").waitFor({ timeout: 10000 }).catch(() => {});
+  await page.screenshot({ path: `${shots}/fr-tarifs-paiement-annule.png`, fullPage: true });
+  check(errors.length === 0, `no console/page errors${errors.length ? ": " + errors.slice(0, 3).join(" | ") : ""}`);
+  await context.close();
+}
+
+// Logged in (needs the database and PAYPAL_MODE=sandbox on the server): a
+// parent who isn't an admin is told subscriptions open soon; the dashboard
+// notices. Throwaway account removed with cleanup-accounts.mjs.
+if (process.env.CHECK_ACCOUNTS && !process.env.LIVE) {
+  console.log("Billing: logged in, sandbox (dev database)");
+  const en = JSON.parse(readFileSync("messages/en.json", "utf8"));
+  const fr = JSON.parse(readFileSync("messages/fr.json", "utf8"));
+  const { context, page, errors } = await newPage();
+  const email = `i18n-check-${Date.now()}-billing@example.com`;
+  await page.goto(base + "/register");
+  await page.waitForLoadState("networkidle");
+  await page.getByLabel("Your Name").fill("Test");
+  await page.getByLabel("Email").fill(email);
+  await page.getByLabel("Password").fill("password-test-123");
+  await page.getByRole("button", { name: "Start Learning Free" }).click();
+  await page.waitForURL("**/dashboard", { timeout: 30000 });
+  check(await page.getByText(en.Dashboard.upsell).isVisible(), "free dashboard: new upsell text");
+  check((await page.locator("#billing-heading").count()) === 0, "free dashboard: no subscription card before any PayPal subscription");
+  await page.goto(base + "/pricing");
+  await page.waitForLoadState("networkidle");
+  await Promise.all([page.waitForURL("**/pricing?billing=soon"), page.locator("main form button").first().click()]);
+  await page.getByRole("status").waitFor({ timeout: 10000 }).catch(() => {});
+  check((await page.getByRole("status").innerText().catch(() => "")) === en.Checkout.soon, "sandbox, not an admin: « subscriptions open soon »");
+  await page.goto(base + "/fr/tableau-de-bord?billing=already_pro");
+  check((await page.getByRole("status").innerText().catch(() => "")) === fr.Billing.alreadyPro, "dashboard ?billing=already_pro notice (French)");
+  await page.goto(base + "/dashboard?billing=return&subscription_id=../../x");
+  check((await page.getByRole("status").innerText().catch(() => "")) === en.Billing.returnProblem, "return with a malformed id: problem notice, PayPal not called");
+  await page.goto(base + "/dashboard?billing=return&subscription_id=I-AAAAAAAAAAAA");
+  check((await page.getByRole("status").innerText().catch(() => "")) === en.Billing.returnProblem, "return with an unknown subscription: problem notice, page still works");
+  await page.screenshot({ path: `${shots}/en-dashboard-return-problem.png`, fullPage: true });
+  check(errors.length === 0, `no console/page errors${errors.length ? ": " + errors.slice(0, 3).join(" | ") : ""}`);
+  console.log(`  (test account: ${email})`);
+  await context.close();
+}
+
 console.log("Header on small phones (320, 360 and 375px, phase 7)");
 for (const width of [320, 360, 375]) {
   const { context, page, errors } = await newPage({ width, height: 640 });
