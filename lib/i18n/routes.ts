@@ -30,6 +30,7 @@ export const FRENCH_PATHNAMES: ReadonlySet<AppPathname> = new Set<AppPathname>([
   "/flashcards",
   "/games",
   "/games/[slug]",
+  "/games/[slug]/play",
   "/kindergarten",
   "/kindergarten/[topic]",
   "/login",
@@ -64,6 +65,7 @@ export const SPANISH_PATHNAMES: ReadonlySet<AppPathname> = new Set<AppPathname>(
   "/flashcards",
   "/games",
   "/games/[slug]",
+  "/games/[slug]/play",
   "/kindergarten",
   "/kindergarten/[topic]",
   "/login",
@@ -98,6 +100,7 @@ export const PORTUGUESE_PATHNAMES: ReadonlySet<AppPathname> = new Set<AppPathnam
   "/flashcards",
   "/games",
   "/games/[slug]",
+  "/games/[slug]/play",
   "/kindergarten",
   "/kindergarten/[topic]",
   "/login",
@@ -140,6 +143,7 @@ export const NOINDEX_PATHNAMES: ReadonlySet<AppPathname> = new Set<AppPathname>(
   "/register",
   "/dashboard",
   "/dashboard/[id]",
+  "/games/[slug]/play",
 ]);
 
 // Pages whose params differ between languages (a French story has its own
@@ -162,18 +166,21 @@ export type RouteParams = Record<string, string>;
 // game "aplaude-las-silabas"). Checked against lib/games-fr.ts,
 // lib/ecole-fr.ts, lib/juegos-es.ts and lib/escuela-es.ts by tests/i18n.
 export type ParamGroup = Partial<Record<Locale, string>>;
+const GAME_PARAMS: { key: string; groups: ParamGroup[] } = {
+  key: "slug",
+  groups: [
+    { en: "find-the-letter", fr: "trouve-la-lettre", es: "encuentra-la-letra", pt: "encontre-a-letra" },
+    { en: "match-letter-picture", fr: "lettre-et-image", es: "letra-y-dibujo", pt: "letra-e-figura" },
+    { en: "beginning-sound", fr: "premier-son", es: "primera-silaba", pt: "silaba-inicial" },
+    { en: "letter-tracing", fr: "trace-la-lettre", es: "traza-la-letra", pt: "trace-a-letra" },
+    { en: "alphabet-quiz", fr: "quiz-alphabet", es: "quiz-del-abecedario", pt: "quiz-do-alfabeto" },
+    { es: "aplaude-las-silabas", pt: "bata-palmas" },
+  ],
+};
 export const TRANSLATED_PARAMS: Partial<Record<AppPathname, { key: string; groups: ParamGroup[] }>> = {
-  "/games/[slug]": {
-    key: "slug",
-    groups: [
-      { en: "find-the-letter", fr: "trouve-la-lettre", es: "encuentra-la-letra", pt: "encontre-a-letra" },
-      { en: "match-letter-picture", fr: "lettre-et-image", es: "letra-y-dibujo", pt: "letra-e-figura" },
-      { en: "beginning-sound", fr: "premier-son", es: "primera-silaba", pt: "silaba-inicial" },
-      { en: "letter-tracing", fr: "trace-la-lettre", es: "traza-la-letra", pt: "trace-a-letra" },
-      { en: "alphabet-quiz", fr: "quiz-alphabet", es: "quiz-del-abecedario", pt: "quiz-do-alfabeto" },
-      { es: "aplaude-las-silabas", pt: "bata-palmas" },
-    ],
-  },
+  "/games/[slug]": GAME_PARAMS,
+  // The play page of a game has the same slugs as the game.
+  "/games/[slug]/play": GAME_PARAMS,
   "/preschool/[topic]": {
     key: "topic",
     groups: [
@@ -246,6 +253,7 @@ const SECTION_INDEX: Partial<Record<AppPathname, AppPathname>> = {
   "/alphabet/[letter]": "/alphabet",
   "/alphabet/[letter]/worksheet": "/alphabet",
   "/games/[slug]": "/games",
+  "/games/[slug]/play": "/games",
   "/kindergarten/[topic]": "/kindergarten",
   "/phonics/[skill]": "/phonics",
   "/preschool/[topic]": "/preschool",

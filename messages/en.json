@@ -203,6 +203,17 @@
     "duplicate": "You already had Pro, so this second subscription was canceled. We'll refund its payment.",
     "alreadyPro": "You already have AlphaBes Pro."
   },
+  "Paywall": {
+    "title": "Part of AlphaBes Pro",
+    "game": "This game is part of AlphaBes Pro, along with the other premium games and whole-bundle downloads.",
+    "story": "The rest of this story is part of AlphaBes Pro.",
+    "bundle": "Downloading the whole bundle as one PDF is part of AlphaBes Pro. Every worksheet in it stays free to print one by one.",
+    "play": "Play the game",
+    "seePlans": "See Pro plans",
+    "login": "Already have Pro? Log in",
+    "suspended": "Your Pro subscription is paused because PayPal couldn't take a payment. Update your payment method in PayPal, then come back.",
+    "download": "Download the whole bundle (PDF)"
+  },
   "ChildDashboard": {
     "title": "Child Dashboard",
     "home": "Home",

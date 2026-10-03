@@ -203,6 +203,17 @@
     "duplicate": "Você já tinha o Pro, então cancelamos esta segunda assinatura. Vamos reembolsar o pagamento dela.",
     "alreadyPro": "Você já tem o AlphaBes Pro."
   },
+  "Paywall": {
+    "title": "Incluído no AlphaBes Pro",
+    "game": "Este jogo faz parte do AlphaBes Pro, junto com os outros jogos premium e os pacotes de atividades em um único PDF.",
+    "story": "O resto desta história faz parte do AlphaBes Pro.",
+    "bundle": "Baixar o pacote completo em um único PDF faz parte do AlphaBes Pro. Cada atividade do pacote continua grátis para imprimir uma por uma.",
+    "play": "Jogar",
+    "seePlans": "Ver os planos Pro",
+    "login": "Já tem o Pro? Entre",
+    "suspended": "Sua assinatura Pro está pausada porque o PayPal não conseguiu cobrar um pagamento. Atualize sua forma de pagamento no PayPal e volte.",
+    "download": "Baixar o pacote completo (PDF)"
+  },
   "ChildDashboard": {
     "title": "Perfil da criança",
     "home": "Início",

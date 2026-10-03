@@ -203,6 +203,17 @@
     "duplicate": "Vous aviez déjà Pro : ce second abonnement a été résilié et son paiement vous sera remboursé.",
     "alreadyPro": "Vous avez déjà AlphaBes Pro."
   },
+  "Paywall": {
+    "title": "Inclus dans AlphaBes Pro",
+    "game": "Ce jeu fait partie d'AlphaBes Pro, avec les autres jeux premium et les packs de fiches en un seul PDF.",
+    "story": "La suite de cette histoire fait partie d'AlphaBes Pro.",
+    "bundle": "Le téléchargement du pack complet en un seul PDF fait partie d'AlphaBes Pro. Chaque fiche du pack reste gratuite à imprimer une par une.",
+    "play": "Jouer",
+    "seePlans": "Voir les formules Pro",
+    "login": "Vous avez déjà Pro ? Connectez-vous",
+    "suspended": "Votre abonnement Pro est suspendu, car PayPal n'a pas pu encaisser un paiement. Mettez à jour votre moyen de paiement dans PayPal, puis revenez.",
+    "download": "Télécharger le pack complet (PDF)"
+  },
   "ChildDashboard": {
     "title": "Profil enfant",
     "home": "Accueil",

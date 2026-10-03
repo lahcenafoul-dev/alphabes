@@ -6,7 +6,7 @@ import { portugueseGames } from "@/lib/jogos-pt";
 
 const title = "Jogos educativos para aprender o alfabeto e as sílabas";
 const description =
-  "Seis jogos grátis em português para a educação infantil e o 1º ano: encontrar letras, ligar a letra à figura, a sílaba inicial, traçar letras em cursiva, o quiz do alfabeto e bater palmas para as sílabas.";
+  "Seis jogos em português para a educação infantil e o 1º ano, três deles grátis: encontrar letras, ligar a letra à figura, a sílaba inicial, traçar letras em cursiva, o quiz do alfabeto e bater palmas para as sílabas.";
 
 export const gamesMetadataPt: Metadata = {
   title,

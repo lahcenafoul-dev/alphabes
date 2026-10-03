@@ -203,6 +203,17 @@
     "duplicate": "Ya tenías Pro, así que cancelamos esta segunda suscripción. Te devolveremos su pago.",
     "alreadyPro": "Ya tienes AlphaBes Pro."
   },
+  "Paywall": {
+    "title": "Incluido en AlphaBes Pro",
+    "game": "Este juego forma parte de AlphaBes Pro, junto con los demás juegos premium y los paquetes de fichas en un solo PDF.",
+    "story": "El resto de este cuento forma parte de AlphaBes Pro.",
+    "bundle": "Descargar el paquete completo en un solo PDF forma parte de AlphaBes Pro. Cada ficha del paquete sigue siendo gratis para imprimir una por una.",
+    "play": "Jugar",
+    "seePlans": "Ver los planes Pro",
+    "login": "¿Ya tienes Pro? Inicia sesión",
+    "suspended": "Tu suscripción Pro está en pausa porque PayPal no pudo cobrar un pago. Actualiza tu método de pago en PayPal y vuelve.",
+    "download": "Descargar el paquete completo (PDF)"
+  },
   "ChildDashboard": {
     "title": "Perfil del niño",
     "home": "Inicio",

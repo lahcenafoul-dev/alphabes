@@ -27,6 +27,7 @@ import { getPortugueseGame } from "@/lib/jogos-pt";
 import { getSchoolTopicPt } from "@/lib/escola-pt";
 import { getFicha as getSpanishFicha, getFichaCategory, getFichaPack } from "@/lib/fichas-es";
 import { getPhonicsSkill } from "@/lib/phonics-data";
+import { isPremiumGame } from "@/lib/billing/premium";
 import { getPreschoolTopic } from "@/lib/preschool-data";
 import { getFrenchSound } from "@/lib/sons-fr";
 import { getStaticWorksheetCategory } from "@/lib/static-worksheet-categories";
@@ -49,6 +50,8 @@ const VALIDATORS: Partial<Record<AppPathname, Validator>> = {
     locale === "fr" ? FRENCH_LETTERS.has(letter) : !!getLetterData(letter),
   "/blog/[slug]": ({ slug }) => !!(getBlogCategory(slug) || getBlogPost(slug)),
   "/games/[slug]": ({ slug }, locale) => (locale === "fr" ? !!getFrenchGame(slug) : !!getGame(slug)),
+  // Only premium games have a play page.
+  "/games/[slug]/play": ({ slug }, locale) => isPremiumGame(locale, slug),
   "/kindergarten/[topic]": ({ topic }, locale) =>
     locale === "fr" ? !!getSchoolTopic("grande-section", topic) : !!getKindergartenTopic(topic),
   "/phonics/[skill]": ({ skill }, locale) => (locale === "fr" ? !!getFrenchSound(skill) : !!getPhonicsSkill(skill)),
@@ -77,6 +80,7 @@ const SPANISH_VALIDATORS: Partial<Record<AppPathname, (params: RouteParams) => b
   "/alphabet/[letter]": ({ letter }) => SPANISH_LETTERS.has(letter) || letter === TILDE_SLUG,
   "/alphabet/[letter]/worksheet": ({ letter }) => SPANISH_LETTERS.has(letter),
   "/games/[slug]": ({ slug }) => !!getSpanishGame(slug),
+  "/games/[slug]/play": ({ slug }) => isPremiumGame("es", slug),
   "/kindergarten/[topic]": ({ topic }) => !!getSchoolTopicEs("kinder", topic),
   "/phonics/[skill]": ({ skill }) => !!getSpanishSyllablePage(skill),
   "/preschool/[topic]": ({ topic }) => !!getSchoolTopicEs("preescolar", topic),
@@ -91,6 +95,7 @@ const PORTUGUESE_VALIDATORS: Partial<Record<AppPathname, (params: RouteParams) =
   "/alphabet/[letter]": ({ letter }) => PORTUGUESE_LETTERS.has(letter) || letter === PT_ACENTOS_SLUG,
   "/alphabet/[letter]/worksheet": ({ letter }) => PORTUGUESE_LETTERS.has(letter),
   "/games/[slug]": ({ slug }) => !!getPortugueseGame(slug),
+  "/games/[slug]/play": ({ slug }) => isPremiumGame("pt", slug),
   "/kindergarten/[topic]": ({ topic }) => !!getSchoolTopicPt("primeiro-ano", topic),
   "/phonics/[skill]": ({ skill }) => !!getPortugueseSyllablePage(skill),
   "/preschool/[topic]": ({ topic }) => !!getSchoolTopicPt("educacao-infantil", topic),

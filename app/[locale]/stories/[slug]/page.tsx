@@ -8,6 +8,8 @@ import { routing, type Locale } from "@/i18n/routing";
 import { DB_LOCALE, fromDbLocale } from "@/lib/i18n/db-locale";
 import { absoluteUrl, alternatesFor, localizedPath, type RouteParams } from "@/lib/i18n/routes";
 import { initLocale } from "@/lib/i18n/server";
+import Paywall from "@/components/billing/Paywall";
+import { hasPro } from "@/lib/billing/entitlement";
 import StoryReader from "./story-reader";
 
 type Props = { params: Promise<{ locale: string; slug: string }> };
@@ -19,7 +21,12 @@ async function findStoryMeta(slug: string, locale: Locale) {
   const prisma = getPrisma();
   const story = await prisma.story.findFirst({
     where: { slug, locale: DB_LOCALE[locale] },
-    select: { title: true, translationGroup: true, pages: { select: { text: true }, orderBy: { pageNumber: "asc" }, take: 2 } },
+    select: {
+      title: true,
+      isPremium: true,
+      translationGroup: true,
+      pages: { select: { text: true }, orderBy: { pageNumber: "asc" }, take: 2 },
+    },
   });
   if (!story) return null;
   const twins = story.translationGroup
@@ -43,7 +50,11 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
   const alternates = alternatesFor(locale, "/stories/[slug]", { slug }, found?.otherParams);
   // Without its own canonical, a story inherited the home page's.
   if (locale === "en" || !found) return { alternates };
-  const text = found.story.pages.map((p) => p.text).join(" ");
+  // A premium story's description quotes only the page everyone can read.
+  const text = found.story.pages
+    .slice(0, found.story.isPremium ? 1 : 2)
+    .map((p) => p.text)
+    .join(" ");
   const { title, description } = {
     fr: {
       title: `${found.story.title} : une histoire à lire et à écouter`,
@@ -76,17 +87,24 @@ export default async function StoryPage(props: Props) {
   const email = session?.user?.email;
 
   let children: { id: string; firstName: string }[] = [];
+  let user: { subscription: Parameters<typeof hasPro>[0] } | null = null;
   if (email) {
-    const user = await prisma.user.findUnique({
+    const found = await prisma.user.findUnique({
       where: { email },
-      include: { children: { select: { id: true, firstName: true, language: true } } },
+      include: { children: { select: { id: true, firstName: true, language: true } }, subscription: true },
     });
+    user = found;
     // Children who learn in the story's language come first (preselected).
-    const all = user?.children ?? [];
+    const all = found?.children ?? [];
     children = [...all.filter((c) => c.language === story.locale), ...all.filter((c) => c.language !== story.locale)].map(
       ({ id, firstName }) => ({ id, firstName }),
     );
   }
+
+  // A premium story (Story.isPremium) shows its first page to everyone and the
+  // rest only with Pro, decided here on the server: the other pages are never
+  // sent to the browser (docs/paypal-plan.md, B4).
+  const locked = story.isPremium && !hasPro(user?.subscription);
 
   return (
     <main id="main-content" className="mx-auto max-w-3xl px-6 py-12">
@@ -110,7 +128,19 @@ export default async function StoryPage(props: Props) {
 
       <h1 className="mt-4 text-3xl font-extrabold">{story.title}</h1>
 
-      <StoryReader story={story} childProfiles={children} locale={locale} />
+      {locked ? (
+        <>
+          <StoryReader story={{ ...story, pages: story.pages.slice(0, 1) }} childProfiles={children} locale={locale} />
+          <Paywall
+            locale={locale}
+            kind="story"
+            access={{ loggedIn: !!user, pro: false, suspended: user?.subscription?.status === "SUSPENDED" }}
+            next={localizedPath(locale, "/stories/[slug]", { slug: story.slug })}
+          />
+        </>
+      ) : (
+        <StoryReader story={story} childProfiles={children} locale={locale} />
+      )}
     </main>
   );
 }

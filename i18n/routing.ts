@@ -39,6 +39,13 @@ export const routing = defineRouting({
     "/flashcards": { en: "/flashcards", fr: "/imagier", es: "/tarjetas", pt: "/cartoes" },
     "/games": { en: "/games", fr: "/jeux", es: "/juegos", pt: "/jogos" },
     "/games/[slug]": { en: "/games/[slug]", fr: "/jeux/[slug]", es: "/juegos/[slug]", pt: "/jogos/[slug]" },
+    // Premium games are played here, per request, after a Pro check (docs/paypal-plan.md).
+    "/games/[slug]/play": {
+      en: "/games/[slug]/play",
+      fr: "/jeux/[slug]/jouer",
+      es: "/juegos/[slug]/jugar",
+      pt: "/jogos/[slug]/jogar",
+    },
     "/kindergarten": { en: "/kindergarten", fr: "/grande-section", es: "/kinder", pt: "/primeiro-ano" },
     "/kindergarten/[topic]": {
       en: "/kindergarten/[topic]",

@@ -1,13 +1,10 @@
 import type { Metadata } from "next";
 import { Link } from "@/i18n/navigation";
 import ClientOnly from "@/components/games/ClientOnly";
+import PremiumGameTeaser from "@/components/billing/PremiumGameTeaser";
 import EncontreALetra from "@/components/jogos-pt/EncontreALetra";
 import LetraEFigura from "@/components/jogos-pt/LetraEFigura";
-import SilabaInicial from "@/components/jogos-pt/SilabaInicial";
-import TraceALetra from "@/components/jogos-pt/TraceALetra";
-import QuizDoAlfabeto from "@/components/jogos-pt/QuizDoAlfabeto";
 import BataPalmas from "@/components/jogos-pt/BataPalmas";
-import { cursivaFont } from "@/lib/fonts/cursive-pt";
 import { absoluteUrl, alternatesFor } from "@/lib/i18n/routes";
 import { buildBreadcrumbJsonLd } from "@/lib/json-ld";
 import { getPortugueseGame, portugueseGames } from "@/lib/jogos-pt";
@@ -15,7 +12,9 @@ import { getPortugueseGame, portugueseGames } from "@/lib/jogos-pt";
 export function gameMetadataPt(slug: string): Metadata {
   const g = getPortugueseGame(slug);
   if (!g) return {};
-  const title = `${g.title}: jogo educativo grátis para aprender a ler`;
+  const title = g.isPremium
+    ? `${g.title}: jogo educativo para aprender a ler`
+    : `${g.title}: jogo educativo grátis para aprender a ler`;
   return {
     title,
     description: g.description,
@@ -24,20 +23,17 @@ export function gameMetadataPt(slug: string): Metadata {
   };
 }
 
+// The free games only; premium ones are played on the play page.
 function GameBody({ slug }: { slug: string }) {
   switch (slug) {
     case "encontre-a-letra":
       return <EncontreALetra />;
     case "letra-e-figura":
       return <LetraEFigura />;
-    case "silaba-inicial":
-      return <SilabaInicial />;
-    case "trace-a-letra":
-      return <TraceALetra cursiveFont={cursivaFont.style.fontFamily} />;
     case "bata-palmas":
       return <BataPalmas />;
     default:
-      return <QuizDoAlfabeto />;
+      return null;
   }
 }
 
@@ -81,11 +77,15 @@ export default function GamePt({ slug }: { slug: string }) {
       </h1>
       <p className="mt-2 text-chalkboard/70 max-w-2xl">{g.description}</p>
 
-      <div className="mt-8 rounded-block border border-chalkboard/10 p-4 sm:p-6 shadow-block">
-        <ClientOnly fallback={<p className="text-chalkboard/50">Carregando o jogo…</p>}>
-          <GameBody slug={g.slug} />
-        </ClientOnly>
-      </div>
+      {g.isPremium ? (
+        <PremiumGameTeaser locale="pt" slug={g.slug} />
+      ) : (
+        <div className="mt-8 rounded-block border border-chalkboard/10 p-4 sm:p-6 shadow-block">
+          <ClientOnly fallback={<p className="text-chalkboard/50">Carregando o jogo…</p>}>
+            <GameBody slug={g.slug} />
+          </ClientOnly>
+        </div>
+      )}
 
       <section className="mt-10 rounded-block bg-crayon-yellow/15 p-6" aria-labelledby="parents-heading">
         <h2 id="parents-heading" className="font-display font-bold text-lg">

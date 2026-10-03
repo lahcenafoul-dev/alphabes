@@ -6,7 +6,7 @@ import { frenchGames } from "@/lib/games-fr";
 
 const title = "Jeux éducatifs pour apprendre l'alphabet et les sons";
 const description =
-  "Cinq jeux gratuits et en français pour la maternelle et le CP : trouver une lettre, associer la lettre et l'image, entendre le premier son, tracer les lettres en cursive et un quiz de l'alphabet.";
+  "Cinq jeux en français pour la maternelle et le CP, dont deux gratuits : trouver une lettre, associer la lettre et l'image, entendre le premier son, tracer les lettres en cursive et un quiz de l'alphabet.";
 
 export const gamesMetadataFr: Metadata = {
   title,

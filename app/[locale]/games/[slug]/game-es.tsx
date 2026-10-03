@@ -1,13 +1,10 @@
 import type { Metadata } from "next";
 import { Link } from "@/i18n/navigation";
 import ClientOnly from "@/components/games/ClientOnly";
+import PremiumGameTeaser from "@/components/billing/PremiumGameTeaser";
 import EncuentraLaLetra from "@/components/juegos-es/EncuentraLaLetra";
 import LetraYDibujo from "@/components/juegos-es/LetraYDibujo";
-import PrimeraSilaba from "@/components/juegos-es/PrimeraSilaba";
-import TrazaLaLetra from "@/components/juegos-es/TrazaLaLetra";
-import QuizAbecedario from "@/components/juegos-es/QuizAbecedario";
 import AplaudeLasSilabas from "@/components/juegos-es/AplaudeLasSilabas";
-import { cursivaFont } from "@/lib/fonts/cursive-es";
 import { absoluteUrl, alternatesFor } from "@/lib/i18n/routes";
 import { buildBreadcrumbJsonLd } from "@/lib/json-ld";
 import { getSpanishGame, spanishGames } from "@/lib/juegos-es";
@@ -15,7 +12,9 @@ import { getSpanishGame, spanishGames } from "@/lib/juegos-es";
 export function gameMetadataEs(slug: string): Metadata {
   const g = getSpanishGame(slug);
   if (!g) return {};
-  const title = `${g.title}: juego educativo gratis para aprender a leer`;
+  const title = g.isPremium
+    ? `${g.title}: juego educativo para aprender a leer`
+    : `${g.title}: juego educativo gratis para aprender a leer`;
   return {
     title,
     description: g.description,
@@ -24,20 +23,17 @@ export function gameMetadataEs(slug: string): Metadata {
   };
 }
 
+// The free games only; premium ones are played on the play page.
 function GameBody({ slug }: { slug: string }) {
   switch (slug) {
     case "encuentra-la-letra":
       return <EncuentraLaLetra />;
     case "letra-y-dibujo":
       return <LetraYDibujo />;
-    case "primera-silaba":
-      return <PrimeraSilaba />;
-    case "traza-la-letra":
-      return <TrazaLaLetra cursiveFont={cursivaFont.style.fontFamily} />;
     case "aplaude-las-silabas":
       return <AplaudeLasSilabas />;
     default:
-      return <QuizAbecedario />;
+      return null;
   }
 }
 
@@ -81,11 +77,15 @@ export default function GameEs({ slug }: { slug: string }) {
       </h1>
       <p className="mt-2 text-chalkboard/70 max-w-2xl">{g.description}</p>
 
-      <div className="mt-8 rounded-block border border-chalkboard/10 p-4 sm:p-6 shadow-block">
-        <ClientOnly fallback={<p className="text-chalkboard/50">Cargando el juego…</p>}>
-          <GameBody slug={g.slug} />
-        </ClientOnly>
-      </div>
+      {g.isPremium ? (
+        <PremiumGameTeaser locale="es" slug={g.slug} />
+      ) : (
+        <div className="mt-8 rounded-block border border-chalkboard/10 p-4 sm:p-6 shadow-block">
+          <ClientOnly fallback={<p className="text-chalkboard/50">Cargando el juego…</p>}>
+            <GameBody slug={g.slug} />
+          </ClientOnly>
+        </div>
+      )}
 
       <section className="mt-10 rounded-block bg-crayon-yellow/15 p-6" aria-labelledby="parents-heading">
         <h2 id="parents-heading" className="font-display font-bold text-lg">

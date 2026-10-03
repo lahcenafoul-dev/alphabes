@@ -1,12 +1,9 @@
 import type { Metadata } from "next";
 import { Link } from "@/i18n/navigation";
 import ClientOnly from "@/components/games/ClientOnly";
+import PremiumGameTeaser from "@/components/billing/PremiumGameTeaser";
 import TrouveLaLettre from "@/components/games-fr/TrouveLaLettre";
 import LettreEtImage from "@/components/games-fr/LettreEtImage";
-import PremierSon from "@/components/games-fr/PremierSon";
-import TraceLaLettre from "@/components/games-fr/TraceLaLettre";
-import QuizAlphabet from "@/components/games-fr/QuizAlphabet";
-import { cursiveFont } from "@/lib/fonts/cursive";
 import { frenchGames, getFrenchGame } from "@/lib/games-fr";
 import { absoluteUrl, alternatesFor } from "@/lib/i18n/routes";
 import { buildBreadcrumbJsonLd } from "@/lib/json-ld";
@@ -14,7 +11,9 @@ import { buildBreadcrumbJsonLd } from "@/lib/json-ld";
 export function gameMetadataFr(slug: string): Metadata {
   const g = getFrenchGame(slug);
   if (!g) return {};
-  const title = `${g.title} : jeu éducatif gratuit pour apprendre les lettres`;
+  const title = g.isPremium
+    ? `${g.title} : jeu éducatif pour apprendre les lettres`
+    : `${g.title} : jeu éducatif gratuit pour apprendre les lettres`;
   return {
     title,
     description: g.description,
@@ -23,18 +22,15 @@ export function gameMetadataFr(slug: string): Metadata {
   };
 }
 
+// The free games only; premium ones are played on the play page.
 function GameBody({ slug }: { slug: string }) {
   switch (slug) {
     case "trouve-la-lettre":
       return <TrouveLaLettre />;
     case "lettre-et-image":
       return <LettreEtImage />;
-    case "premier-son":
-      return <PremierSon />;
-    case "trace-la-lettre":
-      return <TraceLaLettre cursiveFont={cursiveFont.style.fontFamily} />;
     default:
-      return <QuizAlphabet />;
+      return null;
   }
 }
 
@@ -78,11 +74,15 @@ export default function GameFr({ slug }: { slug: string }) {
       </h1>
       <p className="mt-2 text-chalkboard/70 max-w-2xl">{g.description}</p>
 
-      <div className="mt-8 rounded-block border border-chalkboard/10 p-6 shadow-block">
-        <ClientOnly fallback={<p className="text-chalkboard/50">Chargement du jeu…</p>}>
-          <GameBody slug={g.slug} />
-        </ClientOnly>
-      </div>
+      {g.isPremium ? (
+        <PremiumGameTeaser locale="fr" slug={g.slug} />
+      ) : (
+        <div className="mt-8 rounded-block border border-chalkboard/10 p-6 shadow-block">
+          <ClientOnly fallback={<p className="text-chalkboard/50">Chargement du jeu…</p>}>
+            <GameBody slug={g.slug} />
+          </ClientOnly>
+        </div>
+      )}
 
       <section className="mt-10 rounded-block bg-crayon-yellow/15 p-6" aria-labelledby="parents-heading">
         <h2 id="parents-heading" className="font-display font-bold text-lg">

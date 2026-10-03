@@ -4,10 +4,8 @@ import type { Metadata } from "next";
 import { games, getGame } from "@/lib/games-data";
 import FindTheLetterGame from "@/components/games/FindTheLetterGame";
 import MatchLetterPictureGame from "@/components/games/MatchLetterPictureGame";
-import BeginningSoundGame from "@/components/games/BeginningSoundGame";
-import LetterTracingGame from "@/components/games/LetterTracingGame";
-import AlphabetQuizGame from "@/components/games/AlphabetQuizGame";
 import ClientOnly from "@/components/games/ClientOnly";
+import PremiumGameTeaser from "@/components/billing/PremiumGameTeaser";
 import { buildBreadcrumbJsonLd } from "@/lib/json-ld";
 import { alternatesFor } from "@/lib/i18n/routes";
 
@@ -50,29 +48,28 @@ export default function GameEn({ slug }: { slug: string }) {
       <h1 className="mt-4 text-4xl font-extrabold">{game.title}</h1>
       <p className="mt-2 text-chalkboard/70 max-w-2xl">{game.description}</p>
 
-      <div className="mt-8 rounded-block border border-chalkboard/10 p-6 shadow-block">
-        <ClientOnly fallback={<p className="text-chalkboard/50">Loading game…</p>}>
-          <GameBody slug={game.slug} />
-        </ClientOnly>
-      </div>
+      {game.isPremium ? (
+        <PremiumGameTeaser locale="en" slug={game.slug} />
+      ) : (
+        <div className="mt-8 rounded-block border border-chalkboard/10 p-6 shadow-block">
+          <ClientOnly fallback={<p className="text-chalkboard/50">Loading game…</p>}>
+            <GameBody slug={game.slug} />
+          </ClientOnly>
+        </div>
+      )}
 
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
     </main>
   );
 }
 
+// The free games only; premium ones are played on the play page.
 function GameBody({ slug }: { slug: string }) {
   switch (slug) {
     case "find-the-letter":
       return <FindTheLetterGame />;
     case "match-letter-picture":
       return <MatchLetterPictureGame />;
-    case "beginning-sound":
-      return <BeginningSoundGame />;
-    case "letter-tracing":
-      return <LetterTracingGame />;
-    case "alphabet-quiz":
-      return <AlphabetQuizGame />;
     default:
       return notFound();
   }

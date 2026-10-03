@@ -6,7 +6,7 @@ import { spanishGames } from "@/lib/juegos-es";
 
 const title = "Juegos educativos para aprender el abecedario y las sílabas";
 const description =
-  "Seis juegos gratis en español para preescolar y primer grado: encontrar letras, unir la letra con su dibujo, la primera sílaba, trazar letras en cursiva, el quiz del abecedario y aplaudir las sílabas.";
+  "Seis juegos en español para preescolar y primer grado, tres de ellos gratis: encontrar letras, unir la letra con su dibujo, la primera sílaba, trazar letras en cursiva, el quiz del abecedario y aplaudir las sílabas.";
 
 export const gamesMetadataEs: Metadata = {
   title,
