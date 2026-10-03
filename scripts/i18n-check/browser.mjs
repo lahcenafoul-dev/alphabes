@@ -19,6 +19,56 @@ async function newPage(viewport = { width: 1280, height: 900 }) {
   page.on("console", (m) => { if (m.type() === "error") errors.push(`console: ${m.text()}`); });
   return { context, page, errors };
 }
+// Premium games (PayPal phase 4, docs/paypal-plan.md) are played on their
+// play page, which checks Pro on the server. With CHECK_ACCOUNTS=1 a throwaway
+// account on the dev branch gets an active Pro subscription row (no PayPal
+// involved; cleanup-accounts.mjs removes it) and the game checks run there.
+// Without it, they check the Pro block and the paywall and skip the gameplay.
+let proCookies = null;
+async function openPremium(context, page, staticPath, playPath) {
+  if (!proCookies) {
+    await page.goto(base + staticPath);
+    await page.waitForLoadState("networkidle");
+    check((await page.locator(`a[href="${playPath}"]`).count()) === 1, `${staticPath}: Pro block links to ${playPath}`);
+    await page.goto(base + playPath);
+    await page.waitForLoadState("networkidle");
+    check(await page.locator("#paywall-heading").isVisible(), `${playPath}: paywall without Pro (gameplay needs CHECK_ACCOUNTS=1)`);
+    return false;
+  }
+  await context.addCookies(proCookies);
+  await page.goto(base + playPath);
+  await page.waitForLoadState("networkidle");
+  return true;
+}
+async function closePremium(context) {
+  if (proCookies) await context.clearCookies({ name: /next-auth/ });
+}
+if (process.env.CHECK_ACCOUNTS && !process.env.LIVE) {
+  console.log("Pro test account (dev database)");
+  const { context, page } = await newPage();
+  const email = `i18n-check-${Date.now()}-pro@example.com`;
+  await page.goto(base + "/register");
+  await page.waitForLoadState("networkidle");
+  await page.getByLabel("Your Name").fill("Pro test");
+  await page.getByLabel("Email").fill(email);
+  await page.getByLabel("Password").fill("password-test-123");
+  await page.getByRole("button", { name: "Start Learning Free" }).click();
+  await page.waitForURL("**/dashboard", { timeout: 30000 });
+  const url = readFileSync(".env", "utf8").split(/\r?\n/).find((l) => l.startsWith("DATABASE_URL="))?.slice(13).replace(/^"|"$/g, "");
+  const { PrismaClient } = await import("@prisma/client");
+  const prisma = new PrismaClient({ datasources: { db: { url } } });
+  const user = await prisma.user.findUniqueOrThrow({ where: { email } });
+  await prisma.subscription.upsert({
+    where: { userId: user.id },
+    update: { plan: "PRO_MONTHLY", status: "ACTIVE", currentPeriodEnd: new Date(Date.now() + 86_400_000) },
+    create: { userId: user.id, plan: "PRO_MONTHLY", status: "ACTIVE", currentPeriodEnd: new Date(Date.now() + 86_400_000) },
+  });
+  await prisma.$disconnect();
+  proCookies = (await context.cookies()).filter((c) => c.name.includes("next-auth"));
+  check(proCookies.length > 0, `Pro test account ready (${email})`);
+  await context.close();
+}
+
 const switcherHref = (page, lang) => page.locator(`[role=group] a[hreflang=${lang}]`).first().getAttribute("href");
 const cookie = async (context) => (await context.cookies()).find((c) => c.name === "NEXT_LOCALE")?.value;
 
@@ -1173,47 +1223,50 @@ console.log("Spanish games, school levels and activities (Spanish phase 6)");
   check(/^¡Sí! una? /.test((await lastSpoken())?.text ?? ""), "the picture's name is read with its article");
 
   // ¿Con qué sílaba empieza?
-  await page.goto(base + "/es/juegos/primera-silaba");
-  await page.waitForLoadState("networkidle");
-  await page.getByRole("button", { name: "🔊 Escuchar la palabra" }).click();
-  const word = await lastSpoken();
-  check(word?.lang === "es-MX" && /^[a-zñáéíóúü]+$/.test(word.text), `the word is read alone (${word?.text})`);
-  check(!(await page.locator("main").getByText(word?.text ?? "∅", { exact: true }).count()), "the word isn't written on the page");
-  const syllables = await choiceButtons().allInnerTexts();
-  check(syllables.length === 4 && syllables.every((t) => /^[a-zñ]{1,3}$/.test(t.trim())), `four syllables to choose from (${syllables.join(" ")})`);
-  for (let i = 0; i < 4 && !(await page.getByText(/^✓ ¡Muy bien!/).isVisible()); i++) await choiceButtons().nth(i).click();
-  const praise = (await page.getByText(/^✓ ¡Muy bien!/).innerText().catch(() => "")).match(/«(.+)» empieza con «(.+)»/);
-  check(praise?.[1] === word?.text && word.text.startsWith(praise[2]), `the right syllable is praised and starts the word (${praise?.[0]})`);
+  if (await openPremium(context, page, "/es/juegos/primera-silaba", "/es/juegos/primera-silaba/jugar")) {
+    await page.getByRole("button", { name: "🔊 Escuchar la palabra" }).click();
+    const word = await lastSpoken();
+    check(word?.lang === "es-MX" && /^[a-zñáéíóúü]+$/.test(word.text), `the word is read alone (${word?.text})`);
+    check(!(await page.locator("main").getByText(word?.text ?? "∅", { exact: true }).count()), "the word isn't written on the page");
+    const syllables = await choiceButtons().allInnerTexts();
+    check(syllables.length === 4 && syllables.every((t) => /^[a-zñ]{1,3}$/.test(t.trim())), `four syllables to choose from (${syllables.join(" ")})`);
+    for (let i = 0; i < 4 && !(await page.getByText(/^✓ ¡Muy bien!/).isVisible()); i++) await choiceButtons().nth(i).click();
+    const praise = (await page.getByText(/^✓ ¡Muy bien!/).innerText().catch(() => "")).match(/«(.+)» empieza con «(.+)»/);
+    check(praise?.[1] === word?.text && word.text.startsWith(praise[2]), `the right syllable is praised and starts the word (${praise?.[0]})`);
+  }
+  await closePremium(context);
 
   // Traza la letra: cursive on doble raya, lowercase, through to ñ.
-  await page.goto(base + "/es/juegos/traza-la-letra");
-  await page.waitForLoadState("networkidle");
-  await page.getByRole("button", { name: "Cursiva" }).click();
-  await page.getByRole("button", { name: "Minúscula" }).click();
-  for (let i = 0; i < 14; i++) await page.getByRole("button", { name: "✅ Letra siguiente →" }).click();
-  check(await page.getByText("Letra 15 de 27").isVisible(), "27 letters, ñ is the 15th");
-  check((await page.locator("p", { hasText: "Traza la letra" }).locator(".letter-block").innerText()).trim() === "ñ", "the 15th letter is ñ");
-  await page.getByRole("button", { name: "🔊 Escuchar" }).click();
-  check((await lastSpoken())?.text === "eñe", "its name is read: eñe");
-  const box = await page.locator("canvas").boundingBox();
-  await page.mouse.move(box.x + 100, box.y + 100);
-  await page.mouse.down();
-  await page.mouse.move(box.x + 200, box.y + 150, { steps: 5 });
-  await page.mouse.up();
-  await page.waitForTimeout(800);
-  await page.screenshot({ path: `${shots}/es-juego-traza.png` });
+  if (await openPremium(context, page, "/es/juegos/traza-la-letra", "/es/juegos/traza-la-letra/jugar")) {
+    await page.getByRole("button", { name: "Cursiva" }).click();
+    await page.getByRole("button", { name: "Minúscula" }).click();
+    for (let i = 0; i < 14; i++) await page.getByRole("button", { name: "✅ Letra siguiente →" }).click();
+    check(await page.getByText("Letra 15 de 27").isVisible(), "27 letters, ñ is the 15th");
+    check((await page.locator("p", { hasText: "Traza la letra" }).locator(".letter-block").innerText()).trim() === "ñ", "the 15th letter is ñ");
+    await page.getByRole("button", { name: "🔊 Escuchar" }).click();
+    check((await lastSpoken())?.text === "eñe", "its name is read: eñe");
+    const box = await page.locator("canvas").boundingBox();
+    await page.mouse.move(box.x + 100, box.y + 100);
+    await page.mouse.down();
+    await page.mouse.move(box.x + 200, box.y + 150, { steps: 5 });
+    await page.mouse.up();
+    await page.waitForTimeout(800);
+    await page.screenshot({ path: `${shots}/es-juego-traza.png` });
+  }
+  await closePremium(context);
 
   // El quiz: ten answers, then the end screen.
-  await page.goto(base + "/es/juegos/quiz-del-abecedario");
-  await page.waitForLoadState("networkidle");
-  const feedback = page.getByText(/^✓ ¡Respuesta correcta!|^✗ La respuesta correcta era/);
-  for (let i = 0; i < 10; i++) {
-    await choiceButtons().first().click();
-    await feedback.waitFor();
-    await feedback.waitFor({ state: "detached", timeout: 5000 }).catch(() => {});
+  if (await openPremium(context, page, "/es/juegos/quiz-del-abecedario", "/es/juegos/quiz-del-abecedario/jugar")) {
+    const feedback = page.getByText(/^✓ ¡Respuesta correcta!|^✗ La respuesta correcta era/);
+    for (let i = 0; i < 10; i++) {
+      await choiceButtons().first().click();
+      await feedback.waitFor();
+      await feedback.waitFor({ state: "detached", timeout: 5000 }).catch(() => {});
+    }
+    check(await page.getByRole("button", { name: "Jugar otra vez" }).isVisible(), "the quiz ends with a score and « Jugar otra vez »");
+    await page.screenshot({ path: `${shots}/es-juego-quiz-fin.png` });
   }
-  check(await page.getByRole("button", { name: "Jugar otra vez" }).isVisible(), "the quiz ends with a score and « Jugar otra vez »");
-  await page.screenshot({ path: `${shots}/es-juego-quiz-fin.png` });
+  await closePremium(context);
 
   // Aplaude las sílabas: ten words, counting claps.
   await page.goto(base + "/es/juegos/aplaude-las-silabas");
@@ -1333,47 +1386,50 @@ console.log("Portuguese games, school levels and brincadeiras (Portuguese phase 
   check(/^Isso! (um|uma|o|a|os|as) /.test((await lastSpoken())?.text ?? ""), "the picture's name is read with its article");
 
   // Com que sílaba começa?
-  await page.goto(base + "/pt/jogos/silaba-inicial");
-  await page.waitForLoadState("networkidle");
-  await page.getByRole("button", { name: "🔊 Ouvir a palavra" }).click();
-  const word = await lastSpoken();
-  check(word?.lang === "pt-BR" && /^[a-zçáéíóúâêôãõ]+$/.test(word.text), `the word is read alone (${word?.text})`);
-  check(!(await page.locator("main").getByText(word?.text ?? "∅", { exact: true }).count()), "the word isn't written on the page");
-  const syllables = await choiceButtons().allInnerTexts();
-  check(syllables.length === 4 && syllables.every((t) => /^[a-z]{1,3}$/.test(t.trim())), `four syllables to choose from (${syllables.join(" ")})`);
-  for (let i = 0; i < 4 && !(await page.getByText(/^✓ Muito bem!/).isVisible()); i++) await choiceButtons().nth(i).click();
-  const praise = (await page.getByText(/^✓ Muito bem!/).innerText().catch(() => "")).match(/“(.+)” começa com “(.+)”/);
-  check(praise?.[1] === word?.text && word.text.startsWith(praise[2]), `the right syllable is praised and starts the word (${praise?.[0]})`);
+  if (await openPremium(context, page, "/pt/jogos/silaba-inicial", "/pt/jogos/silaba-inicial/jogar")) {
+    await page.getByRole("button", { name: "🔊 Ouvir a palavra" }).click();
+    const word = await lastSpoken();
+    check(word?.lang === "pt-BR" && /^[a-zçáéíóúâêôãõ]+$/.test(word.text), `the word is read alone (${word?.text})`);
+    check(!(await page.locator("main").getByText(word?.text ?? "∅", { exact: true }).count()), "the word isn't written on the page");
+    const syllables = await choiceButtons().allInnerTexts();
+    check(syllables.length === 4 && syllables.every((t) => /^[a-z]{1,3}$/.test(t.trim())), `four syllables to choose from (${syllables.join(" ")})`);
+    for (let i = 0; i < 4 && !(await page.getByText(/^✓ Muito bem!/).isVisible()); i++) await choiceButtons().nth(i).click();
+    const praise = (await page.getByText(/^✓ Muito bem!/).innerText().catch(() => "")).match(/“(.+)” começa com “(.+)”/);
+    check(praise?.[1] === word?.text && word.text.startsWith(praise[2]), `the right syllable is praised and starts the word (${praise?.[0]})`);
+  }
+  await closePremium(context);
 
   // Trace a letra: cursive on caligrafia lines, lowercase, Ç after C.
-  await page.goto(base + "/pt/jogos/trace-a-letra");
-  await page.waitForLoadState("networkidle");
-  await page.getByRole("button", { name: "Cursiva" }).click();
-  await page.getByRole("button", { name: "Minúscula" }).click();
-  for (let i = 0; i < 3; i++) await page.getByRole("button", { name: "✅ Próxima letra →" }).click();
-  check(await page.getByText("Letra 4 de 27").isVisible(), "26 letters and Ç: Ç is the 4th");
-  check((await page.locator("p", { hasText: "Trace a letra" }).locator(".letter-block").innerText()).trim() === "ç", "the 4th letter is ç");
-  await page.getByRole("button", { name: "🔊 Ouvir" }).click();
-  check((await lastSpoken())?.text === "cê cedilha", "its name is read: cê cedilha");
-  const box = await page.locator("canvas").boundingBox();
-  await page.mouse.move(box.x + 100, box.y + 100);
-  await page.mouse.down();
-  await page.mouse.move(box.x + 200, box.y + 150, { steps: 5 });
-  await page.mouse.up();
-  await page.waitForTimeout(800);
-  await page.screenshot({ path: `${shots}/pt-jogo-trace.png` });
+  if (await openPremium(context, page, "/pt/jogos/trace-a-letra", "/pt/jogos/trace-a-letra/jogar")) {
+    await page.getByRole("button", { name: "Cursiva" }).click();
+    await page.getByRole("button", { name: "Minúscula" }).click();
+    for (let i = 0; i < 3; i++) await page.getByRole("button", { name: "✅ Próxima letra →" }).click();
+    check(await page.getByText("Letra 4 de 27").isVisible(), "26 letters and Ç: Ç is the 4th");
+    check((await page.locator("p", { hasText: "Trace a letra" }).locator(".letter-block").innerText()).trim() === "ç", "the 4th letter is ç");
+    await page.getByRole("button", { name: "🔊 Ouvir" }).click();
+    check((await lastSpoken())?.text === "cê cedilha", "its name is read: cê cedilha");
+    const box = await page.locator("canvas").boundingBox();
+    await page.mouse.move(box.x + 100, box.y + 100);
+    await page.mouse.down();
+    await page.mouse.move(box.x + 200, box.y + 150, { steps: 5 });
+    await page.mouse.up();
+    await page.waitForTimeout(800);
+    await page.screenshot({ path: `${shots}/pt-jogo-trace.png` });
+  }
+  await closePremium(context);
 
   // O quiz: ten answers, then the end screen.
-  await page.goto(base + "/pt/jogos/quiz-do-alfabeto");
-  await page.waitForLoadState("networkidle");
-  const feedback = page.getByText(/^✓ Resposta certa!|^✗ A resposta certa era/);
-  for (let i = 0; i < 10; i++) {
-    await choiceButtons().first().click();
-    await feedback.waitFor();
-    await feedback.waitFor({ state: "detached", timeout: 5000 }).catch(() => {});
+  if (await openPremium(context, page, "/pt/jogos/quiz-do-alfabeto", "/pt/jogos/quiz-do-alfabeto/jogar")) {
+    const feedback = page.getByText(/^✓ Resposta certa!|^✗ A resposta certa era/);
+    for (let i = 0; i < 10; i++) {
+      await choiceButtons().first().click();
+      await feedback.waitFor();
+      await feedback.waitFor({ state: "detached", timeout: 5000 }).catch(() => {});
+    }
+    check(await page.getByRole("button", { name: "Jogar de novo" }).isVisible(), "the quiz ends with a score and « Jogar de novo »");
+    await page.screenshot({ path: `${shots}/pt-jogo-quiz-fim.png` });
   }
-  check(await page.getByRole("button", { name: "Jogar de novo" }).isVisible(), "the quiz ends with a score and « Jogar de novo »");
-  await page.screenshot({ path: `${shots}/pt-jogo-quiz-fim.png` });
+  await closePremium(context);
 
   // Bata palmas: ten words, counting claps.
   await page.goto(base + "/pt/jogos/bata-palmas");
@@ -1514,8 +1570,21 @@ console.log("Worksheets (phase 4)");
   await page.screenshot({ path: `${shots}/fr-fiche-cursive.png`, fullPage: true });
   await page.goto(base + "/fr/fiches/packs/pack-lettre-a");
   await page.waitForLoadState("networkidle");
-  const packHref = await page.getByRole("link", { name: /Télécharger le PDF \(6 pages\)/ }).getAttribute("href");
-  check((await page.request.get(base + packHref)).status() === 200, "pack PDF is served");
+  // Packs are a Pro download (PayPal phase 4): the button goes through the
+  // route, which sends a logged-out visitor to the login page; the old public
+  // PDF URL redirects to the pack page.
+  const packHref = await page.getByRole("link", { name: /Télécharger le pack complet/ }).getAttribute("href");
+  check(packHref === "/api/bundles/fr/pack-lettre-a", `pack download goes through the Pro route (${packHref})`);
+  const packRes = await page.request.get(base + packHref, { maxRedirects: 0 });
+  check(
+    packRes.status() === 303 && packRes.headers().location?.endsWith("/fr/connexion?next=%2Ffr%2Ffiches%2Fpacks%2Fpack-lettre-a"),
+    `logged out, the pack download opens the login page (${packRes.status()})`,
+  );
+  const oldRes = await page.request.get(base + "/fiches-pdf/packs/pack-lettre-a.pdf", { maxRedirects: 0 });
+  check(
+    oldRes.status() === 308 && oldRes.headers().location?.endsWith("/fr/fiches/packs/pack-lettre-a"),
+    `the old public pack PDF redirects to the pack page (${oldRes.status()})`,
+  );
   check(errors.length === 0, `no console/page errors${errors.length ? ": " + errors.slice(0, 3).join(" | ") : ""}`);
   await context.close();
 }
@@ -1640,41 +1709,44 @@ console.log("Games, school levels and activities (phase 6)");
   check((await lastSpoken())?.text.startsWith("Oui !"), "the picture's name is read aloud");
 
   // Le premier son.
-  await page.goto(base + "/fr/jeux/premier-son");
-  await page.waitForLoadState("networkidle");
-  await page.getByRole("button", { name: "🔊 Écouter le mot" }).click();
-  const word = await lastSpoken();
-  check(word?.lang === "fr-FR" && /^[a-zàâéèêîôûç]+$/.test(word.text), `the word is read alone (${word?.text})`);
-  check(!(await page.locator("main").getByText(word?.text ?? "∅", { exact: true }).count()), "the word isn't written on the page");
-  for (let i = 0; i < 4 && !(await page.getByText(/^✓ Bravo/).isVisible()); i++) await choiceButtons().nth(i).click();
-  check(await page.getByText(`« ${word?.text} » commence par`, { exact: false }).isVisible(), "the right letter is praised");
+  if (await openPremium(context, page, "/fr/jeux/premier-son", "/fr/jeux/premier-son/jouer")) {
+    await page.getByRole("button", { name: "🔊 Écouter le mot" }).click();
+    const word = await lastSpoken();
+    check(word?.lang === "fr-FR" && /^[a-zàâéèêîôûç]+$/.test(word.text), `the word is read alone (${word?.text})`);
+    check(!(await page.locator("main").getByText(word?.text ?? "∅", { exact: true }).count()), "the word isn't written on the page");
+    for (let i = 0; i < 4 && !(await page.getByText(/^✓ Bravo/).isVisible()); i++) await choiceButtons().nth(i).click();
+    check(await page.getByText(`« ${word?.text} » commence par`, { exact: false }).isVisible(), "the right letter is praised");
+  }
+  await closePremium(context);
 
   // Trace la lettre: cursive, minuscule, next letter, and a stroke.
-  await page.goto(base + "/fr/jeux/trace-la-lettre");
-  await page.waitForLoadState("networkidle");
-  await page.getByRole("button", { name: "Cursive" }).click();
-  await page.getByRole("button", { name: "Minuscule" }).click();
-  await page.getByRole("button", { name: "✅ Lettre suivante →" }).click();
-  check(await page.getByText("Lettre 2 sur 30").isVisible(), "next letter (30 letters with é è ê ç)");
-  const box = await page.locator("canvas").boundingBox();
-  await page.mouse.move(box.x + 100, box.y + 100);
-  await page.mouse.down();
-  await page.mouse.move(box.x + 200, box.y + 150, { steps: 5 });
-  await page.mouse.up();
-  await page.waitForTimeout(800);
-  await page.screenshot({ path: `${shots}/fr-jeu-trace.png` });
+  if (await openPremium(context, page, "/fr/jeux/trace-la-lettre", "/fr/jeux/trace-la-lettre/jouer")) {
+    await page.getByRole("button", { name: "Cursive" }).click();
+    await page.getByRole("button", { name: "Minuscule" }).click();
+    await page.getByRole("button", { name: "✅ Lettre suivante →" }).click();
+    check(await page.getByText("Lettre 2 sur 30").isVisible(), "next letter (30 letters with é è ê ç)");
+    const box = await page.locator("canvas").boundingBox();
+    await page.mouse.move(box.x + 100, box.y + 100);
+    await page.mouse.down();
+    await page.mouse.move(box.x + 200, box.y + 150, { steps: 5 });
+    await page.mouse.up();
+    await page.waitForTimeout(800);
+    await page.screenshot({ path: `${shots}/fr-jeu-trace.png` });
+  }
+  await closePremium(context);
 
   // Le quiz: ten answers, then the end screen.
-  await page.goto(base + "/fr/jeux/quiz-alphabet");
-  await page.waitForLoadState("networkidle");
-  const feedback = page.getByText(/^✓ Bonne réponse|^✗ La bonne réponse était/);
-  for (let i = 0; i < 10; i++) {
-    await choiceButtons().first().click();
-    await feedback.waitFor();
-    await feedback.waitFor({ state: "detached", timeout: 5000 }).catch(() => {});
+  if (await openPremium(context, page, "/fr/jeux/quiz-alphabet", "/fr/jeux/quiz-alphabet/jouer")) {
+    const feedback = page.getByText(/^✓ Bonne réponse|^✗ La bonne réponse était/);
+    for (let i = 0; i < 10; i++) {
+      await choiceButtons().first().click();
+      await feedback.waitFor();
+      await feedback.waitFor({ state: "detached", timeout: 5000 }).catch(() => {});
+    }
+    check(await page.getByRole("button", { name: "Rejouer" }).isVisible(), "the quiz ends with a score and « Rejouer »");
+    await page.screenshot({ path: `${shots}/fr-jeu-quiz-fin.png` });
   }
-  check(await page.getByRole("button", { name: "Rejouer" }).isVisible(), "the quiz ends with a score and « Rejouer »");
-  await page.screenshot({ path: `${shots}/fr-jeu-quiz-fin.png` });
+  await closePremium(context);
 
   // Maternelle, grande section, activités.
   await page.goto(base + "/fr/maternelle");

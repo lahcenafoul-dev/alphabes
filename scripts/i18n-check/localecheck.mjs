@@ -313,6 +313,8 @@ if (!config) {
   process.exit(1);
 }
 const { pages, rules, loginRedirect, sameWords } = config;
+const LANG = lang;
+const LOGIN_PATH = { fr: "/fr/connexion", es: "/es/iniciar-sesion", pt: "/pt/entrar" }[lang];
 const NAME = { fr: "French", es: "Spanish", pt: "Portuguese" }[lang];
 // The <html lang> each language's pages must have (Portuguese is Brazilian, P1).
 const HTML_LANG = { pt: "pt-BR" }[lang] ?? lang;
@@ -354,7 +356,13 @@ console.log(`\nChecking ${links.size} internal links found on ${NAME} pages…`)
 for (const l of [...links].sort()) {
   const { res } = await get(l);
   const where = res.headers.get("location");
-  const ok = res.status === 200 || (res.status === 307 && l.includes(loginRedirect));
+  // A whole-bundle download (Pro only, docs/paypal-plan.md) sends a
+  // logged-out visitor to this language's login page, then back to the bundle.
+  const bundleLogin =
+    l.startsWith(`/api/bundles/${LANG}/`) &&
+    res.status === 303 &&
+    !!where?.startsWith(`${base}${LOGIN_PATH}?next=`);
+  const ok = res.status === 200 || (res.status === 307 && l.includes(loginRedirect)) || bundleLogin;
   console.log(`  ${ok ? "✓" : "✗"} ${res.status} ${l}${where ? " -> " + where : ""}`);
   if (!ok) problems++;
 }
