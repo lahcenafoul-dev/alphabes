@@ -78,7 +78,10 @@
     "profile_not_found": "Profile not found.",
     "invalid_data": "Invalid data.",
     "story_not_found": "Story not found.",
-    "invalid_contact": "Please fill in all fields correctly."
+    "invalid_contact": "Please fill in all fields correctly.",
+    "forbidden": "This action isn't allowed.",
+    "no_subscription": "There is no subscription to cancel.",
+    "paypal_error": "PayPal couldn't complete this right now. Please try again."
   },
   "Login": {
     "title": "Log In",
@@ -123,35 +126,43 @@
     "description": "Compare AlphaBes Free and Pro plans. Pro is $7.99/month or $59/year.",
     "heading": "Pricing",
     "subtitle": "Start free. Upgrade any time.",
-    "intro": "The free plan covers the alphabet basics: letter lessons, a selection of worksheets, and a few games. Pro is for parents and teachers who want the full library — every printable worksheet across all 26 letters, every game, full phonics and CVC-word practice, printable bundles for a whole classroom, and progress tracking for each child.",
+    "intro": "The free plan includes every printable worksheet, the alphabet and phonics lessons, the free games, and progress tracking for each child. Pro adds the premium games and one-click downloads of whole worksheet bundles, for parents and teachers who want everything.",
     "currencyNote": "",
+    "billingNote": "Paid securely through PayPal. Pro renews automatically; cancel any time from your dashboard and keep Pro until the end of the period you've paid for.",
     "choose": "Choose {plan}",
     "startFree": "Start Free",
     "free": {
       "name": "Free",
       "price": "$0",
       "period": "",
-      "features": ["Basic alphabet lessons", "Selected worksheets", "Basic games"]
+      "features": [
+        "Every printable worksheet",
+        "Alphabet and phonics lessons",
+        "Free games",
+        "Progress tracking for each child"
+      ]
     },
     "monthly": {
       "name": "Pro Monthly",
       "price": "$7.99",
       "period": "/month",
       "features": [
-        "All worksheets",
-        "All games",
-        "Full phonics library",
-        "Progress tracking",
-        "Premium activities",
-        "Printable bundles"
+        "Everything in Free",
+        "3 premium games: Beginning Sound, Letter Tracing, Alphabet Quiz",
+        "Whole-bundle PDF downloads"
       ]
     },
     "annual": {
       "name": "Pro Annual",
       "price": "$59",
       "period": "/year",
-      "features": ["Everything in Pro Monthly", "2 months free vs. monthly"]
+      "features": ["Everything in Pro Monthly", "Save 38% compared with paying monthly"]
     }
+  },
+  "Checkout": {
+    "canceled": "Checkout canceled. You haven't been charged.",
+    "soon": "Pro subscriptions open very soon. Thanks for your patience!",
+    "error": "PayPal checkout didn't start. Please try again in a moment."
   },
   "Dashboard": {
     "title": "Dashboard",
@@ -165,8 +176,32 @@
     "lessonsCompleted": "{count} lessons completed",
     "storyTime": "📚 Story Time",
     "language": "{language, select, FR {Learns in French} ES {Learns in Spanish} PT {Learns in Portuguese} other {Learns in English}}",
-    "upsell": "Unlock every worksheet, game, and phonics lesson.",
+    "upsell": "Unlock the premium games and whole-bundle downloads with Pro.",
     "seePlans": "See Pro Plans"
+  },
+  "Billing": {
+    "heading": "Your subscription",
+    "free": "You're on the free plan.",
+    "monthly": "Pro Monthly · $7.99/month",
+    "annual": "Pro Annual · $59/year",
+    "renews": "Renews on {date, date, long}. Paid through PayPal.",
+    "activeNoDate": "Active. Paid through PayPal.",
+    "canceled": "Canceled: you keep Pro until {date, date, long} and won't be charged again.",
+    "ended": "Your Pro subscription ended on {date, date, long}.",
+    "suspended": "PayPal couldn't take your last payment, so Pro is paused. Update your payment method in PayPal, or start a new subscription from the pricing page.",
+    "manage": "Manage in PayPal",
+    "cancel": "Cancel subscription",
+    "cancelConfirm": "Cancel AlphaBes Pro? You keep Pro until {date, date, long} and won't be charged again.",
+    "cancelConfirmNoDate": "Cancel AlphaBes Pro? You won't be charged again.",
+    "cancelYes": "Yes, cancel",
+    "cancelNo": "Keep Pro",
+    "canceling": "Canceling…",
+    "switchNote": "To switch between monthly and yearly, cancel, then subscribe again once your paid period ends.",
+    "returnActive": "Welcome to AlphaBes Pro! Your subscription is active.",
+    "returnPending": "PayPal is still confirming your payment. Refresh this page in a minute.",
+    "returnProblem": "We couldn't confirm your subscription yet. If PayPal took a payment, it will appear here shortly; if it doesn't, contact us.",
+    "duplicate": "You already had Pro, so this second subscription was canceled. We'll refund its payment.",
+    "alreadyPro": "You already have AlphaBes Pro."
   },
   "ChildDashboard": {
     "title": "Child Dashboard",

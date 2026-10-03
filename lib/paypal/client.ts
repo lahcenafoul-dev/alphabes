@@ -14,6 +14,11 @@ export function paypalBaseUrl(mode: PayPalMode = paypalMode()): string {
   return mode === "live" ? "https://api-m.paypal.com" : "https://api-m.sandbox.paypal.com";
 }
 
+// Where a parent manages their automatic payments in their own PayPal account.
+export function paypalAutopayUrl(mode: PayPalMode = paypalMode()): string {
+  return mode === "live" ? "https://www.paypal.com/myaccount/autopay/" : "https://www.sandbox.paypal.com/myaccount/autopay/";
+}
+
 // A PayPal API failure. The message carries the status, PayPal's error name
 // and debug_id (for PayPal support), never the request or the credentials.
 export class PayPalError extends Error {

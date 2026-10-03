@@ -26,9 +26,18 @@ export type BillingWrite = Pick<
   | "syncedAt"
 >;
 
+// Why a subscription was left alone.
+export type IgnoreReason =
+  | "unknown_plan" // not one of our PayPal plans
+  | "not_paid" // waiting for the parent's approval
+  | "not_current" // an older subscription of this parent
+  | "no_custom_id"
+  | "other_account" // belongs to another parent
+  | "unknown_user";
+
 export type SyncDecision =
   | { kind: "write"; data: BillingWrite }
-  | { kind: "ignore"; reason: string }
+  | { kind: "ignore"; reason: IgnoreReason }
   // A second active subscription while the first one still gives Pro (two
   // checkouts at once). The newer one is canceled at PayPal; the owner
   // refunds its payment.
@@ -53,16 +62,16 @@ export function decideSync(
 ): SyncDecision {
   const now = opts.now ?? new Date();
   const choice: PlanChoice | null = planChoiceOf(sub.plan_id);
-  if (!choice) return { kind: "ignore", reason: "not an AlphaBes plan" };
+  if (!choice) return { kind: "ignore", reason: "unknown_plan" };
   if (sub.status === "APPROVAL_PENDING" || sub.status === "APPROVED") {
-    return { kind: "ignore", reason: "not approved and paid yet" };
+    return { kind: "ignore", reason: "not_paid" };
   }
 
   const same = existing?.paypalSubscriptionId === sub.id;
   if (existing?.paypalSubscriptionId && !same) {
     // Events about an older subscription of this parent change nothing; a
     // new active one replaces it, unless the current one still gives Pro.
-    if (sub.status !== "ACTIVE") return { kind: "ignore", reason: "not the parent's current subscription" };
+    if (sub.status !== "ACTIVE") return { kind: "ignore", reason: "not_current" };
     if (existing.status === "ACTIVE" && hasPro(existing, now)) return { kind: "duplicate" };
   }
   const prev = same ? existing : null;
@@ -109,7 +118,7 @@ export function decideSync(
 
 export type SyncResult =
   | { result: "updated"; userId: string; status: SubscriptionStatus; pro: boolean }
-  | { result: "ignored"; reason: string }
+  | { result: "ignored"; reason: IgnoreReason }
   | { result: "duplicate"; userId: string };
 
 // Fetches the subscription from PayPal and stores its state for the parent
@@ -123,13 +132,13 @@ export async function syncSubscription(
 ): Promise<SyncResult> {
   let sub = await getSubscription(paypalId);
   const userId = sub.custom_id;
-  if (!userId) return { result: "ignored", reason: "no custom_id" };
+  if (!userId) return { result: "ignored", reason: "no_custom_id" };
   if (opts.expectUserId && opts.expectUserId !== userId) {
-    return { result: "ignored", reason: "belongs to another account" };
+    return { result: "ignored", reason: "other_account" };
   }
 
   const user = await prisma.user.findUnique({ where: { id: userId }, include: { subscription: true } });
-  if (!user) return { result: "ignored", reason: "unknown user" };
+  if (!user) return { result: "ignored", reason: "unknown_user" };
 
   if (opts.refunded && (sub.status === "ACTIVE" || sub.status === "SUSPENDED")) {
     await cancelSubscription(sub.id, "Payment refunded");

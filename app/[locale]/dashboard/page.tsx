@@ -7,7 +7,10 @@ import { Link } from "@/i18n/navigation";
 import { isAvailable } from "@/lib/i18n/routes";
 import { initLocale, type LocaleParams } from "@/lib/i18n/server";
 import ClientMessages from "@/components/ClientMessages";
+import { hasPro } from "@/lib/billing/entitlement";
+import { confirmReturn, requestedNotice, type BillingNotice } from "@/lib/billing/return";
 import AddChildForm from "./add-child-form";
+import SubscriptionCard from "./subscription-card";
 
 export async function generateMetadata({ params }: { params: LocaleParams }): Promise<Metadata> {
   const locale = initLocale((await params).locale);
@@ -18,12 +21,29 @@ export async function generateMetadata({ params }: { params: LocaleParams }): Pr
   };
 }
 
-export default async function DashboardPage({ params }: { params: LocaleParams }) {
+export default async function DashboardPage({
+  params,
+  searchParams,
+}: {
+  params: LocaleParams;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}) {
   const locale = initLocale((await params).locale);
   const t = await getTranslations({ locale, namespace: "Dashboard" });
+  const tb = await getTranslations({ locale, namespace: "Billing" });
   const prisma = getPrisma();
   const session = await getServerSession(authOptions);
   const email = session?.user?.email;
+
+  // Back from PayPal: check the subscription with PayPal before reading the
+  // account, so the page already shows Pro (lib/billing/return.ts).
+  const query = await searchParams;
+  const asked = requestedNotice(query.billing);
+  let notice: BillingNotice | null = asked === "alreadyPro" ? "alreadyPro" : null;
+  if (asked === "return" && email) {
+    const me = await prisma.user.findUnique({ where: { email }, select: { id: true } });
+    if (me) notice = await confirmReturn(prisma, me.id, query.subscription_id);
+  }
 
   const user = email
     ? await prisma.user.findUnique({
@@ -33,7 +53,8 @@ export default async function DashboardPage({ params }: { params: LocaleParams }
     : null;
 
   const children = user?.children ?? [];
-  const plan = user?.subscription?.plan ?? "FREE";
+  const subscription = user?.subscription ?? null;
+  const pro = hasPro(subscription);
 
   return (
     <main id="main-content" className="mx-auto max-w-5xl px-6 py-12">
@@ -42,9 +63,15 @@ export default async function DashboardPage({ params }: { params: LocaleParams }
           {user?.name ? t("welcomeName", { name: user.name }) : t("welcome")}
         </h1>
         <span className="rounded-full bg-crayon-yellow px-4 py-1 font-display font-bold text-sm">
-          {plan === "FREE" ? t("freePlan") : t("proPlan")}
+          {pro ? t("proPlan") : t("freePlan")}
         </span>
       </div>
+
+      {notice && (
+        <p role="status" className="mt-6 rounded-block bg-crayon-yellow/30 border border-crayon-yellow px-5 py-3 font-bold">
+          {tb(notice)}
+        </p>
+      )}
 
       {children.length === 0 ? (
         <div className="mt-10 rounded-block border border-dashed border-chalkboard/20 p-10 text-center">
@@ -93,7 +120,9 @@ export default async function DashboardPage({ params }: { params: LocaleParams }
         </>
       )}
 
-      {plan === "FREE" && (
+      {subscription?.paypalSubscriptionId && <SubscriptionCard locale={locale} sub={subscription} />}
+
+      {!pro && subscription?.status !== "SUSPENDED" && (
         <div className="mt-10 rounded-block bg-chalkboard text-paper p-6 flex flex-wrap items-center justify-between gap-4">
           <p className="font-display font-bold">{t("upsell")}</p>
           <Link href="/pricing" className="rounded-block bg-crayon-yellow text-chalkboard font-display font-bold px-5 py-2.5">

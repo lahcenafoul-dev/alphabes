@@ -78,7 +78,10 @@
     "profile_not_found": "Não encontramos o perfil.",
     "invalid_data": "Dados inválidos.",
     "story_not_found": "Não encontramos a história.",
-    "invalid_contact": "Preencha todos os campos corretamente."
+    "invalid_contact": "Preencha todos os campos corretamente.",
+    "forbidden": "Esta ação não é permitida.",
+    "no_subscription": "Não há assinatura para cancelar.",
+    "paypal_error": "O PayPal não conseguiu concluir a operação. Tente de novo daqui a pouco."
   },
   "Login": {
     "title": "Entrar",
@@ -123,35 +126,43 @@
     "description": "Compare os planos Grátis e Pro do AlphaBes. O Pro custa US$ 7,99 por mês ou US$ 59 por ano.",
     "heading": "Preços",
     "subtitle": "Comece de graça. Passe para o Pro quando quiser.",
-    "intro": "O plano grátis cobre o básico do alfabeto: as lições das letras, uma seleção de atividades e alguns jogos. O Pro é para mães, pais e professores que querem todo o conteúdo: todas as atividades para imprimir das 26 letras e do Ç, todos os jogos, todas as sílabas, pacotes de atividades para a turma inteira e o acompanhamento do progresso de cada criança.",
+    "intro": "O plano grátis inclui todas as atividades para imprimir, as lições do alfabeto e das sílabas, os jogos grátis e o acompanhamento do progresso de cada criança. O Pro acrescenta os jogos premium e o download dos pacotes de atividades em um único PDF, para mães, pais e professores que querem tudo.",
     "currencyNote": "Preços em dólares americanos (USD).",
+    "billingNote": "Pagamento seguro pelo PayPal. O Pro renova automaticamente; você pode cancelar quando quiser na sua conta e continua com o Pro até o fim do período pago.",
     "choose": "Escolher {plan}",
     "startFree": "Começar grátis",
     "free": {
       "name": "Grátis",
       "price": "US$ 0",
       "period": "",
-      "features": ["As primeiras lições do alfabeto", "Uma seleção de atividades", "Alguns jogos"]
+      "features": [
+        "Todas as atividades para imprimir",
+        "As lições do alfabeto e das sílabas",
+        "Os jogos grátis",
+        "O acompanhamento do progresso de cada criança"
+      ]
     },
     "monthly": {
       "name": "Pro mensal",
       "price": "US$ 7,99",
       "period": "/mês",
       "features": [
-        "Todas as atividades",
-        "Todos os jogos",
-        "Todas as sílabas",
-        "Acompanhamento do progresso",
-        "Brincadeiras premium",
-        "Pacotes de atividades para imprimir"
+        "Tudo do plano grátis",
+        "3 jogos premium: Com que sílaba começa?, Trace a letra e O quiz do alfabeto",
+        "Os pacotes de atividades em um único PDF"
       ]
     },
     "annual": {
       "name": "Pro anual",
       "price": "US$ 59",
       "period": "/ano",
-      "features": ["Tudo do Pro mensal", "2 meses grátis em relação ao plano mensal"]
+      "features": ["Tudo do Pro mensal", "Economia de 38% em relação ao plano mensal"]
     }
+  },
+  "Checkout": {
+    "canceled": "Pagamento cancelado. Nada foi cobrado.",
+    "soon": "As assinaturas Pro abrem em breve. Obrigado pela paciência!",
+    "error": "Não foi possível iniciar o pagamento com o PayPal. Tente de novo daqui a pouco."
   },
   "Dashboard": {
     "title": "Minha conta",
@@ -165,8 +176,32 @@
     "lessonsCompleted": "{count, plural, =0 {Nenhuma lição concluída} one {# lição concluída} other {# lições concluídas}}",
     "storyTime": "📚 Histórias",
     "language": "{language, select, PT {Aprende em português} FR {Aprende em francês} ES {Aprende em espanhol} other {Aprende em inglês}}",
-    "upsell": "Desbloqueie todas as atividades, todos os jogos e todas as lições de sílabas.",
+    "upsell": "Desbloqueie os jogos premium e os pacotes de atividades em um único PDF com o Pro.",
     "seePlans": "Ver os planos Pro"
+  },
+  "Billing": {
+    "heading": "Sua assinatura",
+    "free": "Você está no plano grátis.",
+    "monthly": "Pro mensal · US$ 7,99 por mês",
+    "annual": "Pro anual · US$ 59 por ano",
+    "renews": "Renova em {date, date, long}. Pagamento pelo PayPal.",
+    "activeNoDate": "Assinatura ativa. Pagamento pelo PayPal.",
+    "canceled": "Assinatura cancelada: você continua com o Pro até {date, date, long}, sem novas cobranças.",
+    "ended": "Sua assinatura Pro terminou em {date, date, long}.",
+    "suspended": "O PayPal não conseguiu cobrar seu último pagamento, então o Pro está pausado. Atualize sua forma de pagamento no PayPal ou assine de novo pela página de preços.",
+    "manage": "Gerenciar no PayPal",
+    "cancel": "Cancelar assinatura",
+    "cancelConfirm": "Cancelar o AlphaBes Pro? Você continua com o Pro até {date, date, long}, sem novas cobranças.",
+    "cancelConfirmNoDate": "Cancelar o AlphaBes Pro? Não haverá novas cobranças.",
+    "cancelYes": "Sim, cancelar",
+    "cancelNo": "Manter o Pro",
+    "canceling": "Cancelando…",
+    "switchNote": "Para trocar entre o plano mensal e o anual, cancele e assine de novo quando terminar o período já pago.",
+    "returnActive": "Boas-vindas ao AlphaBes Pro! Sua assinatura está ativa.",
+    "returnPending": "O PayPal ainda está confirmando seu pagamento. Atualize esta página daqui a um minuto.",
+    "returnProblem": "Ainda não conseguimos confirmar sua assinatura. Se o PayPal cobrou um pagamento, ele vai aparecer aqui em breve; se não, fale com a gente.",
+    "duplicate": "Você já tinha o Pro, então cancelamos esta segunda assinatura. Vamos reembolsar o pagamento dela.",
+    "alreadyPro": "Você já tem o AlphaBes Pro."
   },
   "ChildDashboard": {
     "title": "Perfil da criança",
