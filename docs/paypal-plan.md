@@ -1,6 +1,6 @@
 # PayPal Subscriptions for AlphaBes: plan and status
 
-Last updated: 2026-10-03 (**plan approved by the owner** with the changes in "Decisions"; phase 1 done, waiting for the OK to push and start phase 2). Read this first when continuing the billing work, together with CLAUDE.md. Any page work also follows the language rules in [french-plan.md](french-plan.md), [spanish-plan.md](spanish-plan.md) and [portuguese-plan.md](portuguese-plan.md).
+Last updated: 2026-10-03 (**plan approved by the owner** with the changes in "Decisions"; phases 1–2 done, waiting for the OK to push and start phase 3). Read this first when continuing the billing work, together with CLAUDE.md. Any page work also follows the language rules in [french-plan.md](french-plan.md), [spanish-plan.md](spanish-plan.md) and [portuguese-plan.md](portuguese-plan.md).
 
 ## Goal
 
@@ -35,7 +35,7 @@ Everything in the PayPal **developer dashboard** (developer.paypal.com, logged i
    PAYPAL_CLIENT_SECRET=...
    ```
 2. **Sandbox buyer accounts** (Sandbox Accounts → Create → Personal), one per test country so PayPal's pages appear in each language: US (English), France (French), Mexico (Spanish), Brazil (Portuguese). Note their passwords; they only hold fake money.
-3. **Product and plans:** I add `scripts/paypal-setup-plans.mjs` (from wayalt's). You run it once per environment; it creates the product "AlphaBes Pro" and the plans (monthly, yearly, and in sandbox only a **daily test plan** to see renewals within a day), and writes the plan IDs into `.env` without printing them. You can also create them by hand in the sandbox business account (sandbox.paypal.com → Pay & Get Paid → Subscriptions); then paste the plan IDs into `.env` as `PAYPAL_PLAN_MONTHLY`, `PAYPAL_PLAN_YEARLY`.
+3. **Product and plans:** I add `scripts/paypal/setup-plans.mjs` (from wayalt's). You run it once per environment; it creates the product "AlphaBes Pro" and the plans (monthly, yearly, and in sandbox only a **daily test plan** to see renewals within a day), and writes the plan IDs into `.env` without printing them. You can also create them by hand in the sandbox business account (sandbox.paypal.com → Pay & Get Paid → Subscriptions); then paste the plan IDs into `.env` as `PAYPAL_PLAN_MONTHLY`, `PAYPAL_PLAN_YEARLY`.
 4. **Webhook** (in the `AlphaBes` sandbox app → Webhooks → Add Webhook). For local tests the URL is a Cloudflare tunnel to `npm run dev` (`cloudflared tunnel --url http://localhost:3000`, URL + `/api/paypal/webhook`); for the check on alphabes.com it's `https://alphabes.com/api/paypal/webhook`. An app can have several webhooks; each has its own ID. Events:
    - `BILLING.SUBSCRIPTION.ACTIVATED`, `BILLING.SUBSCRIPTION.UPDATED`, `BILLING.SUBSCRIPTION.RE-ACTIVATED`
    - `BILLING.SUBSCRIPTION.SUSPENDED`, `BILLING.SUBSCRIPTION.PAYMENT.FAILED`
@@ -138,13 +138,27 @@ Each phase ends with `npx tsc --noEmit`, `npm run lint`, `npx vitest run`, `npm 
 |---|---|---|
 | 0 | This plan; branch `paypal-subscriptions` (from `portuguese-version` at f373e43, which is `origin/main` plus one plan commit). You create the sandbox app, accounts, plans and webhook (steps 1–4). | **Done** (2026-10-03): plan approved. Sandbox setup (steps 1–4) is the owner's, needed before phase 2 tests. |
 | 1 | Schema + migration 1 (generated without a database), applied to `dev` with `migrate deploy`; read-only check of `dev` after. `entitlement.ts` with unit tests. | **Done** (2026-10-03), committed, not pushed. Migration `20261003200000_paypal_subscriptions` generated with `migrate diff --from-schema-datamodel/--to-schema-datamodel` (no database, no shadow), applied to `dev` only (`.env` checked: endpoint `ep-shiny-breeze-b1bguixr` = `dev`). `dev` read-only before: 5 migrations, 6 users, 6 `Subscription` rows, Stripe columns empty, PostgreSQL 18; after: 6 migrations, none failed, same rows, new columns, `PaymentEvent`, indexes and statuses present. `lib/billing/entitlement.ts` (`hasPro`: active + 3-day renewal grace; canceled/expired until the paid period ends; pending/suspended no). 287 unit tests (6 new), tsc, lint, build 2,025 pages (unchanged). No page code changed, so no snapshot comparison was needed. |
-| 2 | `lib/paypal/*`, `lib/billing/sync.ts`, the three API routes, `scripts/paypal-setup-plans.mjs` and `scripts/paypal-setup-webhook.mjs`. Unit tests: event → subscription id mapping, raw-body verification request, duplicate events, wrong `custom_id`, unknown plan, refund. | |
+| 2 | `lib/paypal/*`, `lib/billing/sync.ts`, the three API routes, `scripts/paypal/setup-plans.mjs` and `scripts/paypal/setup-webhook.mjs`. Unit tests. | **Done** (2026-10-03), committed (d873bcb, 6d20788), not pushed. 318 unit tests (31 new: plans and period ends, raw-body signature request, unsigned/forged events, duplicate and retried events, every sync case incl. refund and duplicate subscriptions, `.env` writer), tsc, lint, build (2,028 = 2,025 pages + the 3 new API routes). Smoke test on `next start`: webhook without signature 400, subscribe/cancel from another origin 403, logged-out subscribe → localized login with `next` (`/fr/connexion?next=/fr/tarifs`, `/pt/entrar?next=/pt/precos`, `/login?next=/pricing`), cancel logged out 401, pricing pages unchanged. Logged-in flows need the sandbox plans (see "Phase 2 notes"). |
 | 3 | Pricing page and dashboard subscription card in 4 languages, messages, return/cancel handling. | |
 | 4 | Server-side gating per B4: play pages, story check, bundle route, paywall, game titles/JSON-LD; routes added to `i18n/routing.ts`, `lib/i18n/routes.ts` (the play pages excluded from the sitemap and `noindex`), `known-params.ts`. | |
 | 5 | Remove Stripe: `lib/stripe.ts`, `app/api/stripe/`, the `stripe` package, `.env.example` (PayPal variables with empty values), README, `localecheck.mjs` allow-list (`Stripe` → `PayPal`). | |
 | 6 | Legal pages ×4, refund page ×4 (routes, sitemap, hreflang, footer). | |
 | 7 | Sandbox end-to-end, locally through the tunnel: subscribe monthly and yearly in each language with the 4 sandbox buyers (PayPal page in the right language, dashboard shows Pro, gated content opens); renewal with the daily test plan (`PAYMENT.SALE.COMPLETED`, period moves forward, no duplicate); "Resend" an event from the PayPal dashboard (no double processing); a forged/unsigned POST (400, nothing changes); suspend through the API and reactivate; cancel from the dashboard and from the PayPal buyer account (Pro until period end); refund from the merchant account (Pro ends); buy twice (refused). Test accounts on `dev` removed afterwards. | |
 | 8 | Launch (below). | |
+
+### Phase 2 notes
+
+- **Settings** (`.env` locally, Cloudflare in production): `PAYPAL_MODE` (`sandbox`|`live`, anything else = sandbox), `PAYPAL_CLIENT_ID`, `PAYPAL_CLIENT_SECRET`, `PAYPAL_WEBHOOK_ID`, `PAYPAL_PLAN_MONTHLY`, `PAYPAL_PLAN_YEARLY`, and in sandbox only `PAYPAL_PLAN_TEST` (the $1 daily plan; ignored in live mode).
+- **Owner's sandbox setup:**
+  1. `node --env-file=.env scripts/paypal/setup-plans.mjs`: creates the product and the three sandbox plans and writes the three plan variables into `.env` (not printed). Stops if they're already set (`--force` to make a new set).
+  2. Start a tunnel to `npm run dev` (`cloudflared tunnel --url http://localhost:3000`, cloudflared is not installed yet: `winget install --id Cloudflare.cloudflared`), then `node --env-file=.env scripts/paypal/setup-webhook.mjs https://<tunnel>/api/paypal/webhook`. The first run creates the webhook and writes `PAYPAL_WEBHOOK_ID`; later runs (new tunnel address) move the same webhook to the new URL.
+  3. Restart `npm run dev` so it reads the new `.env` values.
+  Live mode (phase 8): same scripts with the live values and `--live`, run by the owner in their own terminal; they print the IDs for Cloudflare.
+- **Who can check out:** while `PAYPAL_MODE=sandbox`, only `ADMIN` accounts (others go back to pricing with `?billing=soon`, shown in phase 3). The daily test plan (`plan=test`) is admin-only and sandbox-only.
+- **Linking:** a subscription carries the parent's `User.id` as `custom_id`; the subscribe route stores nothing. A subscription is written to the database only once PayPal reports it active (approved and paid), by the webhook or by the return to the dashboard (phase 3), whichever comes first.
+- **Refunds:** any refund or reversal of a subscription payment (`PAYMENT.SALE.REFUNDED`/`REVERSED`) cancels the subscription at PayPal and ends Pro at once, partial refunds included. To refund part of a payment and keep Pro, don't use a PayPal refund; ask me for a manual fix instead.
+- **Two subscriptions at once** (two checkouts in two tabs): the second one is canceled at PayPal automatically and logged (`duplicate subscription … refund its payment`); the owner refunds its payment.
+- **Failed renewals:** PayPal retries; Pro continues for 3 days after the due date; after 2 failed attempts PayPal suspends the subscription and Pro stops. A new subscription cancels the suspended one first.
 
 ## Launch (phase 8)
 
