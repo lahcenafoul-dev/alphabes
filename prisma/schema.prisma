@@ -35,6 +35,9 @@ enum SubscriptionPlan {
   PRO_ANNUAL
 }
 
+// The first eight values come from the old Stripe scaffolding; PayPal
+// subscriptions use ACTIVE, APPROVAL_PENDING, SUSPENDED, CANCELED and
+// EXPIRED (docs/paypal-plan.md).
 enum SubscriptionStatus {
   ACTIVE
   PAST_DUE
@@ -44,6 +47,9 @@ enum SubscriptionStatus {
   INCOMPLETE_EXPIRED
   UNPAID
   PAUSED
+  APPROVAL_PENDING
+  SUSPENDED
+  EXPIRED
 }
 
 model User {
@@ -258,11 +264,32 @@ model Subscription {
   user                 User               @relation(fields: [userId], references: [id], onDelete: Cascade)
   plan                 SubscriptionPlan   @default(FREE)
   status               SubscriptionStatus @default(ACTIVE)
+  // Unused; dropped once the PayPal version is live (docs/paypal-plan.md,
+  // migration 2).
   stripeCustomerId     String?            @unique
   stripeSubscriptionId String?            @unique
+  // Copied from PayPal by lib/billing/sync.ts, the only code that writes
+  // billing state. currentPeriodEnd is the end of the paid period.
+  paypalSubscriptionId String?            @unique
+  paypalPlanId         String?
   currentPeriodEnd     DateTime?
+  canceledAt           DateTime?
+  lastPaymentAt        DateTime?
+  syncedAt             DateTime?
   createdAt            DateTime           @default(now())
   updatedAt            DateTime           @updatedAt
+}
+
+// One row per PayPal webhook event (id = PayPal's event id), so a retried
+// or replayed event is never processed twice.
+model PaymentEvent {
+  id          String    @id
+  type        String
+  resourceId  String    // the PayPal subscription id the event is about
+  receivedAt  DateTime  @default(now())
+  processedAt DateTime?
+
+  @@index([resourceId])
 }
 
 // ---------- Content / Marketing ----------
