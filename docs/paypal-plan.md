@@ -1,6 +1,6 @@
 # PayPal Subscriptions for AlphaBes: plan and status
 
-Last updated: 2026-10-03 (**plan approved by the owner** with the changes in "Decisions"; phase 1 in progress). Read this first when continuing the billing work, together with CLAUDE.md. Any page work also follows the language rules in [french-plan.md](french-plan.md), [spanish-plan.md](spanish-plan.md) and [portuguese-plan.md](portuguese-plan.md).
+Last updated: 2026-10-03 (**plan approved by the owner** with the changes in "Decisions"; phase 1 done, waiting for the OK to push and start phase 2). Read this first when continuing the billing work, together with CLAUDE.md. Any page work also follows the language rules in [french-plan.md](french-plan.md), [spanish-plan.md](spanish-plan.md) and [portuguese-plan.md](portuguese-plan.md).
 
 ## Goal
 
@@ -137,7 +137,7 @@ Each phase ends with `npx tsc --noEmit`, `npm run lint`, `npx vitest run`, `npm 
 | # | Content | Status |
 |---|---|---|
 | 0 | This plan; branch `paypal-subscriptions` (from `portuguese-version` at f373e43, which is `origin/main` plus one plan commit). You create the sandbox app, accounts, plans and webhook (steps 1–4). | **Done** (2026-10-03): plan approved. Sandbox setup (steps 1–4) is the owner's, needed before phase 2 tests. |
-| 1 | Schema + migration 1 (generated without a database), applied to `dev` with `migrate deploy`; read-only check of `dev` after. `entitlement.ts` with unit tests. | |
+| 1 | Schema + migration 1 (generated without a database), applied to `dev` with `migrate deploy`; read-only check of `dev` after. `entitlement.ts` with unit tests. | **Done** (2026-10-03), committed, not pushed. Migration `20261003200000_paypal_subscriptions` generated with `migrate diff --from-schema-datamodel/--to-schema-datamodel` (no database, no shadow), applied to `dev` only (`.env` checked: endpoint `ep-shiny-breeze-b1bguixr` = `dev`). `dev` read-only before: 5 migrations, 6 users, 6 `Subscription` rows, Stripe columns empty, PostgreSQL 18; after: 6 migrations, none failed, same rows, new columns, `PaymentEvent`, indexes and statuses present. `lib/billing/entitlement.ts` (`hasPro`: active + 3-day renewal grace; canceled/expired until the paid period ends; pending/suspended no). 287 unit tests (6 new), tsc, lint, build 2,025 pages (unchanged). No page code changed, so no snapshot comparison was needed. |
 | 2 | `lib/paypal/*`, `lib/billing/sync.ts`, the three API routes, `scripts/paypal-setup-plans.mjs` and `scripts/paypal-setup-webhook.mjs`. Unit tests: event → subscription id mapping, raw-body verification request, duplicate events, wrong `custom_id`, unknown plan, refund. | |
 | 3 | Pricing page and dashboard subscription card in 4 languages, messages, return/cancel handling. | |
 | 4 | Server-side gating per B4: play pages, story check, bundle route, paywall, game titles/JSON-LD; routes added to `i18n/routing.ts`, `lib/i18n/routes.ts` (the play pages excluded from the sitemap and `noindex`), `known-params.ts`. | |
