@@ -1,6 +1,6 @@
 # Portuguese version of AlphaBes: plan and status
 
-Last updated: 2026-10-03 (phases 0–3 pushed; phase 4 done, not pushed). Read this first when continuing the Portuguese work, together with CLAUDE.md, [french-plan.md](french-plan.md) and [spanish-plan.md](spanish-plan.md): the Portuguese work reuses everything built for French and Spanish.
+Last updated: 2026-10-03 (phases 0–4 pushed; phase 5 done, not pushed). Read this first when continuing the Portuguese work, together with CLAUDE.md, [french-plan.md](french-plan.md) and [spanish-plan.md](spanish-plan.md): the Portuguese work reuses everything built for French and Spanish.
 
 ## Goal
 
@@ -185,6 +185,12 @@ One migration written by hand (no shadow database): `ALTER TYPE "Locale" ADD VAL
 - **Files:** `public/atividades-pdf/<category>/<slug>.pdf`, `previas/<slug>.jpg`, `pacotes/<slug>.pdf`. Some sheet slugs are the same words as Spanish ones (`letra-a-cursiva`, `numero-3`): harmless, they live under `/pt/atividades` and `/es/fichas` and are never paired.
 - **Links:** letter pages list their seven sheets and their pack; the tracing page downloads the bastão, forma and cursive PDFs; syllable pages show their sheets and the sheets link back; the home page shows “Atividades populares”.
 
+## Phase 5 notes
+
+- **Stories:** `portugueseStories` in `prisma/stories-data.ts`, the 8 approved titles and slugs, same pictures and order as the other languages (`translationGroup` apple … lion). Characters: Bia (apple), Beto and his friend Tuca, Mimi, Totó, Lili and a sapinho, Bolinha and a caranguejinho, Juju the owl and a ratinho, Leo. Brazilian words and forms (cachorrinho, tirar uma soneca, esconde-esconde, “Vem nadar comigo!”), “ ” quotation marks. `tests/i18n/stories.test.ts` checks twins, slugs, no Portugal-only words (with “bebê”, not “bebé”), no Spanish words (compared with accents kept, so “lá” is not “la”), quotes closed.
+- **Database:** seeded on the Neon `dev` branch on 2026-10-03 with `node --env-file=.env node_modules/tsx/dist/cli.mjs prisma/seed-stories.ts` (host checked: `ep-shiny-breeze-b1bguixr`). Checked read-only: 8 stories, 40 pages, 8 translation groups per language. Production at launch (phase 7), after the deploy.
+- **Pages:** `/pt/historias` (`stories-pt.tsx`, stories with `locale = PT`), `/pt/historias/[slug]` (the shared story page: Portuguese title “… : uma história para ler e ouvir”, description and breadcrumb). The reader's “🔊 Ouvir” / “⏹ Parar” (`StoryAudio`, written in phase 1) reads with the browser's Brazilian voice, then any pt voice; no recorded audio.
+
 ## Phases
 
 | Phase | Content | Status |
@@ -194,7 +200,7 @@ One migration written by hand (no shadow database): `ALTER TYPE "Locale" ADD VAL
 | 2 | Alfabeto: `lib/letters-pt.ts` (26 + Ç + acentos), chart, letter pages with the 4 tipos de letra, cartões, speech (P10), tracing canvas bastão/forma/cursiva, Playwrite BR licence check. | **Done** (2026-10-03), not pushed. English, French and Spanish identical to the baseline apart from hreflang: since phase 1, 86 pages gained one `hreflang="pt"` line (the alphabet, the 26 letters and the cards in the three languages, and the sample A tracing page in English and French), nothing removed. Sitemap: 1,280 URLs, 37 Portuguese. `localecheck pt`, `fr`, `es` pass, 440 browser checks, 221 unit tests, build 2,082 pages. See "Phase 2 notes". |
 | 3 | Sílabas: ~25 pages, builders, clapping, picture hunt. | **Done** (2026-10-03), not pushed. 24 pages (see "Phase 3 notes"). English, French and Spanish identical to the baseline apart from hreflang: since phase 2 only `/phonics`, `/fr/sons` and `/es/silabas` gained one `hreflang="pt"` line. Sitemap: 1,305 URLs, 62 Portuguese. `localecheck pt`, `fr`, `es` pass, 466 browser checks (exercises played with a fake pt-BR voice), 240 unit tests, build 2,098 pages (the first build attempt failed fetching Google Fonts in `next/font`, as on 2026-10-02; the retry passed). |
 | 4 | Atividades para imprimir: PDFs and pacotes (P6). | **Done** (2026-10-03), not pushed. 272 sheets and 43 packs (587 files, 40 MB), see "Phase 4 notes". English, French and Spanish identical to the baseline apart from hreflang: since phase 3 only `/worksheets`, `/worksheets/bundles`, `/fr/fiches`, `/fr/fiches/packs`, `/es/fichas`, `/es/fichas/paquetes` gained one `hreflang="pt"` line. Sitemap: 1,637 URLs, 394 Portuguese. `localecheck pt`, `fr`, `es` pass, 486 browser checks (a Portuguese PDF downloaded and checked), 260 unit tests, build 2,022 pages. |
-| 5 | Histórias: 8 stories, seed `dev`, Portuguese voice reader. | To do |
+| 5 | Histórias: 8 stories, seed `dev`, Portuguese voice reader. | **Done** (2026-10-03), not pushed. English, French and Spanish identical to the baseline apart from hreflang: since phase 4 only the three story lists and the 24 English, French and Spanish stories gained one `hreflang="pt"` line (27 pages). Sitemap: 1,646 URLs, 403 Portuguese; each story lists its four twins. `localecheck pt`, `fr`, `es` pass, 513 browser checks (Portuguese story read with a fake pt-BR voice; no-voice help), 264 unit tests, build 2,022 pages. Seeded on `dev` only. See "Phase 5 notes". |
 | 6 | Jogos (P9), educação infantil, primeiro ano, brincadeiras, "Português" in the child language select, games on the home page. | To do |
 | 7 | Launch (below). | To do |
 
