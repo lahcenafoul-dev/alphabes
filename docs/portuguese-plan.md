@@ -1,6 +1,6 @@
 # Portuguese version of AlphaBes: plan and status
 
-Last updated: 2026-10-03 (phases 0–1 pushed; phase 2 done, not pushed). Read this first when continuing the Portuguese work, together with CLAUDE.md, [french-plan.md](french-plan.md) and [spanish-plan.md](spanish-plan.md): the Portuguese work reuses everything built for French and Spanish.
+Last updated: 2026-10-03 (phases 0–2 pushed; phase 3 done, not pushed). Read this first when continuing the Portuguese work, together with CLAUDE.md, [french-plan.md](french-plan.md) and [spanish-plan.md](spanish-plan.md): the Portuguese work reuses everything built for French and Spanish.
 
 ## Goal
 
@@ -168,6 +168,15 @@ One migration written by hand (no shadow database): `ALTER TYPE "Locale" ADD VAL
 - **Tracing:** `TracingCanvas` takes `prints` (several print styles before cursive: *Bastão* “A”, *Forma* “a”) and the ruling `"caligrafia"`: the four lines of the Brazilian *caderno de caligrafia*, spaced 1.3 x-heights above the middle line and below the baseline to fit Playwrite BR, centred on the canvas. English, French and Spanish canvases are unchanged (same buttons and labels).
 - **Routing:** `c-cedilha` and `acentos` are Portuguese-only (`LOCALE_ONLY_PARAMS.pt`); `PORTUGUESE_VALIDATORS` lists the letter params; switching language on Ç or the accents page goes to the other language's alphabet, and Spanish ñ / French ç go to `/pt/alfabeto`.
 
+## Phase 3 notes
+
+- **Pages** (`lib/silabas-pt.ts`, slugs also in `PORTUGUESE_SYLLABLE_SLUGS`): 24 instead of the ~25 planned, because two planned pages would have repeated others: “r forte e fraco” is part of `rr` (“O R forte e o RR”) and “s com som de z” is part of `ss` (“O SS e o S com som de Z”); “g-e-gu” became `g-e-j` (ga/go/gu, ge/gi and the j), since `gu` has its own page. Groups: *As vogais e as famílias silábicas* (vogais, encontros-vocalicos, familias-silabicas, contar-silabas), *Os dígrafos* (ch, lh, nh, rr, ss, qu, gu), *Os sons nasais* (til, an-en-in-on-un, am-em-im-om-um), *As sílabas complexas* (encontros-com-r, encontros-com-l, ar-er-ir-or-ur, as-es-is-os-us, al-el-il-ol-ul, c-e-cedilha, g-e-j, x, h-inicial), *Ler com fluência* (palavras-frequentes). Picture hunts on 15 pages, with minimal pairs (sono/sonho, pato/prato, carro/pera, casa/osso, anel/chapéu, guitarra/pinguim).
+- **Brazilian points written in:** the r and the s at the end of a syllable vary by region (all correct, same spelling); the l at the end of a syllable is u (“sau”) with the tip “sal → salgado”; “m antes de p e b”; the trema was abolished in 2009 (pinguim, linguiça: the u is heard); the BNCC expects children to read by the end of the 2º ano.
+- **Speech:** family tiles and the syllable builder say `ptSyllableSpoken(s)`: open e and o as in class (“bé”, “bó”, “lhé”), so a voice doesn't read “be” as the letter name “bê”. Syllables inside real words (Monte a palavra, Bata palmas) are read as written.
+- **Components:** `WordBuilder` and `SyllableClap` take `locale` ("es" default, Spanish unchanged), `SoundHunt` and `SyllableBuilder` gained Portuguese labels. The builder offers p, b, t, d, f, v, m, n, l, s, j, r, ch, lh, nh (c and g have their own pages).
+- **Links:** letter pages link to their syllable page (`SYLLABLE_PAGE` in `letter-pt.tsx`; k, w, y have none); the home page's syllable cards link to vogais, familias-silabicas, ch and til. `ch` exists in Spanish and Portuguese but they are not twins (the switcher goes to the other index).
+- The syllable pages get their printable sheets in phase 4.
+
 ## Phases
 
 | Phase | Content | Status |
@@ -175,7 +184,7 @@ One migration written by hand (no shadow database): `ALTER TYPE "Locale" ADD VAL
 | 0 | Branch; this plan; baseline snapshots of English, French **and Spanish** from `main`; `snapshot.mjs` takes Spanish by default; `localecheck.mjs pt` (handles `lang="pt-BR"`). | **Done** (2026-10-03), not pushed. Baseline in `../snap-pt-base`: 1,256 routes (496 English, 382 French, 378 Spanish) from `main` 3e30909, build 1,515 pages; a second snapshot of the same build is identical, so the comparison is repeatable. On that build `localecheck` passes for `fr`, `es` and `pt` (`pt`: 9 routing rules, every `/pt` URL 404s until phase 1), 334 browser checks pass. tsc, lint and 189 unit tests pass on the branch. |
 | 1 | Four-language foundation, header switcher (P12), `messages/pt.json`, Portuguese UI pages (home, quem somos, preços, contato, entrar, cadastro, minha conta, legal LGPD placeholders, cookies), Portuguese 404, API errors, `PT` migration on `dev`. | **Done** (2026-10-03), not pushed. English, French and Spanish identical to the baseline (1,256 routes) apart from hreflang: the 7 twins of the Portuguese pages in each language (21 pages) each gained one `hreflang="pt"` line, nothing else. Sitemap: 1,250 URLs, 7 Portuguese ones with four-way alternates. `localecheck pt`, `fr` and `es` pass, 411 browser checks, 205 unit tests, build 2,079 pages (was 1,515). See "Phase 1 notes". |
 | 2 | Alfabeto: `lib/letters-pt.ts` (26 + Ç + acentos), chart, letter pages with the 4 tipos de letra, cartões, speech (P10), tracing canvas bastão/forma/cursiva, Playwrite BR licence check. | **Done** (2026-10-03), not pushed. English, French and Spanish identical to the baseline apart from hreflang: since phase 1, 86 pages gained one `hreflang="pt"` line (the alphabet, the 26 letters and the cards in the three languages, and the sample A tracing page in English and French), nothing removed. Sitemap: 1,280 URLs, 37 Portuguese. `localecheck pt`, `fr`, `es` pass, 440 browser checks, 221 unit tests, build 2,082 pages. See "Phase 2 notes". |
-| 3 | Sílabas: ~25 pages, builders, clapping, picture hunt. | To do |
+| 3 | Sílabas: ~25 pages, builders, clapping, picture hunt. | **Done** (2026-10-03), not pushed. 24 pages (see "Phase 3 notes"). English, French and Spanish identical to the baseline apart from hreflang: since phase 2 only `/phonics`, `/fr/sons` and `/es/silabas` gained one `hreflang="pt"` line. Sitemap: 1,305 URLs, 62 Portuguese. `localecheck pt`, `fr`, `es` pass, 466 browser checks (exercises played with a fake pt-BR voice), 240 unit tests, build 2,098 pages (the first build attempt failed fetching Google Fonts in `next/font`, as on 2026-10-02; the retry passed). |
 | 4 | Atividades para imprimir: PDFs and pacotes (P6). | To do |
 | 5 | Histórias: 8 stories, seed `dev`, Portuguese voice reader. | To do |
 | 6 | Jogos (P9), educação infantil, primeiro ano, brincadeiras, "Português" in the child language select, games on the home page. | To do |
