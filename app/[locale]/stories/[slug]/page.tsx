@@ -44,16 +44,20 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
   // Without its own canonical, a story inherited the home page's.
   if (locale === "en" || !found) return { alternates };
   const text = found.story.pages.map((p) => p.text).join(" ");
-  const { title, description } =
-    locale === "fr"
-      ? {
-          title: `${found.story.title} : une histoire à lire et à écouter`,
-          description: `${text} Une histoire illustrée pour les enfants, à lire ensemble ou à écouter.`,
-        }
-      : {
-          title: `${found.story.title}: un cuento para leer y escuchar`,
-          description: `${text} Un cuento ilustrado para niños, para leer juntos o escuchar.`,
-        };
+  const { title, description } = {
+    fr: {
+      title: `${found.story.title} : une histoire à lire et à écouter`,
+      description: `${text} Une histoire illustrée pour les enfants, à lire ensemble ou à écouter.`,
+    },
+    es: {
+      title: `${found.story.title}: un cuento para leer y escuchar`,
+      description: `${text} Un cuento ilustrado para niños, para leer juntos o escuchar.`,
+    },
+    pt: {
+      title: `${found.story.title}: uma história para ler e ouvir`,
+      description: `${text} Uma história ilustrada para crianças, para ler juntos ou ouvir.`,
+    },
+  }[locale];
   return { title, description, alternates, openGraph: { title, description, url: absoluteUrl(locale, "/stories/[slug]", { slug }) } };
 }
 
@@ -93,6 +97,10 @@ export default async function StoryPage(props: Props) {
       ) : locale === "es" ? (
         <nav aria-label="Ruta de navegación" className="text-sm text-chalkboard/60">
           <Link href={localizedPath("es", "/")}>Inicio</Link> / <Link href={localizedPath("es", "/stories")}>Cuentos</Link>
+        </nav>
+      ) : locale === "pt" ? (
+        <nav aria-label="Caminho de navegação" className="text-sm text-chalkboard/60">
+          <Link href={localizedPath("pt", "/")}>Início</Link> / <Link href={localizedPath("pt", "/stories")}>Histórias</Link>
         </nav>
       ) : (
         <nav className="text-sm text-chalkboard/60">

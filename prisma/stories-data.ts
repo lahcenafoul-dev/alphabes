@@ -1,4 +1,4 @@
-// The stories, in all three languages. Used by prisma/seed-stories.ts (which
+// The stories, in all four languages. Used by prisma/seed-stories.ts (which
 // writes them to the database) and scripts/tts-histoires.ts (which makes
 // the French audio). Pure data, no imports.
 //
@@ -8,13 +8,15 @@
 // grande section or CP can follow, and read. The Spanish ones are written
 // the same way, in neutral Latin American Spanish (no words that change by
 // country), with many direct syllables (ma, pa, lo…) a beginning reader can
-// sound out.
+// sound out. The Portuguese ones are written in Brazilian Portuguese
+// (docs/portuguese-plan.md), with words from the famílias silábicas a child
+// in the 1º ano can read.
 
 export type SeedPage = { pageNumber: number; text: string; scene: string };
 
 export type SeedStory = {
   slug: string;
-  locale: "EN" | "FR" | "ES";
+  locale: "EN" | "FR" | "ES" | "PT";
   /** Same tale, same pictures, in the other languages. */
   translationGroup: string;
   title: string;
@@ -445,7 +447,146 @@ export const spanishStories: SeedStory[] = [
   },
 ];
 
-export const allStories: SeedStory[] = [...englishStories, ...frenchStories, ...spanishStories];
+export const portugueseStories: SeedStory[] = [
+  {
+    slug: "a-macazinha-vermelha",
+    locale: "PT",
+    translationGroup: "apple",
+    title: "A maçãzinha vermelha",
+    ageRangeMin: 3,
+    ageRangeMax: 5,
+    order: 1,
+    coverScene: "apple-1",
+    pages: pages("apple", [
+      "Era uma vez uma maçãzinha vermelha, redonda e bonita.",
+      "A maçãzinha mora lá no alto, numa árvore muito, muito alta.",
+      "Um dia, o vento sopra… e pum! A maçãzinha cai no chão.",
+      "A Bia pega a maçã e sorri: “Que maçã bonita!”",
+      "“Obrigada, arvorezinha!”, diz a Bia. E nhac, nhac, ela come a maçã.",
+    ]),
+  },
+  {
+    slug: "beto-o-ursinho-corajoso",
+    locale: "PT",
+    translationGroup: "bear",
+    title: "Beto, o ursinho corajoso",
+    ageRangeMin: 3,
+    ageRangeMax: 6,
+    order: 2,
+    coverScene: "bear-1",
+    pages: pages("bear", [
+      "Numa floresta muito bonita mora um ursinho. O nome dele é Beto.",
+      "Beto tem medo do escuro. De noite, a floresta fica tão escura!",
+      "Uma noite, ele ouve um grito: “Socorro!”. É o Tuca, o amigo dele.",
+      "Beto respira fundo. E entra na floresta escura, passo a passo.",
+      "Beto encontra o Tuca. Desde esse dia, os dois amigos andam sempre juntos.",
+    ]),
+  },
+  {
+    slug: "mimi-a-gatinha-curiosa",
+    locale: "PT",
+    translationGroup: "cat",
+    title: "Mimi, a gatinha curiosa",
+    ageRangeMin: 4,
+    ageRangeMax: 7,
+    order: 3,
+    coverScene: "cat-1",
+    pages: pages("cat", [
+      "Mimi é uma gatinha. Ela adora explorar tudo!",
+      "Uma manhã, no jardim, ela encontra uma caixa misteriosa.",
+      "Dentro da caixa tem um novelo de lã, macio e colorido.",
+      "Mimi brinca com o novelo a tarde toda. Rola, rola, rola!",
+      "De noite, ela se enrola, cansada e feliz. Boa noite, Mimi!",
+    ]),
+  },
+  {
+    slug: "toto-e-sua-bola",
+    locale: "PT",
+    translationGroup: "dog",
+    title: "Totó e sua bola",
+    ageRangeMin: 3,
+    ageRangeMax: 6,
+    order: 4,
+    coverScene: "dog-1",
+    pages: pages("dog", [
+      "Totó é um cachorrinho. Ele adora brincar no parque.",
+      "Um dia, a bola dele rola para bem longe.",
+      "Totó corre rápido, rápido, rápido para pegar a bola.",
+      "Ele olha embaixo de uma árvore grande.",
+      "Achou! Totó abana o rabo: ele está muito feliz!",
+    ]),
+  },
+  {
+    slug: "lili-a-patinha-timida",
+    locale: "PT",
+    translationGroup: "duck",
+    title: "Lili, a patinha tímida",
+    ageRangeMin: 3,
+    ageRangeMax: 5,
+    order: 5,
+    coverScene: "duck-1",
+    pages: pages("duck", [
+      "Lili é uma patinha. Ela mora perto de uma lagoa tranquila.",
+      "Ela é muito tímida e não tem coragem de nadar com os outros.",
+      "Um sapinho diz: “Vem nadar comigo!”",
+      "Lili junta toda a coragem… e pula na água!",
+      "Ela se diverte tanto que nem é mais tímida.",
+    ]),
+  },
+  {
+    slug: "bolinha-o-peixinho",
+    locale: "PT",
+    translationGroup: "fish",
+    title: "Bolinha, o peixinho",
+    ageRangeMin: 3,
+    ageRangeMax: 5,
+    order: 6,
+    coverScene: "fish-1",
+    pages: pages("fish", [
+      "Bolinha é um peixinho. Ele mora no meio dos corais.",
+      "O dia todo ele nada em círculos: roda, roda e roda.",
+      "Um dia, ele conhece um amigo novo: um caranguejinho.",
+      "Os dois brincam de esconde-esconde entre os corais.",
+      "Bolinha está feliz: ele tem um melhor amigo!",
+    ]),
+  },
+  {
+    slug: "juju-a-coruja-sabida",
+    locale: "PT",
+    translationGroup: "owl",
+    title: "Juju, a coruja sabida",
+    ageRangeMin: 4,
+    ageRangeMax: 7,
+    order: 7,
+    coverScene: "owl-1",
+    pages: pages("owl", [
+      "Juju, a coruja, mora lá no alto de uma árvore bem velha.",
+      "Toda noite, ela olha as estrelas aparecerem no céu.",
+      "Um ratinho pergunta: “Juju, você me ajuda? Não acho a minha casa.”",
+      "Juju voa baixinho e mostra o caminho.",
+      "“Obrigado, Juju!”, diz o ratinho. Juju é a amiga mais sabida da floresta.",
+    ]),
+  },
+  {
+    slug: "a-soneca-do-leo",
+    locale: "PT",
+    translationGroup: "lion",
+    title: "A soneca do Leo",
+    ageRangeMin: 3,
+    ageRangeMax: 6,
+    order: 8,
+    coverScene: "lion-1",
+    pages: pages("lion", [
+      "Leo é um leão que adora tirar uma soneca no sol.",
+      "Mas os passarinhos cantam alto demais. Assim não dá para dormir!",
+      "Leo pede com carinho: “Vocês podem cantar um pouquinho mais longe?”",
+      "Os passarinhos encontram outra árvore, longe, bem longe.",
+      "Enfim, Leo consegue dormir. Shhh… que soneca gostosa!",
+    ]),
+  },
+];
+
+export const allStories: SeedStory[] = [...englishStories, ...frenchStories, ...spanishStories, ...portugueseStories];
 
 /** Where a French page's audio file goes (scripts/tts-histoires.ts writes it). */
 export const frenchAudioPath = (slug: string, pageNumber: number) => `/audio/histoires/${slug}-${pageNumber}.mp3`;

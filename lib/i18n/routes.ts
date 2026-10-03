@@ -101,6 +101,8 @@ export const PORTUGUESE_PATHNAMES: ReadonlySet<AppPathname> = new Set<AppPathnam
   "/pricing",
   "/privacy-policy",
   "/register",
+  "/stories",
+  "/stories/[slug]",
   "/terms",
   "/worksheets",
   "/worksheets/[category]",

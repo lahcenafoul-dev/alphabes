@@ -1038,6 +1038,90 @@ console.log("Spanish stories (Spanish phase 5)");
   await context.close();
 }
 
+console.log("Portuguese stories (Portuguese phase 5)");
+{
+  const { context, page, errors } = await newPage();
+  await context.addInitScript(fakeVoices(["en-US", "es-MX", "pt-PT", "pt-BR"]));
+  await page.goto(base + "/stories");
+  await page.waitForLoadState("networkidle");
+  check((await switcherHref(page, "pt")) === "/pt/historias", "PT link on /stories points to /pt/historias");
+  check(!(await page.getByText("A maçãzinha vermelha").count()), "English story list has no Portuguese story");
+  await page.goto(base + "/pt/historias");
+  await page.waitForLoadState("networkidle");
+  check((await page.locator("main").getByRole("heading", { level: 2 }).count()) === 8, "Portuguese story list shows 8 stories");
+  check(!(await page.getByText("The Little Apple").count()) && !(await page.getByText("La manzanita roja").count()), "Portuguese story list has no English or Spanish story");
+  check(await page.getByText("De 3 a 5 anos").first().isVisible(), "ages in Portuguese");
+  await page.getByRole("link", { name: /A maçãzinha vermelha/ }).click();
+  await page.waitForURL("**/pt/historias/a-macazinha-vermelha");
+  await page.waitForLoadState("networkidle");
+  check(new URL(page.url()).pathname === "/pt/historias/a-macazinha-vermelha", "story opens at /pt/historias/a-macazinha-vermelha");
+  check(
+    (await switcherHref(page, "en")) === "/stories" && (await switcherHref(page, "es")) === "/es/cuentos",
+    "EN/ES links on a Portuguese story go to the story lists",
+  );
+  const alt = async (l) => page.locator(`link[rel=alternate][hreflang=${l}]`).getAttribute("href");
+  check(
+    (await alt("en")) === "https://alphabes.com/stories/the-little-apple" &&
+      (await alt("fr")) === "https://alphabes.com/fr/histoires/la-petite-pomme" &&
+      (await alt("es")) === "https://alphabes.com/es/cuentos/la-manzanita-roja" &&
+      (await alt("pt")) === "https://alphabes.com/pt/historias/a-macazinha-vermelha",
+    "hreflang pairs the story with its three twins",
+  );
+  check((await page.title()).startsWith("A maçãzinha vermelha: uma história para ler e ouvir"), `Portuguese story title (${await page.title()})`);
+  const listen = page.getByRole("button", { name: "Ouvir a página" });
+  const stopBtn = page.getByRole("button", { name: "Parar a leitura" });
+  check(await listen.getByText("🔊 Ouvir").isVisible(), "button says Ouvir");
+  await listen.click();
+  const spoken = await page.evaluate(() => window.__spoken.map((u) => `${u.lang}|${u.text}`));
+  check(spoken[0] === "pt-BR|Era uma vez uma maçãzinha vermelha, redonda e bonita.", `page read with the Brazilian voice (${spoken[0]})`);
+  check(await stopBtn.getByText("⏹ Parar").isVisible(), "while reading, the button becomes Parar");
+  await stopBtn.click();
+  check(await listen.isVisible(), "Parar stops and shows Ouvir again");
+  await listen.click();
+  await page.evaluate(() => window.__finishSpeech());
+  await listen.waitFor({ timeout: 3000 }).catch(() => {});
+  check(await listen.isVisible(), "button returns to Ouvir when the page has been read");
+  await listen.click();
+  const cancelsBefore = await page.evaluate(() => window.__cancels);
+  await page.getByRole("button", { name: "Próxima →" }).click();
+  check((await page.evaluate(() => window.__cancels)) > cancelsBefore, "turning the page stops the reading");
+  await listen.waitFor({ timeout: 3000 }).catch(() => {});
+  await listen.click();
+  const spoken2 = await page.evaluate(() => window.__spoken.at(-1));
+  check(spoken2.lang === "pt-BR" && spoken2.text === "A maçãzinha mora lá no alto, numa árvore muito, muito alta.", `page 2 reads its own text (${spoken2.text})`);
+  for (let i = 0; i < 3; i++) await page.getByRole("button", { name: "Próxima →" }).click();
+  check(await page.getByText("Página 5 de 5").isVisible(), "Portuguese page counter");
+  check(await page.getByText("Fim", { exact: true }).isVisible(), "last picture says Fim");
+  await page.screenshot({ path: `${shots}/pt-historia.png`, fullPage: true });
+  check(errors.length === 0, `no console/page errors${errors.length ? ": " + errors.slice(0, 3).join(" | ") : ""}`);
+  await context.close();
+}
+{
+  // No Portuguese voice: nothing is read, the Portuguese help appears.
+  const { context, page, errors } = await newPage();
+  await context.addInitScript(fakeVoices(["en-US", "es-MX"]));
+  await page.goto(base + "/pt/historias/a-soneca-do-leo");
+  await page.waitForLoadState("networkidle");
+  await page.getByRole("button", { name: "Ouvir a página" }).click();
+  check(await page.getByText("Este aparelho não tem nenhuma voz em português.").isVisible(), "story without a Portuguese voice shows the Portuguese help");
+  check((await page.evaluate(() => window.__spoken.length)) === 0, "a Spanish or English voice never reads a Portuguese story");
+  check(await page.getByRole("button", { name: "Ouvir a página" }).isVisible(), "button stays on Ouvir");
+  check(errors.length === 0, `no console/page errors${errors.length ? ": " + errors.slice(0, 3).join(" | ") : ""}`);
+  await context.close();
+}
+{
+  const { context, page, errors } = await newPage({ width: 390, height: 844 });
+  for (const p of ["/pt/historias", "/pt/historias/juju-a-coruja-sabida", "/pt/historias/lili-a-patinha-timida"]) {
+    await page.goto(base + p);
+    await page.waitForLoadState("networkidle");
+    const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+    check(overflow <= 0, `${p}: no horizontal scroll (overflow ${overflow}px)`);
+    await page.screenshot({ path: `${shots}/m${p.replaceAll("/", "_")}.png`, fullPage: true });
+  }
+  check(errors.length === 0, `no console/page errors${errors.length ? ": " + errors.slice(0, 3).join(" | ") : ""}`);
+  await context.close();
+}
+
 console.log("Spanish games, school levels and activities (Spanish phase 6)");
 {
   const { context, page, errors } = await newPage();

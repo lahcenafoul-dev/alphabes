@@ -127,6 +127,11 @@ const RULES_ES = [
 ];
 
 const ptLetters = [..."abc", "c-cedilha", ..."defghijklmnopqrstuvwxyz"];
+// prisma/stories-data.ts (the database must be seeded).
+const ptStories = [
+  "a-macazinha-vermelha", "beto-o-ursinho-corajoso", "mimi-a-gatinha-curiosa", "toto-e-sua-bola",
+  "lili-a-patinha-timida", "bolinha-o-peixinho", "juju-a-coruja-sabida", "a-soneca-do-leo",
+];
 const ptSyllables = [
   "vogais", "encontros-vocalicos", "familias-silabicas", "contar-silabas", "ch", "lh", "nh", "rr", "ss", "qu", "gu",
   "til", "an-en-in-on-un", "am-em-im-om-um", "encontros-com-r", "encontros-com-l", "ar-er-ir-or-ur", "as-es-is-os-us",
@@ -136,7 +141,7 @@ const ptSyllables = [
 // Portuguese (docs/portuguese-plan.md): every /pt URL answers 404 until its
 // page is written.
 const RULES_PT = [
-  ["/pt/historias", {}, 404, null, "Portuguese page not written yet (phase 5)"],
+  ["/pt/jogos", {}, 404, null, "Portuguese page not written yet (phase 6)"],
   // Portuguese phase 2: the alphabet.
   ["/pt/alfabeto/ç", {}, 404, null, "ç is /pt/alfabeto/c-cedilha"],
   ["/pt/alfabeto/enie", {}, 404, null, "Spanish ñ under /pt"],
@@ -164,7 +169,15 @@ const RULES_PT = [
   ["/pt/precos", { headers: { cookie: "NEXT_LOCALE=fr" } }, 307, "/fr/tarifs", "Portuguese page, French chosen"],
   ["/pt/precos", { headers: { cookie: "NEXT_LOCALE=es" } }, 307, "/es/precios", "Portuguese page, Spanish chosen"],
   ["/blog", { headers: { cookie: "NEXT_LOCALE=pt" } }, 200, null, "no Portuguese twin: stay"],
-  ["/stories", { headers: { cookie: "NEXT_LOCALE=pt" } }, 200, null, "Portuguese stories not written yet: stay"],
+  ["/games", { headers: { cookie: "NEXT_LOCALE=pt" } }, 200, null, "Portuguese games not written yet: stay"],
+  // Portuguese phase 5: stories (from the database).
+  ["/pt/historias/the-little-apple", {}, 404, null, "English story under /pt/historias"],
+  ["/pt/historias/la-manzanita-roja", {}, 404, null, "Spanish story under /pt/historias"],
+  ["/stories/a-macazinha-vermelha", {}, 404, null, "Portuguese story under an English URL"],
+  ["/es/cuentos/a-macazinha-vermelha", {}, 404, null, "Portuguese story under /es/cuentos"],
+  ["/pt/historias/nao-existe", {}, 404, null, "unknown Portuguese story"],
+  ["/stories", { headers: { cookie: "NEXT_LOCALE=pt" } }, 307, "/pt/historias", "story list twin in Portuguese"],
+  ["/es/cuentos", { headers: { cookie: "NEXT_LOCALE=pt" } }, 307, "/pt/historias", "Spanish story list, Portuguese chosen"],
   // Portuguese phase 4: worksheets.
   ["/pt/atividades/letra-a-trazo", {}, 404, null, "Spanish worksheet under /pt/atividades"],
   ["/pt/atividades/lettre-a-cursive", {}, 404, null, "French worksheet under /pt/atividades"],
@@ -267,6 +280,8 @@ const LANGS = {
       "/pt/atividades/familia-b", "/pt/atividades/digrafo-rr", "/pt/atividades/nasal-til", "/pt/atividades/encontro-tr",
       "/pt/atividades/numero-14", "/pt/atividades/cor-marrom", "/pt/atividades/pacotes/pacote-alfabeto-completo",
       "/pt/atividades/pacotes/pacote-letra-c-cedilha",
+      // Portuguese phase 5: stories (from the database).
+      "/pt/historias", ...ptStories.map((s) => `/pt/historias/${s}`),
     ],
     rules: RULES_PT,
   },
