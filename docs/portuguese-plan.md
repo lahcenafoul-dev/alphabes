@@ -1,6 +1,6 @@
 # Portuguese version of AlphaBes: plan and status
 
-Last updated: 2026-10-03 (phases 0–6 pushed; phase 7, the launch, **stopped after step 1, the production backup**; next is step 2, the owner's production migration). Read this first when continuing the Portuguese work, together with CLAUDE.md, [french-plan.md](french-plan.md) and [spanish-plan.md](spanish-plan.md): the Portuguese work reuses everything built for French and Spanish.
+Last updated: 2026-10-03 (**the Portuguese version is live**: phases 0–7 done; only the Search Console resubmission, by the owner, and the teacher and legal reviews (P11) remain). Read this first when continuing the Portuguese work, together with CLAUDE.md, [french-plan.md](french-plan.md) and [spanish-plan.md](spanish-plan.md): the Portuguese work reuses everything built for French and Spanish.
 
 ## Goal
 
@@ -212,38 +212,42 @@ One migration written by hand (no shadow database): `ALTER TYPE "Locale" ADD VAL
 | 4 | Atividades para imprimir: PDFs and pacotes (P6). | **Done** (2026-10-03), pushed. 272 sheets and 43 packs (587 files, 40 MB), see "Phase 4 notes". English, French and Spanish identical to the baseline apart from hreflang: since phase 3 only `/worksheets`, `/worksheets/bundles`, `/fr/fiches`, `/fr/fiches/packs`, `/es/fichas`, `/es/fichas/paquetes` gained one `hreflang="pt"` line. Sitemap: 1,637 URLs, 394 Portuguese. `localecheck pt`, `fr`, `es` pass, 486 browser checks (a Portuguese PDF downloaded and checked), 260 unit tests, build 2,022 pages. |
 | 5 | Histórias: 8 stories, seed `dev`, Portuguese voice reader. | **Done** (2026-10-03), pushed. English, French and Spanish identical to the baseline apart from hreflang: since phase 4 only the three story lists and the 24 English, French and Spanish stories gained one `hreflang="pt"` line (27 pages). Sitemap: 1,646 URLs, 403 Portuguese; each story lists its four twins. `localecheck pt`, `fr`, `es` pass, 513 browser checks (Portuguese story read with a fake pt-BR voice; no-voice help), 264 unit tests, build 2,022 pages. Seeded on `dev` only. See "Phase 5 notes". |
 | 6 | Jogos (P9), educação infantil, primeiro ano, brincadeiras, "Português" in the child language select, games on the home page. | **Done** (2026-10-03), pushed. English, French and Spanish identical to the baseline apart from hreflang: since phase 5, the 39 English, French and Spanish twins of the new pages gained one `hreflang="pt"` line, and the Spanish *aplaude-las-silabas* (no hreflang before) gained `es` and `pt`, now paired with *bata-palmas*. Sitemap: 1,662 URLs, 419 Portuguese. `localecheck pt`, `fr`, `es` pass, 562 browser checks (every game played with a fake pt-BR voice), 580 with `CHECK_ACCOUNTS=1` on `dev` (child language and a Portuguese sign-up; `User.locale = PT` checked read-only; the two throwaway accounts removed), 281 unit tests, build 2,025 pages. See "Phase 6 notes". |
-| 7 | Launch (below). | **In progress, stopped after step 1** (2026-10-03). Step 1 done: production checked read-only and backed up (see "Where we stopped"). Nothing changed on production; `main` not touched. |
+| 7 | Launch (below). | **Done** (2026-10-03), except Search Console (owner). Backup branch `backup-before-portuguese-launch-2026-10-03`; owner ran `prisma migrate deploy`, `main` fast-forwarded to aaf4716 and deployed by Workers Builds, owner ran `db:seed` (32 stories). The seed landed a few minutes before the deploy went live, so the 24 English, French and Spanish story pages returned 500 until it did (see "Launch incident"). Live checks passed (step 5). |
 
 ### Launch (phase 7)
 
 Order as for Spanish: **migrate, deploy, then seed**. The live Prisma client knows only EN, FR, ES; Portuguese stories in the database before the deploy would break or pollute the live sitemap and story lists.
 
-#### Where we stopped (2026-10-03)
+#### Before the launch (2026-10-03)
 
 - `portuguese-version` is pushed up to phase 6 (`dadb121`); `origin/main` is 3e30909, an ancestor, so step 3 is a plain fast-forward.
 - **Production checked read-only** (branch `production`, `br-divine-boat-b1dq055o`, project `dawn-hat-12644431`): 4 migrations applied, none rolled back (`0_baseline`, `20260908075129_cascade_story_deletes`, `20260930050000_story_locale`, `20261001220000_locale_es`); `Locale` = `EN, FR, ES`; stories EN 8, FR 8, ES 8 (120 pages); 6 users, 4 child profiles. So `20261003030000_locale_pt` is the only pending migration.
 - **Backup made:** Neon branch `backup-before-portuguese-launch-2026-10-03`, id **`br-late-glade-b18it3re`**, from `production` at LSN `0/4F8B9F0` (2026-10-03 18:02 UTC), no compute. If production ever has to go back to this state, the owner restores `production` from this branch in the Neon console (Branches → production → Restore); that overwrites production, so it is never done without the owner. Delete it once the launch has been stable for a few weeks.
-- **Not done yet:** steps 2 to 5 below. Production still has no `PT`; `main` still serves English, French and Spanish only.
 
 #### Steps
 
 1. ~~With the owner's OK, I create the Neon backup branch from `production` (no compute), after a read-only check of production.~~ **Done**, see above.
-2. **Next.** The owner runs, from the repo folder, with the **production** connection string (never stored in `.env`):
+2. **Done.** The owner runs, from the repo folder, with the **production** connection string (never stored in `.env`):
    ```powershell
    $env:DATABASE_URL = "<production connection string>"
    npx prisma migrate deploy      # adds PT to the Locale enum
    Remove-Item Env:DATABASE_URL
    ```
-   Expected: "1 migration found to apply" (`20261003030000_locale_pt`). Adding an enum value is harmless for the live site: the live Prisma client simply never uses `PT`. Then I check read-only that `Locale` = `EN, FR, ES, PT` and `_prisma_migrations` has 5 rows, and that the live site still works.
-3. Fast-forward `main` to `portuguese-version` and push (`git checkout main && git merge --ff-only portuguese-version && git push origin main`); Workers Builds deploys. I watch the build until the new version is live (`/pt` returns 200).
-4. The owner seeds right after the deploy:
+   Done 2026-10-03: checked read-only afterwards, `Locale` = `EN, FR, ES, PT`, 5 migrations, none rolled back, data unchanged, live pages 200. Expected: "1 migration found to apply" (`20261003030000_locale_pt`). Adding an enum value is harmless for the live site: the live Prisma client simply never uses `PT`. Then I check read-only that `Locale` = `EN, FR, ES, PT` and `_prisma_migrations` has 5 rows, and that the live site still works.
+3. **Done** (`3e30909..aaf4716`; `/pt` returned 200 about 4½ minutes after the push). Fast-forward `main` to `portuguese-version` and push (`git checkout main && git merge --ff-only portuguese-version && git push origin main`); Workers Builds deploys. I watch the build until the new version is live (`/pt` returns 200).
+4. **Done** (but see "Launch incident"). The owner seeds right after the deploy:
    ```powershell
    $env:DATABASE_URL = "<production connection string>"
    npm run db:seed                # upserts 32 stories; EN, FR, ES unchanged
    Remove-Item Env:DATABASE_URL
    ```
-   Then I check read-only: 8 stories and 40 pages in each of the four languages.
-5. Live checks: EN/FR/ES snapshot of alphabes.com compared with the baseline (only hreflang and the header may differ), `localecheck pt`, `fr`, `es`, `LIVE=1 browser.mjs`, and `/pt/historias` lists the 8 stories. Then the owner resubmits `https://alphabes.com/sitemap.xml` in Search Console.
+   Then I check read-only: 8 stories and 40 pages in each of the four languages. **Checked**: EN, FR, ES, PT each 8 stories and 40 pages; 6 users, 4 child profiles.
+5. **Done 2026-10-03.** The 1,256 English, French and Spanish routes on alphabes.com are identical to the phase 6 build and to the baseline from `main` (apart from hreflang); sitemap 1,662 URLs, 419 Portuguese; all 32 stories (8 per language) return 200; `localecheck pt`, `fr`, `es` pass; `LIVE=1 browser.mjs` passed all 559 checks (`LIVE` skips the checks that send a contact message). A first run stopped on "download.saveAs: canceled" for a French PDF; the PDFs were served correctly (200, `application/pdf`) and the rerun passed, so it was a one-off. Planned checks: EN/FR/ES snapshot of alphabes.com compared with the baseline (only hreflang and the header may differ), `localecheck pt`, `fr`, `es`, `LIVE=1 browser.mjs`, and `/pt/historias` lists the 8 stories. Then the owner resubmits `https://alphabes.com/sitemap.xml` in Search Console.
+
+#### Launch incident (2026-10-03, a few minutes)
+
+The owner ran `db:seed` before the deploy was live (`/pt` still 404). The old code's Prisma client knew only EN, FR, ES; each story page reads its twins in the other languages for hreflang, found the Portuguese rows and failed: all 24 English, French and Spanish story pages returned **500** (story lists, home and sitemap stayed 200). No data was lost. Nothing was changed by hand: the deploy went live minutes later and the pages came back by themselves (all 32 return 200). Cause not confirmed in the Worker logs, but the timing fits.
+**Lesson for the next language:** the seed waits for my "live" message (`/<locale>` returns 200), not just for the push. If that ever goes wrong again and the build is slow or failed, the quick fix is to delete that language's stories (`DELETE FROM "Story" WHERE locale = '<X>'`, its pages cascade), with the owner's OK, then seed again after the deploy.
 
 After launch (not blocking): a Brazilian *alfabetizadora* reviews letters, syllables, games and stories (P11); a lawyer reviews the LGPD legal pages, still marked "Texto provisório".
 
