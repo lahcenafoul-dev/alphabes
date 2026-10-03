@@ -78,9 +78,9 @@ export type FillKind = "model-grey" | "model-blank" | "grey" | "outline" | "mode
 /**
  * A writing row filled in the browser: model in black, then grey or outlined
  * copies. "cur" is the French cursive, "cur-es" the Spanish one
- * (scripts/fichas-es).
+ * (scripts/fichas-es), "cur-pt" the Portuguese one (scripts/atividades-pt).
  */
-export function fill(opts: { text: string; x0: number; x1: number; y: number; size: number; font: "cur" | "cur-es" | "script"; kind: FillKind; gap: number; max?: number }): string {
+export function fill(opts: { text: string; x0: number; x1: number; y: number; size: number; font: "cur" | "cur-es" | "cur-pt" | "script"; kind: FillKind; gap: number; max?: number }): string {
   const { text, x0, x1, y, size, font, kind, gap, max } = opts;
   return `<g class="fill" data-text="${esc(text)}" data-x0="${x0}" data-x1="${x1}" data-y="${y}" data-size="${size}" data-font="${font}" data-kind="${kind}" data-gap="${gap}" data-max="${max ?? 99}"></g>`;
 }
@@ -88,7 +88,7 @@ export function fill(opts: { text: string; x0: number; x1: number; y: number; si
 /** Runs in the page (via page.evaluate) once the fonts are ready. */
 export function layoutFills(): void {
   const NS = "http://www.w3.org/2000/svg";
-  const families: Record<string, string> = { cur: "cursive-fr", "cur-es": "cursive-es", script: "script" };
+  const families: Record<string, string> = { cur: "cursive-fr", "cur-es": "cursive-es", "cur-pt": "cursive-pt", script: "script" };
   document.querySelectorAll<SVGGElement>("g.fill").forEach((g) => {
     const d = g.dataset;
     const x1 = Number(d.x1);

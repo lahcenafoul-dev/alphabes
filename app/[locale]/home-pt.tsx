@@ -3,6 +3,8 @@ import type { ReactNode } from "react";
 import { Link } from "@/i18n/navigation";
 import type { AppPathname } from "@/i18n/routing";
 import { alternatesFor, isAvailable } from "@/lib/i18n/routes";
+import { FicheCard } from "@/components/fiches/FicheParts";
+import { getAtividade } from "@/lib/atividades-pt";
 
 const title = "Aprender o alfabeto: atividades e jogos grátis | AlphaBes";
 const description =
@@ -194,6 +196,16 @@ export default function HomePt() {
           professoras e professores da educação infantil e do 1º ano que querem uma atividade
           pronta para usar, sem preparação.
         </p>
+        {has("/worksheets/[category]") && (
+          <>
+            <h3 className="mt-8 font-display font-bold text-xl">Atividades populares</h3>
+            <ul className="mt-4 grid grid-cols-2 md:grid-cols-4 gap-4">
+              {["letra-a-cursiva", "familia-b", "letra-b-silaba", "letra-a-bastao"].map((slug) => (
+                <FicheCard key={slug} fiche={getAtividade(slug)!} locale="pt" />
+              ))}
+            </ul>
+          </>
+        )}
         {has("/worksheets") && (
           <div className="mt-6 flex flex-wrap items-center gap-4">
             <Link

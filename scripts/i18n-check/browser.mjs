@@ -901,6 +901,68 @@ console.log("Spanish worksheets (Spanish phase 4)");
   }
 }
 
+console.log("Portuguese worksheets (Portuguese phase 4)");
+{
+  const { context, page, errors } = await newPage();
+  await page.goto(base + "/worksheets");
+  await page.waitForLoadState("networkidle");
+  check((await switcherHref(page, "pt")) === "/pt/atividades", "PT link on /worksheets points to /pt/atividades");
+  await page.goto(base + "/pt/atividades/digrafo-lh");
+  await page.waitForLoadState("networkidle");
+  check(
+    (await switcherHref(page, "es")) === "/es/fichas" && (await switcherHref(page, "en")) === "/worksheets",
+    "ES/EN links on a Portuguese worksheet go to the worksheet indexes",
+  );
+  check(await page.getByRole("img", { name: /Prévia da atividade: Ler as sílabas lha, lhe/ }).isVisible(), "worksheet preview with a Portuguese alt text");
+  const [download] = await Promise.all([page.waitForEvent("download"), page.getByRole("link", { name: /Baixar o PDF/ }).click()]);
+  const pdfPath = `${shots}/${download.suggestedFilename()}`;
+  await download.saveAs(pdfPath);
+  const pdf = readFileSync(pdfPath, "latin1");
+  check(download.suggestedFilename() === "alphabes-digrafo-lh.pdf", `PDF file name (${download.suggestedFilename()})`);
+  check(pdf.startsWith("%PDF") && pdf.length > 10_000, `a real Portuguese PDF was downloaded (${pdf.length} bytes)`);
+  await page.screenshot({ path: `${shots}/pt-atividade-lh.png`, fullPage: true });
+
+  // The syllable page links its worksheets, and the worksheet links back.
+  await page.goto(base + "/pt/silabas/c-e-cedilha");
+  await page.waitForLoadState("networkidle");
+  const sheets = page.getByRole("region", { name: "As atividades para imprimir" });
+  check((await sheets.getByRole("link").count()) === 3, "the c/ç syllable page links its three worksheets");
+  await sheets.getByRole("link", { name: /ça, ço, çu/ }).click();
+  await page.waitForURL("**/pt/atividades/familia-c-cedilha");
+  check(await page.getByRole("link", { name: /para ouvir/ }).first().isVisible(), "the worksheet links back to its syllable page");
+
+  // The tracing page offers its three PDFs.
+  await page.goto(base + "/pt/alfabeto/c-cedilha/atividade");
+  await page.waitForLoadState("networkidle");
+  const [bastao] = await Promise.all([page.waitForEvent("download"), page.getByRole("link", { name: "⬇️ Letra bastão (PDF)" }).click()]);
+  check(bastao.suggestedFilename() === "atividade-letra-bastao-c-cedilha.pdf", `bastão PDF for Ç (${bastao.suggestedFilename()})`);
+  check((await page.getByRole("link", { name: "⬇️ Letra cursiva (PDF)" }).getAttribute("href")) === "/atividades-pdf/letra-cursiva/letra-c-cedilha-cursiva.pdf", "cursive PDF link for Ç");
+
+  // The letter page lists its worksheets; the home page shows popular ones.
+  await page.goto(base + "/pt/alfabeto/b");
+  await page.waitForLoadState("networkidle");
+  check((await page.getByRole("region", { name: "As atividades para imprimir" }).getByRole("link").count()) === 7, "letter B lists its seven worksheets");
+  await page.goto(base + "/pt");
+  await page.waitForLoadState("networkidle");
+  check(await page.getByRole("heading", { name: "Atividades populares" }).isVisible(), "home page shows popular worksheets");
+  check(errors.length === 0, `no console/page errors${errors.length ? ": " + errors.slice(0, 3).join(" | ") : ""}`);
+  await context.close();
+
+  // Layout at 390px.
+  {
+    const { context, page, errors } = await newPage({ width: 390, height: 844 });
+    for (const p of ["/pt/atividades", "/pt/atividades/familias-silabicas", "/pt/atividades/letra-a-cursiva", "/pt/atividades/pacotes", "/pt/atividades/pacotes/pacote-letra-c-cedilha", "/pt/alfabeto/b"]) {
+      await page.goto(base + p);
+      await page.waitForLoadState("networkidle");
+      const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+      check(overflow <= 0, `${p}: no horizontal scroll (overflow ${overflow}px)`);
+      await page.screenshot({ path: `${shots}/m${p.replaceAll("/", "_")}.png`, fullPage: true });
+    }
+    check(errors.length === 0, `no console/page errors${errors.length ? ": " + errors.slice(0, 3).join(" | ") : ""}`);
+    await context.close();
+  }
+}
+
 console.log("Spanish stories (Spanish phase 5)");
 {
   const { context, page, errors } = await newPage();

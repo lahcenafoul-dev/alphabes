@@ -102,6 +102,10 @@ export const PORTUGUESE_PATHNAMES: ReadonlySet<AppPathname> = new Set<AppPathnam
   "/privacy-policy",
   "/register",
   "/terms",
+  "/worksheets",
+  "/worksheets/[category]",
+  "/worksheets/bundles",
+  "/worksheets/bundles/[bundleSlug]",
 ]);
 
 const LOCALE_PATHNAMES: Record<Exclude<Locale, "en">, ReadonlySet<AppPathname>> = {

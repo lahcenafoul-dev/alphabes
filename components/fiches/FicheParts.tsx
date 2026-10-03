@@ -1,18 +1,20 @@
 import { Link } from "@/i18n/navigation";
 
-// Building blocks of the French and Spanish worksheet pages (/fr/fiches,
-// /es/fichas). French is the default, so the French pages pass no locale.
+// Building blocks of the French, Spanish and Portuguese worksheet pages
+// (/fr/fiches, /es/fichas, /pt/atividades). French is the default, so the
+// French pages pass no locale.
 
-/** What these blocks need from a French fiche or a Spanish ficha. */
+/** What these blocks need from a French fiche, a Spanish ficha or a Portuguese atividade. */
 export type PrintableSheet = { slug: string; title: string; label: string; preview: string };
-type SheetLocale = "fr" | "es";
+type SheetLocale = "fr" | "es" | "pt";
 
 const LABELS = {
   fr: { preview: "Aperçu de la fiche :", print: "🖨️ Imprimer", download: "⬇️ Télécharger le PDF", pages: "pages" },
   es: { preview: "Vista previa de la ficha:", print: "🖨️ Imprimir", download: "⬇️ Descargar el PDF", pages: "páginas" },
+  pt: { preview: "Prévia da atividade:", print: "🖨️ Imprimir", download: "⬇️ Baixar o PDF", pages: "páginas" },
 };
 
-/** Preview of a worksheet page: a small pre-rendered JPEG (scripts/fiches-fr, scripts/fichas-es). */
+/** Preview of a worksheet page: a small pre-rendered JPEG (scripts/fiches-fr, scripts/fichas-es, scripts/atividades-pt). */
 export function FichePreview({
   fiche,
   className,

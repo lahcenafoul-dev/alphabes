@@ -5,6 +5,7 @@ import { ACCENTS_SLUG, frenchLetters, isAccentLetter } from "@/lib/letters-fr";
 import { TILDE_SLUG } from "@/lib/letters-es";
 import { ACENTOS_SLUG as PT_ACENTOS_SLUG, CEDILHA_SLUG } from "@/lib/letters-pt";
 import { portugueseSyllablePages } from "@/lib/silabas-pt";
+import { atividadeCategoryParams, atividadePacks } from "@/lib/atividades-pt";
 import { spanishSyllablePages } from "@/lib/silabas-es";
 import { fichaCategoryParams, fichaPacks } from "@/lib/fichas-es";
 import { phonicsSkills } from "@/lib/phonics-data";
@@ -311,8 +312,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       })),
   ];
 
-  // Portuguese pages with no twin: the Ç, the accents page and the syllable
-  // pages.
+  // Portuguese pages with no twin: the Ç, the accents page, the syllable
+  // pages, and the worksheets and packs.
   const portugueseOnlyEntries: MetadataRoute.Sitemap = [
     ...[CEDILHA_SLUG, PT_ACENTOS_SLUG].map((letter) => ({
       url: absoluteUrl("pt", "/alphabet/[letter]", { letter }),
@@ -325,6 +326,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: new Date(),
       changeFrequency: "monthly" as const,
       priority: 0.7,
+    })),
+    ...atividadeCategoryParams().map((category) => ({
+      url: absoluteUrl("pt", "/worksheets/[category]", { category }),
+      lastModified: new Date(),
+      changeFrequency: "monthly" as const,
+      priority: 0.6,
+    })),
+    ...atividadePacks.map((p) => ({
+      url: absoluteUrl("pt", "/worksheets/bundles/[bundleSlug]", { bundleSlug: p.slug }),
+      lastModified: new Date(),
+      changeFrequency: "monthly" as const,
+      priority: 0.5,
     })),
   ];
 

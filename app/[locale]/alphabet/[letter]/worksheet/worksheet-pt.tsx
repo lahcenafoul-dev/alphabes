@@ -6,6 +6,7 @@ import { cursivaFont } from "@/lib/fonts/cursive-pt";
 import { absoluteUrl, alternatesFor } from "@/lib/i18n/routes";
 import { buildBreadcrumbJsonLd } from "@/lib/json-ld";
 import { CEDILHA_SLUG, getPortugueseLetter } from "@/lib/letters-pt";
+import { getAtividade } from "@/lib/atividades-pt";
 
 export function worksheetMetadataPt(param: string): Metadata {
   const l = getPortugueseLetter(param);
@@ -27,6 +28,9 @@ export default function WorksheetPt({ letter }: { letter: string }) {
   const word = l.words[0];
   const pair = `${l.upper} ${l.lower}`;
   const short = l.slug === CEDILHA_SLUG ? "O Ç" : `Letra ${l.upper}`;
+  const bastao = getAtividade(`letra-${l.slug}-bastao`)!;
+  const forma = getAtividade(`letra-${l.slug}-forma`)!;
+  const cursiva = getAtividade(`letra-${l.slug}-cursiva`)!;
 
   const breadcrumbJsonLd = buildBreadcrumbJsonLd([
     { name: "Início", url: absoluteUrl("pt", "/") },
@@ -108,7 +112,26 @@ export default function WorksheetPt({ letter }: { letter: string }) {
         >
           🔊 Ouvir
         </ListenButton>
+        <a href={bastao.pdf} download={`atividade-letra-bastao-${l.slug}.pdf`} className="rounded-block bg-crayon-green text-white px-6 py-3 font-bold shadow-block hover:shadow-blockHover transition">
+          ⬇️ Letra bastão (PDF)
+        </a>
+        <a href={forma.pdf} download={`atividade-letra-de-forma-${l.slug}.pdf`} className="rounded-block bg-crayon-green text-white px-6 py-3 font-bold shadow-block hover:shadow-blockHover transition">
+          ⬇️ Letra de forma (PDF)
+        </a>
+        <a href={cursiva.pdf} download={`atividade-cursiva-${l.slug}.pdf`} className="rounded-block bg-crayon-purple text-white px-6 py-3 font-bold shadow-block hover:shadow-blockHover transition">
+          ⬇️ Letra cursiva (PDF)
+        </a>
       </div>
+      <p className="mt-3 text-sm text-chalkboard/60">
+        Todas as atividades {l.slug === CEDILHA_SLUG ? "do Ç" : `da letra ${l.upper}`} (reconhecer, colorir, sílabas, palavras…) estão no{" "}
+        <Link
+          href={{ pathname: "/worksheets/bundles/[bundleSlug]", params: { bundleSlug: `pacote-letra-${l.slug}` } }}
+          className="font-bold underline"
+        >
+          pacote de atividades
+        </Link>
+        .
+      </p>
 
       <p className="mt-10">
         <Link

@@ -4,14 +4,15 @@ import { initLocale, type LocaleParams } from "@/lib/i18n/server";
 import BundlesEn, { bundlesMetadataEn } from "./bundles-en";
 import BundlesFr, { bundlesMetadataFr } from "./bundles-fr";
 import BundlesEs, { bundlesMetadataEs } from "./bundles-es";
+import BundlesPt, { bundlesMetadataPt } from "./bundles-pt";
 
 export async function generateMetadata({ params }: { params: LocaleParams }): Promise<Metadata> {
   const locale = initLocale((await params).locale);
-  return byLocale(locale, { en: bundlesMetadataEn, fr: bundlesMetadataFr, es: bundlesMetadataEs });
+  return byLocale(locale, { en: bundlesMetadataEn, fr: bundlesMetadataFr, es: bundlesMetadataEs, pt: bundlesMetadataPt });
 }
 
 export default async function BundlesPage({ params }: { params: LocaleParams }) {
   const locale = initLocale((await params).locale);
-  const Page = byLocale(locale, { en: BundlesEn, fr: BundlesFr, es: BundlesEs });
+  const Page = byLocale(locale, { en: BundlesEn, fr: BundlesFr, es: BundlesEs, pt: BundlesPt });
   return <Page />;
 }

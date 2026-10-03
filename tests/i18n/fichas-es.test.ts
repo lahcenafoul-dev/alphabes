@@ -138,13 +138,14 @@ describe("Spanish worksheet routes", () => {
     expect(paramsExist("/worksheets/bundles/[bundleSlug]", { bundleSlug: "pack-lettre-a" }, "es")).toBe(false);
   });
 
-  it("pair the index pages in three languages, but no worksheet or pack page", () => {
+  it("pair the index pages in every language, but no worksheet or pack page", () => {
     expect(localizedPath("es", "/worksheets/[category]", { category: "silabas-m" })).toBe("/es/fichas/silabas-m");
     expect(localizedPath("es", "/worksheets/bundles/[bundleSlug]", { bundleSlug: "paquete-letra-a" })).toBe("/es/fichas/paquetes/paquete-letra-a");
     expect(alternatesFor("es", "/worksheets").languages).toEqual({
       en: "https://alphabes.com/worksheets",
       fr: "https://alphabes.com/fr/fiches",
       es: "https://alphabes.com/es/fichas",
+      pt: "https://alphabes.com/pt/atividades",
       "x-default": "https://alphabes.com/worksheets",
     });
     expect(alternatesFor("es", "/worksheets/[category]", { category: "silabas-m" })).toEqual({

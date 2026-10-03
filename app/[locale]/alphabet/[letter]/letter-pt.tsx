@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Link } from "@/i18n/navigation";
 import ListenButton from "@/components/ListenButton";
+import { FicheCard } from "@/components/fiches/FicheParts";
+import { atividadesForLetter, getAtividadeCategory } from "@/lib/atividades-pt";
 import { cursivaFont } from "@/lib/fonts/cursive-pt";
 import { absoluteUrl, alternatesFor } from "@/lib/i18n/routes";
 import { buildBreadcrumbJsonLd } from "@/lib/json-ld";
@@ -246,6 +248,23 @@ export default function LetterPt({ letter }: { letter: string }) {
             </Link>
           )}
         </div>
+      </section>
+
+      <section className="mt-10" aria-labelledby="atividades-heading">
+        <h2 id="atividades-heading" className="text-2xl font-bold">
+          As atividades para imprimir
+        </h2>
+        <ul className="mt-4 grid grid-cols-2 sm:grid-cols-4 gap-4">
+          {atividadesForLetter(l.slug).map((a) => (
+            <FicheCard key={a.slug} fiche={{ ...a, label: getAtividadeCategory(a.category)!.name }} locale="pt" />
+          ))}
+        </ul>
+        <Link
+          href={{ pathname: "/worksheets/bundles/[bundleSlug]", params: { bundleSlug: `pacote-letra-${l.slug}` } }}
+          className="mt-4 inline-block font-display font-bold text-crayon-purple hover:underline"
+        >
+          Todas as atividades {cedilha ? "do Ç" : `da letra ${l.upper}`} num só PDF →
+        </Link>
       </section>
 
       {related.length > 0 && (

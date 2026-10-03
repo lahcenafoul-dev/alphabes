@@ -136,7 +136,7 @@ const ptSyllables = [
 // Portuguese (docs/portuguese-plan.md): every /pt URL answers 404 until its
 // page is written.
 const RULES_PT = [
-  ["/pt/atividades", {}, 404, null, "Portuguese page not written yet (phase 4)"],
+  ["/pt/historias", {}, 404, null, "Portuguese page not written yet (phase 5)"],
   // Portuguese phase 2: the alphabet.
   ["/pt/alfabeto/ç", {}, 404, null, "ç is /pt/alfabeto/c-cedilha"],
   ["/pt/alfabeto/enie", {}, 404, null, "Spanish ñ under /pt"],
@@ -164,7 +164,18 @@ const RULES_PT = [
   ["/pt/precos", { headers: { cookie: "NEXT_LOCALE=fr" } }, 307, "/fr/tarifs", "Portuguese page, French chosen"],
   ["/pt/precos", { headers: { cookie: "NEXT_LOCALE=es" } }, 307, "/es/precios", "Portuguese page, Spanish chosen"],
   ["/blog", { headers: { cookie: "NEXT_LOCALE=pt" } }, 200, null, "no Portuguese twin: stay"],
-  ["/worksheets", { headers: { cookie: "NEXT_LOCALE=pt" } }, 200, null, "Portuguese worksheets not written yet: stay"],
+  ["/stories", { headers: { cookie: "NEXT_LOCALE=pt" } }, 200, null, "Portuguese stories not written yet: stay"],
+  // Portuguese phase 4: worksheets.
+  ["/pt/atividades/letra-a-trazo", {}, 404, null, "Spanish worksheet under /pt/atividades"],
+  ["/pt/atividades/lettre-a-cursive", {}, 404, null, "French worksheet under /pt/atividades"],
+  ["/pt/atividades/letter-a-tracing", {}, 404, null, "English worksheet under /pt/atividades"],
+  ["/pt/atividades/pacotes/paquete-letra-a", {}, 404, null, "Spanish pack under /pt/atividades/pacotes"],
+  ["/worksheets/familia-b", {}, 404, null, "Portuguese worksheet under an English URL"],
+  ["/es/fichas/familia-b", {}, 404, null, "Portuguese worksheet under /es/fichas"],
+  ["/worksheets", { headers: { cookie: "NEXT_LOCALE=pt" } }, 307, "/pt/atividades", "worksheet index twin in Portuguese"],
+  ["/es/fichas/paquetes", { headers: { cookie: "NEXT_LOCALE=pt" } }, 307, "/pt/atividades/pacotes", "pack index twin in Portuguese"],
+  ["/pt/atividades/familia-b", { headers: { cookie: "NEXT_LOCALE=es" } }, 200, null, "Portuguese-only worksheet, Spanish chosen: stay"],
+  ["/es/fichas/letra-a-cursiva", { headers: { cookie: "NEXT_LOCALE=pt" } }, 200, null, "same slug in Spanish, but no twin: stay"],
   // Portuguese phase 3: the syllables.
   ["/pt/silabas/vocales", {}, 404, null, "Spanish syllable page under /pt/silabas"],
   ["/pt/silabas/ou", {}, 404, null, "French sound under /pt/silabas"],
@@ -249,6 +260,13 @@ const LANGS = {
       // Portuguese phase 3: the syllables (lib/silabas-pt.ts).
       "/pt/silabas",
       ...ptSyllables.map((s) => `/pt/silabas/${s}`),
+      // Portuguese phase 4: worksheets (a sample; the tests check every catalogue entry).
+      "/pt/atividades", "/pt/atividades/pacotes", "/pt/atividades/letra-bastao", "/pt/atividades/letra-cursiva",
+      "/pt/atividades/familias-silabicas", "/pt/atividades/digrafos", "/pt/atividades/sons-nasais", "/pt/atividades/silabas-complexas",
+      "/pt/atividades/numeros", "/pt/atividades/letra-a-bastao", "/pt/atividades/letra-c-cedilha-forma", "/pt/atividades/letra-m-silaba",
+      "/pt/atividades/familia-b", "/pt/atividades/digrafo-rr", "/pt/atividades/nasal-til", "/pt/atividades/encontro-tr",
+      "/pt/atividades/numero-14", "/pt/atividades/cor-marrom", "/pt/atividades/pacotes/pacote-alfabeto-completo",
+      "/pt/atividades/pacotes/pacote-letra-c-cedilha",
     ],
     rules: RULES_PT,
   },

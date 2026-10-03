@@ -6,6 +6,8 @@ import SoundHunt from "@/components/sons/SoundHunt";
 import SyllableBuilder from "@/components/sons/SyllableBuilder";
 import SyllableClap from "@/components/silabas/SyllableClap";
 import WordBuilder from "@/components/silabas/WordBuilder";
+import { FicheCard } from "@/components/fiches/FicheParts";
+import { atividadesForSyllablePage } from "@/lib/atividades-pt";
 import { absoluteUrl, alternatesFor } from "@/lib/i18n/routes";
 import { buildBreadcrumbJsonLd } from "@/lib/json-ld";
 import {
@@ -68,6 +70,7 @@ export default function SilabaPt({ slug }: { slug: string }) {
   const { prev, next } = portuguesePageNeighbors(p.slug);
   const url = absoluteUrl("pt", "/phonics/[skill]", { skill: p.slug });
   const related = p.related.map((r) => getPortugueseSyllablePage(r)!);
+  const sheets = atividadesForSyllablePage(p.slug);
 
   const lessonJsonLd = {
     "@context": "https://schema.org",
@@ -240,6 +243,22 @@ export default function SilabaPt({ slug }: { slug: string }) {
           <div className="mt-3">
             <SoundHunt hunt={p.hunt} locale="pt" />
           </div>
+        </section>
+      )}
+
+      {sheets.length > 0 && (
+        <section className="mt-10" aria-labelledby="atividades-heading">
+          <h2 id="atividades-heading" className="text-2xl font-bold">
+            {sheets.length > 1 ? "As atividades para imprimir" : "A atividade para imprimir"}
+          </h2>
+          <p className="mt-1 text-chalkboard/70">
+            As sílabas para ler, palavras separadas em sílabas e sílabas para escrever em letra cursiva, numa folha A4.
+          </p>
+          <ul className="mt-4 grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 gap-4">
+            {sheets.map((a) => (
+              <FicheCard key={a.slug} fiche={a} locale="pt" />
+            ))}
+          </ul>
         </section>
       )}
 
