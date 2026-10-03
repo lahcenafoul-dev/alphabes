@@ -1,6 +1,6 @@
 # Portuguese version of AlphaBes: plan and status
 
-Last updated: 2026-10-03 (phase 0 pushed; phase 1 done, not pushed). Read this first when continuing the Portuguese work, together with CLAUDE.md, [french-plan.md](french-plan.md) and [spanish-plan.md](spanish-plan.md): the Portuguese work reuses everything built for French and Spanish.
+Last updated: 2026-10-03 (phases 0–1 pushed; phase 2 done, not pushed). Read this first when continuing the Portuguese work, together with CLAUDE.md, [french-plan.md](french-plan.md) and [spanish-plan.md](spanish-plan.md): the Portuguese work reuses everything built for French and Spanish.
 
 ## Goal
 
@@ -160,13 +160,21 @@ One migration written by hand (no shadow database): `ALTER TYPE "Locale" ADD VAL
 - The English, French and Spanish cookie and privacy pages still say "EN / FR / ES" buttons (left unchanged so their text doesn't change); the Portuguese ones say "EN / FR / ES / PT".
 - The legal pages cite the LGPD (art. 14 children, art. 18 rights, ANPD, *encarregado*), the ECA, the Código de Defesa do Consumidor (terms), and are marked "Texto provisório" (P11).
 
+## Phase 2 notes
+
+- **Letters** (`lib/letters-pt.ts`): the 27 entries of the approved sample in the order a, b, c, ç, d…z (`alphabetLetters` is the 26 without Ç). Each has its Brazilian name plus `otherNames` (E “ê”, O “ô”, K “capa”, W “dábliu”, “vê duplo”, Y “i grego”), IPA, the family the sound button reads (ba, be, bi, bo, bu), a note “Para a família” and an FAQ. Brazilian pronunciation is the default (di/ti “dji/tchi”, l at the end of a syllable as u, final e and o as i and u, strong and weak r, s as z between vowels), with Portugal mentioned where useful. Y's second word shows “fazer yoga” (the article of *yoga/ioga* varies). The tests reject Portugal-only words and Spanish words.
+- **Pages:** `/pt/alfabeto` (26 cards + Ç card, dashed, “não é uma letra nova”; “Os quatro tipos de letra”), `/pt/alfabeto/[letter]` (`letter-pt.tsx`; “A” works like “a”; Ç is `c-cedilha`, `/pt/alfabeto/ç` 404s), `/pt/alfabeto/acentos` (`acentos-pt.tsx`: agudo, circunflexo, til, grave, and a box saying the cedilha is not an accent), `/pt/alfabeto/[letter]/atividade` (tracing), `/pt/cartoes`. The letter pages get their syllable link in phase 3 and their printable sheets in phase 4 (as `letter-es.tsx` has them); the tracing page gets its PDF downloads in phase 4.
+- **Cursive (P6):** Playwrite BR, `lib/fonts/cursive-pt.ts`. Licence checked 2026-10-03 at google/fonts (`ofl/playwritebr/OFL.txt`): SIL OFL 1.1, “Copyright 2023 The Playwrite Project Authors”, no Reserved Font Name. Measured: x-height 0.50 em, capitals and loops to about 1.15 em, tails to −0.65 em, every Portuguese character present. Phase 4 embeds a static TTF in the PDF generator, as for Playwrite MX.
+- **Tracing:** `TracingCanvas` takes `prints` (several print styles before cursive: *Bastão* “A”, *Forma* “a”) and the ruling `"caligrafia"`: the four lines of the Brazilian *caderno de caligrafia*, spaced 1.3 x-heights above the middle line and below the baseline to fit Playwrite BR, centred on the canvas. English, French and Spanish canvases are unchanged (same buttons and labels).
+- **Routing:** `c-cedilha` and `acentos` are Portuguese-only (`LOCALE_ONLY_PARAMS.pt`); `PORTUGUESE_VALIDATORS` lists the letter params; switching language on Ç or the accents page goes to the other language's alphabet, and Spanish ñ / French ç go to `/pt/alfabeto`.
+
 ## Phases
 
 | Phase | Content | Status |
 |---|---|---|
 | 0 | Branch; this plan; baseline snapshots of English, French **and Spanish** from `main`; `snapshot.mjs` takes Spanish by default; `localecheck.mjs pt` (handles `lang="pt-BR"`). | **Done** (2026-10-03), not pushed. Baseline in `../snap-pt-base`: 1,256 routes (496 English, 382 French, 378 Spanish) from `main` 3e30909, build 1,515 pages; a second snapshot of the same build is identical, so the comparison is repeatable. On that build `localecheck` passes for `fr`, `es` and `pt` (`pt`: 9 routing rules, every `/pt` URL 404s until phase 1), 334 browser checks pass. tsc, lint and 189 unit tests pass on the branch. |
 | 1 | Four-language foundation, header switcher (P12), `messages/pt.json`, Portuguese UI pages (home, quem somos, preços, contato, entrar, cadastro, minha conta, legal LGPD placeholders, cookies), Portuguese 404, API errors, `PT` migration on `dev`. | **Done** (2026-10-03), not pushed. English, French and Spanish identical to the baseline (1,256 routes) apart from hreflang: the 7 twins of the Portuguese pages in each language (21 pages) each gained one `hreflang="pt"` line, nothing else. Sitemap: 1,250 URLs, 7 Portuguese ones with four-way alternates. `localecheck pt`, `fr` and `es` pass, 411 browser checks, 205 unit tests, build 2,079 pages (was 1,515). See "Phase 1 notes". |
-| 2 | Alfabeto: `lib/letters-pt.ts` (26 + Ç + acentos), chart, letter pages with the 4 tipos de letra, cartões, speech (P10), tracing canvas bastão/forma/cursiva, Playwrite BR licence check. | To do |
+| 2 | Alfabeto: `lib/letters-pt.ts` (26 + Ç + acentos), chart, letter pages with the 4 tipos de letra, cartões, speech (P10), tracing canvas bastão/forma/cursiva, Playwrite BR licence check. | **Done** (2026-10-03), not pushed. English, French and Spanish identical to the baseline apart from hreflang: since phase 1, 86 pages gained one `hreflang="pt"` line (the alphabet, the 26 letters and the cards in the three languages, and the sample A tracing page in English and French), nothing removed. Sitemap: 1,280 URLs, 37 Portuguese. `localecheck pt`, `fr`, `es` pass, 440 browser checks, 221 unit tests, build 2,082 pages. See "Phase 2 notes". |
 | 3 | Sílabas: ~25 pages, builders, clapping, picture hunt. | To do |
 | 4 | Atividades para imprimir: PDFs and pacotes (P6). | To do |
 | 5 | Histórias: 8 stories, seed `dev`, Portuguese voice reader. | To do |
