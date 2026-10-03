@@ -32,7 +32,13 @@ const CLIENT_NAMESPACES = ["Common", "Header", "LanguageSwitcher", "CookieConsen
 const AREA_SERVED: Record<Exclude<Locale, "en">, string[]> = {
   fr: ["FR", "MA", "BE", "CH", "CA"],
   es: ["MX", "US", "CO", "AR", "PE", "CL", "VE", "EC", "GT", "ES"],
+  pt: ["BR", "PT", "AO", "MZ"],
 };
+
+// <html lang> and JSON-LD inLanguage. Portuguese is Brazilian
+// (docs/portuguese-plan.md, P1), so phones and screen readers use a Brazilian
+// voice; its hreflang stays "pt".
+const HTML_LANG: Record<Locale, string> = { en: "en", fr: "fr", es: "es", pt: "pt-BR" };
 
 /** Site-wide default metadata for a language (pages override what they need). */
 export async function buildLocaleMetadata(locale: Locale): Promise<Metadata> {
@@ -53,6 +59,7 @@ export async function buildLocaleMetadata(locale: Locale): Promise<Metadata> {
       description: t("ogDescription"),
       ...(locale === "fr" && { locale: "fr_FR" }),
       ...(locale === "es" && { locale: "es_LA" }),
+      ...(locale === "pt" && { locale: "pt_BR" }),
     },
     twitter: {
       card: "summary_large_image",
@@ -102,12 +109,12 @@ export default async function LocaleDocument({
           name: "AlphaBes",
           url: `${SITE_URL}/${locale}`,
           description: t("orgDescription"),
-          inLanguage: locale,
+          inLanguage: HTML_LANG[locale],
           areaServed: AREA_SERVED[locale],
         };
 
   return (
-    <html lang={locale} className={`${baloo.variable} ${nunito.variable}`}>
+    <html lang={HTML_LANG[locale]} className={`${baloo.variable} ${nunito.variable}`}>
       <body>
         <script
           type="application/ld+json"

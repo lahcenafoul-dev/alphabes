@@ -72,9 +72,9 @@ export async function middleware(req: NextRequest) {
 
   const match = matchPath(pathname);
 
-  // Unknown URLs, unknown letters/games/worksheets, and French or Spanish
-  // pages that haven't been written yet get the 404 page in the right language (never
-  // English content under a French URL). "/en/..." is left to next-intl,
+  // Unknown URLs, unknown letters/games/worksheets, and French, Spanish or
+  // Portuguese pages that haven't been written yet get the 404 page in the
+  // right language (never English content under a French URL). "/en/..." is left to next-intl,
   // which redirects it to the unprefixed URL.
   if (
     !match

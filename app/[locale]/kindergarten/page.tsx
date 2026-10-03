@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import SchoolHubFr, { schoolHubMetadataFr } from "@/components/ecole/SchoolHubFr";
 import SchoolHubEs, { schoolHubMetadataEs } from "@/components/escuela/SchoolHubEs";
+import { byLocale } from "@/lib/i18n/routes";
 import { initLocale, type LocaleParams } from "@/lib/i18n/server";
 import KindergartenEn, { kindergartenMetadataEn } from "./kindergarten-en";
 
@@ -8,7 +9,7 @@ import KindergartenEn, { kindergartenMetadataEn } from "./kindergarten-en";
 // lib/escuela-es.ts), not translations.
 export async function generateMetadata({ params }: { params: LocaleParams }): Promise<Metadata> {
   const locale = initLocale((await params).locale);
-  return { en: kindergartenMetadataEn, fr: schoolHubMetadataFr("grande-section"), es: schoolHubMetadataEs("kinder") }[locale];
+  return byLocale(locale, { en: kindergartenMetadataEn, fr: schoolHubMetadataFr("grande-section"), es: schoolHubMetadataEs("kinder") });
 }
 
 export default async function KindergartenPage({ params }: { params: LocaleParams }) {

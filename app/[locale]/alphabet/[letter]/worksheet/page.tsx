@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { frenchLetterParams } from "@/lib/letters-fr";
 import { spanishLetterParams } from "@/lib/letters-es";
+import { byLocale } from "@/lib/i18n/routes";
 import { initLocale } from "@/lib/i18n/server";
 import WorksheetEn, { englishWorksheetParams, worksheetMetadataEn } from "./worksheet-en";
 import WorksheetFr, { worksheetMetadataFr } from "./worksheet-fr";
@@ -23,12 +24,12 @@ export function generateStaticParams({ params }: { params: { locale: string } })
 export async function generateMetadata(props: Props): Promise<Metadata> {
   const { locale: param, letter } = await props.params;
   const locale = initLocale(param);
-  return { en: worksheetMetadataEn, fr: worksheetMetadataFr, es: worksheetMetadataEs }[locale](letter);
+  return byLocale(locale, { en: worksheetMetadataEn, fr: worksheetMetadataFr, es: worksheetMetadataEs })(letter);
 }
 
 export default async function LetterWorksheetPage(props: Props) {
   const { locale: param, letter } = await props.params;
   const locale = initLocale(param);
-  const Page = { en: WorksheetEn, fr: WorksheetFr, es: WorksheetEs }[locale];
+  const Page = byLocale(locale, { en: WorksheetEn, fr: WorksheetFr, es: WorksheetEs });
   return <Page letter={letter} />;
 }

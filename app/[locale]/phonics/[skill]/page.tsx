@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { frenchSounds } from "@/lib/sons-fr";
 import { spanishSyllablePages } from "@/lib/silabas-es";
+import { byLocale } from "@/lib/i18n/routes";
 import { initLocale } from "@/lib/i18n/server";
 import SkillEn, { englishSkillParams, skillMetadataEn } from "./skill-en";
 import SoundFr, { soundMetadataFr } from "./sound-fr";
@@ -29,12 +30,12 @@ export function generateStaticParams({ params }: { params: { locale: string } })
 export async function generateMetadata(props: Props): Promise<Metadata> {
   const { locale: param, skill } = await props.params;
   const locale = initLocale(param);
-  return { en: skillMetadataEn, fr: soundMetadataFr, es: syllableMetadataEs }[locale](skill);
+  return byLocale(locale, { en: skillMetadataEn, fr: soundMetadataFr, es: syllableMetadataEs })(skill);
 }
 
 export default async function PhonicsSkillPage(props: Props) {
   const { locale: param, skill } = await props.params;
   const locale = initLocale(param);
-  const Page = { en: SkillEn, fr: SoundFr, es: SilabaEs }[locale];
+  const Page = byLocale(locale, { en: SkillEn, fr: SoundFr, es: SilabaEs });
   return <Page slug={skill} />;
 }

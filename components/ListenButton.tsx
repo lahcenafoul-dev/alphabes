@@ -6,7 +6,7 @@ import { speakIn, warmUpVoices, type SpeakResult } from "@/lib/speech";
 
 type SpeechLocale = Exclude<Locale, "en">;
 
-// Read-aloud button for the French and Spanish pages. Speaks with a voice in
+// Read-aloud button for the French, Spanish and Portuguese pages. Speaks with a voice in
 // the page's language only; when the device has none, it shows how to
 // install one instead of letting an English voice mangle the words.
 export default function ListenButton({
@@ -53,7 +53,7 @@ export function useSpeech(locale: SpeechLocale) {
     return result === "ok";
   }
 
-  const Notice = locale === "es" ? NoVoiceNoticeEs : NoVoiceNotice;
+  const Notice = { fr: NoVoiceNotice, es: NoVoiceNoticeEs, pt: NoVoiceNoticePt }[locale];
   const notice = problem ? <Notice kind={problem} onClose={() => setProblem(null)} /> : null;
   return { say, notice };
 }
@@ -98,6 +98,44 @@ function NoVoiceNoticeEs({ kind, onClose }: { kind: Exclude<SpeakResult, "ok">; 
         className="mt-3 rounded-block bg-chalkboard px-4 py-1.5 font-display font-bold text-paper"
       >
         Cerrar
+      </button>
+    </div>
+  );
+}
+
+function NoVoiceNoticePt({ kind, onClose }: { kind: Exclude<SpeakResult, "ok">; onClose: () => void }) {
+  return (
+    <div role="status" className={noticeClass}>
+      {kind === "unsupported" ? (
+        <p className="font-display font-bold">
+          Este navegador não consegue ler em voz alta. Tente com o Chrome, o Edge, o Safari ou o Firefox.
+        </p>
+      ) : (
+        <>
+          <p className="font-display font-bold">Este aparelho não tem nenhuma voz em português.</p>
+          <p className="mt-1 text-chalkboard/80">Para ouvir as letras e as palavras, adicione uma:</p>
+          <ul className="mt-2 list-disc space-y-1 pl-5 text-chalkboard/80">
+            <li>
+              <strong>Android</strong>: Configurações › Acessibilidade › Conversão de texto em voz, e escolha o
+              português (mecanismo do Google).
+            </li>
+            <li>
+              <strong>iPhone, iPad</strong>: Ajustes › Acessibilidade › Conteúdo Falado › Vozes › Português.
+            </li>
+            <li>
+              <strong>Windows</strong>: Configurações › Hora e idioma › Idioma e região, adicione o português
+              (Brasil) com a opção de voz.
+            </li>
+          </ul>
+          <p className="mt-2 text-chalkboard/60">Depois, recarregue a página.</p>
+        </>
+      )}
+      <button
+        type="button"
+        onClick={onClose}
+        className="mt-3 rounded-block bg-chalkboard px-4 py-1.5 font-display font-bold text-paper"
+      >
+        Fechar
       </button>
     </div>
   );

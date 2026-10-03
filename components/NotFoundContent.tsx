@@ -3,12 +3,12 @@ import type { Locale } from "@/i18n/routing";
 import { isAvailable, localizedPath } from "@/lib/i18n/routes";
 
 // The 404 page body. English is kept exactly as it was before the French
-// version; French and Spanish only link to sections that already exist in
-// their language. Links
+// version; French, Spanish and Portuguese only link to sections that already
+// exist in their language. Links
 // use next/link with locale-built hrefs so this renders the same inside
 // [locale] and in app/global-not-found.tsx.
 export default function NotFoundContent({ locale }: { locale: Locale }) {
-  const Content = { en: NotFoundEn, fr: NotFoundFr, es: NotFoundEs }[locale];
+  const Content = { en: NotFoundEn, fr: NotFoundFr, es: NotFoundEs, pt: NotFoundPt }[locale];
   return <Content />;
 }
 
@@ -150,6 +150,46 @@ function NotFoundEs() {
             <Link
               key={link.href}
               href={localizedPath("es", link.href)}
+              className={`rounded-block font-display font-bold px-5 py-2.5 transition ${link.style}`}
+            >
+              {link.label}
+            </Link>
+          ))}
+      </div>
+    </main>
+  );
+}
+
+function NotFoundPt() {
+  const links = [
+    { href: "/worksheets", label: "Ver as atividades", style: "bg-crayon-green text-paper shadow-block hover:shadow-blockHover" },
+    { href: "/alphabet", label: "Conhecer o alfabeto", style: "border-2 border-chalkboard/20 hover:border-crayon-blue" },
+    { href: "/games", label: "Brincar com as letras", style: "border-2 border-chalkboard/20 hover:border-crayon-blue" },
+  ] as const;
+
+  return (
+    <main id="main-content" className="mx-auto max-w-2xl px-6 py-20 text-center">
+      <Blocks />
+
+      <h1 className="mt-8 text-3xl font-extrabold">Ops, não encontramos esta página</h1>
+      <p className="mt-3 text-chalkboard/70">
+        Talvez a página que você procura tenha mudado de endereço ou não exista mais. Aqui estão
+        alguns bons lugares para começar:
+      </p>
+
+      <div className="mt-8 flex flex-wrap justify-center gap-4">
+        <Link
+          href={localizedPath("pt", "/")}
+          className="rounded-block bg-chalkboard text-paper font-display font-bold px-5 py-2.5 shadow-block hover:shadow-blockHover transition"
+        >
+          Voltar ao início
+        </Link>
+        {links
+          .filter((link) => isAvailable("pt", link.href))
+          .map((link) => (
+            <Link
+              key={link.href}
+              href={localizedPath("pt", link.href)}
               className={`rounded-block font-display font-bold px-5 py-2.5 transition ${link.style}`}
             >
               {link.label}

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { ficheCategoryParams } from "@/lib/fiches-fr";
 import { fichaCategoryParams } from "@/lib/fichas-es";
+import { byLocale } from "@/lib/i18n/routes";
 import { initLocale } from "@/lib/i18n/server";
 import CategoryEn, { categoryMetadataEn, englishCategoryParams } from "./category-en";
 import CategoryFr, { categoryMetadataFr } from "./category-fr";
@@ -25,12 +26,12 @@ export function generateStaticParams({ params }: { params: { locale: string } })
 export async function generateMetadata(props: Props): Promise<Metadata> {
   const { locale: param, category } = await props.params;
   const locale = initLocale(param);
-  return { en: categoryMetadataEn, fr: categoryMetadataFr, es: categoryMetadataEs }[locale](category);
+  return byLocale(locale, { en: categoryMetadataEn, fr: categoryMetadataFr, es: categoryMetadataEs })(category);
 }
 
 export default async function WorksheetCategoryPage(props: Props) {
   const { locale: param, category } = await props.params;
   const locale = initLocale(param);
-  const Page = { en: CategoryEn, fr: CategoryFr, es: CategoryEs }[locale];
+  const Page = byLocale(locale, { en: CategoryEn, fr: CategoryFr, es: CategoryEs });
   return <Page slug={category} />;
 }

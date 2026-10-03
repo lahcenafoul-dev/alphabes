@@ -202,13 +202,156 @@ console.log("Spanish: switcher, forms and mobile (Spanish phase 1)");
   }
   await page.goto(base + "/es");
   await page.waitForLoadState("networkidle");
-  check((await page.locator("[role=group] a, [role=group] span").count()) === 3, "switcher shows EN / FR / ES");
+  // Below 640px the switcher is one button; the pills (EN / FR / ES / PT) are hidden.
+  check(await page.locator("[data-site-header] button[aria-controls=language-menu]").isVisible(), "phone switcher button is visible");
+  check(!(await page.locator("[data-site-header] [role=group]").isVisible()), "switcher pills are hidden at 390px");
   await page.screenshot({ path: `${shots}/es-mobile.png` });
   await page.getByRole("button", { name: "Menú" }).click();
   check(await page.locator("#mobile-menu").getByRole("link", { name: "Mi cuenta" }).isVisible(), "mobile menu has 'Mi cuenta'");
   await page.screenshot({ path: `${shots}/es-mobile-menu.png` });
   check(errors.length === 0, `no console/page errors${errors.length ? ": " + errors.slice(0, 3).join(" | ") : ""}`);
   await context.close();
+}
+
+console.log("Portuguese: switcher, forms and mobile (Portuguese phase 1)");
+{
+  const { context, page, errors } = await newPage();
+  await page.goto(base + "/pricing");
+  await page.waitForLoadState("networkidle");
+  check((await switcherHref(page, "pt")) === "/pt/precos", "PT link on /pricing points to /pt/precos");
+  check((await page.locator("[data-site-header] [role=group] a, [data-site-header] [role=group] span").count()) === 4, "switcher shows EN / FR / ES / PT");
+  await page.goto(base + "/blog");
+  await page.waitForLoadState("networkidle");
+  check((await switcherHref(page, "pt")) === "/pt", "PT link on /blog (no Portuguese version) falls back to /pt");
+  await page.goto(base + "/es/quienes-somos");
+  await page.waitForLoadState("networkidle");
+  check((await switcherHref(page, "pt")) === "/pt/quem-somos", "PT link on /es/quienes-somos points to /pt/quem-somos");
+  await Promise.all([page.waitForURL("**/pt/quem-somos"), page.locator("[role=group] a[hreflang=pt]").click()]);
+  check((await cookie(context)) === "pt", "clicking PT sets NEXT_LOCALE=pt");
+  check((await page.getAttribute("html", "lang")) === "pt-BR", "Portuguese page has lang=pt-BR");
+  check(
+    (await switcherHref(page, "en")) === "/about" && (await switcherHref(page, "fr")) === "/fr/a-propos" && (await switcherHref(page, "es")) === "/es/quienes-somos",
+    "EN, FR and ES links on /pt/quem-somos point to their twins",
+  );
+  const alt = async (l) => page.locator(`link[rel=alternate][hreflang=${l}]`).getAttribute("href");
+  check((await alt("pt")) === "https://alphabes.com/pt/quem-somos" && (await alt("x-default")) === "https://alphabes.com/about", "hreflang pt and x-default");
+  await page.goto(base + "/terms");
+  check(page.url().endsWith("/pt/termos-de-uso"), "with the PT cookie, /terms redirects to /pt/termos-de-uso");
+  await page.goto(base + "/alphabet");
+  check(new URL(page.url()).pathname === "/alphabet", "with the PT cookie, /alphabet (no Portuguese version yet) stays");
+
+  await page.goto(base + "/pt");
+  await page.waitForLoadState("networkidle");
+  check(await page.getByRole("button", { name: "Aceitar" }).isVisible(), "cookie banner is in Portuguese (Aceitar)");
+  const bannerHref = await page.getByRole("region", { name: "Consentimento de cookies" }).getByRole("link").getAttribute("href");
+  check(bannerHref === "/pt/cookies", `banner link is /pt/cookies (${bannerHref})`);
+  await page.getByRole("button", { name: "Recusar" }).click();
+  await page.screenshot({ path: `${shots}/pt-home.png`, clip: { x: 0, y: 0, width: 1280, height: 900 } });
+  await page.screenshot({ path: `${shots}/pt-home-full.png`, fullPage: true });
+
+  await page.goto(base + "/pt/entrar");
+  await page.waitForLoadState("networkidle");
+  await page.getByLabel("E-mail").fill("pessoa-desconhecida@example.com");
+  await page.getByLabel("Senha").fill("senha-incorreta");
+  await page.getByRole("button", { name: "Entrar" }).last().click();
+  const loginError = page.getByText("E-mail ou senha incorretos.");
+  await loginError.waitFor({ timeout: 15000 }).catch(() => {});
+  check(await loginError.isVisible(), "login shows the Portuguese error for wrong credentials");
+
+  if (!process.env.LIVE) {
+    await page.goto(base + "/pt/contato");
+    await page.waitForLoadState("networkidle");
+    await page.getByLabel("Nome").fill("Teste");
+    await page.getByLabel("E-mail").fill("test@example.com");
+    await page.getByLabel("Mensagem").fill("Olá, isto é um teste.");
+    await page.getByRole("button", { name: "Enviar a mensagem" }).click();
+    const sent = page.getByText("Obrigado! Vamos responder em breve.");
+    await sent.waitFor({ timeout: 15000 }).catch(() => {});
+    check(await sent.isVisible(), "contact form shows the Portuguese confirmation");
+  }
+
+  await page.goto(base + "/pt/cadastro");
+  await page.waitForLoadState("networkidle");
+  check(await page.getByText("Mínimo de 8 caracteres.").isVisible(), "register form is in Portuguese");
+
+  await page.goto(base + "/pt/xyz");
+  await page.waitForLoadState("networkidle");
+  check((await page.getAttribute("html", "lang")) === "pt-BR", "Portuguese 404 page has lang=pt-BR");
+  check(await page.getByRole("heading", { name: "Ops, não encontramos esta página" }).isVisible(), "Portuguese 404 page text");
+  check(errors.filter((e) => !/401|404|Unauthorized|status of 40[14]/.test(e)).length === 0, `no unexpected console errors${errors.length ? ": " + errors.slice(0, 3).join(" | ") : ""}`);
+  await context.close();
+}
+{
+  // The phone language menu (docs/portuguese-plan.md, P12).
+  const { context, page, errors } = await newPage({ width: 390, height: 844 });
+  for (const p of ["/pt", "/pt/precos", "/pt/politica-de-privacidade", "/pt/entrar", "/es", "/"]) {
+    await page.goto(base + p);
+    await page.waitForLoadState("networkidle");
+    const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+    check(overflow <= 0, `${p}: no horizontal scroll at 390px (overflow ${overflow}px)`);
+  }
+  await page.goto(base + "/pt/precos");
+  await page.waitForLoadState("networkidle");
+  const langButton = page.locator("[data-site-header] button[aria-controls=language-menu]");
+  const shown = (await langButton.innerText()).trim();
+  check(shown === "PT", `phone switcher shows the current language (${shown})`);
+  check((await langButton.getAttribute("aria-expanded")) === "false", "language list starts closed");
+  await langButton.click();
+  const menu = page.locator("#language-menu");
+  check(await menu.isVisible(), "tapping the button opens the language list");
+  check((await langButton.getAttribute("aria-expanded")) === "true", "aria-expanded is true when open");
+  check((await menu.locator("li").count()) === 4, "the list has the 4 languages");
+  check((await menu.locator("[aria-current=true]").innerText()).includes("Português"), "the current language is marked");
+  const menuHref = (l) => menu.locator(`a[hreflang=${l}]`).getAttribute("href");
+  check((await menuHref("en")) === "/pricing" && (await menuHref("fr")) === "/fr/tarifs" && (await menuHref("es")) === "/es/precios", "list links point to the page's twins");
+  const box = await menu.boundingBox();
+  check(box && box.x >= 0 && box.x + box.width <= 390, `the list stays on screen (x ${Math.round(box?.x ?? -1)}–${Math.round((box?.x ?? 0) + (box?.width ?? 0))})`);
+  await page.screenshot({ path: `${shots}/pt-mobile-languages.png` });
+  await page.keyboard.press("Escape");
+  check(!(await menu.isVisible()), "Escape closes the list");
+  check(await langButton.evaluate((el) => el === document.activeElement), "focus goes back to the button");
+  await langButton.click();
+  await page.mouse.click(20, 400);
+  check(!(await menu.isVisible()), "a tap outside closes the list");
+  await langButton.click();
+  await Promise.all([page.waitForURL("**/es/precios"), menu.locator("a[hreflang=es]").click()]);
+  check((await cookie(context)) === "es", "choosing ES in the list sets NEXT_LOCALE=es");
+  await page.getByRole("button", { name: "Menú" }).click();
+  check(await page.locator("#mobile-menu").isVisible(), "the main menu still opens next to the language button");
+  await page.goto(base + "/pt");
+  await page.waitForLoadState("networkidle");
+  await page.screenshot({ path: `${shots}/pt-mobile.png` });
+  check(errors.length === 0, `no console/page errors${errors.length ? ": " + errors.slice(0, 3).join(" | ") : ""}`);
+  await context.close();
+}
+{
+  // Wider screens: the four pills must fit the header next to the main links.
+  for (const width of [640, 768, 1024, 1280]) {
+    const { context, page } = await newPage({ width, height: 800 });
+    for (const p of ["/", "/fr", "/es", "/pt"]) {
+      await page.goto(base + p);
+      await page.waitForLoadState("networkidle");
+      const m = await page.evaluate(() => {
+        const row = document.querySelector("[data-site-header] > div");
+        const pills = row.querySelector("[role=group]");
+        const kids = [...row.children].map((c) => c.getBoundingClientRect());
+        const overlap = kids.some((r, i) => i > 0 && r.left < kids[i - 1].right - 0.5);
+        return {
+          overflow: row.scrollWidth - row.clientWidth,
+          height: row.getBoundingClientRect().height,
+          pills: !!pills && getComputedStyle(pills).display !== "none",
+          overlap,
+        };
+      });
+      check(
+        m.pills && m.overflow <= 0 && !m.overlap && m.height <= 72,
+        `${width}px ${p}: header fits with the 4 pills (overflow ${m.overflow}px, height ${Math.round(m.height)}px${m.overlap ? ", items overlap" : ""})`,
+      );
+    }
+    await page.goto(base + "/pt");
+    await page.screenshot({ path: `${shots}/pt-header-${width}.png`, clip: { x: 0, y: 0, width, height: 120 } });
+    await context.close();
+  }
 }
 
 // Fake voices: the device has only the voices listed; speech is recorded, not played.
@@ -1091,7 +1234,7 @@ if (process.env.CHECK_ACCOUNTS) {
 console.log("Header on small phones (320, 360 and 375px, phase 7)");
 for (const width of [320, 360, 375]) {
   const { context, page, errors } = await newPage({ width, height: 640 });
-  for (const p of ["/", "/fr", "/es", "/es/juegos/aplaude-las-silabas", "/alphabet/a"]) {
+  for (const p of ["/", "/fr", "/es", "/pt", "/es/juegos/aplaude-las-silabas", "/alphabet/a"]) {
     await page.goto(base + p);
     await page.waitForLoadState("networkidle");
     const { overflow, right } = await page.evaluate(() => ({

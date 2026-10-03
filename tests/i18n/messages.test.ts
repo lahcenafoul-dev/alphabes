@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import en from "@/messages/en.json";
 import fr from "@/messages/fr.json";
 import es from "@/messages/es.json";
+import pt from "@/messages/pt.json";
 
 type Tree = { [key: string]: string | string[] | Tree };
 
@@ -23,6 +24,7 @@ describe("message files", () => {
   const others = [
     ["fr", flatten(fr as Tree)],
     ["es", flatten(es as Tree)],
+    ["pt", flatten(pt as Tree)],
   ] as const;
 
   it("have exactly the same keys in every language", () => {
@@ -62,7 +64,7 @@ describe("message files", () => {
   it("don't leave English text in the other files", () => {
     // Words that are the same in several languages are allowed.
     const sameInBoth = new Set([
-      "English", "Français", "Español", "Blog", "Contact", "Message", "Alphabet", "Pro", "Menu", "AlphaBes", "Page {page}",
+      "English", "Français", "Español", "Português", "Blog", "Contact", "Message", "Alphabet", "Pro", "Menu", "AlphaBes", "Page {page}",
     ]);
     for (const [lang, flat] of others) {
       const suspicious = Object.entries(flat).filter(

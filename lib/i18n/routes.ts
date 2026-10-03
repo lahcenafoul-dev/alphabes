@@ -14,7 +14,7 @@ export const LOCALE_COOKIE_MAX_AGE = 60 * 60 * 24 * 365;
 export const LOCALE_HEADER = "x-alphabes-locale";
 
 // Internal pathnames that have a real page in each non-default language.
-// These grow phase by phase; every other /fr or /es URL answers 404, and only
+// These grow phase by phase; every other /fr, /es or /pt URL answers 404, and only
 // these get hreflang and sitemap entries in that language.
 export const FRENCH_PATHNAMES: ReadonlySet<AppPathname> = new Set<AppPathname>([
   "/",
@@ -83,10 +83,37 @@ export const SPANISH_PATHNAMES: ReadonlySet<AppPathname> = new Set<AppPathname>(
   "/worksheets/bundles/[bundleSlug]",
 ]);
 
+// Portuguese (Brazilian) pages written so far (docs/portuguese-plan.md).
+export const PORTUGUESE_PATHNAMES: ReadonlySet<AppPathname> = new Set<AppPathname>([
+  "/",
+  "/about",
+  "/contact",
+  "/cookies",
+  "/dashboard",
+  "/dashboard/[id]",
+  "/login",
+  "/pricing",
+  "/privacy-policy",
+  "/register",
+  "/terms",
+]);
+
 const LOCALE_PATHNAMES: Record<Exclude<Locale, "en">, ReadonlySet<AppPathname>> = {
   fr: FRENCH_PATHNAMES,
   es: SPANISH_PATHNAMES,
+  pt: PORTUGUESE_PATHNAMES,
 };
+
+/**
+ * A page's component (or metadata) for a language. English, French and
+ * Spanish are required; a language whose version isn't written yet falls back
+ * to English. Its URLs aren't in that language's page list, so the
+ * middleware 404s them and the fallback is never served (the build still
+ * prerenders it).
+ */
+export function byLocale<T>(locale: Locale, choices: Record<"en" | "fr" | "es", T> & Partial<Record<Locale, T>>): T {
+  return choices[locale] ?? choices.en;
+}
 
 // Private or thin pages: never given hreflang or French sitemap entries.
 export const NOINDEX_PATHNAMES: ReadonlySet<AppPathname> = new Set<AppPathname>([

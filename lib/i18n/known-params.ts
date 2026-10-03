@@ -79,10 +79,15 @@ const SPANISH_VALIDATORS: Partial<Record<AppPathname, (params: RouteParams) => b
   "/worksheets/bundles/[bundleSlug]": ({ bundleSlug }) => !!getFichaPack(bundleSlug),
 };
 
+// Portuguese params, added phase by phase with the Portuguese pages
+// (docs/portuguese-plan.md); same rule as Spanish.
+const PORTUGUESE_VALIDATORS: Partial<Record<AppPathname, (params: RouteParams) => boolean>> = {};
+
 /** False only when we know the params don't exist; true for routes we can't check. */
 export function paramsExist(pathname: AppPathname, params: RouteParams, locale: Locale): boolean {
   const validate = VALIDATORS[pathname];
   if (!validate) return true;
   if (locale === "es") return SPANISH_VALIDATORS[pathname]?.(params) ?? false;
+  if (locale === "pt") return PORTUGUESE_VALIDATORS[pathname]?.(params) ?? false;
   return validate(params, locale);
 }

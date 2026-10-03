@@ -27,7 +27,8 @@
     "label": "Elegir idioma",
     "en": "English",
     "fr": "Français",
-    "es": "Español"
+    "es": "Español",
+    "pt": "Português"
   },
   "Footer": {
     "learn": "Aprender",

@@ -15,14 +15,16 @@ export type SpeakResult = "ok" | "unsupported" | "no-voice";
 
 // Voices to try, best first; then any voice in the language. Spanish targets
 // Latin America (docs/spanish-plan.md, D11): Mexico, then US Spanish, then
-// other Latin American voices, then Spain.
+// other Latin American voices, then Spain. Portuguese targets Brazil
+// (docs/portuguese-plan.md, P10), then any Portuguese voice (pt-PT).
 const LATIN_AMERICA = ["419", "ar", "bo", "cl", "co", "cr", "cu", "do", "ec", "gt", "hn", "ni", "pa", "pe", "pr", "py", "sv", "uy", "ve"];
 const VOICE_PREFERENCES: Record<Locale, string[][]> = {
   en: [["en-us"]],
   fr: [["fr-fr"]],
   es: [["es-mx"], ["es-us"], LATIN_AMERICA.map((r) => `es-${r}`), ["es-es"]],
+  pt: [["pt-br"]],
 };
-const LANG_TAG: Record<Locale, string> = { en: "en-US", fr: "fr-FR", es: "es-MX" };
+const LANG_TAG: Record<Locale, string> = { en: "en-US", fr: "fr-FR", es: "es-MX", pt: "pt-BR" };
 
 // Chrome loads its voice list asynchronously: getVoices() is empty until
 // "voiceschanged" fires. Wait for it, but not forever (some browsers never
@@ -46,7 +48,7 @@ export function warmUpVoices() {
   if (typeof window !== "undefined" && window.speechSynthesis) void loadVoices(window.speechSynthesis);
 }
 
-/** Best voice for a language: preferred regions first (fr-FR; es-MX, es-US…), then any (fr-CA, es-ES…). */
+/** Best voice for a language: preferred regions first (fr-FR; es-MX, es-US…; pt-BR), then any (fr-CA, es-ES, pt-PT…). */
 export function pickVoice(voices: SpeechSynthesisVoice[], locale: Locale): SpeechSynthesisVoice | null {
   const norm = (v: SpeechSynthesisVoice) => v.lang.replace("_", "-").toLowerCase();
   const tiers = [

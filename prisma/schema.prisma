@@ -15,11 +15,13 @@ datasource db {
 
 // Site languages. English is the default everywhere; French arrived with
 // the French version (docs/french-plan.md), Spanish with the Spanish one
-// (docs/spanish-plan.md).
+// (docs/spanish-plan.md), Portuguese with the Portuguese one
+// (docs/portuguese-plan.md).
 enum Locale {
   EN
   FR
   ES
+  PT
 }
 
 enum Role {

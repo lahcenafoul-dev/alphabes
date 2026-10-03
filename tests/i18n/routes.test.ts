@@ -61,7 +61,7 @@ describe("localizedPath / absoluteUrl", () => {
 });
 
 describe("matchPath", () => {
-  it("round-trips every pathname in both languages", () => {
+  it("round-trips every pathname in every language", () => {
     for (const locale of routing.locales) {
       for (const pathname of Object.keys(routing.pathnames) as AppPathname[]) {
         const path = localizedPath(locale, pathname, sampleParams);
@@ -104,6 +104,7 @@ describe("alternatesFor", () => {
       en: "https://alphabes.com/about",
       fr: "https://alphabes.com/fr/a-propos",
       es: "https://alphabes.com/es/quienes-somos",
+      pt: "https://alphabes.com/pt/quem-somos",
       "x-default": "https://alphabes.com/about",
     };
     expect(alternatesFor("en", "/about")).toEqual({ canonical: "https://alphabes.com/about", languages });

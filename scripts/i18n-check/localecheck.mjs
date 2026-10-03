@@ -127,15 +127,24 @@ const RULES_ES = [
 ];
 
 // Portuguese (docs/portuguese-plan.md): every /pt URL answers 404 until its
-// page is written. Rules marked "phase 0" change in phase 1.
+// page is written.
 const RULES_PT = [
-  ["/pt", {}, 404, null, "phase 0: no Portuguese page yet"],
-  ["/pt/alfabeto", {}, 404, null, "phase 0: no Portuguese page yet"],
+  ["/pt/alfabeto", {}, 404, null, "Portuguese page not written yet (phase 2)"],
   ["/pt/xyz", {}, 404, null, "unknown Portuguese URL"],
   ["/pt/pricing", {}, 404, null, "English word under /pt"],
   ["/pt/precios", {}, 404, null, "Spanish word under /pt"],
   ["/pt/tarifs", {}, 404, null, "French word under /pt"],
   ["/pt/blog", {}, 404, null, "page with no Portuguese version"],
+  ["/pt/privacidade", {}, 404, null, "legacy privacy page has no Portuguese version"],
+  ["/pt/minha-conta", {}, 307, "/pt/entrar?next=%2Fpt%2Fminha-conta", "Portuguese dashboard needs login"],
+  ["/pricing", { headers: { cookie: "NEXT_LOCALE=pt" } }, 307, "/pt/precos", "remembered Portuguese choice"],
+  ["/es/quienes-somos", { headers: { cookie: "NEXT_LOCALE=pt" } }, 307, "/pt/quem-somos", "Spanish page, Portuguese chosen"],
+  ["/fr/conditions-utilisation", { headers: { cookie: "NEXT_LOCALE=pt" } }, 307, "/pt/termos-de-uso", "French page, Portuguese chosen"],
+  ["/pt/precos", { headers: { cookie: "NEXT_LOCALE=en" } }, 307, "/pricing", "Portuguese page, English chosen"],
+  ["/pt/precos", { headers: { cookie: "NEXT_LOCALE=fr" } }, 307, "/fr/tarifs", "Portuguese page, French chosen"],
+  ["/pt/precos", { headers: { cookie: "NEXT_LOCALE=es" } }, 307, "/es/precios", "Portuguese page, Spanish chosen"],
+  ["/blog", { headers: { cookie: "NEXT_LOCALE=pt" } }, 200, null, "no Portuguese twin: stay"],
+  ["/alphabet", { headers: { cookie: "NEXT_LOCALE=pt" } }, 200, null, "Portuguese alphabet not written yet: stay"],
   ["/pricing", { headers: { "accept-language": "pt-BR,pt;q=0.9" } }, 200, null, "no Accept-Language redirect"],
   ["/es/precios", { headers: { "accept-language": "pt-BR,pt;q=0.9" } }, 200, null, "no Accept-Language redirect (Spanish page)"],
 ];
@@ -200,7 +209,11 @@ const LANGS = {
   pt: {
     loginRedirect: "minha-conta",
     sameWords: [],
-    pages: [],
+    pages: [
+      // Portuguese phase 1: home, UI pages, legal pages.
+      "/pt", "/pt/precos", "/pt/quem-somos", "/pt/contato", "/pt/politica-de-privacidade", "/pt/termos-de-uso",
+      "/pt/cookies", "/pt/entrar", "/pt/cadastro",
+    ],
     rules: RULES_PT,
   },
 };

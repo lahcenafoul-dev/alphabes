@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { frenchGames } from "@/lib/games-fr";
 import { spanishGames } from "@/lib/juegos-es";
+import { byLocale } from "@/lib/i18n/routes";
 import { initLocale } from "@/lib/i18n/server";
 import GameEn, { englishGameParams, gameMetadataEn } from "./game-en";
 import GameFr, { gameMetadataFr } from "./game-fr";
@@ -28,12 +29,12 @@ export function generateStaticParams({ params }: { params: { locale: string } })
 export async function generateMetadata(props: Props): Promise<Metadata> {
   const { locale: param, slug } = await props.params;
   const locale = initLocale(param);
-  return { en: gameMetadataEn, fr: gameMetadataFr, es: gameMetadataEs }[locale](slug);
+  return byLocale(locale, { en: gameMetadataEn, fr: gameMetadataFr, es: gameMetadataEs })(slug);
 }
 
 export default async function GamePage(props: Props) {
   const { locale: param, slug } = await props.params;
   const locale = initLocale(param);
-  const Game = { en: GameEn, fr: GameFr, es: GameEs }[locale];
+  const Game = byLocale(locale, { en: GameEn, fr: GameFr, es: GameEs });
   return <Game slug={slug} />;
 }
