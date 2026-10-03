@@ -1,16 +1,17 @@
-// Usage: node snapshot.mjs <outDir> [baseUrl] [--langs=en,fr]
+// Usage: node snapshot.mjs <outDir> [baseUrl] [--langs=en,fr,es]
 // Fetches every URL in sitemap.xml (rewritten to baseUrl) plus extras, and
 // writes, per route: a normalized "SEO + text" digest, and full HTML.
-// --langs picks the languages to snapshot (default: English and French, the
-// languages whose pages must not change when another language is added).
+// --langs picks the languages to snapshot (default: English, French and
+// Spanish, the languages whose pages must not change when another language is
+// added).
 import { mkdirSync, writeFileSync } from "fs";
 import { join } from "path";
 
 const args = process.argv.slice(2).filter((a) => !a.startsWith("--"));
 const outDir = args[0];
 const base = args[1] ?? "http://localhost:3100";
-const langs = (process.argv.find((a) => a.startsWith("--langs="))?.slice(8) ?? "en,fr").split(",");
-const langOf = (p) => p.match(/^\/(fr|es)(\/|$)/)?.[1] ?? "en";
+const langs = (process.argv.find((a) => a.startsWith("--langs="))?.slice(8) ?? "en,fr,es").split(",");
+const langOf = (p) => p.match(/^\/(fr|es|pt)(\/|$)/)?.[1] ?? "en";
 mkdirSync(join(outDir, "digest"), { recursive: true });
 mkdirSync(join(outDir, "html"), { recursive: true });
 
@@ -35,7 +36,8 @@ const EXTRAS = {
     "/fr/tableau-de-bord", "/fr/does-not-exist", "/fr/histoires/la-petite-pomme", "/fr/alphabet/a/fiche",
     ...["trouve-la-lettre", "lettre-et-image", "premier-son", "trace-la-lettre", "quiz-alphabet"].map((g) => `/fr/jeux/${g}`),
   ],
-  es: [],
+  es: ["/es/mi-cuenta", "/es/does-not-exist"],
+  pt: [],
 };
 langs.forEach((l) => EXTRAS[l]?.forEach((p) => paths.add(p)));
 

@@ -21,11 +21,11 @@ Neon PostgreSQL through Prisma 5 with the Neon driver adapter (`previewFeatures 
 
 ## Languages (English + French + Spanish)
 
-**The French plan, the owner's decisions, phase status, branch workflow and open issues are in [docs/french-plan.md](docs/french-plan.md). Read it before any French work. The Spanish ones (launched 2026-10-02) are in [docs/spanish-plan.md](docs/spanish-plan.md); read it, together with french-plan.md, before any Spanish work.**
+**The French plan, the owner's decisions, phase status, branch workflow and open issues are in [docs/french-plan.md](docs/french-plan.md). Read it before any French work. The Spanish ones (launched 2026-10-02) are in [docs/spanish-plan.md](docs/spanish-plan.md); read it, together with french-plan.md, before any Spanish work. The Portuguese ones (pt-BR, started 2026-10-03, branch `portuguese-version`) are in [docs/portuguese-plan.md](docs/portuguese-plan.md); read it, with the French and Spanish plans, before any Portuguese work.**
 
 next-intl with `localePrefix: "as-needed"`: English keeps its unprefixed URLs, French lives under `/fr` with French path words (`/fr/jeux`, `/fr/histoires`), Spanish under `/es` (`/es/juegos`, `/es/cuentos`). Pages are in `app/[locale]/`; the URL map is `i18n/routing.ts`.
 
-- **English URLs and output must not change, and neither must French when working on Spanish.** Before and after i18n work, compare the rendered English and French pages (title, meta, canonical, JSON-LD, links, text); only hreflang and the site header may differ.
+- **English URLs and output must not change, and neither must French when working on Spanish, nor French and Spanish when working on Portuguese.** Before and after i18n work, compare the rendered English and French pages (title, meta, canonical, JSON-LD, links, text); only hreflang and the site header may differ.
 - **Which pages exist in French and Spanish** is `FRENCH_PATHNAMES` / `SPANISH_PATHNAMES` in `lib/i18n/routes.ts`. It drives the middleware (other `/fr` and `/es` URLs 404), hreflang (`alternatesFor`), the sitemap, and the header/footer links. Add a pathname there only once its page in that language is written.
 - **UI strings** are in `messages/en.json`, `messages/fr.json` and `messages/es.json` (same keys; `tests/i18n/messages.test.ts` checks). Teaching content differs by language, so long-form pages have `*-en.tsx` / `*-fr.tsx` / `*-es.tsx` components rather than translated strings. Write French and Spanish directly for families who speak them; don't translate word for word.
 - **Pages** call `initLocale(locale)` from `lib/i18n/server.ts` first, so they stay static.

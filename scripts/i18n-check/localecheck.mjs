@@ -1,4 +1,4 @@
-// Usage: node localecheck.mjs <fr|es> [baseUrl] -- checks one language's pages
+// Usage: node localecheck.mjs <fr|es|pt> [baseUrl] -- checks one language's pages
 // against a running server: status, lang, titles, canonical/hreflang, English
 // left in the text, every internal link, and the routing rules.
 const lang = process.argv[2];
@@ -126,6 +126,20 @@ const RULES_ES = [
   ["/fr/histoires", { headers: { cookie: "NEXT_LOCALE=es" } }, 307, "/es/cuentos", "French story list, Spanish chosen"],
 ];
 
+// Portuguese (docs/portuguese-plan.md): every /pt URL answers 404 until its
+// page is written. Rules marked "phase 0" change in phase 1.
+const RULES_PT = [
+  ["/pt", {}, 404, null, "phase 0: no Portuguese page yet"],
+  ["/pt/alfabeto", {}, 404, null, "phase 0: no Portuguese page yet"],
+  ["/pt/xyz", {}, 404, null, "unknown Portuguese URL"],
+  ["/pt/pricing", {}, 404, null, "English word under /pt"],
+  ["/pt/precios", {}, 404, null, "Spanish word under /pt"],
+  ["/pt/tarifs", {}, 404, null, "French word under /pt"],
+  ["/pt/blog", {}, 404, null, "page with no Portuguese version"],
+  ["/pricing", { headers: { "accept-language": "pt-BR,pt;q=0.9" } }, 200, null, "no Accept-Language redirect"],
+  ["/es/precios", { headers: { "accept-language": "pt-BR,pt;q=0.9" } }, 200, null, "no Accept-Language redirect (Spanish page)"],
+];
+
 const LANGS = {
   fr: {
     // Where a signed-out visitor is redirected (307) instead of a 200.
@@ -182,15 +196,24 @@ const LANGS = {
     ],
     rules: RULES_ES,
   },
+  // Filled phase by phase, as Portuguese pages are written.
+  pt: {
+    loginRedirect: "minha-conta",
+    sameWords: [],
+    pages: [],
+    rules: RULES_PT,
+  },
 };
 
 const config = LANGS[lang];
 if (!config) {
-  console.log("Usage: node localecheck.mjs <fr|es> [baseUrl]");
+  console.log("Usage: node localecheck.mjs <fr|es|pt> [baseUrl]");
   process.exit(1);
 }
 const { pages, rules, loginRedirect, sameWords } = config;
-const NAME = { fr: "French", es: "Spanish" }[lang];
+const NAME = { fr: "French", es: "Spanish", pt: "Portuguese" }[lang];
+// The <html lang> each language's pages must have (Portuguese is Brazilian, P1).
+const HTML_LANG = { pt: "pt-BR" }[lang] ?? lang;
 
 const decode = (s) => s.replace(/&amp;/g, "&").replace(/&#x27;|&#39;/g, "'").replace(/&quot;/g, '"').replace(/&nbsp;/g, " ");
 // English words that shouldn't appear in the page text. Word boundaries are
@@ -211,13 +234,13 @@ async function get(path, opts = {}) {
 for (const p of pages) {
   const { res, html } = await get(p);
   const title = decode(html.match(/<title>([^<]*)<\/title>/)?.[1] ?? "");
-  const htmlLang = html.match(/<html lang="([a-z]+)"/)?.[1];
+  const htmlLang = html.match(/<html lang="([a-zA-Z-]+)"/)?.[1];
   const canonical = html.match(/<link rel="canonical" href="([^"]+)"/)?.[1];
   const hreflang = [...html.matchAll(/hrefLang="([^"]+)" href="([^"]+)"/g)].map((m) => `${m[1]}=${m[2].replace("https://alphabes.com", "")}`);
   console.log(`${p} ${res.status} lang=${htmlLang} title="${title}"`);
   console.log(`    canonical=${canonical ?? "-"} hreflang=[${hreflang.join(" ")}]`);
   if (res.status !== 200) fail(`${p} status ${res.status}`);
-  if (htmlLang !== lang) fail(`${p} lang ${htmlLang}`);
+  if (htmlLang !== HTML_LANG) fail(`${p} lang ${htmlLang}`);
   const body = (html.split("<body")[1] ?? "").replace(/<script[\s\S]*?<\/script>/g, "").replace(/<template[\s\S]*?<\/template>/g, "");
   for (const m of body.matchAll(/<a [^>]*href="([^"#]*)"/g)) if (m[1].startsWith("/")) links.add(m[1]);
   const text = decode(body.replace(/<[^>]+>/g, "\n")).split("\n").map((l) => l.trim()).filter(Boolean);
@@ -241,7 +264,7 @@ for (const [path, opts, status, location, label] of rules) {
   const loc = res.headers.get("location");
   const locPath = loc ? new URL(loc, base).pathname + new URL(loc, base).search : null;
   const ok = res.status === status && (location === null || locPath === location);
-  const extra = res.status === 404 ? ` lang=${html.match(/<html lang="([a-z]+)"/)?.[1]} h1="${decode(html.match(/<h1[^>]*>([^<]*)/)?.[1] ?? "")}"` : "";
+  const extra = res.status === 404 ? ` lang=${html.match(/<html lang="([a-zA-Z-]+)"/)?.[1]} h1="${decode(html.match(/<h1[^>]*>([^<]*)/)?.[1] ?? "")}"` : "";
   console.log(`  ${ok ? "✓" : "✗"} ${label}: ${path} -> ${res.status}${locPath ? " " + locPath : ""}${extra}`);
   if (!ok) problems++;
 }
