@@ -7,7 +7,7 @@ import { getPrisma } from "@/lib/prisma";
 const updateSchema = z.object({
   firstName: z.string().min(1).max(50).optional(),
   ageBand: z.enum(["3-4", "5-6", "7-8"]).optional(),
-  language: z.enum(["EN", "FR", "ES"]).optional(),
+  language: z.enum(["EN", "FR", "ES", "PT"]).optional(),
 });
 
 async function getOwnedChild(childId: string, email: string) {

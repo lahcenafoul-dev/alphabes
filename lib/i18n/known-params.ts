@@ -23,6 +23,8 @@ import { getSpanishSyllablePage } from "@/lib/silabas-es";
 import { ACENTOS_SLUG as PT_ACENTOS_SLUG, portugueseLetterParams } from "@/lib/letters-pt";
 import { getPortugueseSyllablePage } from "@/lib/silabas-pt";
 import { getAtividade, getAtividadeCategory, getAtividadePack } from "@/lib/atividades-pt";
+import { getPortugueseGame } from "@/lib/jogos-pt";
+import { getSchoolTopicPt } from "@/lib/escola-pt";
 import { getFicha as getSpanishFicha, getFichaCategory, getFichaPack } from "@/lib/fichas-es";
 import { getPhonicsSkill } from "@/lib/phonics-data";
 import { getPreschoolTopic } from "@/lib/preschool-data";
@@ -88,7 +90,10 @@ const PORTUGUESE_LETTERS = new Set(portugueseLetterParams());
 const PORTUGUESE_VALIDATORS: Partial<Record<AppPathname, (params: RouteParams) => boolean>> = {
   "/alphabet/[letter]": ({ letter }) => PORTUGUESE_LETTERS.has(letter) || letter === PT_ACENTOS_SLUG,
   "/alphabet/[letter]/worksheet": ({ letter }) => PORTUGUESE_LETTERS.has(letter),
+  "/games/[slug]": ({ slug }) => !!getPortugueseGame(slug),
+  "/kindergarten/[topic]": ({ topic }) => !!getSchoolTopicPt("primeiro-ano", topic),
   "/phonics/[skill]": ({ skill }) => !!getPortugueseSyllablePage(skill),
+  "/preschool/[topic]": ({ topic }) => !!getSchoolTopicPt("educacao-infantil", topic),
   "/worksheets/[category]": ({ category }) => !!(getAtividadeCategory(category) || getAtividade(category)),
   "/worksheets/bundles/[bundleSlug]": ({ bundleSlug }) => !!getAtividadePack(bundleSlug),
 };

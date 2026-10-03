@@ -47,8 +47,9 @@ describe("Spanish games data", () => {
       expect(getGame(g.en!), g.slug).not.toBeNull();
       expect(groups.find((group) => group.en === g.en)?.es).toBe(g.slug);
     }
-    expect(groups.filter((group) => group.es)).toHaveLength(5);
-    expect(groups.some((group) => group.es === "aplaude-las-silabas")).toBe(false);
+    expect(groups.filter((group) => group.es && group.en)).toHaveLength(5);
+    // «Aplaude las sílabas» has no English twin; its Portuguese twin is «Bata palmas».
+    expect(groups.find((group) => group.es === "aplaude-las-silabas")).toEqual({ es: "aplaude-las-silabas", pt: "bata-palmas" });
   });
 
   it("uses the 27 letters, ñ after n", () => {
@@ -188,11 +189,12 @@ describe("Spanish school topics", () => {
 });
 
 describe("Spanish games and school pages in routes", () => {
-  it("gives twins hreflang in three languages", () => {
+  it("gives twins hreflang in every language", () => {
     expect(alternatesFor("es", "/games/[slug]", { slug: "primera-silaba" }).languages).toEqual({
       en: "https://alphabes.com/games/beginning-sound",
       fr: "https://alphabes.com/fr/jeux/premier-son",
       es: "https://alphabes.com/es/juegos/primera-silaba",
+      pt: "https://alphabes.com/pt/jogos/silaba-inicial",
       "x-default": "https://alphabes.com/games/beginning-sound",
     });
     expect(alternatesFor("fr", "/preschool/[topic]", { topic: "coloriage" }).languages?.es).toBe(
@@ -202,8 +204,13 @@ describe("Spanish games and school pages in routes", () => {
   });
 
   it("keeps Spanish-only pages without hreflang", () => {
+    // «Aplaude las sílabas» is paired with its Portuguese twin only (no English page, so no x-default).
     expect(alternatesFor("es", "/games/[slug]", { slug: "aplaude-las-silabas" })).toEqual({
       canonical: "https://alphabes.com/es/juegos/aplaude-las-silabas",
+      languages: {
+        es: "https://alphabes.com/es/juegos/aplaude-las-silabas",
+        pt: "https://alphabes.com/pt/jogos/bata-palmas",
+      },
     });
     expect(alternatesFor("es", "/kindergarten/[topic]", { topic: "silabas" })).toEqual({
       canonical: "https://alphabes.com/es/kinder/silabas",

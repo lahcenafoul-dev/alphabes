@@ -5,6 +5,7 @@ import type { AppPathname } from "@/i18n/routing";
 import { alternatesFor, isAvailable } from "@/lib/i18n/routes";
 import { FicheCard } from "@/components/fiches/FicheParts";
 import { getAtividade } from "@/lib/atividades-pt";
+import { portugueseGames } from "@/lib/jogos-pt";
 
 const title = "Aprender o alfabeto: atividades e jogos grátis | AlphaBes";
 const description =
@@ -253,6 +254,20 @@ export default function HomePt() {
             traçar letras e bater palmas para contar as sílabas: jogos curtos, com instruções que a
             criança pode ouvir.
           </p>
+          <div className="mt-8 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4">
+            {portugueseGames.map((g) => (
+              <Link
+                key={g.slug}
+                href={{ pathname: "/games/[slug]", params: { slug: g.slug } }}
+                className="rounded-block bg-paper p-5 shadow-block hover:shadow-blockHover transition font-display font-bold text-center"
+              >
+                <span className="block text-3xl" aria-hidden="true">
+                  {g.emoji}
+                </span>
+                {g.title}
+              </Link>
+            ))}
+          </div>
           {has("/games") && (
             <Link
               href="/games"

@@ -161,6 +161,7 @@ export default function ChildActions({ childId, firstName, ageBand, language }: 
           <option value="FR">{t("langFR")}</option>
           <option value="EN">{t("langEN")}</option>
           <option value="ES">{t("langES")}</option>
+          <option value="PT">{t("langPT")}</option>
         </select>
         <p id="language-hint" className="mt-1 text-xs text-chalkboard/60">
           {t("languageHint")}

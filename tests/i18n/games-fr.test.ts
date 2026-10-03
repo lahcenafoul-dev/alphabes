@@ -135,6 +135,7 @@ describe("translated params in routes", () => {
         en: "https://alphabes.com/games/find-the-letter",
         fr: "https://alphabes.com/fr/jeux/trouve-la-lettre",
         es: "https://alphabes.com/es/juegos/encuentra-la-letra",
+        pt: "https://alphabes.com/pt/jogos/encontre-a-letra",
         "x-default": "https://alphabes.com/games/find-the-letter",
       },
     });
@@ -142,6 +143,7 @@ describe("translated params in routes", () => {
       en: "https://alphabes.com/kindergarten/sight-words",
       fr: "https://alphabes.com/fr/grande-section/mots-outils",
       es: "https://alphabes.com/es/kinder/palabras-frecuentes",
+      pt: "https://alphabes.com/pt/primeiro-ano/palavras-frequentes",
       "x-default": "https://alphabes.com/kindergarten/sight-words",
     });
   });

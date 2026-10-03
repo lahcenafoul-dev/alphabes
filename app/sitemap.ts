@@ -6,6 +6,8 @@ import { TILDE_SLUG } from "@/lib/letters-es";
 import { ACENTOS_SLUG as PT_ACENTOS_SLUG, CEDILHA_SLUG } from "@/lib/letters-pt";
 import { portugueseSyllablePages } from "@/lib/silabas-pt";
 import { atividadeCategoryParams, atividadePacks } from "@/lib/atividades-pt";
+import { portugueseGames } from "@/lib/jogos-pt";
+import { schoolTopicsPt } from "@/lib/escola-pt";
 import { spanishSyllablePages } from "@/lib/silabas-es";
 import { fichaCategoryParams, fichaPacks } from "@/lib/fichas-es";
 import { phonicsSkills } from "@/lib/phonics-data";
@@ -220,9 +222,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...kindergartenRoutes,
   ];
 
-  // The French and Spanish games. Their English twins aren't in the sitemap,
+  // The French, Spanish and Portuguese games. Their English twins aren't in the sitemap,
   // but the pages exist, so they are given as alternates.
-  const gameEntries = (locale: "fr" | "es", slugs: string[]): MetadataRoute.Sitemap =>
+  const gameEntries = (locale: "fr" | "es" | "pt", slugs: string[]): MetadataRoute.Sitemap =>
     slugs.map((slug) => {
       const { canonical, languages } = alternatesFor(locale, "/games/[slug]", { slug });
       return {
@@ -235,6 +237,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     });
   const frenchGameEntries = gameEntries("fr", frenchGames.map((g) => g.slug));
   const spanishGameEntries = gameEntries("es", spanishGames.map((g) => g.slug));
+  const portugueseGameEntries = gameEntries("pt", portugueseGames.map((g) => g.slug));
 
   // Pages with no English twin: the letters with accents, the accents page,
   // the French sound pages, the French worksheets and packs, and the school
@@ -313,7 +316,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ];
 
   // Portuguese pages with no twin: the Ç, the accents page, the syllable
-  // pages, and the worksheets and packs.
+  // pages, the worksheets and packs, and the school topics written only in
+  // Portuguese.
   const portugueseOnlyEntries: MetadataRoute.Sitemap = [
     ...[CEDILHA_SLUG, PT_ACENTOS_SLUG].map((letter) => ({
       url: absoluteUrl("pt", "/alphabet/[letter]", { letter }),
@@ -339,12 +343,21 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "monthly" as const,
       priority: 0.5,
     })),
+    ...schoolTopicsPt
+      .filter((t) => !t.en)
+      .map((t) => ({
+        url: absoluteUrl("pt", t.level === "educacao-infantil" ? "/preschool/[topic]" : "/kindergarten/[topic]", { topic: t.slug }),
+        lastModified: new Date(),
+        changeFrequency: "monthly" as const,
+        priority: 0.6,
+      })),
   ];
 
   return [
     ...withTwins(englishEntries),
     ...frenchGameEntries,
     ...spanishGameEntries,
+    ...portugueseGameEntries,
     ...frenchOnlyEntries,
     ...spanishOnlyEntries,
     ...portugueseOnlyEntries,

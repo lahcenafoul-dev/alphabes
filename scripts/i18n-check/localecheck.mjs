@@ -141,7 +141,6 @@ const ptSyllables = [
 // Portuguese (docs/portuguese-plan.md): every /pt URL answers 404 until its
 // page is written.
 const RULES_PT = [
-  ["/pt/jogos", {}, 404, null, "Portuguese page not written yet (phase 6)"],
   // Portuguese phase 2: the alphabet.
   ["/pt/alfabeto/ç", {}, 404, null, "ç is /pt/alfabeto/c-cedilha"],
   ["/pt/alfabeto/enie", {}, 404, null, "Spanish ñ under /pt"],
@@ -169,7 +168,22 @@ const RULES_PT = [
   ["/pt/precos", { headers: { cookie: "NEXT_LOCALE=fr" } }, 307, "/fr/tarifs", "Portuguese page, French chosen"],
   ["/pt/precos", { headers: { cookie: "NEXT_LOCALE=es" } }, 307, "/es/precios", "Portuguese page, Spanish chosen"],
   ["/blog", { headers: { cookie: "NEXT_LOCALE=pt" } }, 200, null, "no Portuguese twin: stay"],
-  ["/games", { headers: { cookie: "NEXT_LOCALE=pt" } }, 200, null, "Portuguese games not written yet: stay"],
+  // Portuguese phase 6: games, school levels and brincadeiras.
+  ["/pt/jogos/find-the-letter", {}, 404, null, "English game slug under /pt/jogos"],
+  ["/pt/jogos/encuentra-la-letra", {}, 404, null, "Spanish game slug under /pt/jogos"],
+  ["/games/bata-palmas", {}, 404, null, "Portuguese game under an English URL"],
+  ["/es/juegos/bata-palmas", {}, 404, null, "Portuguese game slug under /es/juegos"],
+  ["/pt/educacao-infantil/trazos", {}, 404, null, "Spanish-only topic under /pt/educacao-infantil"],
+  ["/pt/primeiro-ano/sight-words", {}, 404, null, "English topic under /pt/primeiro-ano"],
+  ["/preschool/coordenacao-motora", {}, 404, null, "Portuguese-only topic under an English URL"],
+  ["/pt/actividades", {}, 404, null, "Spanish word for activities under /pt"],
+  ["/games/find-the-letter", { headers: { cookie: "NEXT_LOCALE=pt" } }, 307, "/pt/jogos/encontre-a-letra", "game twin with a Portuguese slug"],
+  ["/es/juegos/aplaude-las-silabas", { headers: { cookie: "NEXT_LOCALE=pt" } }, 307, "/pt/jogos/bata-palmas", "Spanish clapping game, Portuguese chosen"],
+  ["/pt/jogos/bata-palmas", { headers: { cookie: "NEXT_LOCALE=en" } }, 200, null, "no English twin: stay"],
+  ["/fr/maternelle/coloriage", { headers: { cookie: "NEXT_LOCALE=pt" } }, 307, "/pt/educacao-infantil/colorir", "topic twin in Portuguese"],
+  ["/kindergarten/handwriting", { headers: { cookie: "NEXT_LOCALE=pt" } }, 307, "/pt/primeiro-ano/letra-cursiva", "1º ano twin in Portuguese"],
+  ["/activities", { headers: { cookie: "NEXT_LOCALE=pt" } }, 307, "/pt/brincadeiras", "activities twin in Portuguese"],
+  ["/pt/educacao-infantil/coordenacao-motora", { headers: { cookie: "NEXT_LOCALE=es" } }, 200, null, "Portuguese-only topic, Spanish chosen: stay"],
   // Portuguese phase 5: stories (from the database).
   ["/pt/historias/the-little-apple", {}, 404, null, "English story under /pt/historias"],
   ["/pt/historias/la-manzanita-roja", {}, 404, null, "Spanish story under /pt/historias"],
@@ -282,6 +296,12 @@ const LANGS = {
       "/pt/atividades/pacotes/pacote-letra-c-cedilha",
       // Portuguese phase 5: stories (from the database).
       "/pt/historias", ...ptStories.map((s) => `/pt/historias/${s}`),
+      // Portuguese phase 6: games, school levels and brincadeiras.
+      "/pt/jogos", "/pt/jogos/encontre-a-letra", "/pt/jogos/letra-e-figura", "/pt/jogos/silaba-inicial",
+      "/pt/jogos/trace-a-letra", "/pt/jogos/quiz-do-alfabeto", "/pt/jogos/bata-palmas",
+      "/pt/educacao-infantil", "/pt/educacao-infantil/coordenacao-motora", "/pt/educacao-infantil/tracar-as-letras", "/pt/educacao-infantil/colorir",
+      "/pt/primeiro-ano", "/pt/primeiro-ano/familias-silabicas", "/pt/primeiro-ano/palavras-frequentes", "/pt/primeiro-ano/letra-cursiva",
+      "/pt/brincadeiras",
     ],
     rules: RULES_PT,
   },

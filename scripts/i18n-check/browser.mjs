@@ -1218,7 +1218,7 @@ console.log("Spanish games, school levels and activities (Spanish phase 6)");
   // Aplaude las sílabas: ten words, counting claps.
   await page.goto(base + "/es/juegos/aplaude-las-silabas");
   await page.waitForLoadState("networkidle");
-  check((await switcherHref(page, "en")) === "/games" && (await switcherHref(page, "fr")) === "/fr/jeux", "EN/FR links on the Spanish-only game go to the games pages");
+  check((await switcherHref(page, "en")) === "/games" && (await switcherHref(page, "fr")) === "/fr/jeux", "EN/FR links on the clapping game (no English or French twin) go to the games pages");
   await page.getByRole("button", { name: "👏 Escuchar por sílabas" }).click();
   const split = await lastSpoken();
   check(split?.lang === "es-MX" && /^[a-zñáéíóúü]+(, [a-zñáéíóúü]+)*\. [a-zñáéíóúü]+$/.test(split.text), `the word is read by syllables (${split?.text})`);
@@ -1271,6 +1271,175 @@ console.log("Spanish games, school levels and activities (Spanish phase 6)");
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
     check(overflow <= 0, `${p}: no horizontal scroll (overflow ${overflow}px)`);
     if (p === "/es/juegos/aplaude-las-silabas") await page.screenshot({ path: `${shots}/es-juego-mobile.png`, fullPage: true });
+  }
+  check(errors.length === 0, `no console/page errors${errors.length ? ": " + errors.slice(0, 3).join(" | ") : ""}`);
+  await context.close();
+}
+
+console.log("Portuguese games, school levels and brincadeiras (Portuguese phase 6)");
+{
+  const { context, page, errors } = await newPage();
+  await context.addInitScript(fakeVoices(["en-US", "es-MX", "pt-PT", "pt-BR"]));
+  const lastSpoken = () => page.evaluate(() => window.__spoken.at(-1) ?? null);
+  const choiceButtons = () => page.locator("main .grid button");
+
+  await page.goto(base + "/games");
+  await page.waitForLoadState("networkidle");
+  check((await switcherHref(page, "pt")) === "/pt/jogos", "PT link on /games points to /pt/jogos");
+  await page.goto(base + "/es/juegos/primera-silaba");
+  await page.waitForLoadState("networkidle");
+  check((await switcherHref(page, "pt")) === "/pt/jogos/silaba-inicial", "PT link on « ¿Con qué sílaba empieza? » points to « Com que sílaba começa? »");
+  await page.goto(base + "/es/juegos/aplaude-las-silabas");
+  await page.waitForLoadState("networkidle");
+  check((await switcherHref(page, "pt")) === "/pt/jogos/bata-palmas", "PT link on « Aplaude las sílabas » points to « Bata palmas »");
+  await page.goto(base + "/pt");
+  await page.waitForLoadState("networkidle");
+  check((await page.locator('main a[href^="/pt/jogos/"]').count()) === 6, "Portuguese home lists the 6 games");
+
+  await page.goto(base + "/pt/jogos");
+  await page.waitForLoadState("networkidle");
+  check((await page.getByRole("link", { name: "▶ Jogar" }).count()) === 6, "Portuguese games page lists 6 games");
+  await page.screenshot({ path: `${shots}/pt-jogos.png`, fullPage: true });
+
+  // Encontre a letra.
+  await page.goto(base + "/pt/jogos/encontre-a-letra");
+  await page.waitForLoadState("networkidle");
+  check(
+    (await switcherHref(page, "en")) === "/games/find-the-letter" && (await switcherHref(page, "es")) === "/es/juegos/encuentra-la-letra",
+    "EN/ES links on a Portuguese game point to its twins",
+  );
+  const target = (await page.locator("p", { hasText: "Encontre a letra" }).locator(".letter-block").innerText()).trim();
+  await page.getByRole("button", { name: "Ouvir a letra que é preciso encontrar" }).click();
+  const asked = await lastSpoken();
+  check(asked?.lang === "pt-BR" && /^Encontre a letra .+\.$/.test(asked.text), `the letter is asked with the Brazilian voice (${asked?.text})`);
+  const letters = await choiceButtons().allInnerTexts();
+  await choiceButtons().nth(letters.findIndex((t) => t.trim() !== target)).click();
+  check(await page.getByText("Continue procurando!").isVisible(), "a wrong letter says « Continue procurando! »");
+  check(/^Esse é o .+\.$/.test((await lastSpoken())?.text ?? ""), "the wrong letter's name is said");
+  await choiceButtons().nth(letters.findIndex((t) => t.trim() === target)).click();
+  check(await page.getByText(/Muito bem, é o/).isVisible(), "the right letter says Muito bem!");
+  await page.getByText("Rodada 2/10").waitFor({ timeout: 5000 }).catch(() => {});
+  check(await page.getByText("Rodada 2/10").isVisible(), "next round after a right answer");
+  await page.getByRole("button", { name: "minúsculas" }).click();
+  const grid = await choiceButtons().allInnerTexts();
+  check(grid.length === 16 && grid.every((t) => t === t.toLowerCase()), "minúsculas shows the grid in lowercase");
+
+  // A letra e a figura.
+  await page.goto(base + "/pt/jogos/letra-e-figura");
+  await page.waitForLoadState("networkidle");
+  check((await choiceButtons().count()) === 4, "four pictures to choose from");
+  for (let i = 0; i < 4 && !(await page.getByText(/^✓ Isso!/).isVisible()); i++) await choiceButtons().nth(i).click();
+  check(await page.getByText(/^✓ Isso! .+ começa com [A-Z]\.$/).isVisible(), "finding the picture says which letter it starts with");
+  check(/^Isso! (um|uma|o|a|os|as) /.test((await lastSpoken())?.text ?? ""), "the picture's name is read with its article");
+
+  // Com que sílaba começa?
+  await page.goto(base + "/pt/jogos/silaba-inicial");
+  await page.waitForLoadState("networkidle");
+  await page.getByRole("button", { name: "🔊 Ouvir a palavra" }).click();
+  const word = await lastSpoken();
+  check(word?.lang === "pt-BR" && /^[a-zçáéíóúâêôãõ]+$/.test(word.text), `the word is read alone (${word?.text})`);
+  check(!(await page.locator("main").getByText(word?.text ?? "∅", { exact: true }).count()), "the word isn't written on the page");
+  const syllables = await choiceButtons().allInnerTexts();
+  check(syllables.length === 4 && syllables.every((t) => /^[a-z]{1,3}$/.test(t.trim())), `four syllables to choose from (${syllables.join(" ")})`);
+  for (let i = 0; i < 4 && !(await page.getByText(/^✓ Muito bem!/).isVisible()); i++) await choiceButtons().nth(i).click();
+  const praise = (await page.getByText(/^✓ Muito bem!/).innerText().catch(() => "")).match(/“(.+)” começa com “(.+)”/);
+  check(praise?.[1] === word?.text && word.text.startsWith(praise[2]), `the right syllable is praised and starts the word (${praise?.[0]})`);
+
+  // Trace a letra: cursive on caligrafia lines, lowercase, Ç after C.
+  await page.goto(base + "/pt/jogos/trace-a-letra");
+  await page.waitForLoadState("networkidle");
+  await page.getByRole("button", { name: "Cursiva" }).click();
+  await page.getByRole("button", { name: "Minúscula" }).click();
+  for (let i = 0; i < 3; i++) await page.getByRole("button", { name: "✅ Próxima letra →" }).click();
+  check(await page.getByText("Letra 4 de 27").isVisible(), "26 letters and Ç: Ç is the 4th");
+  check((await page.locator("p", { hasText: "Trace a letra" }).locator(".letter-block").innerText()).trim() === "ç", "the 4th letter is ç");
+  await page.getByRole("button", { name: "🔊 Ouvir" }).click();
+  check((await lastSpoken())?.text === "cê cedilha", "its name is read: cê cedilha");
+  const box = await page.locator("canvas").boundingBox();
+  await page.mouse.move(box.x + 100, box.y + 100);
+  await page.mouse.down();
+  await page.mouse.move(box.x + 200, box.y + 150, { steps: 5 });
+  await page.mouse.up();
+  await page.waitForTimeout(800);
+  await page.screenshot({ path: `${shots}/pt-jogo-trace.png` });
+
+  // O quiz: ten answers, then the end screen.
+  await page.goto(base + "/pt/jogos/quiz-do-alfabeto");
+  await page.waitForLoadState("networkidle");
+  const feedback = page.getByText(/^✓ Resposta certa!|^✗ A resposta certa era/);
+  for (let i = 0; i < 10; i++) {
+    await choiceButtons().first().click();
+    await feedback.waitFor();
+    await feedback.waitFor({ state: "detached", timeout: 5000 }).catch(() => {});
+  }
+  check(await page.getByRole("button", { name: "Jogar de novo" }).isVisible(), "the quiz ends with a score and « Jogar de novo »");
+  await page.screenshot({ path: `${shots}/pt-jogo-quiz-fim.png` });
+
+  // Bata palmas: ten words, counting claps.
+  await page.goto(base + "/pt/jogos/bata-palmas");
+  await page.waitForLoadState("networkidle");
+  check(
+    (await switcherHref(page, "es")) === "/es/juegos/aplaude-las-silabas" && (await switcherHref(page, "en")) === "/games",
+    "ES link on « Bata palmas » points to its Spanish twin, EN to the games page",
+  );
+  await page.getByRole("button", { name: "👏 Ouvir por sílabas" }).click();
+  const split = await lastSpoken();
+  check(split?.lang === "pt-BR" && /^[a-zçáéíóúâêôãõ]+(, [a-zçáéíóúâêôãõ]+)*\. [a-zçáéíóúâêôãõ]+$/.test(split.text), `the word is read by syllables (${split?.text})`);
+  const solved = page.getByText(/^✓ Isso!/);
+  const counts = new Set();
+  for (let round = 1; round <= 10; round++) {
+    for (let n = 1; n <= 5; n++) {
+      await page.getByRole("button", { name: n === 1 ? "1 sílaba" : `${n} sílabas`, exact: true }).click();
+      if (await solved.isVisible()) {
+        counts.add(n);
+        break;
+      }
+    }
+    if (round === 1) await page.screenshot({ path: `${shots}/pt-jogo-palmas.png` });
+    await page.getByRole("button", { name: round === 10 ? "Ver o resultado" : "Outra palavra →" }).click();
+  }
+  check(await page.getByRole("button", { name: "Jogar de novo" }).isVisible(), "« Bata palmas » ends after 10 words");
+  check(counts.size === 5, `words from 1 to 5 syllables came up (${[...counts].sort().join(", ")})`);
+
+  // Educação infantil, 1º ano, brincadeiras.
+  await page.goto(base + "/preschool");
+  await page.waitForLoadState("networkidle");
+  check((await switcherHref(page, "pt")) === "/pt/educacao-infantil", "PT link on /preschool points to /pt/educacao-infantil");
+  await page.goto(base + "/pt/educacao-infantil");
+  await page.waitForLoadState("networkidle");
+  check((await page.locator("#topics-heading + div a").count()) === 3, "educação infantil hub lists 3 topics");
+  check(await page.getByText("3 a 5 anos", { exact: true }).isVisible(), "educação infantil hub gives the ages");
+  await page.screenshot({ path: `${shots}/pt-educacao-infantil.png`, fullPage: true });
+  await page.goto(base + "/pt/educacao-infantil/coordenacao-motora");
+  await page.waitForLoadState("networkidle");
+  check(
+    (await switcherHref(page, "en")) === "/preschool" && (await switcherHref(page, "es")) === "/es/preescolar",
+    "EN/ES links on a Portuguese-only topic go to the hubs",
+  );
+  await page.goto(base + "/pt/primeiro-ano/palavras-frequentes");
+  await page.waitForLoadState("networkidle");
+  check(
+    (await switcherHref(page, "en")) === "/kindergarten/sight-words" && (await switcherHref(page, "es")) === "/es/kinder/palabras-frecuentes",
+    "EN/ES links on a twin topic point to its twins",
+  );
+  await page.goto(base + "/pt/primeiro-ano");
+  await page.waitForLoadState("networkidle");
+  check(await page.getByText("6 a 7 anos", { exact: true }).isVisible(), "1º ano hub gives the ages");
+  await page.goto(base + "/pt/brincadeiras");
+  await page.waitForLoadState("networkidle");
+  check((await page.locator("main ul > li[id]").count()) === 8, "8 brincadeiras");
+  check((await switcherHref(page, "es")) === "/es/actividades", "ES link on /pt/brincadeiras points to /es/actividades");
+  check(errors.length === 0, `no console/page errors${errors.length ? ": " + errors.slice(0, 3).join(" | ") : ""}`);
+  await context.close();
+}
+{
+  const { context, page, errors } = await newPage({ width: 390, height: 844 });
+  for (const p of ["/pt/jogos", "/pt/jogos/encontre-a-letra", "/pt/jogos/letra-e-figura", "/pt/jogos/silaba-inicial", "/pt/jogos/trace-a-letra", "/pt/jogos/quiz-do-alfabeto", "/pt/jogos/bata-palmas", "/pt/educacao-infantil", "/pt/educacao-infantil/coordenacao-motora", "/pt/primeiro-ano/letra-cursiva", "/pt/brincadeiras", "/pt"]) {
+    await page.goto(base + p);
+    await page.waitForLoadState("networkidle");
+    const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+    check(overflow <= 0, `${p}: no horizontal scroll (overflow ${overflow}px)`);
+    if (p === "/pt/jogos/bata-palmas") await page.screenshot({ path: `${shots}/pt-jogo-mobile.png`, fullPage: true });
   }
   check(errors.length === 0, `no console/page errors${errors.length ? ": " + errors.slice(0, 3).join(" | ") : ""}`);
   await context.close();
