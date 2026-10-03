@@ -5,7 +5,8 @@
 // letters). Writes, under public/fiches-pdf/:
 //   <category>/<slug>.pdf    one A4 page per worksheet
 //   apercus/<slug>.jpg       a preview of that page for the website
-//   packs/<slug>.pdf         the packs, one PDF with all their pages
+// and pro-files/<lang>/<slug>.pdf, the packs (one PDF with all their pages; a
+// Pro download uploaded to the private R2 bucket, docs/paypal-plan.md)
 //
 // <filter> renders only worksheets whose slug contains it, or one of its
 // comma-separated parts (packs are skipped then). Re-run after changing a template or the catalogue, and commit the
@@ -90,7 +91,7 @@ async function main() {
         const f = bySlug.get(slug)!;
         return pageHtml(f, ficheBody(f));
       });
-      const pdf = join(OUT, pack.pdf);
+      const pdf = join(ROOT, pack.file); // pro-files/: a Pro download, not public
       await render(page, html.join(""), `${pack.title} – AlphaBes`, pdf);
       packTotal += kb(pdf);
       console.log(`  ${pack.slug}: ${pack.fiches.length} pages, ${kb(pdf)} KB`);

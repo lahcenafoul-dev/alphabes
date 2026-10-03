@@ -19,6 +19,13 @@
     {
       "binding": "NEXT_INC_CACHE_R2_BUCKET",
       "bucket_name": "alphabes-inc-cache"
+    },
+    // Pro downloads (whole-bundle PDFs), private: served only by
+    // app/api/bundles after a Pro check. Upload the pro-files/ folder here
+    // (docs/paypal-plan.md).
+    {
+      "binding": "PRO_FILES",
+      "bucket_name": "alphabes-pro-files"
     }
   ],
   // Runtime vars are managed in the Cloudflare dashboard (Settings >

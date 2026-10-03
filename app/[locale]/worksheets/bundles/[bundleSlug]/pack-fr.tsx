@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Link } from "@/i18n/navigation";
-import { FicheCard, PdfButtons } from "@/components/fiches/FicheParts";
+import { FicheCard } from "@/components/fiches/FicheParts";
+import BundleDownload from "@/components/billing/BundleDownload";
 import { getFiche, getFichePack } from "@/lib/fiches-fr";
 import { absoluteUrl, alternatesFor } from "@/lib/i18n/routes";
 import { buildBreadcrumbJsonLd } from "@/lib/json-ld";
@@ -42,7 +43,7 @@ export default function PackFr({ slug }: { slug: string }) {
       <h1 className="mt-4 text-4xl font-extrabold">{pack.title}</h1>
       <p className="mt-2 text-chalkboard/70 max-w-2xl">{pack.description}</p>
       <div className="mt-6">
-        <PdfButtons pdf={pack.pdf} fileName={`alphabes-${pack.slug}.pdf`} pages={included.length} />
+        <BundleDownload locale="fr" slug={pack.slug} />
       </div>
 
       <h2 className="mt-12 text-2xl font-bold">Dans ce pack</h2>

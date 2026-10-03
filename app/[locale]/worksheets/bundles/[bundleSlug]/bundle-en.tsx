@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 import { getBundleBySlug, getAllBundleSlugs } from "@/lib/worksheet-bundles";
 import { worksheets } from "@/lib/worksheets-data";
 import { buildBreadcrumbJsonLd } from "@/lib/json-ld";
-import BundleDownloadButton from "@/components/worksheets/BundleDownloadButton";
+import BundleDownload from "@/components/billing/BundleDownload";
 
 const BASE_URL = "https://alphabes.com";
 
@@ -52,7 +52,7 @@ export default function BundleEn({ slug }: { slug: string }) {
       <p className="mt-2 text-chalkboard/70 max-w-2xl">{bundle.description}</p>
 
       <div className="mt-6">
-        <BundleDownloadButton bundle={bundle} />
+        <BundleDownload locale="en" slug={bundle.slug} />
       </div>
 
       <section className="mt-10">

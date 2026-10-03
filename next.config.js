@@ -24,6 +24,16 @@ const nextConfig = {
       { protocol: "https", hostname: "cdn.alphabes.com" },
     ],
   },
+  // The French, Spanish and Portuguese pack PDFs were public files; they are
+  // now a Pro download (docs/paypal-plan.md). Old links and search results
+  // go to the pack's page. Each file was named after its pack.
+  async redirects() {
+    return [
+      { source: "/fiches-pdf/packs/:slug([a-z0-9-]+).pdf", destination: "/fr/fiches/packs/:slug", permanent: true },
+      { source: "/fichas-pdf/paquetes/:slug([a-z0-9-]+).pdf", destination: "/es/fichas/paquetes/:slug", permanent: true },
+      { source: "/atividades-pdf/pacotes/:slug([a-z0-9-]+).pdf", destination: "/pt/atividades/pacotes/:slug", permanent: true },
+    ];
+  },
   async headers() {
     return [
       {

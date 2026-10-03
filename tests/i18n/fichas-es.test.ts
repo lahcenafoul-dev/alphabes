@@ -55,7 +55,9 @@ describe("Spanish worksheet catalogue", () => {
       expect(statSync(publicFile(f.pdf)).size, f.pdf).toBeGreaterThan(10_000);
       expect(existsSync(publicFile(f.preview)), f.preview).toBe(true);
     }
-    for (const p of fichaPacks) expect(existsSync(publicFile(p.pdf)), p.pdf).toBe(true);
+    // Packs are a Pro download: in pro-files/ (uploaded to the private bucket), never in public/.
+    for (const p of fichaPacks) expect(existsSync(join(process.cwd(), p.file)), p.file).toBe(true);
+    expect(existsSync(publicFile("/fichas-pdf/paquetes")), "no pack PDFs left in public/").toBe(false);
   });
 
   it("splits first-syllable words correctly, all starting with their letter", () => {

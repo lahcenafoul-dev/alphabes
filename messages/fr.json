@@ -81,7 +81,8 @@
     "invalid_contact": "Veuillez remplir correctement tous les champs.",
     "forbidden": "Cette action n'est pas autorisée.",
     "no_subscription": "Il n'y a pas d'abonnement à résilier.",
-    "paypal_error": "PayPal n'a pas pu terminer l'opération. Réessayez dans un instant."
+    "paypal_error": "PayPal n'a pas pu terminer l'opération. Réessayez dans un instant.",
+    "not_found": "Introuvable."
   },
   "Login": {
     "title": "Connexion",
@@ -162,7 +163,8 @@
   "Checkout": {
     "canceled": "Paiement annulé. Aucun montant n'a été prélevé.",
     "soon": "Les abonnements Pro ouvrent très bientôt. Merci de votre patience !",
-    "error": "Le paiement PayPal n'a pas pu démarrer. Réessayez dans un instant."
+    "error": "Le paiement PayPal n'a pas pu démarrer. Réessayez dans un instant.",
+    "bundle": "Le téléchargement d'un pack complet en un seul PDF fait partie d'AlphaBes Pro. Chaque fiche reste gratuite à imprimer une par une."
   },
   "Dashboard": {
     "title": "Tableau de bord",

@@ -1,0 +1,2 @@
+# PDFs are binary: never convert their line endings (jsPDF output looks like text).
+*.pdf binary

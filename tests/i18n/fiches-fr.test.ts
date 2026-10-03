@@ -44,7 +44,9 @@ describe("French worksheet catalogue", () => {
       expect(statSync(publicFile(f.pdf)).size, f.pdf).toBeGreaterThan(10_000);
       expect(existsSync(publicFile(f.preview)), f.preview).toBe(true);
     }
-    for (const p of fichePacks) expect(existsSync(publicFile(p.pdf)), p.pdf).toBe(true);
+    // Packs are a Pro download: in pro-files/ (uploaded to the private bucket), never in public/.
+    for (const p of fichePacks) expect(existsSync(join(process.cwd(), p.file)), p.file).toBe(true);
+    expect(existsSync(publicFile("/fiches-pdf/packs")), "no pack PDFs left in public/").toBe(false);
   });
 
   it("never uses a picture as a distractor when it starts with the target sound", () => {

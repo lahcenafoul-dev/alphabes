@@ -81,7 +81,8 @@
     "invalid_contact": "Preencha todos os campos corretamente.",
     "forbidden": "Esta ação não é permitida.",
     "no_subscription": "Não há assinatura para cancelar.",
-    "paypal_error": "O PayPal não conseguiu concluir a operação. Tente de novo daqui a pouco."
+    "paypal_error": "O PayPal não conseguiu concluir a operação. Tente de novo daqui a pouco.",
+    "not_found": "Não encontrado."
   },
   "Login": {
     "title": "Entrar",
@@ -162,7 +163,8 @@
   "Checkout": {
     "canceled": "Pagamento cancelado. Nada foi cobrado.",
     "soon": "As assinaturas Pro abrem em breve. Obrigado pela paciência!",
-    "error": "Não foi possível iniciar o pagamento com o PayPal. Tente de novo daqui a pouco."
+    "error": "Não foi possível iniciar o pagamento com o PayPal. Tente de novo daqui a pouco.",
+    "bundle": "Baixar um pacote completo em um único PDF faz parte do AlphaBes Pro. Cada atividade continua grátis para imprimir uma por uma."
   },
   "Dashboard": {
     "title": "Minha conta",

@@ -81,7 +81,8 @@
     "invalid_contact": "Please fill in all fields correctly.",
     "forbidden": "This action isn't allowed.",
     "no_subscription": "There is no subscription to cancel.",
-    "paypal_error": "PayPal couldn't complete this right now. Please try again."
+    "paypal_error": "PayPal couldn't complete this right now. Please try again.",
+    "not_found": "Not found."
   },
   "Login": {
     "title": "Log In",
@@ -162,7 +163,8 @@
   "Checkout": {
     "canceled": "Checkout canceled. You haven't been charged.",
     "soon": "Pro subscriptions open very soon. Thanks for your patience!",
-    "error": "PayPal checkout didn't start. Please try again in a moment."
+    "error": "PayPal checkout didn't start. Please try again in a moment.",
+    "bundle": "Downloading a whole bundle as one PDF is part of AlphaBes Pro. Every worksheet stays free to print one by one."
   },
   "Dashboard": {
     "title": "Dashboard",

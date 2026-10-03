@@ -58,7 +58,9 @@ export type AtividadePack = {
   title: string;
   description: string;
   atividades: string[];
-  pdf: string;
+  // The pack's PDF in pro-files/ (a Pro download, never a public URL;
+  // lib/billing/bundles.ts).
+  file: string;
 };
 
 // ---------------------------------------------------------------- content
@@ -575,7 +577,7 @@ function buildAtividades(): Atividade[] {
 export const atividades: Atividade[] = buildAtividades();
 
 function buildPacks(): AtividadePack[] {
-  const packPdf = (slug: string) => `${ATIVIDADES_PDF_DIR}/pacotes/${slug}.pdf`;
+  const packPdf = (slug: string) => `pro-files/pt/${slug}.pdf`;
   const inCategory = (c: string) => atividades.filter((a) => a.category === c).map((a) => a.slug);
   const packs: AtividadePack[] = [
     {
@@ -583,7 +585,7 @@ function buildPacks(): AtividadePack[] {
       title: "O pacote do alfabeto completo",
       description: "Todas as atividades das letras de A a Z e do Ç: letra bastão, de forma, cursiva, reconhecer, sílaba inicial, colorir e palavras, num só PDF.",
       atividades: atividades.filter((a) => a.letter).map((a) => a.slug),
-      pdf: packPdf("pacote-alfabeto-completo"),
+      file: packPdf("pacote-alfabeto-completo"),
     },
   ];
   for (const c of ATIVIDADE_CATEGORIES) {
@@ -592,7 +594,7 @@ function buildPacks(): AtividadePack[] {
       title: `Pacote: ${c.name.charAt(0).toLowerCase()}${c.name.slice(1)}`,
       description: `${c.description} Todas as atividades num só PDF.`,
       atividades: inCategory(c.slug),
-      pdf: packPdf(`pacote-${c.slug}`),
+      file: packPdf(`pacote-${c.slug}`),
     });
   }
   for (const l of portugueseLetters) {
@@ -601,7 +603,7 @@ function buildPacks(): AtividadePack[] {
       title: cedilha(l) ? "Pacote do Ç" : `Pacote da letra ${l.upper}`,
       description: `Todas as atividades ${cedilha(l) ? "do Ç" : `da letra ${l.upper} ${l.lower}`} num só PDF: letra bastão, de forma, cursiva, reconhecer${FIRST_SYLLABLE_WORDS[l.slug] ? ", sílaba inicial" : ""}, colorir e palavras.`,
       atividades: atividades.filter((a) => a.letter === l.slug).map((a) => a.slug),
-      pdf: packPdf(`pacote-letra-${l.slug}`),
+      file: packPdf(`pacote-letra-${l.slug}`),
     });
   }
   return packs;

@@ -81,7 +81,8 @@
     "invalid_contact": "Completa correctamente todos los campos.",
     "forbidden": "Esta acción no está permitida.",
     "no_subscription": "No hay ninguna suscripción que cancelar.",
-    "paypal_error": "PayPal no pudo completar la operación. Inténtalo de nuevo en un momento."
+    "paypal_error": "PayPal no pudo completar la operación. Inténtalo de nuevo en un momento.",
+    "not_found": "No se encontró."
   },
   "Login": {
     "title": "Iniciar sesión",
@@ -162,7 +163,8 @@
   "Checkout": {
     "canceled": "Pago cancelado. No se te cobró nada.",
     "soon": "Las suscripciones Pro abren muy pronto. ¡Gracias por tu paciencia!",
-    "error": "No se pudo iniciar el pago con PayPal. Inténtalo de nuevo en un momento."
+    "error": "No se pudo iniciar el pago con PayPal. Inténtalo de nuevo en un momento.",
+    "bundle": "Descargar un paquete completo en un solo PDF forma parte de AlphaBes Pro. Cada ficha sigue siendo gratis para imprimir una por una."
   },
   "Dashboard": {
     "title": "Mi cuenta",

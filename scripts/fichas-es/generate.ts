@@ -5,7 +5,8 @@
 // public/fichas-pdf/:
 //   <category>/<slug>.pdf          one A4 page per worksheet
 //   vistas-previas/<slug>.jpg      a preview of that page for the website
-//   paquetes/<slug>.pdf            the packs, one PDF with all their pages
+// and pro-files/<lang>/<slug>.pdf, the packs (one PDF with all their pages; a
+// Pro download uploaded to the private R2 bucket, docs/paypal-plan.md)
 //
 // <filter> renders only worksheets whose slug contains it, or one of its
 // comma-separated parts (packs are skipped then, unless listed with
@@ -96,7 +97,7 @@ async function main() {
         const f = bySlug.get(slug)!;
         return pageHtml(f, fichaBody(f));
       });
-      const pdf = join(OUT, pack.pdf);
+      const pdf = join(ROOT, pack.file); // pro-files/: a Pro download, not public
       await render(page, html.join(""), `${pack.title} – AlphaBes`, pdf);
       packTotal += kb(pdf);
       console.log(`  ${pack.slug}: ${pack.fichas.length} pages, ${kb(pdf)} KB`);

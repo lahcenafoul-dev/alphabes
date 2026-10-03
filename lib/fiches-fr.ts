@@ -58,7 +58,9 @@ export type FichePack = {
   title: string;
   description: string;
   fiches: string[];
-  pdf: string;
+  // The pack's PDF in pro-files/ (a Pro download, never a public URL;
+  // lib/billing/bundles.ts).
+  file: string;
 };
 
 // ---------------------------------------------------------------- content
@@ -414,7 +416,7 @@ function cap(s: string): string {
 export const fiches: Fiche[] = buildFiches();
 
 function buildPacks(): FichePack[] {
-  const packPdf = (slug: string) => `${FICHES_PDF_DIR}/packs/${slug}.pdf`;
+  const packPdf = (slug: string) => `pro-files/fr/${slug}.pdf`;
   const inCategory = (c: string) => fiches.filter((f) => f.category === c).map((f) => f.slug);
   const packs: FichePack[] = [
     {
@@ -422,11 +424,11 @@ function buildPacks(): FichePack[] {
       title: "Le pack alphabet complet",
       description: "Toutes les fiches des lettres de A à Z, accents compris : tracé, cursive, reconnaissance, son, coloriage et mots, en un seul PDF.",
       fiches: fiches.filter((f) => f.letter).map((f) => f.slug),
-      pdf: packPdf("pack-alphabet-complet"),
+      file: packPdf("pack-alphabet-complet"),
     },
   ];
   for (const c of FICHE_CATEGORIES) {
-    packs.push({ slug: `pack-${c.slug}`, title: `Pack ${c.name.charAt(0).toLowerCase()}${c.name.slice(1)}`, description: `${c.description} Toutes les fiches en un seul PDF.`, fiches: inCategory(c.slug), pdf: packPdf(`pack-${c.slug}`) });
+    packs.push({ slug: `pack-${c.slug}`, title: `Pack ${c.name.charAt(0).toLowerCase()}${c.name.slice(1)}`, description: `${c.description} Toutes les fiches en un seul PDF.`, fiches: inCategory(c.slug), file: packPdf(`pack-${c.slug}`) });
   }
   for (const l of frenchLetters) {
     packs.push({
@@ -434,7 +436,7 @@ function buildPacks(): FichePack[] {
       title: `Pack de la lettre ${l.upper}`,
       description: `Toutes les fiches de la lettre ${l.upper} ${l.lower} en un seul PDF : tracé, cursive, reconnaissance${LETTER_IMAGES[l.slug] ? ", son" : ""}, coloriage et mots.`,
       fiches: fiches.filter((f) => f.letter === l.slug).map((f) => f.slug),
-      pdf: packPdf(`pack-lettre-${l.slug}`),
+      file: packPdf(`pack-lettre-${l.slug}`),
     });
   }
   return packs;

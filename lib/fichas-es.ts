@@ -56,7 +56,9 @@ export type FichaPack = {
   title: string;
   description: string;
   fichas: string[];
-  pdf: string;
+  // The pack's PDF in pro-files/ (a Pro download, never a public URL;
+  // lib/billing/bundles.ts).
+  file: string;
 };
 
 // ---------------------------------------------------------------- content
@@ -513,7 +515,7 @@ function buildFichas(): Ficha[] {
 export const fichas: Ficha[] = buildFichas();
 
 function buildPacks(): FichaPack[] {
-  const packPdf = (slug: string) => `${FICHAS_PDF_DIR}/paquetes/${slug}.pdf`;
+  const packPdf = (slug: string) => `pro-files/es/${slug}.pdf`;
   const inCategory = (c: string) => fichas.filter((f) => f.category === c).map((f) => f.slug);
   const packs: FichaPack[] = [
     {
@@ -521,7 +523,7 @@ function buildPacks(): FichaPack[] {
       title: "El paquete del abecedario completo",
       description: "Todas las fichas de las letras de la A a la Z, con la Ñ: trazo, cursiva, reconocer, primera sílaba, colorear y palabras, en un solo PDF.",
       fichas: fichas.filter((f) => f.letter).map((f) => f.slug),
-      pdf: packPdf("paquete-abecedario-completo"),
+      file: packPdf("paquete-abecedario-completo"),
     },
   ];
   for (const c of FICHA_CATEGORIES) {
@@ -530,7 +532,7 @@ function buildPacks(): FichaPack[] {
       title: `Paquete: ${c.name.charAt(0).toLowerCase()}${c.name.slice(1)}`,
       description: `${c.description} Todas las fichas en un solo PDF.`,
       fichas: inCategory(c.slug),
-      pdf: packPdf(`paquete-${c.slug}`),
+      file: packPdf(`paquete-${c.slug}`),
     });
   }
   for (const l of spanishLetters) {
@@ -539,7 +541,7 @@ function buildPacks(): FichaPack[] {
       title: `Paquete de la letra ${l.upper}`,
       description: `Todas las fichas de la letra ${l.upper} ${l.lower} en un solo PDF: trazo, cursiva, reconocer${FIRST_SYLLABLE_WORDS[l.slug] ? ", primera sílaba" : ""}, colorear y palabras.`,
       fichas: fichas.filter((f) => f.letter === l.slug).map((f) => f.slug),
-      pdf: packPdf(`paquete-letra-${l.slug}`),
+      file: packPdf(`paquete-letra-${l.slug}`),
     });
   }
   return packs;

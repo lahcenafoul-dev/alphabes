@@ -69,7 +69,9 @@ describe("Portuguese worksheet catalogue", () => {
       expect(statSync(publicFile(a.pdf)).size, a.pdf).toBeGreaterThan(10_000);
       expect(existsSync(publicFile(a.preview)), a.preview).toBe(true);
     }
-    for (const p of atividadePacks) expect(existsSync(publicFile(p.pdf)), p.pdf).toBe(true);
+    // Packs are a Pro download: in pro-files/ (uploaded to the private bucket), never in public/.
+    for (const p of atividadePacks) expect(existsSync(join(process.cwd(), p.file)), p.file).toBe(true);
+    expect(existsSync(publicFile("/atividades-pdf/pacotes")), "no pack PDFs left in public/").toBe(false);
   });
 
   it("splits first-syllable words correctly, all starting with their letter", () => {
