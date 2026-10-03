@@ -293,7 +293,7 @@ console.log("Portuguese: switcher, forms and mobile (Portuguese phase 1)");
   await page.goto(base + "/pt/precos");
   await page.waitForLoadState("networkidle");
   const langButton = page.locator("[data-site-header] button[aria-controls=language-menu]");
-  const shown = (await langButton.innerText()).trim();
+  const shown = (await langButton.locator("span[lang]").innerText()).trim();
   check(shown === "PT", `phone switcher shows the current language (${shown})`);
   check((await langButton.getAttribute("aria-expanded")) === "false", "language list starts closed");
   await langButton.click();
@@ -325,7 +325,9 @@ console.log("Portuguese: switcher, forms and mobile (Portuguese phase 1)");
   await context.close();
 }
 {
-  // Wider screens: the four pills must fit the header next to the main links.
+  // Wider screens: the four pills must fit the header next to the main links
+  // (shown inline from 1024px; between 768 and 1023px they overflowed even with
+  // three pills, so they moved to the menu there).
   for (const width of [640, 768, 1024, 1280]) {
     const { context, page } = await newPage({ width, height: 800 });
     for (const p of ["/", "/fr", "/es", "/pt"]) {
@@ -334,15 +336,19 @@ console.log("Portuguese: switcher, forms and mobile (Portuguese phase 1)");
       const m = await page.evaluate(() => {
         const row = document.querySelector("[data-site-header] > div");
         const pills = row.querySelector("[role=group]");
-        const kids = [...row.children].map((c) => c.getBoundingClientRect());
+        // Hidden children (the section links below 1024px) have an empty box.
+        const kids = [...row.children].map((c) => c.getBoundingClientRect()).filter((r) => r.width > 0);
         const overlap = kids.some((r, i) => i > 0 && r.left < kids[i - 1].right - 0.5);
         return {
           overflow: row.scrollWidth - row.clientWidth,
           height: row.getBoundingClientRect().height,
           pills: !!pills && getComputedStyle(pills).display !== "none",
           overlap,
+          nav: !!row.querySelector("nav")?.getBoundingClientRect().width,
+          menuButton: !!row.querySelector("button[aria-controls=mobile-menu]")?.getBoundingClientRect().width,
         };
       });
+      check(width >= 1024 ? m.nav && !m.menuButton : !m.nav && m.menuButton, `${width}px ${p}: ${width >= 1024 ? "section links inline" : "section links in the menu"}`);
       check(
         m.pills && m.overflow <= 0 && !m.overlap && m.height <= 72,
         `${width}px ${p}: header fits with the 4 pills (overflow ${m.overflow}px, height ${Math.round(m.height)}px${m.overlap ? ", items overlap" : ""})`,

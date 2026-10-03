@@ -23,7 +23,7 @@ export default function MobileMenu({ items, account, menuLabel, closeLabel, navL
   }, [pathname]);
 
   return (
-    <div className="md:hidden">
+    <div className="lg:hidden">
       <button
         type="button"
         aria-expanded={open}

@@ -15,7 +15,9 @@ const NAV = [
 ] as const;
 
 // Site-wide header: logo, main sections, parent account link, language switch.
-// Below 390 px the spacing and logo shrink so it fits a 320 px phone.
+// The section links show inline from 1024 px (between 768 and 1023 px they
+// didn't fit next to the switcher) and in the menu below that. Below 390 px
+// the spacing and logo shrink so it fits a 320 px phone.
 // Static (no session lookup) so every page stays prerenderable; "My Account"
 // leads to the dashboard, which sends signed-out visitors to the login page.
 // Links are built from the locale prop rather than next-intl's <Link>, so the
@@ -35,7 +37,7 @@ export default async function SiteHeader({ locale }: { locale: Locale }) {
           <span className="font-display text-2xl font-extrabold max-[389px]:text-xl">AlphaBes</span>
         </Link>
 
-        <nav aria-label={t("mainNav")} className="hidden md:block">
+        <nav aria-label={t("mainNav")} className="hidden lg:block">
           <ul className="flex items-center gap-5 lg:gap-7 font-display font-bold">
             {items.map((item) => (
               <li key={item.href}>
