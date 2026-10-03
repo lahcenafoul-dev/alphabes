@@ -117,11 +117,12 @@ describe("Spanish alphabet routes", () => {
     expect(localizedPath("es", "/flashcards")).toBe("/es/tarjetas");
   });
 
-  it("pairs shared letters in three languages, but not ñ or the tilde page", () => {
+  it("pairs shared letters in every language, but not ñ or the tilde page", () => {
     expect(alternatesFor("es", "/alphabet/[letter]", { letter: "b" }).languages).toEqual({
       en: "https://alphabes.com/alphabet/b",
       fr: "https://alphabes.com/fr/alphabet/b",
       es: "https://alphabes.com/es/abecedario/b",
+      pt: "https://alphabes.com/pt/alfabeto/b",
       "x-default": "https://alphabes.com/alphabet/b",
     });
     expect(isLocaleOnly("es", "/alphabet/[letter]", { letter: "enie" })).toBe(true);

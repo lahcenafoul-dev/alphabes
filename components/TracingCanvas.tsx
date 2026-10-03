@@ -2,15 +2,15 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 
-type Style = "script" | "cursive";
-
 /**
  * School ruling drawn behind cursive: French Seyès lines (baseline, x-height
- * and two lines above, one below), or the four guide lines of Spanish-language
+ * and two lines above, one below), the four guide lines of Spanish-language
  * "doble raya" notebooks (capital line, dashed middle line, baseline,
- * descender line).
+ * descender line), or Brazilian "caligrafia" lines, the same four lines
+ * spaced for Playwrite BR's tall loops and tails (1.3 x-heights above the
+ * middle line and below the baseline).
  */
-export type Ruling = "seyes" | "doble-raya";
+export type Ruling = "seyes" | "doble-raya" | "caligrafia";
 
 type Labels = {
   clear: string;
@@ -27,6 +27,11 @@ type Props = {
   text?: string;
   /** Adds a print/cursive toggle; `fontFamily` must be loaded by the page. */
   cursive?: { text: string; fontFamily: string; ruling?: Ruling };
+  /**
+   * Several print styles instead of one, shown before cursive in the toggle
+   * (Portuguese: letra bastão "A", letra de forma "a"). Replaces `text`.
+   */
+  prints?: { text: string; label: string }[];
   /** Visible text; defaults to the English page's labels. */
   labels?: Partial<Labels>;
 };
@@ -69,15 +74,19 @@ function drawGuide(
     const m = ctx.measureText(text);
     const xHeight = ctx.measureText("x").actualBoundingBoxAscent;
     const ascent = m.actualBoundingBoxAscent;
-    const baseline = h / 2 + (ascent - m.actualBoundingBoxDescent) / 2;
+    // Caligrafia lines span 3.6 x-heights (2.3 above the baseline, 1.3 below):
+    // centre the lines rather than the letters so all four stay on the canvas.
+    const baseline =
+      ruling === "caligrafia" ? h / 2 + xHeight / 2 : h / 2 + (ascent - m.actualBoundingBoxDescent) / 2;
     ctx.strokeStyle = LINE_COLOR;
     ctx.lineWidth = 1;
-    if (ruling === "doble-raya") {
+    if (ruling === "doble-raya" || ruling === "caligrafia") {
+      const outer = ruling === "caligrafia" ? 1.3 : 1;
       for (const [y, dashed] of [
-        [baseline - xHeight * 2, false],
+        [baseline - xHeight * (1 + outer), false],
         [baseline - xHeight, true],
         [baseline, false],
-        [baseline + xHeight, false],
+        [baseline + xHeight * outer, false],
       ] as const) {
         ctx.setLineDash(dashed ? [8, 6] : []);
         ctx.beginPath();
@@ -109,15 +118,19 @@ function drawGuide(
   ctx.setLineDash([]);
 }
 
-export default function TracingCanvas({ letter = "", text, cursive, labels }: Props) {
+export default function TracingCanvas({ letter = "", text, cursive, prints, labels }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const drawing = useRef(false);
-  const [style, setStyle] = useState<Style>("script");
+  const [style, setStyle] = useState(0);
   const l = { ...DEFAULT_LABELS, ...labels };
 
-  const printText = text ?? letter.toUpperCase();
-  const guideText = style === "cursive" && cursive ? cursive.text : printText;
-  const guideFont = style === "cursive" && cursive ? cursive.fontFamily : null;
+  // The styles offered by the toggle, in order: the print style(s), then cursive.
+  const styles: { label: string; text: string; font: string | null }[] = [
+    ...(prints ?? [{ label: l.script, text: text ?? letter.toUpperCase() }]).map((p) => ({ ...p, font: null })),
+    ...(cursive ? [{ label: l.cursive, text: cursive.text, font: cursive.fontFamily }] : []),
+  ];
+  const guideText = styles[style].text;
+  const guideFont = styles[style].font;
   const ruling = cursive?.ruling;
 
   const reset = useCallback(() => {
@@ -180,17 +193,17 @@ export default function TracingCanvas({ letter = "", text, cursive, labels }: Pr
 
   return (
     <div className="mt-4">
-      {cursive && (
+      {styles.length > 1 && (
         <div role="group" aria-label={l.styleGroup} className="mb-3 inline-flex rounded-full border-2 border-chalkboard/15 p-0.5 font-display font-bold text-sm">
-          {(["script", "cursive"] as const).map((s) => (
+          {styles.map((s, i) => (
             <button
-              key={s}
+              key={s.label}
               type="button"
-              aria-pressed={style === s}
-              onClick={() => setStyle(s)}
-              className={`rounded-full px-4 py-1.5 ${style === s ? "bg-chalkboard text-paper" : "text-chalkboard/70 hover:text-chalkboard"}`}
+              aria-pressed={style === i}
+              onClick={() => setStyle(i)}
+              className={`rounded-full px-4 py-1.5 ${style === i ? "bg-chalkboard text-paper" : "text-chalkboard/70 hover:text-chalkboard"}`}
             >
-              {l[s]}
+              {s.label}
             </button>
           ))}
         </div>

@@ -126,10 +126,25 @@ const RULES_ES = [
   ["/fr/histoires", { headers: { cookie: "NEXT_LOCALE=es" } }, 307, "/es/cuentos", "French story list, Spanish chosen"],
 ];
 
+const ptLetters = [..."abc", "c-cedilha", ..."defghijklmnopqrstuvwxyz"];
+
 // Portuguese (docs/portuguese-plan.md): every /pt URL answers 404 until its
 // page is written.
 const RULES_PT = [
-  ["/pt/alfabeto", {}, 404, null, "Portuguese page not written yet (phase 2)"],
+  ["/pt/silabas", {}, 404, null, "Portuguese page not written yet (phase 3)"],
+  // Portuguese phase 2: the alphabet.
+  ["/pt/alfabeto/ç", {}, 404, null, "ç is /pt/alfabeto/c-cedilha"],
+  ["/pt/alfabeto/enie", {}, 404, null, "Spanish ñ under /pt"],
+  ["/pt/alfabeto/c-cedille", {}, 404, null, "French ç slug under /pt"],
+  ["/pt/alfabeto/tilde", {}, 404, null, "Spanish tilde page under /pt"],
+  ["/pt/alfabeto/acentos/atividade", {}, 404, null, "no activity for the accents page"],
+  ["/alphabet/c-cedilha", {}, 404, null, "Portuguese-only Ç under an English URL"],
+  ["/es/abecedario/acentos", {}, 404, null, "Portuguese accents page under /es"],
+  ["/alphabet/b", { headers: { cookie: "NEXT_LOCALE=pt" } }, 307, "/pt/alfabeto/b", "letter twin in Portuguese"],
+  ["/es/tarjetas", { headers: { cookie: "NEXT_LOCALE=pt" } }, 307, "/pt/cartoes", "cards twin in Portuguese"],
+  ["/fr/alphabet/b/fiche", { headers: { cookie: "NEXT_LOCALE=pt" } }, 307, "/pt/alfabeto/b/atividade", "tracing twin in Portuguese"],
+  ["/pt/alfabeto/c-cedilha", { headers: { cookie: "NEXT_LOCALE=en" } }, 200, null, "Portuguese-only Ç, English chosen: stay"],
+  ["/es/abecedario/enie", { headers: { cookie: "NEXT_LOCALE=pt" } }, 200, null, "Spanish-only ñ, Portuguese chosen: stay"],
   ["/pt/xyz", {}, 404, null, "unknown Portuguese URL"],
   ["/pt/pricing", {}, 404, null, "English word under /pt"],
   ["/pt/precios", {}, 404, null, "Spanish word under /pt"],
@@ -144,7 +159,7 @@ const RULES_PT = [
   ["/pt/precos", { headers: { cookie: "NEXT_LOCALE=fr" } }, 307, "/fr/tarifs", "Portuguese page, French chosen"],
   ["/pt/precos", { headers: { cookie: "NEXT_LOCALE=es" } }, 307, "/es/precios", "Portuguese page, Spanish chosen"],
   ["/blog", { headers: { cookie: "NEXT_LOCALE=pt" } }, 200, null, "no Portuguese twin: stay"],
-  ["/alphabet", { headers: { cookie: "NEXT_LOCALE=pt" } }, 200, null, "Portuguese alphabet not written yet: stay"],
+  ["/phonics", { headers: { cookie: "NEXT_LOCALE=pt" } }, 200, null, "Portuguese syllables not written yet: stay"],
   ["/pricing", { headers: { "accept-language": "pt-BR,pt;q=0.9" } }, 200, null, "no Accept-Language redirect"],
   ["/es/precios", { headers: { "accept-language": "pt-BR,pt;q=0.9" } }, 200, null, "no Accept-Language redirect (Spanish page)"],
 ];
@@ -213,6 +228,9 @@ const LANGS = {
       // Portuguese phase 1: home, UI pages, legal pages.
       "/pt", "/pt/precos", "/pt/quem-somos", "/pt/contato", "/pt/politica-de-privacidade", "/pt/termos-de-uso",
       "/pt/cookies", "/pt/entrar", "/pt/cadastro",
+      // Portuguese phase 2: the alphabet (26 letters and Ç), the accents page and the cards.
+      "/pt/alfabeto", "/pt/alfabeto/acentos", "/pt/cartoes",
+      ...ptLetters.flatMap((l) => [`/pt/alfabeto/${l}`, `/pt/alfabeto/${l}/atividade`]),
     ],
     rules: RULES_PT,
   },

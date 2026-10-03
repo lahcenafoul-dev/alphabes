@@ -3,6 +3,7 @@ import { unstable_cache } from "next/cache";
 import { getAllLetterSlugs } from "@/lib/letters-data";
 import { ACCENTS_SLUG, frenchLetters, isAccentLetter } from "@/lib/letters-fr";
 import { TILDE_SLUG } from "@/lib/letters-es";
+import { ACENTOS_SLUG as PT_ACENTOS_SLUG, CEDILHA_SLUG } from "@/lib/letters-pt";
 import { spanishSyllablePages } from "@/lib/silabas-es";
 import { fichaCategoryParams, fichaPacks } from "@/lib/fichas-es";
 import { phonicsSkills } from "@/lib/phonics-data";
@@ -309,12 +310,21 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       })),
   ];
 
+  // Portuguese pages with no twin: the Ç and the accents page.
+  const portugueseOnlyEntries: MetadataRoute.Sitemap = [CEDILHA_SLUG, PT_ACENTOS_SLUG].map((letter) => ({
+    url: absoluteUrl("pt", "/alphabet/[letter]", { letter }),
+    lastModified: new Date(),
+    changeFrequency: "monthly" as const,
+    priority: 0.8,
+  }));
+
   return [
     ...withTwins(englishEntries),
     ...frenchGameEntries,
     ...spanishGameEntries,
     ...frenchOnlyEntries,
     ...spanishOnlyEntries,
+    ...portugueseOnlyEntries,
     ...(await getStoryRoutes()),
   ];
 }

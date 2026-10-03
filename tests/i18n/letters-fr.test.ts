@@ -86,6 +86,7 @@ describe("French alphabet routes", () => {
       en: "https://alphabes.com/alphabet/b",
       fr: "https://alphabes.com/fr/alphabet/b",
       es: "https://alphabes.com/es/abecedario/b",
+      pt: "https://alphabes.com/pt/alfabeto/b",
       "x-default": "https://alphabes.com/alphabet/b",
     });
     expect(alternatesFor("fr", "/alphabet/[letter]", { letter: "c-cedille" })).toEqual({

@@ -237,8 +237,8 @@ console.log("Portuguese: switcher, forms and mobile (Portuguese phase 1)");
   check((await alt("pt")) === "https://alphabes.com/pt/quem-somos" && (await alt("x-default")) === "https://alphabes.com/about", "hreflang pt and x-default");
   await page.goto(base + "/terms");
   check(page.url().endsWith("/pt/termos-de-uso"), "with the PT cookie, /terms redirects to /pt/termos-de-uso");
-  await page.goto(base + "/alphabet");
-  check(new URL(page.url()).pathname === "/alphabet", "with the PT cookie, /alphabet (no Portuguese version yet) stays");
+  await page.goto(base + "/blog");
+  check(new URL(page.url()).pathname === "/blog", "with the PT cookie, /blog (no Portuguese version) stays");
 
   await page.goto(base + "/pt");
   await page.waitForLoadState("networkidle");
@@ -555,6 +555,135 @@ console.log("Spanish alphabet (Spanish phase 2)");
   {
     const { context, page, errors } = await newPage({ width: 390, height: 844 });
     for (const p of ["/es/abecedario", "/es/abecedario/w", "/es/abecedario/enie/ficha", "/es/abecedario/tilde", "/es/tarjetas"]) {
+      await page.goto(base + p);
+      await page.waitForLoadState("networkidle");
+      const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+      check(overflow <= 0, `${p}: no horizontal scroll (overflow ${overflow}px)`);
+      await page.screenshot({ path: `${shots}/m${p.replaceAll("/", "_")}.png`, fullPage: true });
+    }
+    check(errors.length === 0, `no console/page errors${errors.length ? ": " + errors.slice(0, 3).join(" | ") : ""}`);
+    await context.close();
+  }
+}
+
+console.log("Portuguese alphabet (Portuguese phase 2)");
+{
+  const { context, page, errors } = await newPage();
+  await page.goto(base + "/alphabet/b");
+  await page.waitForLoadState("networkidle");
+  check((await switcherHref(page, "pt")) === "/pt/alfabeto/b", "PT link on /alphabet/b points to /pt/alfabeto/b");
+  await page.goto(base + "/es/abecedario/enie");
+  await page.waitForLoadState("networkidle");
+  check((await switcherHref(page, "pt")) === "/pt/alfabeto", "PT link on ñ goes to /pt/alfabeto");
+  await page.goto(base + "/pt/alfabeto");
+  await page.waitForLoadState("networkidle");
+  check((await page.locator("main ul").first().locator("li").count()) === 27, "the chart shows the 26 letters and Ç");
+  const order = await page.locator("main ul").first().locator("li .letter-block").allInnerTexts();
+  check(order.slice(0, 5).join(" ") === "Aa Bb Cc Çç Dd", `Ç comes right after C (${order.slice(0, 5).join(" ")})`);
+  await page.screenshot({ path: `${shots}/pt-alfabeto.png`, fullPage: true });
+  await page.goto(base + "/pt/alfabeto/c-cedilha");
+  await page.waitForLoadState("networkidle");
+  check(await page.getByRole("heading", { name: "O Ç ç (cê-cedilha)" }).isVisible(), "Ç page heading");
+  check(
+    (await switcherHref(page, "en")) === "/alphabet" && (await switcherHref(page, "es")) === "/es/abecedario",
+    "EN/ES links on Ç go to the alphabets",
+  );
+  check((await page.locator('link[rel=alternate][hreflang]').count()) === 0, "Ç page has no hreflang");
+  await page.goto(base + "/pt/alfabeto/acentos");
+  await page.waitForLoadState("networkidle");
+  check(await page.getByRole("heading", { name: "Os acentos e o til", exact: true }).isVisible(), "accents page heading");
+  await page.goto(base + "/pt/cartoes");
+  await page.waitForLoadState("networkidle");
+  check((await switcherHref(page, "fr")) === "/fr/imagier", "FR link on /pt/cartoes points to /fr/imagier");
+
+  // Tracing: bastão, forma and cursiva (Playwrite BR on caligrafia lines).
+  await page.goto(base + "/pt/alfabeto/c-cedilha/atividade");
+  await page.waitForLoadState("networkidle");
+  const canvas = page.getByLabel("Espaço para traçar o Ç");
+  const styles = await page.getByRole("group", { name: "Tipo de letra" }).getByRole("button").allInnerTexts();
+  check(styles.join(" / ") === "Bastão / Forma / Cursiva", `three letter styles (${styles.join(" / ")})`);
+  const box = await canvas.boundingBox();
+  await page.mouse.move(box.x + 100, box.y + 100);
+  await page.mouse.down();
+  await page.mouse.move(box.x + 300, box.y + 150, { steps: 10 });
+  await page.mouse.up();
+  const inked = await canvas.evaluate((c) => {
+    const d = c.getContext("2d").getImageData(0, 0, c.width, c.height).data;
+    for (let i = 0; i < d.length; i += 4) if (d[i] === 37 && d[i + 1] === 99 && d[i + 2] === 235) return true;
+    return false;
+  });
+  check(inked, "drawing on the Portuguese canvas leaves blue ink");
+  await page.getByRole("button", { name: "Forma" }).click();
+  check((await page.getByRole("button", { name: "Forma" }).getAttribute("aria-pressed")) === "true", "forma toggle is pressed");
+  await canvas.screenshot({ path: `${shots}/pt-atividade-forma-canvas.png` });
+  await page.getByRole("button", { name: "Cursiva" }).click();
+  check((await page.getByRole("button", { name: "Cursiva" }).getAttribute("aria-pressed")) === "true", "cursiva toggle is pressed");
+  const fontLoaded = () => [...document.fonts].some((f) => /Playwrite BR/.test(f.family) && f.status === "loaded");
+  await page.waitForFunction(fontLoaded, null, { timeout: 15000 }).catch(() => {});
+  check(await page.evaluate(fontLoaded), "cursive font (Playwrite BR) loaded");
+  await page.waitForTimeout(300);
+  // The four caligrafia lines all fall inside the canvas: guide-line pixels
+  // in the top and bottom quarters.
+  const lines = await canvas.evaluate((c) => {
+    const ctx = c.getContext("2d");
+    const rows = [];
+    for (let y = 0; y < c.height; y++) {
+      const d = ctx.getImageData(0, y, 4, 1).data;
+      // The line colour (#e0e7ff) over white, antialiased: blue stays at 255, red drops.
+      if (d[2] >= 250 && d[0] < 248) rows.push(y / c.height);
+    }
+    return rows;
+  });
+  const bands = lines.filter((y, i) => i === 0 || y - lines[i - 1] > 0.02);
+  check(bands.length === 4 && bands[0] > 0.02 && bands[3] < 0.98, `four caligrafia lines inside the canvas (${bands.map((y) => y.toFixed(2)).join(", ")})`);
+  await canvas.screenshot({ path: `${shots}/pt-atividade-cursiva-canvas.png` });
+  await page.screenshot({ path: `${shots}/pt-atividade.png`, fullPage: true });
+  check(errors.length === 0, `no console/page errors${errors.length ? ": " + errors.slice(0, 3).join(" | ") : ""}`);
+  await context.close();
+
+  // Speech: a Brazilian voice first, Portuguese text.
+  {
+    const { context, page } = await newPage();
+    await context.addInitScript(fakeVoices(["en-US", "es-MX", "pt-PT", "pt-BR"]));
+    await page.goto(base + "/pt/alfabeto/b");
+    await page.waitForLoadState("networkidle");
+    await page.getByRole("button", { name: "🔊 A família silábica" }).click();
+    await page.getByRole("button", { name: "Ouvir: uma bola" }).click();
+    const spoken = await page.evaluate(() => window.__spoken);
+    check(spoken[0]?.text === "ba, be, bi, bo, bu. Como em bola, baleia." && spoken[0]?.lang === "pt-BR", `family read with the pt-BR voice (${JSON.stringify(spoken[0])})`);
+    check(spoken[1]?.text === "uma bola", "word read with its article");
+    await context.close();
+  }
+  // Only a voice from Portugal: it is used.
+  {
+    const { context, page } = await newPage();
+    await context.addInitScript(fakeVoices(["en-US", "es-ES", "pt-PT"]));
+    await page.goto(base + "/pt/alfabeto/c-cedilha");
+    await page.waitForLoadState("networkidle");
+    await page.getByRole("button", { name: "🔊 O nome da letra" }).click();
+    const spoken = await page.evaluate(() => window.__spoken);
+    check(spoken[0]?.text === "cê cedilha" && spoken[0]?.lang === "pt-PT", `falls back to pt-PT (${JSON.stringify(spoken[0])})`);
+    await context.close();
+  }
+  // No Portuguese voice: nothing said, Portuguese help shown.
+  {
+    const { context, page } = await newPage({ width: 390, height: 844 });
+    await context.addInitScript(fakeVoices(["en-US", "es-MX", "es-ES"]));
+    await page.goto(base + "/pt/alfabeto/b");
+    await page.waitForLoadState("networkidle");
+    await page.getByRole("button", { name: "🔊 O nome da letra" }).click();
+    const notice = page.getByText("Este aparelho não tem nenhuma voz em português.");
+    check(await notice.isVisible(), "Portuguese missing-voice message appears");
+    check((await page.evaluate(() => window.__spoken.length)) === 0, "a Spanish or English voice never reads Portuguese");
+    await page.screenshot({ path: `${shots}/pt-no-voice.png` });
+    await page.getByRole("button", { name: "Fechar", exact: true }).click();
+    check(!(await notice.isVisible()), "Portuguese missing-voice message closes");
+    await context.close();
+  }
+  // Layout at 390px.
+  {
+    const { context, page, errors } = await newPage({ width: 390, height: 844 });
+    for (const p of ["/pt/alfabeto", "/pt/alfabeto/w", "/pt/alfabeto/c-cedilha", "/pt/alfabeto/c-cedilha/atividade", "/pt/alfabeto/acentos", "/pt/cartoes"]) {
       await page.goto(base + p);
       await page.waitForLoadState("networkidle");
       const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
