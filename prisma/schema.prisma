@@ -276,6 +276,9 @@ model Subscription {
   canceledAt           DateTime?
   lastPaymentAt        DateTime?
   syncedAt             DateTime?
+  // The renewal date (currentPeriodEnd) a yearly reminder email was sent for,
+  // so each renewal gets one reminder (lib/billing/reminders.ts).
+  renewalReminderFor   DateTime?
   createdAt            DateTime           @default(now())
   updatedAt            DateTime           @updatedAt
 }

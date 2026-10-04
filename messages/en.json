@@ -83,7 +83,8 @@
     "forbidden": "This action isn't allowed.",
     "no_subscription": "There is no subscription to cancel.",
     "paypal_error": "PayPal couldn't complete this right now. Please try again.",
-    "not_found": "Not found."
+    "not_found": "Not found.",
+    "contact_failed": "Your message couldn't be sent. Please try again later."
   },
   "Login": {
     "title": "Log In",

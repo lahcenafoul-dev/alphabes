@@ -83,7 +83,8 @@
     "forbidden": "Esta acción no está permitida.",
     "no_subscription": "No hay ninguna suscripción que cancelar.",
     "paypal_error": "PayPal no pudo completar la operación. Inténtalo de nuevo en un momento.",
-    "not_found": "No se encontró."
+    "not_found": "No se encontró.",
+    "contact_failed": "No se pudo enviar tu mensaje. Inténtalo de nuevo más tarde."
   },
   "Login": {
     "title": "Iniciar sesión",

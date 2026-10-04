@@ -83,7 +83,8 @@
     "forbidden": "Cette action n'est pas autorisée.",
     "no_subscription": "Il n'y a pas d'abonnement à résilier.",
     "paypal_error": "PayPal n'a pas pu terminer l'opération. Réessayez dans un instant.",
-    "not_found": "Introuvable."
+    "not_found": "Introuvable.",
+    "contact_failed": "Votre message n'a pas pu être envoyé. Réessayez un peu plus tard."
   },
   "Login": {
     "title": "Connexion",

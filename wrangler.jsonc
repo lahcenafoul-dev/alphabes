@@ -1,6 +1,7 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "main": ".open-next/worker.js",
+  // OpenNext's worker plus the daily renewal-reminder cron (custom-worker.ts).
+  "main": "custom-worker.ts",
   "name": "alphabes",
   "compatibility_date": "2026-09-01",
   "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
@@ -31,6 +32,10 @@
   // Runtime vars are managed in the Cloudflare dashboard (Settings >
   // Variables and Secrets); don't let deploys wipe them.
   "keep_vars": true,
+  // Daily at 08:00 UTC: yearly renewal reminder emails (docs/paypal-plan.md).
+  "triggers": {
+    "crons": ["0 8 * * *"]
+  },
   "observability": {
     "enabled": true
   }
