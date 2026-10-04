@@ -11,7 +11,7 @@ export default function PrivacyPolicyEn() {
   return (
     <main id="main-content" className="mx-auto max-w-2xl px-6 py-12">
       <h1 className="text-4xl font-extrabold">Privacy Policy</h1>
-      <p className="mt-2 text-sm text-chalkboard/50">Last updated: September 29, 2026</p>
+      <p className="mt-2 text-sm text-chalkboard/50">Last updated: October 4, 2026</p>
 
       <div className="mt-8 space-y-6 text-chalkboard/80 leading-relaxed">
         <section>
@@ -39,10 +39,16 @@ export default function PrivacyPolicyEn() {
           </p>
           <p className="mt-2">
             <strong>Subscription and billing information.</strong> If you subscribe to AlphaBes
-            Pro, payment is handled by our payment provider (currently being finalized; the site
-            previously integrated with Stripe). We do not store full card numbers on our servers —
-            our payment provider processes and stores that information under its own privacy
-            policy.
+            Pro, you pay through PayPal, which processes the payment under its own{" "}
+            <a href="https://www.paypal.com/myaccount/privacy/privacyhub" className="font-bold text-crayon-blue">
+              privacy statement
+            </a>
+            . We never receive or store your card or bank details. From PayPal we keep only what
+            we need to run your subscription: its PayPal identifier, your plan, its status, and the
+            dates of the last payment, the next renewal and any cancellation, plus a record of
+            PayPal&apos;s notifications about it (an identifier, its type and when it arrived). We
+            use them to give you Pro, show your subscription on your dashboard, and handle
+            cancellations and refunds.
           </p>
           <p className="mt-2">
             <strong>Technical information.</strong> Our servers and hosting provider automatically
@@ -127,7 +133,7 @@ export default function PrivacyPolicyEn() {
               <strong>Authentication</strong> — NextAuth, used to manage secure login sessions.
             </li>
             <li>
-              <strong>Payments</strong> — our payment provider (see &quot;Subscription and billing
+              <strong>Payments</strong> — PayPal (see &quot;Subscription and billing
               information&quot; above), used only for parents/guardians who subscribe to AlphaBes
               Pro.
             </li>
@@ -209,7 +215,7 @@ export default function PrivacyPolicyEn() {
           <h2 className="font-display font-bold text-xl">Changes to this policy</h2>
           <p className="mt-2">
             We may update this policy as AlphaBes changes — for example, once our AdSense
-            application or payment provider integration is finalized. We&apos;ll update the
+            application is approved. We&apos;ll update the
             &quot;Last updated&quot; date above when we do, and encourage you to review this page
             periodically.
           </p>

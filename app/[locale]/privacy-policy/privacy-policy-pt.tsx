@@ -13,7 +13,7 @@ export default function PrivacyPolicyPt() {
   return (
     <main id="main-content" className="mx-auto max-w-2xl px-6 py-12">
       <h1 className="text-4xl font-extrabold">Política de privacidade</h1>
-      <p className="mt-2 text-sm text-chalkboard/50">Última atualização: 3 de outubro de 2026</p>
+      <p className="mt-2 text-sm text-chalkboard/50">Última atualização: 4 de outubro de 2026</p>
 
       <div className="mt-8 space-y-6 text-chalkboard/80 leading-relaxed">
         <section>
@@ -41,10 +41,17 @@ export default function PrivacyPolicyPt() {
             perfil, para que a família possa acompanhá-lo pela sua conta.
           </p>
           <p className="mt-2">
-            <strong>Assinatura e pagamento.</strong> Se você assinar o AlphaBes Pro, o pagamento é
-            processado pelo nosso provedor de pagamentos (estamos escolhendo um; antes o site usava
-            o Stripe). Não guardamos números completos de cartão nos nossos servidores: o provedor
-            processa e guarda essas informações segundo a sua própria política de privacidade.
+            <strong>Assinatura e pagamento.</strong> Se você assinar o AlphaBes Pro, vai pagar pelo
+            PayPal, que processa o pagamento segundo a sua própria{" "}
+            <a href="https://www.paypal.com/myaccount/privacy/privacyhub" className="font-bold text-crayon-blue">
+              declaração de privacidade
+            </a>
+            . Nunca recebemos nem guardamos os dados do seu cartão ou do seu banco. Do PayPal,
+            guardamos só o necessário para administrar a sua assinatura: o identificador dela no
+            PayPal, o seu plano, a situação da assinatura e as datas do último pagamento, da próxima
+            renovação e de um eventual cancelamento, além de um registro dos avisos do PayPal sobre
+            ela (um identificador, o tipo e a data). Usamos esses dados para liberar o Pro, mostrar a
+            sua assinatura na sua conta e cuidar de cancelamentos e reembolsos.
           </p>
           <p className="mt-2">
             <strong>Dados técnicos.</strong> Os nossos servidores e o nosso provedor de hospedagem
@@ -141,8 +148,8 @@ export default function PrivacyPolicyPt() {
               <strong>Autenticação</strong>: NextAuth, para gerenciar as sessões com segurança.
             </li>
             <li>
-              <strong>Pagamentos</strong>: o nosso provedor de pagamentos (veja “Assinatura e
-              pagamento” acima), só para as famílias que assinam o AlphaBes Pro.
+              <strong>Pagamentos</strong>: o PayPal (veja “Assinatura e pagamento” acima), só para
+              as famílias que assinam o AlphaBes Pro.
             </li>
             <li>
               <strong>Publicidade</strong>: Google AdSense, quando o nosso pedido for aprovado.
@@ -228,7 +235,7 @@ export default function PrivacyPolicyPt() {
           <h2 className="font-display font-bold text-xl">Mudanças nesta política</h2>
           <p className="mt-2">
             Esta política pode mudar junto com o AlphaBes, por exemplo quando o nosso pedido ao
-            AdSense for aprovado ou quando escolhermos o nosso provedor de pagamentos. Nesse caso,
+            AdSense for aprovado. Nesse caso,
             atualizaremos a data de “última atualização” acima; convidamos você a rever esta página
             de vez em quando.
           </p>

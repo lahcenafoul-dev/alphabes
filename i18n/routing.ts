@@ -71,6 +71,7 @@ export const routing = defineRouting({
       es: "/politica-de-privacidad",
       pt: "/politica-de-privacidade",
     },
+    "/refunds": { en: "/refunds", fr: "/remboursements", es: "/reembolsos", pt: "/reembolsos" },
     "/register": { en: "/register", fr: "/inscription", es: "/registro", pt: "/cadastro" },
     "/stories": { en: "/stories", fr: "/histoires", es: "/cuentos", pt: "/historias" },
     "/stories/[slug]": { en: "/stories/[slug]", fr: "/histoires/[slug]", es: "/cuentos/[slug]", pt: "/historias/[slug]" },

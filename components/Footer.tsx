@@ -40,6 +40,7 @@ const columns = [
     links: [
       { href: "/privacy-policy", label: "privacy" },
       { href: "/terms", label: "terms" },
+      { href: "/refunds", label: "refunds" },
       { href: "/cookies", label: "cookies" },
     ],
   },

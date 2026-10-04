@@ -53,6 +53,7 @@
     "contact": "Contact",
     "privacy": "Privacy Policy",
     "terms": "Terms of Service",
+    "refunds": "Refund Policy",
     "cookies": "Cookie Policy",
     "copyright": "© {year} AlphaBes. All rights reserved.",
     "tagline": "Made for curious learners ages 3-8."
@@ -130,6 +131,7 @@
     "intro": "The free plan includes every printable worksheet, the alphabet and phonics lessons, the free games, and progress tracking for each child. Pro adds the premium games and one-click downloads of whole worksheet bundles, for parents and teachers who want everything.",
     "currencyNote": "",
     "billingNote": "Paid securely through PayPal. Pro renews automatically; cancel any time from your dashboard and keep Pro until the end of the period you've paid for.",
+    "refundLink": "Refund policy",
     "choose": "Choose {plan}",
     "startFree": "Start Free",
     "free": {

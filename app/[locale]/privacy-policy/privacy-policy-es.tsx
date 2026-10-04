@@ -13,7 +13,7 @@ export default function PrivacyPolicyEs() {
   return (
     <main id="main-content" className="mx-auto max-w-2xl px-6 py-12">
       <h1 className="text-4xl font-extrabold">Política de privacidad</h1>
-      <p className="mt-2 text-sm text-chalkboard/50">Última actualización: 1 de octubre de 2026</p>
+      <p className="mt-2 text-sm text-chalkboard/50">Última actualización: 4 de octubre de 2026</p>
 
       <div className="mt-8 space-y-6 text-chalkboard/80 leading-relaxed">
         <section>
@@ -41,10 +41,17 @@ export default function PrivacyPolicyEs() {
             el perfil, para que la familia pueda seguirlo desde su cuenta.
           </p>
           <p className="mt-2">
-            <strong>Suscripción y pago.</strong> Si te suscribes a AlphaBes Pro, el pago lo procesa
-            nuestro proveedor de pagos (lo estamos eligiendo; antes el sitio usaba Stripe). No
-            guardamos números de tarjeta completos en nuestros servidores: el proveedor procesa y
-            guarda esa información según su propia política de privacidad.
+            <strong>Suscripción y pago.</strong> Si te suscribes a AlphaBes Pro, pagas con PayPal,
+            que procesa el pago según su propia{" "}
+            <a href="https://www.paypal.com/myaccount/privacy/privacyhub" className="font-bold text-crayon-blue">
+              declaración de privacidad
+            </a>
+            . Nunca recibimos ni guardamos los datos de tu tarjeta ni de tu banco. De PayPal solo
+            guardamos lo necesario para administrar tu suscripción: su identificador de PayPal, tu
+            plan, su estado y las fechas del último pago, de la próxima renovación y de una posible
+            cancelación, además de un registro de los avisos de PayPal sobre ella (un
+            identificador, su tipo y su fecha). Los usamos para darte acceso a Pro, mostrar tu
+            suscripción en tu cuenta y atender cancelaciones y reembolsos.
           </p>
           <p className="mt-2">
             <strong>Datos técnicos.</strong> Nuestros servidores y nuestro proveedor de hospedaje
@@ -135,8 +142,8 @@ export default function PrivacyPolicyEs() {
               segura.
             </li>
             <li>
-              <strong>Pagos</strong>: nuestro proveedor de pagos (ver «Suscripción y pago» más
-              arriba), solo para las familias que se suscriben a AlphaBes Pro.
+              <strong>Pagos</strong>: PayPal (ver «Suscripción y pago» más arriba), solo para las
+              familias que se suscriben a AlphaBes Pro.
             </li>
             <li>
               <strong>Publicidad</strong>: Google AdSense, cuando se apruebe nuestra solicitud.
@@ -220,7 +227,7 @@ export default function PrivacyPolicyEs() {
           <h2 className="font-display font-bold text-xl">Cambios en esta política</h2>
           <p className="mt-2">
             Esta política puede cambiar junto con AlphaBes, por ejemplo cuando se apruebe nuestra
-            solicitud de AdSense o elijamos a nuestro proveedor de pagos. Entonces actualizaremos la
+            solicitud de AdSense. Entonces actualizaremos la
             fecha de «última actualización» de arriba; te invitamos a revisar esta página de vez en
             cuando.
           </p>

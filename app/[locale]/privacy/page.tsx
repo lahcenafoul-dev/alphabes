@@ -10,7 +10,7 @@ export default function PrivacyPage() {
   return (
     <main id="main-content" className="mx-auto max-w-2xl px-6 py-12">
       <h1 className="text-4xl font-extrabold">Privacy Policy</h1>
-      <p className="mt-2 text-sm text-chalkboard/50">Last updated: September 9, 2026</p>
+      <p className="mt-2 text-sm text-chalkboard/50">Last updated: October 4, 2026</p>
 
       <div className="mt-8 space-y-6 text-chalkboard/80 leading-relaxed">
         <section>
@@ -27,7 +27,8 @@ export default function PrivacyPage() {
           <p className="mt-2">
             When a parent creates an account, we collect an email address, name, and a securely
             hashed password. If a parent subscribes to AlphaBes Pro, payment is processed by
-            Stripe; we do not store full card numbers on our servers.
+            PayPal; we never receive or store card or bank details, only the PayPal subscription
+            identifier, plan, status and billing dates needed to provide Pro.
           </p>
         </section>
         <section>

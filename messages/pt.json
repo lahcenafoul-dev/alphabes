@@ -53,6 +53,7 @@
     "contact": "Contato",
     "privacy": "Política de privacidade",
     "terms": "Termos de uso",
+    "refunds": "Política de reembolso",
     "cookies": "Política de cookies",
     "copyright": "© {year} AlphaBes. Todos os direitos reservados.",
     "tagline": "Feito para pequenos curiosos de 3 a 8 anos."
@@ -130,6 +131,7 @@
     "intro": "O plano grátis inclui todas as atividades para imprimir, as lições do alfabeto e das sílabas, os jogos grátis e o acompanhamento do progresso de cada criança. O Pro acrescenta os jogos premium e o download dos pacotes de atividades em um único PDF, para mães, pais e professores que querem tudo.",
     "currencyNote": "Preços em dólares americanos (USD).",
     "billingNote": "Pagamento seguro pelo PayPal. O Pro renova automaticamente; você pode cancelar quando quiser na sua conta e continua com o Pro até o fim do período pago.",
+    "refundLink": "Política de reembolso",
     "choose": "Escolher {plan}",
     "startFree": "Começar grátis",
     "free": {

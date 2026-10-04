@@ -2,7 +2,7 @@
 // must not reach the browser, and nothing here may log it.
 //
 // Settings are read per call, not at module load, so the Workers runtime
-// secrets are seen (as in lib/stripe.ts before it). See docs/paypal-plan.md.
+// secrets are seen. See docs/paypal-plan.md.
 
 export type PayPalMode = "sandbox" | "live";
 

@@ -92,7 +92,12 @@ export default async function PricingPage({ params }: { params: LocaleParams }) 
       {t("currencyNote") && (
         <p className="mt-6 text-center text-sm text-chalkboard/60">{t("currencyNote")}</p>
       )}
-      <p className="mt-2 max-w-2xl mx-auto text-center text-sm text-chalkboard/60">{t("billingNote")}</p>
+      <p className="mt-2 max-w-2xl mx-auto text-center text-sm text-chalkboard/60">
+        {t("billingNote")}{" "}
+        <Link href="/refunds" className="underline">
+          {t("refundLink")}
+        </Link>
+      </p>
     </main>
   );
 }

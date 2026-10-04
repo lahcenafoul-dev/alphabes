@@ -324,7 +324,7 @@ const decode = (s) => s.replace(/&amp;/g, "&").replace(/&#x27;|&#39;/g, "'").rep
 // letter-aware, so "préparent" doesn't contain "parent".
 const ENGLISH_WORDS = /(?<!\p{L})(the|and|your|with|free|worksheets?|letters?|sounds?|children|parents?|sign up|log in|learn|games?|stories|about us|privacy|terms|cookie policy)(?!\p{L})/giu;
 const looksEnglish = (t) => [...t.matchAll(ENGLISH_WORDS)].some((m) => !sameWords.includes(m[1].toLowerCase()));
-const ALLOWED_EN = [/^EN$/, /^English$/, /AlphaBes/, /^Pro$/, /Google|AdSense|Analytics|NextAuth|Neon|Postgres|Cloudflare|Stripe|NEXT_LOCALE|EN \/ FR/];
+const ALLOWED_EN = [/^EN$/, /^English$/, /AlphaBes/, /^Pro$/, /Google|AdSense|Analytics|NextAuth|Neon|Postgres|Cloudflare|PayPal|NEXT_LOCALE|EN \/ FR/];
 
 let problems = 0;
 const fail = (msg) => { problems++; console.log("  ✗ " + msg); };
