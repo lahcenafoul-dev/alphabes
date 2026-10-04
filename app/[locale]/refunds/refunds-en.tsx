@@ -40,9 +40,11 @@ export default function RefundsEn() {
         <section>
           <h2 className="font-display font-bold text-xl">Yearly plan</h2>
           <p className="mt-2">
-            If you subscribe to the yearly plan ($59) and change your mind, we refund the full
-            amount when you ask within 14 days of that first yearly payment. After 14 days, the
-            yearly payment is not refunded, but you can still cancel so it doesn&apos;t renew.
+            We refund a yearly payment ($59) in full when you ask within 14 days of it, whether
+            it&apos;s your first yearly payment or a renewal. About 7 days before each yearly
+            renewal, we email you a reminder with the date and the amount, so you can cancel first
+            if you prefer. After 14 days, the payment is not refunded, but you can still cancel so
+            the plan doesn&apos;t renew.
           </p>
         </section>
 

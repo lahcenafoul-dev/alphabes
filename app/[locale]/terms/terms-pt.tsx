@@ -61,6 +61,10 @@ export default function TermsPt() {
             continua com o Pro até o fim do período já pago.
           </p>
           <p className="mt-2">
+            No plano anual, enviamos um e-mail de lembrete cerca de 7 dias antes de cada
+            renovação, com a data e o valor.
+          </p>
+          <p className="mt-2">
             Se um pagamento de renovação falhar, o PayPal tenta de novo; se continuar falhando, o
             Pro fica pausado até a forma de pagamento ser atualizada no PayPal ou uma nova
             assinatura ser feita.

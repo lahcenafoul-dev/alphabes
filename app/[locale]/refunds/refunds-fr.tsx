@@ -40,10 +40,12 @@ export default function RefundsFr() {
         <section>
           <h2 className="font-display font-bold text-xl">Formule annuelle</h2>
           <p className="mt-2">
-            Si vous prenez la formule annuelle (59 $ US) et changez d&apos;avis, nous vous
-            remboursons la totalité si vous le demandez dans les 14 jours qui suivent ce premier
-            paiement annuel. Au-delà de 14 jours, le paiement annuel n&apos;est pas remboursé,
-            mais vous pouvez toujours résilier pour qu&apos;il ne se renouvelle pas.
+            Nous remboursons intégralement un paiement annuel (59 $ US) si vous le demandez dans
+            les 14 jours qui le suivent, qu&apos;il s&apos;agisse du premier paiement annuel ou
+            d&apos;un renouvellement. Environ 7 jours avant chaque renouvellement annuel, nous vous
+            envoyons un e-mail de rappel avec la date et le montant, pour que vous puissiez
+            résilier avant si vous le souhaitez. Au-delà de 14 jours, le paiement n&apos;est pas
+            remboursé, mais vous pouvez toujours résilier pour que la formule ne se renouvelle pas.
           </p>
         </section>
 

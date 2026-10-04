@@ -40,10 +40,11 @@ export default function RefundsEs() {
         <section>
           <h2 className="font-display font-bold text-xl">Plan anual</h2>
           <p className="mt-2">
-            Si te suscribes al plan anual (US$59) y cambias de opinión, te devolvemos el importe
-            completo si lo pides dentro de los 14 días siguientes a ese primer pago anual. Después
-            de 14 días, el pago anual no se reembolsa, pero siempre puedes cancelar para que no se
-            renueve.
+            Te devolvemos el importe completo de un pago anual (US$59) si lo pides dentro de los
+            14 días siguientes, ya sea tu primer pago anual o una renovación. Unos 7 días antes de
+            cada renovación anual te enviamos un correo de aviso con la fecha y el importe, para
+            que puedas cancelar antes si lo prefieres. Después de 14 días, el pago no se reembolsa,
+            pero siempre puedes cancelar para que el plan no se renueve.
           </p>
         </section>
 

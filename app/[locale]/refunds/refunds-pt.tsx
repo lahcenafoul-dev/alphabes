@@ -40,10 +40,11 @@ export default function RefundsPt() {
         <section>
           <h2 className="font-display font-bold text-xl">Plano anual</h2>
           <p className="mt-2">
-            Se você assinar o plano anual (US$ 59) e mudar de ideia, devolvemos o valor total se
-            você pedir em até 14 dias depois desse primeiro pagamento anual. Depois de 14 dias, o
-            pagamento anual não é reembolsado, mas você sempre pode cancelar para que ele não seja
-            renovado.
+            Devolvemos o valor total de um pagamento anual (US$ 59) se você pedir em até 14 dias
+            depois dele, seja o primeiro pagamento anual ou uma renovação. Cerca de 7 dias antes de
+            cada renovação anual, enviamos um e-mail de lembrete com a data e o valor, para que você
+            possa cancelar antes, se preferir. Depois de 14 dias, o pagamento não é reembolsado, mas
+            você sempre pode cancelar para que o plano não seja renovado.
           </p>
         </section>
 

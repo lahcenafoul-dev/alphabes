@@ -58,6 +58,10 @@ export default function TermsEn() {
             Pro until the end of the period you&apos;ve already paid for.
           </p>
           <p className="mt-2">
+            For the yearly plan, we email you a reminder about 7 days before each renewal, with
+            the date and the amount.
+          </p>
+          <p className="mt-2">
             If a renewal payment fails, PayPal tries again; if it still fails, Pro is paused until
             the payment method is updated in PayPal or a new subscription is started.
           </p>

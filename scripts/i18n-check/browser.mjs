@@ -25,6 +25,12 @@ async function newPage(viewport = { width: 1280, height: 900 }) {
 // involved; cleanup-accounts.mjs removes it) and the game checks run there.
 // Without it, they check the Pro block and the paywall and skip the gameplay.
 let proCookies = null;
+// The contact form emails the owner through Resend (phase 6b). These checks
+// test the page in each language, so the send itself is answered in the
+// browser; one check below sends for real when .env has no Resend key, and
+// expects the translated error. (The key is only tested, never printed.)
+const emailConfigured = /^RESEND_API_KEY="?[^"\s]+/m.test(readFileSync(".env", "utf8"));
+const fakeContactSend = (page) => page.route("**/api/contact", (r) => r.fulfill({ json: { ok: true } }));
 async function openPremium(context, page, staticPath, playPath) {
   if (!proCookies) {
     await page.goto(base + staticPath);
@@ -141,6 +147,15 @@ console.log("French UI and forms");
   await page.getByLabel("Nom").fill("Test");
   await page.getByLabel("Adresse e-mail").fill("test@example.com");
   await page.getByLabel("Message").fill("Bonjour, ceci est un test.");
+  if (!emailConfigured) {
+    await page.getByRole("button", { name: "Envoyer le message" }).click();
+    const failed = page.getByText("Votre message n'a pas pu être envoyé. Réessayez un peu plus tard.");
+    await failed.waitFor({ timeout: 15000 }).catch(() => {});
+    check(await failed.isVisible(), "without email settings, the contact form says (in French) the message wasn't sent");
+    // The browser logs the expected 502 as a console error; it isn't a page error.
+    for (let i = errors.length - 1; i >= 0; i--) if (errors[i].includes("status of 502")) errors.splice(i, 1);
+  }
+  await fakeContactSend(page);
   await page.getByRole("button", { name: "Envoyer le message" }).click();
   const sent = page.getByText("Merci ! Nous vous répondrons très vite.");
   await sent.waitFor({ timeout: 15000 }).catch(() => {});
@@ -225,6 +240,7 @@ console.log("Spanish: switcher, forms and mobile (Spanish phase 1)");
     await page.getByLabel("Nombre").fill("Prueba");
     await page.getByLabel("Correo electrónico").fill("test@example.com");
     await page.getByLabel("Mensaje").fill("Hola, esto es una prueba.");
+    await fakeContactSend(page);
     await page.getByRole("button", { name: "Enviar el mensaje" }).click();
     const sent = page.getByText("¡Gracias! Te responderemos muy pronto.");
     await sent.waitFor({ timeout: 15000 }).catch(() => {});
@@ -314,6 +330,7 @@ console.log("Portuguese: switcher, forms and mobile (Portuguese phase 1)");
     await page.getByLabel("Nome").fill("Teste");
     await page.getByLabel("E-mail").fill("test@example.com");
     await page.getByLabel("Mensagem").fill("Olá, isto é um teste.");
+    await fakeContactSend(page);
     await page.getByRole("button", { name: "Enviar a mensagem" }).click();
     const sent = page.getByText("Obrigado! Vamos responder em breve.");
     await sent.waitFor({ timeout: 15000 }).catch(() => {});

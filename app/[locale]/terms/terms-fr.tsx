@@ -61,6 +61,10 @@ export default function TermsFr() {
             la période déjà payée.
           </p>
           <p className="mt-2">
+            Pour la formule annuelle, nous vous envoyons un e-mail de rappel environ 7 jours avant
+            chaque renouvellement, avec la date et le montant.
+          </p>
+          <p className="mt-2">
             Si un paiement de renouvellement échoue, PayPal réessaie ; s&apos;il échoue encore, Pro
             est suspendu jusqu&apos;à la mise à jour du moyen de paiement dans PayPal ou la
             souscription d&apos;un nouvel abonnement.

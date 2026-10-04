@@ -59,6 +59,10 @@ export default function TermsEs() {
             conservas Pro hasta el final del periodo que ya pagaste.
           </p>
           <p className="mt-2">
+            En el plan anual, te enviamos un correo de aviso unos 7 días antes de cada renovación,
+            con la fecha y el importe.
+          </p>
+          <p className="mt-2">
             Si falla un pago de renovación, PayPal vuelve a intentarlo; si sigue fallando, Pro queda
             en pausa hasta que actualices el medio de pago en PayPal o empieces una nueva
             suscripción.
