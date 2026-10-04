@@ -19,3 +19,6 @@ test-results
 
 # screenshots from scripts/i18n-check/browser.mjs
 /i18n-shots
+
+# Upload log of scripts/upload-pro-files.mjs (what is already in the R2 bucket)
+.pro-files-uploaded.json
