@@ -21,20 +21,19 @@ This is a real, working foundation, not a mockup — every file here runs.
 - **Blog** (`/blog`): 7 full articles in `lib/blog-data.ts`, rendered as index + detail pages with Article JSON-LD.
 - **Static/legal pages**: `/about`, `/contact` (working form posting to `/api/contact`), `/privacy`, `/terms`, `/cookies` — privacy/terms are flagged in-page as placeholder pending legal review.
 
-## What is deliberately not built yet
+## What is not built yet
 
-Building all of the following with real content in one pass would mean inventing placeholder statistics, testimonials, or thin content — which the brief explicitly forbids. Each is architected and ready to fill in:
+- **Admin panel** (`/admin`) — the role gate is already enforced in `middleware.ts`; it needs CRUD screens (forms + server actions) per model.
 
-1. **Games** (`/games`, 5 game types) — `GameType` enum and `Game` model exist; each game is a client component reading its `config` JSON. Build one (e.g. Find the Letter) as the reference implementation, then the rest follow the same pattern.
-2. **Admin panel** (`/admin`) — role gate is already enforced in `middleware.ts`; needs CRUD screens (forms + server actions) per model.
-3. **Object storage wiring** — `.env.example` documents S3 vars; add a small `lib/storage.ts` using the included `@aws-sdk/client-s3` dependency to generate signed URLs for premium worksheet PDFs, checked against `Worksheet.isPremium` + the user's `Subscription.status`.
+The games, the French, Spanish and Portuguese versions (see `docs/*-plan.md`) and the Pro downloads (private R2 bucket, `docs/paypal-plan.md`) are built.
 
 ## Database
 
-```bash
-npx prisma migrate dev --name init
-npx prisma generate
-```
+Neon PostgreSQL through Prisma with the Neon driver adapter; the rules are in `CLAUDE.md` (Database). In short:
+
+- `.env` points at the Neon `dev` branch. Never use a real branch (or `DATABASE_URL`) as a shadow database, and never run `prisma migrate dev`, `migrate reset` or `db push` against one: a shadow database is wiped.
+- Write a migration by hand or with `npx prisma migrate diff --from-schema-datamodel <old schema> --to-schema-datamodel prisma/schema.prisma --script` (no database), save it under `prisma/migrations/<timestamp>_<name>/migration.sql`, and apply it with `npx prisma migrate deploy` (to `dev`; production is migrated by the owner after a Neon backup).
+- `npx prisma generate` after changing the schema.
 
 `prisma/schema.prisma` is the source of truth — see comments inline for design notes (e.g. why `ChildProfile` is minimal, why `Progress` is a single polymorphic ledger rather than three parallel tables).
 
@@ -42,20 +41,20 @@ npx prisma generate
 
 Copy `.env.example` to `.env` and fill in real values. Required for a working deploy: `DATABASE_URL`, `NEXTAUTH_SECRET`, `NEXTAUTH_URL`, `NEXT_PUBLIC_APP_URL`, the `PAYPAL_*` values (see `docs/paypal-plan.md`), and the `S3_*` values once worksheet downloads are wired up.
 
-## Deployment (Vercel + managed Postgres, e.g. Neon/Supabase/RDS)
+## Deployment (Cloudflare Workers)
 
-1. Provision Postgres, set `DATABASE_URL`.
-2. `npx prisma migrate deploy` against production.
-3. Set all env vars from `.env.example` in the hosting platform.
-4. Create the PayPal app, the AlphaBes Pro plans and the webhook (`scripts/paypal/setup-plans.mjs`, `scripts/paypal/setup-webhook.mjs`), and upload `pro-files/` to the R2 bucket; see `docs/paypal-plan.md`.
-5. Set the `PAYPAL_*` values as Cloudflare secrets and deploy.
-6. Point `alphabes.com` DNS at the deployment; verify domain in Google Search Console; submit `https://alphabes.com/sitemap.xml`.
-7. Add `NEXT_PUBLIC_GA_MEASUREMENT_ID` and load Google Analytics via `next/script` in `app/layout.tsx` (`strategy="afterInteractive"`), gated behind a cookie-consent choice given `/cookies` targets the UK (PECR/UK GDPR) and US/Canada audiences.
+The site runs on Cloudflare Workers, built with OpenNext (`@opennextjs/cloudflare`); see `CLAUDE.md` (Hosting).
+
+1. **Deploys are automatic:** Workers Builds builds and deploys the `alphabes` worker on every push to `main`. Never deploy from a local Windows machine (`npm run deploy`, `wrangler deploy`).
+2. **Database changes:** production is migrated by the owner with `npx prisma migrate deploy`, after a Neon backup branch, before the code that needs it is deployed.
+3. **Settings:** runtime secrets (`DATABASE_URL`, `NEXTAUTH_SECRET`, `NEXTAUTH_URL`, `PAYPAL_*`, email and cron secrets) are set in the Cloudflare dashboard (Workers & Pages → alphabes → Settings → Variables and Secrets) and take effect once deployed; `NEXT_PUBLIC_APP_URL` is a build variable (Settings → Build).
+4. **Billing and Pro files:** PayPal app, plans and webhook (`scripts/paypal/setup-plans.mjs`, `scripts/paypal/setup-webhook.mjs`), and `node scripts/upload-pro-files.mjs` for the private R2 bucket; see `docs/paypal-plan.md`.
+5. **Search Console:** resubmit `https://alphabes.com/sitemap.xml` after adding pages.
 
 ## Testing strategy
 
 - **Unit** (Vitest): pure logic — `lib/letters-data.ts` lookups, the Pro entitlement rules, PayPal subscription sync and webhook idempotency (`tests/billing`), progress aggregation helpers.
-- **Integration**: API routes against a test Postgres schema (`prisma migrate reset` in CI) — auth flow, subscribe route rejecting unknown plans, webhook signature verification.
+- **Integration**: API routes against a throwaway test database (never `dev` or production) — auth flow, subscribe route rejecting unknown plans, webhook signature verification.
 - **E2E** (Playwright): critical paths — register → free lesson → hit a paywall → checkout (PayPal sandbox) → dashboard shows Pro; keyboard-only navigation through an alphabet lesson for accessibility regression coverage.
 - **Accessibility**: axe-core scan in CI on `/`, `/alphabet/a`, `/worksheets`, `/pricing`.
 - **Visual**: no snapshot testing on the letter-block grid until the games are built, since interactive canvas/animation content isn't well served by pixel diffs.
