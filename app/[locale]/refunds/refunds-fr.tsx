@@ -22,7 +22,7 @@ export default function RefundsFr() {
             <Link href="/dashboard" className="font-bold text-crayon-blue">
               tableau de bord
             </Link>{" "}
-            (« Résilier l&apos;abonnement ») ou dans votre compte PayPal, rubrique des paiements
+            (« Résilier l&apos;abonnement ») ou dans votre compte PayPal, rubrique des paiements
             automatiques. Il n&apos;y a plus aucun prélèvement, et vous gardez Pro jusqu&apos;à
             la fin du mois ou de l&apos;année déjà payés.
           </p>
