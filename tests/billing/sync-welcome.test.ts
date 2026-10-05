@@ -5,10 +5,11 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 // had one yet.
 
 const paypalSub = vi.fn();
+const cancel = vi.fn(async () => {});
 const welcome = vi.fn(async () => "sent");
 vi.mock("@/lib/paypal/subscriptions", () => ({
   getSubscription: async () => paypalSub(),
-  cancelSubscription: async () => {},
+  cancelSubscription: async (...a: unknown[]) => cancel(...(a as [])),
 }));
 vi.mock("@/lib/billing/welcome", () => ({ sendWelcomeEmail: (...a: unknown[]) => welcome(...(a as [])) }));
 const alert = vi.fn(async () => "sent");
@@ -26,9 +27,10 @@ const sub = (status: string) => ({
   status_update_time: iso(now),
   billing_info: { last_payment: { time: iso(now - 1000) }, next_billing_time: iso(now + 30 * 86_400_000) },
 });
+const upsert = vi.fn(async () => ({}));
 const prisma = (existing: Record<string, unknown> | null) => ({
   user: { findUnique: async () => ({ id: "u1", email: "p@example.com", subscription: existing }) },
-  subscription: { upsert: async () => ({}) },
+  subscription: { upsert },
 });
 
 beforeEach(() => {
@@ -37,6 +39,8 @@ beforeEach(() => {
   vi.stubEnv("PAYPAL_PLAN_YEARLY", "P-YEARLY");
   welcome.mockClear();
   alert.mockClear();
+  cancel.mockClear();
+  upsert.mockClear();
 });
 afterEach(() => {
   vi.unstubAllEnvs();
@@ -69,20 +73,25 @@ describe("syncSubscription → welcome email", () => {
 });
 
 describe("syncSubscription → duplicate alert", () => {
-  it("alerts the owner when a second active subscription is canceled, and only then", async () => {
+  it("both checkouts approved: cancels the second at PayPal, keeps the first, alerts the owner once", async () => {
     const quiet = vi.spyOn(console, "error").mockImplementation(() => {});
     paypalSub.mockReturnValue(sub("ACTIVE"));
     const keep = { paypalSubscriptionId: "I-KEEP", status: "ACTIVE", currentPeriodEnd: new Date(now + 20 * 86_400_000) };
     const r = await syncSubscription(prisma(keep) as never, "I-NEW");
     quiet.mockRestore();
     expect(r).toEqual({ result: "duplicate", userId: "u1" });
+    expect(cancel).toHaveBeenCalledWith("I-NEW", "Duplicate AlphaBes subscription");
+    expect(upsert).not.toHaveBeenCalled(); // the parent's row stays on I-KEEP
     expect(alert).toHaveBeenCalledWith({ parentEmail: "p@example.com", userId: "u1", duplicateSubscriptionId: "I-NEW", keptSubscriptionId: "I-KEEP" });
     expect(welcome).not.toHaveBeenCalled();
 
     // The same duplicate seen again after its cancellation: ignored, no alert.
     alert.mockClear();
+    cancel.mockClear();
     paypalSub.mockReturnValue(sub("CANCELLED"));
     expect(await syncSubscription(prisma(keep) as never, "I-NEW")).toMatchObject({ result: "ignored", reason: "not_current" });
     expect(alert).not.toHaveBeenCalled();
+    expect(cancel).not.toHaveBeenCalled();
+    expect(upsert).not.toHaveBeenCalled();
   });
 });
