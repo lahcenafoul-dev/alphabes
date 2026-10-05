@@ -12,7 +12,7 @@ export default function RefundsEn() {
   return (
     <main id="main-content" className="mx-auto max-w-2xl px-6 py-12">
       <h1 className="text-4xl font-extrabold">Refund Policy</h1>
-      <p className="mt-2 text-sm text-chalkboard/50">Last updated: October 4, 2026</p>
+      <p className="mt-2 text-sm text-chalkboard/50">Last updated: October 5, 2026</p>
 
       <div className="mt-8 space-y-6 text-chalkboard/80 leading-relaxed">
         <section>
@@ -29,22 +29,21 @@ export default function RefundsEn() {
         </section>
 
         <section>
-          <h2 className="font-display font-bold text-xl">Monthly plan</h2>
+          <h2 className="font-display font-bold text-xl">Your first payment</h2>
           <p className="mt-2">
-            Monthly payments ($7.99) are not refunded, including for a month you&apos;ve only
-            partly used. To avoid the next payment, cancel before your renewal date, shown on your
-            dashboard.
+            We refund the first payment of a subscription in full when you ask within 14 days of
+            it, on the monthly plan ($7.99) as well as the yearly plan ($59). After 14 days, the
+            first payment is not refunded, but you can still cancel so the plan doesn&apos;t renew.
           </p>
         </section>
 
         <section>
-          <h2 className="font-display font-bold text-xl">Yearly plan</h2>
+          <h2 className="font-display font-bold text-xl">Renewals</h2>
           <p className="mt-2">
-            We refund a yearly payment ($59) in full when you ask within 14 days of it, whether
-            it&apos;s your first yearly payment or a renewal. About 7 days before each yearly
-            renewal, we email you a reminder with the date and the amount, so you can cancel first
-            if you prefer. After 14 days, the payment is not refunded, but you can still cancel so
-            the plan doesn&apos;t renew.
+            Renewal payments, monthly or yearly, are not refunded, including for a month or year
+            you&apos;ve only partly used. To avoid the next payment, cancel before your renewal
+            date, shown on your dashboard. About 7 days before each yearly renewal, we email you a
+            reminder with the date and the amount, so you can cancel first if you prefer.
           </p>
         </section>
 

@@ -11,7 +11,7 @@ export default function TermsEn() {
   return (
     <main id="main-content" className="mx-auto max-w-2xl px-6 py-12">
       <h1 className="text-4xl font-extrabold">Terms of Service</h1>
-      <p className="mt-2 text-sm text-chalkboard/50">Last updated: October 4, 2026</p>
+      <p className="mt-2 text-sm text-chalkboard/50">Last updated: October 5, 2026</p>
 
       <div className="mt-8 space-y-6 text-chalkboard/80 leading-relaxed">
         <section>
@@ -25,12 +25,18 @@ export default function TermsEn() {
         <section>
           <h2 className="font-display font-bold text-xl">Who runs AlphaBes</h2>
           <p className="mt-2">
-            AlphaBes is operated by Lahcen Afoullousse, Morocco. You can reach us through the{" "}
+            AlphaBes is operated by Lahcen Afoullousse, Morocco. You can reach us at{" "}
+            <a href="mailto:hello@alphabes.com" className="font-bold text-crayon-blue">
+              hello@alphabes.com
+            </a>{" "}
+            or through the{" "}
             <Link href="/contact" className="font-bold text-crayon-blue">
               contact page
             </Link>
             .
           </p>
+          {/* PLACEHOLDER: postal address, to be decided by the owner with a lawyer/accountant (docs/paypal-plan.md). */}
+          <p className="mt-2">Postal address: [to be added]</p>
         </section>
         <section>
           <h2 className="font-display font-bold text-xl">AlphaBes Pro</h2>
@@ -66,7 +72,8 @@ export default function TermsEn() {
             the payment method is updated in PayPal or a new subscription is started.
           </p>
           <p className="mt-2">
-            Refunds are explained in our{" "}
+            You can ask for a full refund within 14 days of the first payment of a monthly or
+            yearly subscription; renewal payments are not refunded. Details are in our{" "}
             <Link href="/refunds" className="font-bold text-crayon-blue">
               Refund Policy
             </Link>
@@ -86,6 +93,51 @@ export default function TermsEn() {
           <p className="mt-2">
             We may update lessons, worksheets, and features over time. We&apos;ll aim to give
             reasonable notice of any change that materially affects a paid subscription.
+          </p>
+        </section>
+        <section>
+          <h2 className="font-display font-bold text-xl">Your privacy</h2>
+          <p className="mt-2">
+            How we collect and use personal information, including your child&apos;s, is explained
+            in our{" "}
+            <Link href="/privacy-policy" className="font-bold text-crayon-blue">
+              Privacy Policy
+            </Link>
+            .
+          </p>
+        </section>
+        <section>
+          <h2 className="font-display font-bold text-xl">Closing an account</h2>
+          <p className="mt-2">
+            You can stop using AlphaBes at any time, and ask us to delete your account by writing
+            to us. If you have a subscription, cancel it first so it doesn&apos;t renew.
+          </p>
+          <p className="mt-2">
+            We may suspend or close an account that breaks these terms, for example by
+            redistributing or reselling our content, misusing the service, or making fraudulent
+            payments. If we close an account with an active subscription for any other reason, we
+            cancel the subscription and refund the part of the period you&apos;ve paid for and not
+            used.
+          </p>
+        </section>
+        <section>
+          <h2 className="font-display font-bold text-xl">Limitation of liability</h2>
+          <p className="mt-2">
+            We work to keep AlphaBes accurate and available, but it is provided &quot;as is&quot;
+            and we can&apos;t promise it will always be free of errors or interruptions. To the
+            extent the law allows, we are not liable for indirect or consequential losses, and our
+            total liability to you is limited to the amount you paid us in the 12 months before
+            the claim. Nothing in these terms limits liability that cannot be limited by law, or
+            your rights under the consumer law of your country.
+          </p>
+        </section>
+        <section>
+          <h2 className="font-display font-bold text-xl">Governing law</h2>
+          <p className="mt-2">
+            These terms are governed by the law of Morocco, and disputes go to the courts of
+            Morocco. If you use AlphaBes as a consumer, you also keep the protection of the
+            mandatory consumer law of the country where you live, and you can bring a claim in its
+            courts.
           </p>
         </section>
       </div>

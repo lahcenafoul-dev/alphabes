@@ -12,7 +12,7 @@ export default function RefundsFr() {
   return (
     <main id="main-content" className="mx-auto max-w-2xl px-6 py-12">
       <h1 className="text-4xl font-extrabold">Politique de remboursement</h1>
-      <p className="mt-2 text-sm text-chalkboard/50">Dernière mise à jour : 4 octobre 2026</p>
+      <p className="mt-2 text-sm text-chalkboard/50">Dernière mise à jour : 5 octobre 2026</p>
 
       <div className="mt-8 space-y-6 text-chalkboard/80 leading-relaxed">
         <section>
@@ -29,23 +29,24 @@ export default function RefundsFr() {
         </section>
 
         <section>
-          <h2 className="font-display font-bold text-xl">Formule mensuelle</h2>
+          <h2 className="font-display font-bold text-xl">Votre premier paiement</h2>
           <p className="mt-2">
-            Les paiements mensuels (7,99 $ US) ne sont pas remboursés, même pour un mois utilisé
-            en partie. Pour éviter le prochain prélèvement, résiliez avant la date de
-            renouvellement indiquée sur votre tableau de bord.
+            Nous remboursons intégralement le premier paiement d&apos;un abonnement si vous le
+            demandez dans les 14 jours qui le suivent, pour la formule mensuelle (7,99 $ US) comme
+            pour la formule annuelle (59 $ US). Au-delà de 14 jours, le premier paiement n&apos;est
+            pas remboursé, mais vous pouvez toujours résilier pour que la formule ne se renouvelle
+            pas.
           </p>
         </section>
 
         <section>
-          <h2 className="font-display font-bold text-xl">Formule annuelle</h2>
+          <h2 className="font-display font-bold text-xl">Renouvellements</h2>
           <p className="mt-2">
-            Nous remboursons intégralement un paiement annuel (59 $ US) si vous le demandez dans
-            les 14 jours qui le suivent, qu&apos;il s&apos;agisse du premier paiement annuel ou
-            d&apos;un renouvellement. Environ 7 jours avant chaque renouvellement annuel, nous vous
-            envoyons un e-mail de rappel avec la date et le montant, pour que vous puissiez
-            résilier avant si vous le souhaitez. Au-delà de 14 jours, le paiement n&apos;est pas
-            remboursé, mais vous pouvez toujours résilier pour que la formule ne se renouvelle pas.
+            Les paiements de renouvellement, mensuels ou annuels, ne sont pas remboursés, même
+            pour un mois ou une année utilisés en partie. Pour éviter le prochain prélèvement,
+            résiliez avant la date de renouvellement indiquée sur votre tableau de bord. Environ 7
+            jours avant chaque renouvellement annuel, nous vous envoyons un e-mail de rappel avec
+            la date et le montant, pour que vous puissiez résilier avant si vous le souhaitez.
           </p>
         </section>
 

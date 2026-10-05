@@ -6,7 +6,8 @@ import { renewalReminderEmail } from "@/lib/email/templates";
 
 // Yearly renewal reminders (owner's decision, docs/paypal-plan.md phase 6b):
 // about 7 days before a yearly plan renews, one email in the parent's
-// language with the date, the amount, how to cancel and the 14-day refund.
+// language with the date, the amount, how to cancel, and that the renewal
+// isn't refunded (the 14-day refund covers only a first payment).
 // Run once a day by the Cloudflare cron (custom-worker.ts →
 // /api/cron/renewal-reminders). A run that is late or missed is caught up by
 // the next one, because every renewal in the coming 7 days that hasn't had

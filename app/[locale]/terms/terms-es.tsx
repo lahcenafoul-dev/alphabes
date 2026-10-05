@@ -12,7 +12,7 @@ export default function TermsEs() {
   return (
     <main id="main-content" className="mx-auto max-w-2xl px-6 py-12">
       <h1 className="text-4xl font-extrabold">Términos de uso</h1>
-      <p className="mt-2 text-sm text-chalkboard/50">Última actualización: 4 de octubre de 2026</p>
+      <p className="mt-2 text-sm text-chalkboard/50">Última actualización: 5 de octubre de 2026</p>
 
       <div className="mt-8 space-y-6 text-chalkboard/80 leading-relaxed">
         <section>
@@ -26,12 +26,18 @@ export default function TermsEs() {
         <section>
           <h2 className="font-display font-bold text-xl">Quién está detrás de AlphaBes</h2>
           <p className="mt-2">
-            AlphaBes es operado por Lahcen Afoullousse, en Marruecos. Puedes escribirnos desde la{" "}
+            AlphaBes es operado por Lahcen Afoullousse, en Marruecos. Puedes escribirnos a{" "}
+            <a href="mailto:hello@alphabes.com" className="font-bold text-crayon-blue">
+              hello@alphabes.com
+            </a>{" "}
+            o desde la{" "}
             <Link href="/contact" className="font-bold text-crayon-blue">
               página de contacto
             </Link>
             .
           </p>
+          {/* PLACEHOLDER: postal address, to be decided by the owner with a lawyer/accountant (docs/paypal-plan.md). */}
+          <p className="mt-2">Dirección postal: [por completar]</p>
         </section>
         <section>
           <h2 className="font-display font-bold text-xl">AlphaBes Pro</h2>
@@ -68,7 +74,9 @@ export default function TermsEs() {
             suscripción.
           </p>
           <p className="mt-2">
-            Los reembolsos se explican en nuestra{" "}
+            Puedes pedir el reembolso completo dentro de los 14 días siguientes al primer pago de
+            una suscripción mensual o anual; los pagos de renovación no se reembolsan. Todos los
+            detalles están en nuestra{" "}
             <Link href="/refunds" className="font-bold text-crayon-blue">
               política de reembolsos
             </Link>
@@ -90,6 +98,50 @@ export default function TermsEs() {
             Las lecciones, las fichas y las funciones pueden cambiar con el tiempo. Haremos lo
             posible por avisarte con anticipación razonable de cualquier cambio que afecte de
             forma importante a una suscripción de pago.
+          </p>
+        </section>
+        <section>
+          <h2 className="font-display font-bold text-xl">Tu privacidad</h2>
+          <p className="mt-2">
+            Cómo recopilamos y usamos los datos personales, incluidos los de tu hijo o hija, se
+            explica en nuestra{" "}
+            <Link href="/privacy-policy" className="font-bold text-crayon-blue">
+              política de privacidad
+            </Link>
+            .
+          </p>
+        </section>
+        <section>
+          <h2 className="font-display font-bold text-xl">Cierre de una cuenta</h2>
+          <p className="mt-2">
+            Puedes dejar de usar AlphaBes cuando quieras y pedirnos por escrito que eliminemos tu
+            cuenta. Si tienes una suscripción, cancélala antes para que no se renueve.
+          </p>
+          <p className="mt-2">
+            Podemos suspender o cerrar una cuenta que no respete estos términos, por ejemplo si
+            redistribuye o revende nuestro contenido, hace un uso abusivo del servicio o realiza
+            pagos fraudulentos. Si cerramos por otro motivo una cuenta con una suscripción activa,
+            cancelamos la suscripción y te devolvemos la parte del periodo que pagaste y no usaste.
+          </p>
+        </section>
+        <section>
+          <h2 className="font-display font-bold text-xl">Limitación de responsabilidad</h2>
+          <p className="mt-2">
+            Trabajamos para que AlphaBes sea correcto y esté disponible, pero se ofrece «tal cual»
+            y no podemos garantizar que siempre funcione sin errores ni interrupciones. En la
+            medida en que la ley lo permita, no respondemos por daños indirectos, y nuestra
+            responsabilidad total ante ti se limita a lo que nos pagaste en los 12 meses anteriores
+            al reclamo. Nada en estos términos limita una responsabilidad que la ley no permite
+            limitar, ni los derechos que te da la ley de protección al consumidor de tu país.
+          </p>
+        </section>
+        <section>
+          <h2 className="font-display font-bold text-xl">Ley aplicable</h2>
+          <p className="mt-2">
+            Estos términos se rigen por la ley de Marruecos, y las controversias corresponden a los
+            tribunales de Marruecos. Si usas AlphaBes como consumidor, conservas la protección de
+            las normas obligatorias de protección al consumidor del país donde vives, y puedes
+            presentar un reclamo ante sus tribunales.
           </p>
         </section>
       </div>

@@ -12,7 +12,7 @@ export default function RefundsEs() {
   return (
     <main id="main-content" className="mx-auto max-w-2xl px-6 py-12">
       <h1 className="text-4xl font-extrabold">Política de reembolsos</h1>
-      <p className="mt-2 text-sm text-chalkboard/50">Última actualización: 4 de octubre de 2026</p>
+      <p className="mt-2 text-sm text-chalkboard/50">Última actualización: 5 de octubre de 2026</p>
 
       <div className="mt-8 space-y-6 text-chalkboard/80 leading-relaxed">
         <section>
@@ -29,22 +29,23 @@ export default function RefundsEs() {
         </section>
 
         <section>
-          <h2 className="font-display font-bold text-xl">Plan mensual</h2>
+          <h2 className="font-display font-bold text-xl">Tu primer pago</h2>
           <p className="mt-2">
-            Los pagos mensuales (US$7.99) no se reembolsan, ni siquiera por un mes que usaste solo
-            en parte. Para evitar el próximo cobro, cancela antes de la fecha de renovación que
-            aparece en tu cuenta.
+            Te devolvemos el importe completo del primer pago de una suscripción si lo pides
+            dentro de los 14 días siguientes, tanto en el plan mensual (US$7.99) como en el anual
+            (US$59). Después de 14 días, el primer pago no se reembolsa, pero siempre puedes
+            cancelar para que el plan no se renueve.
           </p>
         </section>
 
         <section>
-          <h2 className="font-display font-bold text-xl">Plan anual</h2>
+          <h2 className="font-display font-bold text-xl">Renovaciones</h2>
           <p className="mt-2">
-            Te devolvemos el importe completo de un pago anual (US$59) si lo pides dentro de los
-            14 días siguientes, ya sea tu primer pago anual o una renovación. Unos 7 días antes de
-            cada renovación anual te enviamos un correo de aviso con la fecha y el importe, para
-            que puedas cancelar antes si lo prefieres. Después de 14 días, el pago no se reembolsa,
-            pero siempre puedes cancelar para que el plan no se renueve.
+            Los pagos de renovación, mensuales o anuales, no se reembolsan, ni siquiera por un mes
+            o un año que usaste solo en parte. Para evitar el próximo cobro, cancela antes de la
+            fecha de renovación que aparece en tu cuenta. Unos 7 días antes de cada renovación
+            anual te enviamos un correo de aviso con la fecha y el importe, para que puedas
+            cancelar antes si lo prefieres.
           </p>
         </section>
 
