@@ -65,6 +65,10 @@ Everything in the PayPal **developer dashboard** (developer.paypal.com, logged i
 - **B8** update the old `/privacy` text, URL unchanged.
 - **B9** seller in the terms: **"AlphaBes, operated by Lahcen Afoullousse, Morocco"**.
 
+**2026-10-05 (phase 7):**
+- **Welcome to Pro email:** yes, one per subscription when it becomes active, in the parent's language (built, `e1b9a60`).
+- **Duplicate alert email to the owner:** when a second subscription is detected and canceled automatically (two checkouts at once), email `CONTACT_TO_EMAIL` with the parent's email and the duplicate payment's ID, so the owner can refund it quickly. Design below ("Duplicate alert").
+
 The table below is the original proposal, kept for reference.
 
 | # | Topic | Recommendation | Alternatives |
@@ -159,6 +163,7 @@ Each phase ends with `npx tsc --noEmit`, `npm run lint`, `npx vitest run`, `npm 
 - **Linking:** a subscription carries the parent's `User.id` as `custom_id`; the subscribe route stores nothing. A subscription is written to the database only once PayPal reports it active (approved and paid), by the webhook or by the return to the dashboard (phase 3), whichever comes first.
 - **Refunds:** any refund or reversal of a subscription payment (`PAYMENT.SALE.REFUNDED`/`REVERSED`) cancels the subscription at PayPal and ends Pro at once, partial refunds included. To refund part of a payment and keep Pro, don't use a PayPal refund; ask me for a manual fix instead.
 - **Two subscriptions at once** (two checkouts in two tabs): the second one is canceled at PayPal automatically and logged (`duplicate subscription … refund its payment`); the owner refunds its payment.
+- **Duplicate alert (owner's decision 2026-10-05):** right after the automatic cancel, `lib/billing/duplicate.ts` emails `CONTACT_TO_EMAIL` (English, for the owner): the parent's email and account id, the duplicate subscription id, **the duplicate payment's transaction ID** (the ID to search in PayPal → Activity and refund), its amount and time, the subscription the parent keeps, and what to do (refund that payment in full; the parent keeps Pro). The payment ID comes from PayPal's transaction list for the duplicate subscription (read-only call); if PayPal hasn't listed it yet, the email says so and gives the subscription id to search instead. Sent once per duplicate subscription: the return and the webhooks may each detect it, so the email uses the Resend idempotency key `duplicate-alert-<subscription id>` (after the first detection the duplicate is canceled, so later events are ignored as `not_current` anyway). In sandbox the subject starts with `[sandbox]` (so phase 7 can test it); live has no prefix. If email isn't configured or Resend fails, the server log line is still written and the sync result is unchanged (the alert never blocks billing). Tested in round 2 case 6.
 - **Failed renewals:** PayPal retries; Pro continues for 3 days after the due date; after 2 failed attempts PayPal suspends the subscription and Pro stops. A new subscription cancels the suspended one first.
 
 ### Phase 7 status and next steps
