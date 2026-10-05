@@ -42,11 +42,17 @@ export default function RefundsFr() {
         <section>
           <h2 className="font-display font-bold text-xl">Renouvellements</h2>
           <p className="mt-2">
-            Les paiements de renouvellement, mensuels ou annuels, ne sont pas remboursés, même
-            pour un mois ou une année utilisés en partie. Pour éviter le prochain prélèvement,
-            résiliez avant la date de renouvellement indiquée sur votre tableau de bord. Environ 7
-            jours avant chaque renouvellement annuel, nous vous envoyons un e-mail de rappel avec
-            la date et le montant, pour que vous puissiez résilier avant si vous le souhaitez.
+            Renouvellements annuels : nous remboursons aussi intégralement chaque paiement de
+            renouvellement annuel (59 $ US) si vous le demandez dans les 14 jours qui le suivent.
+            Environ 7 jours avant chaque renouvellement annuel, nous vous envoyons un e-mail de
+            rappel avec la date et le montant, pour que vous puissiez résilier avant si vous le
+            souhaitez.
+          </p>
+          <p className="mt-2">
+            Renouvellements mensuels : les paiements de renouvellement mensuels (7,99 $ US) ne
+            sont pas remboursés, même pour un mois utilisé en partie. Pour éviter le prochain
+            prélèvement, résiliez avant la date de renouvellement indiquée sur votre tableau de
+            bord.
           </p>
         </section>
 

@@ -73,7 +73,8 @@ export default function TermsEn() {
           </p>
           <p className="mt-2">
             You can ask for a full refund within 14 days of the first payment of a monthly or
-            yearly subscription; renewal payments are not refunded. Details are in our{" "}
+            yearly subscription, and within 14 days of each yearly renewal payment; monthly
+            renewal payments are not refunded. Details are in our{" "}
             <Link href="/refunds" className="font-bold text-crayon-blue">
               Refund Policy
             </Link>

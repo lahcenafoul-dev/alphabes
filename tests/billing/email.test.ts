@@ -77,6 +77,20 @@ describe("renewal reminder email", () => {
     }
   });
 
+  it("offers the 14-day refund of the renewal itself (yearly renewals are refundable)", () => {
+    const promise = {
+      en: "full refund of this renewal within 14 days of the payment",
+      fr: "remboursement complet de ce renouvellement dans les 14 jours qui suivent le paiement",
+      es: "reembolso completo de esta renovación dentro de los 14 días siguientes al pago",
+      pt: "reembolso total desta renovação em até 14 dias depois do pagamento",
+    } as const;
+    for (const [locale, phrase] of Object.entries(promise) as [keyof typeof promise, string][]) {
+      const { text } = renewalReminderEmail(locale, r);
+      expect(text, locale).toContain(phrase);
+      expect(text, locale).not.toMatch(/premier paiement|primer pago|primeiro pagamento|first payment/);
+    }
+  });
+
   it("greets without a name, and never lets a name break the subject", () => {
     expect(renewalReminderEmail("en", { ...r, name: null }).text.startsWith("Hello,")).toBe(true);
     expect(renewalReminderEmail("es", { ...r, name: " " }).text.startsWith("Hola:")).toBe(true);

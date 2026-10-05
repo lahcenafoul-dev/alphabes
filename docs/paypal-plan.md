@@ -69,8 +69,8 @@ Everything in the PayPal **developer dashboard** (developer.paypal.com, logged i
 - **Welcome to Pro email:** yes, one per subscription when it becomes active, in the parent's language (built, `e1b9a60`).
 - **Duplicate alert email to the owner:** when a second subscription is detected and canceled automatically (two checkouts at once), email `CONTACT_TO_EMAIL` with the parent's email and the duplicate payment's ID, so the owner can refund it quickly. Design below ("Duplicate alert").
 
-**2026-10-05 (legal pages, drafts for legal review; replace B5 and the 6b renewal refund):**
-- **Refunds:** full refund within 14 days of the **first payment** of a subscription, monthly or yearly; renewal payments (monthly and yearly) are not refunded. Refund pages, terms and the yearly reminder email (which now says the renewal won't be refunded, so cancel before the date) changed in 4 languages.
+**2026-10-05 (legal pages, drafts for legal review; replace B5):**
+- **Refunds (owner's final decision, replaces the "first payment only" version committed in `9a52d84`):** full refund within 14 days of the **first payment** of a subscription, monthly or yearly; **yearly renewals keep the 14-day refund** after each renewal payment (as approved in 6b on 2026-10-04); **monthly renewals are not refunded**. Refund pages, terms, the yearly reminder email (it offers the 14-day refund of the renewal) and its test match in 4 languages.
 - **Seller (B9):** "Lahcen Afoullousse" confirmed as the legal name; contact email `hello@alphabes.com` in the terms ×4; postal address left as a marked placeholder (`[to be added]` / `[à compléter]` / `[por completar]` / `[a definir]`, with a `PLACEHOLDER` code comment) until the owner decides with a lawyer/accountant.
 - **Terms ×4, new sections:** privacy (link to the privacy policy), closing an account, limitation of liability, governing law **Morocco** (consumers keep their own country's mandatory consumer law and courts).
 - The "Placeholder… recommend legal review before launch" notices stay.

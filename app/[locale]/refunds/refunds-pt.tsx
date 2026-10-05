@@ -41,11 +41,15 @@ export default function RefundsPt() {
         <section>
           <h2 className="font-display font-bold text-xl">Renovações</h2>
           <p className="mt-2">
-            Os pagamentos de renovação, mensais ou anuais, não são reembolsados, nem por um mês ou
-            um ano usado só em parte. Para evitar a próxima cobrança, cancele antes da data de
-            renovação que aparece na sua conta. Cerca de 7 dias antes de cada renovação anual,
-            enviamos um e-mail de lembrete com a data e o valor, para que você possa cancelar
-            antes, se preferir.
+            Renovações anuais: também devolvemos o valor total de cada pagamento de renovação
+            anual (US$ 59) se você pedir em até 14 dias depois dele. Cerca de 7 dias antes de cada
+            renovação anual, enviamos um e-mail de lembrete com a data e o valor, para que você
+            possa cancelar antes, se preferir.
+          </p>
+          <p className="mt-2">
+            Renovações mensais: os pagamentos de renovação mensal (US$ 7,99) não são reembolsados,
+            nem por um mês usado só em parte. Para evitar a próxima cobrança, cancele antes da data
+            de renovação que aparece na sua conta.
           </p>
         </section>
 

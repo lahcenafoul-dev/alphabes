@@ -40,10 +40,14 @@ export default function RefundsEn() {
         <section>
           <h2 className="font-display font-bold text-xl">Renewals</h2>
           <p className="mt-2">
-            Renewal payments, monthly or yearly, are not refunded, including for a month or year
-            you&apos;ve only partly used. To avoid the next payment, cancel before your renewal
-            date, shown on your dashboard. About 7 days before each yearly renewal, we email you a
-            reminder with the date and the amount, so you can cancel first if you prefer.
+            Yearly renewals: we also refund each yearly renewal payment ($59) in full when you ask
+            within 14 days of it. About 7 days before each yearly renewal, we email you a reminder
+            with the date and the amount, so you can cancel first if you prefer.
+          </p>
+          <p className="mt-2">
+            Monthly renewals: monthly renewal payments ($7.99) are not refunded, including for a
+            month you&apos;ve only partly used. To avoid the next payment, cancel before your
+            renewal date, shown on your dashboard.
           </p>
         </section>
 

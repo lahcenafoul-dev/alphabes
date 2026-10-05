@@ -77,8 +77,9 @@ export default function TermsPt() {
           </p>
           <p className="mt-2">
             Você pode pedir o reembolso total em até 14 dias depois do primeiro pagamento de uma
-            assinatura mensal ou anual; os pagamentos de renovação não são reembolsados. Todos os
-            detalhes estão na nossa{" "}
+            assinatura mensal ou anual, e em até 14 dias depois de cada pagamento de renovação
+            anual; os pagamentos de renovação mensal não são reembolsados. Todos os detalhes estão
+            na nossa{" "}
             <Link href="/refunds" className="font-bold text-crayon-blue">
               política de reembolso
             </Link>

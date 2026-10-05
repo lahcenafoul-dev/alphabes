@@ -75,8 +75,9 @@ export default function TermsEs() {
           </p>
           <p className="mt-2">
             Puedes pedir el reembolso completo dentro de los 14 días siguientes al primer pago de
-            una suscripción mensual o anual; los pagos de renovación no se reembolsan. Todos los
-            detalles están en nuestra{" "}
+            una suscripción mensual o anual, y dentro de los 14 días siguientes a cada pago de
+            renovación anual; los pagos de renovación mensual no se reembolsan. Todos los detalles
+            están en nuestra{" "}
             <Link href="/refunds" className="font-bold text-crayon-blue">
               política de reembolsos
             </Link>

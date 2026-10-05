@@ -77,8 +77,9 @@ export default function TermsFr() {
           </p>
           <p className="mt-2">
             Vous pouvez demander un remboursement complet dans les 14 jours qui suivent le premier
-            paiement d&apos;un abonnement mensuel ou annuel ; les paiements de renouvellement ne
-            sont pas remboursés. Tout est détaillé dans notre{" "}
+            paiement d&apos;un abonnement mensuel ou annuel, ainsi que dans les 14 jours qui
+            suivent chaque paiement de renouvellement annuel ; les paiements de renouvellement
+            mensuels ne sont pas remboursés. Tout est détaillé dans notre{" "}
             <Link href="/refunds" className="font-bold text-crayon-blue">
               politique de remboursement
             </Link>

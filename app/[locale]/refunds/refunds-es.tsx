@@ -41,11 +41,15 @@ export default function RefundsEs() {
         <section>
           <h2 className="font-display font-bold text-xl">Renovaciones</h2>
           <p className="mt-2">
-            Los pagos de renovación, mensuales o anuales, no se reembolsan, ni siquiera por un mes
-            o un año que usaste solo en parte. Para evitar el próximo cobro, cancela antes de la
-            fecha de renovación que aparece en tu cuenta. Unos 7 días antes de cada renovación
-            anual te enviamos un correo de aviso con la fecha y el importe, para que puedas
-            cancelar antes si lo prefieres.
+            Renovaciones anuales: también te devolvemos el importe completo de cada pago de
+            renovación anual (US$59) si lo pides dentro de los 14 días siguientes. Unos 7 días
+            antes de cada renovación anual te enviamos un correo de aviso con la fecha y el
+            importe, para que puedas cancelar antes si lo prefieres.
+          </p>
+          <p className="mt-2">
+            Renovaciones mensuales: los pagos de renovación mensual (US$7.99) no se reembolsan, ni
+            siquiera por un mes que usaste solo en parte. Para evitar el próximo cobro, cancela
+            antes de la fecha de renovación que aparece en tu cuenta.
           </p>
         </section>
 

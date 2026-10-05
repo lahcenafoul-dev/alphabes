@@ -8,7 +8,8 @@ import RefundsPt, { refundsMetadataPt } from "./refunds-pt";
 
 // Refund policy (docs/paypal-plan.md, B5): cancel any time, Pro until the end
 // of the paid period; full refund within 14 days of a subscription's first
-// payment (monthly or yearly), renewals not refunded (owner, 2026-10-05).
+// payment (monthly or yearly) and of each yearly renewal; monthly renewals not
+// refunded (owner's final decision, 2026-10-05).
 export async function generateMetadata({ params }: { params: LocaleParams }): Promise<Metadata> {
   const locale = initLocale((await params).locale);
   return byLocale(locale, { en: refundsMetadataEn, fr: refundsMetadataFr, es: refundsMetadataEs, pt: refundsMetadataPt });
