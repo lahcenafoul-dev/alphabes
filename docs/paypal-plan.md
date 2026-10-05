@@ -183,6 +183,9 @@ State on 2026-10-05 (about 01:30 UTC). **No problems were found in round 1**; th
 - **Cancel:** the dashboard button cancels at PayPal and keeps Pro to the end of the paid period (English and Spanish).
 - No create-subscription failure was logged at any point.
 
+**Round 2 (started 2026-10-05, ~02:50 UTC)**
+- **Setup:** dev server (worktree at `e1b9a60`) and named tunnel restarted. Fresh test parent `lahcen.afoul+alphabes-daily-test@gmail.com` (locale EN, created via `/api/register`, `role = ADMIN` on `dev` only, endpoint checked `ep-shiny-breeze-b1bguixr`; password given in the session only; **not** removed by `cleanup-accounts.mjs`, delete by hand). Daily $1 checkout created through the real subscribe route (`plan=test`, logged in as that parent): approve link handed to the owner.
+
 **Fixed during round 1**
 - A session whose account no longer exists (the deleted Gmail account) got "Le paiement PayPal n'a pas pu démarrer" (`billing=error`) although PayPal was never called. It's now treated as logged out and sent to the login page (`7c2b61c`, route tests added; 358 unit tests).
 
