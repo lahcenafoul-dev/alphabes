@@ -26,19 +26,22 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Forbidden.", code: "forbidden" }, { status: 403 });
   }
 
-  const session = await getServerSession(authOptions);
-  const email = session?.user?.email;
-  if (!email) {
+  const login = () => {
     const next = encodeURIComponent(localizedPath(locale, "/pricing"));
     return to(`${localizedPath(locale, "/login")}?next=${next}`);
-  }
+  };
+  const session = await getServerSession(authOptions);
+  const email = session?.user?.email;
+  if (!email) return login();
 
   const choice = form?.get("plan");
   if (!isPlanChoice(choice)) return pricing("invalid_plan");
 
   const prisma = getPrisma();
   const user = await prisma.user.findUnique({ where: { email }, include: { subscription: true } });
-  if (!user) return pricing("error");
+  // A session whose account no longer exists (deleted since it signed in):
+  // treat it as logged out rather than as a PayPal error.
+  if (!user) return login();
 
   // One subscription at a time: switching plans waits until the paid period
   // ends (docs/paypal-plan.md, B6).
