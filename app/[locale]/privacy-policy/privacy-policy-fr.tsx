@@ -153,8 +153,9 @@ export default function PrivacyPolicyFr() {
               uniquement pour les parents qui souscrivent à AlphaBes Pro.
             </li>
             <li>
-              <strong>Envoi d&apos;e-mails</strong> : Resend, qui envoie nos e-mails : les rappels
-              avant le renouvellement d&apos;un abonnement annuel, et les messages envoyés depuis
+              <strong>Envoi d&apos;e-mails</strong> : Resend, qui envoie nos e-mails : le message de
+              bienvenue au début d&apos;un abonnement Pro, les rappels avant le renouvellement
+              d&apos;un abonnement annuel, et les messages envoyés depuis
               notre page de contact, qui nous parviennent par e-mail pour que nous puissions
               répondre.
             </li>

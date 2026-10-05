@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { sendEmail, textToHtml, EmailNotConfiguredError } from "@/lib/email/send";
-import { formatDate, renewalReminderEmail } from "@/lib/email/templates";
+import { formatDate, renewalReminderEmail, welcomeToProEmail } from "@/lib/email/templates";
 import { REMINDER_WINDOW_MS, reminderDue } from "@/lib/billing/reminders";
 
 const day = 86_400_000;
@@ -156,6 +156,96 @@ describe("sendRenewalReminders", () => {
     expect(sent[0].idempotencyKey).toBe(`renewal-reminder-s1-${end.toISOString()}`);
     expect(state.get("s1")?.getTime()).toBe(end.getTime()); // recorded
     expect(state.get("s3")).toBeNull(); // released, retried on the next run
+    vi.doUnmock("@/lib/email/send");
+  });
+});
+
+describe("welcome to Pro email", () => {
+  const w = {
+    name: "Ana",
+    plan: "PRO_MONTHLY" as const,
+    renewsOn: new Date("2026-11-05T00:00:00Z"),
+    dashboardUrl: "https://alphabes.com/es/mi-cuenta",
+    downloadsUrl: "https://alphabes.com/es/fichas/paquetes",
+  };
+
+  it("is written in each language, with the plan, the renewal date and both links", () => {
+    const es = welcomeToProEmail("es", w);
+    expect(es.subject).toBe("¡Te damos la bienvenida a AlphaBes Pro!");
+    expect(es.text).toContain("Hola, Ana:");
+    expect(es.text).toContain("plan mensual");
+    expect(es.text).toContain("5 de noviembre de 2026");
+    expect(es.text).toContain(w.dashboardUrl);
+    expect(es.text).toContain(w.downloadsUrl);
+    expect(welcomeToProEmail("fr", { ...w, plan: "PRO_ANNUAL" }).text).toContain("abonnement AlphaBes Pro annuel");
+    expect(welcomeToProEmail("pt", w).subject).toBe("Boas-vindas ao AlphaBes Pro!");
+    expect(welcomeToProEmail("en", { ...w, name: null, renewsOn: null }).text).not.toContain("next renewal");
+  });
+});
+
+describe("sendWelcomeEmail", () => {
+  beforeEach(() => {
+    vi.resetModules();
+    vi.stubEnv("RESEND_API_KEY", "re_test");
+    vi.stubEnv("EMAIL_FROM", "AlphaBes <hello@alphabes.com>");
+  });
+
+  function fakePrisma(row: Record<string, unknown>) {
+    const state = { ...row };
+    return {
+      state,
+      subscription: {
+        findUnique: async () => ({ ...state, user: { email: "es@example.com", name: null, locale: "ES" } }),
+        updateMany: async ({ where, data }: { where: { welcomeEmailFor: string | null }; data: { welcomeEmailFor: string | null } }) => {
+          const ok = state.welcomeEmailFor === where.welcomeEmailFor;
+          if (ok) state.welcomeEmailFor = data.welcomeEmailFor;
+          return { count: ok ? 1 : 0 };
+        },
+      },
+    };
+  }
+  const active = { plan: "PRO_MONTHLY", status: "ACTIVE", paypalSubscriptionId: "I-NEW", currentPeriodEnd: now, welcomeEmailFor: null };
+
+  it("sends once per subscription, in the parent's language", async () => {
+    const sent: { subject: string; idempotencyKey?: string }[] = [];
+    vi.doMock("@/lib/email/send", async (orig) => ({
+      ...(await orig<typeof import("@/lib/email/send")>()),
+      sendEmail: async (e: { subject: string; idempotencyKey?: string }) => void sent.push(e),
+    }));
+    const { sendWelcomeEmail } = await import("@/lib/billing/welcome");
+    const prisma = fakePrisma(active);
+    expect(await sendWelcomeEmail(prisma as never, "u1")).toBe("sent");
+    expect(await sendWelcomeEmail(prisma as never, "u1")).toBe("skipped");
+    expect(sent).toHaveLength(1);
+    expect(sent[0].subject).toBe("¡Te damos la bienvenida a AlphaBes Pro!");
+    expect(sent[0].idempotencyKey).toBe("welcome-I-NEW");
+    expect(prisma.state.welcomeEmailFor).toBe("I-NEW");
+
+    // A later, new subscription gets its own welcome.
+    prisma.state.paypalSubscriptionId = "I-NEXT";
+    expect(await sendWelcomeEmail(prisma as never, "u1")).toBe("sent");
+    expect(sent).toHaveLength(2);
+    vi.doUnmock("@/lib/email/send");
+  });
+
+  it("skips inactive subscriptions and missing settings, and releases the claim when sending fails", async () => {
+    vi.doMock("@/lib/email/send", async (orig) => ({
+      ...(await orig<typeof import("@/lib/email/send")>()),
+      sendEmail: async () => {
+        throw new Error("Resend down");
+      },
+    }));
+    const { sendWelcomeEmail } = await import("@/lib/billing/welcome");
+    expect(await sendWelcomeEmail(fakePrisma({ ...active, status: "SUSPENDED" }) as never, "u1")).toBe("skipped");
+
+    const prisma = fakePrisma({ ...active, welcomeEmailFor: "I-OLD" });
+    const quiet = vi.spyOn(console, "error").mockImplementation(() => {});
+    expect(await sendWelcomeEmail(prisma as never, "u1")).toBe("failed");
+    quiet.mockRestore();
+    expect(prisma.state.welcomeEmailFor).toBe("I-OLD"); // released, retried by the next sync
+
+    vi.stubEnv("RESEND_API_KEY", "");
+    expect(await sendWelcomeEmail(fakePrisma(active) as never, "u1")).toBe("skipped");
     vi.doUnmock("@/lib/email/send");
   });
 });

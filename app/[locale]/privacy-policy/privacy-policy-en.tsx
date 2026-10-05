@@ -138,8 +138,8 @@ export default function PrivacyPolicyEn() {
               Pro.
             </li>
             <li>
-              <strong>Email delivery</strong> — Resend, which sends our emails: renewal reminders
-              to yearly subscribers, and the messages you send through our contact page, which
+              <strong>Email delivery</strong> — Resend, which sends our emails: a welcome email when
+              a Pro subscription starts, renewal reminders to yearly subscribers, and the messages you send through our contact page, which
               reach us by email so we can reply.
             </li>
             <li>

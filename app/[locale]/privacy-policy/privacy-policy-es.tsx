@@ -146,8 +146,9 @@ export default function PrivacyPolicyEs() {
               familias que se suscriben a AlphaBes Pro.
             </li>
             <li>
-              <strong>Envío de correos</strong>: Resend, que envía nuestros correos: los avisos antes
-              de la renovación de un plan anual y los mensajes que nos mandas desde la página de
+              <strong>Envío de correos</strong>: Resend, que envía nuestros correos: el mensaje de
+              bienvenida al empezar una suscripción Pro, los avisos antes de la renovación de un
+              plan anual y los mensajes que nos mandas desde la página de
               contacto, que nos llegan por correo para poder responderte.
             </li>
             <li>

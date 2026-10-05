@@ -152,8 +152,9 @@ export default function PrivacyPolicyPt() {
               as famílias que assinam o AlphaBes Pro.
             </li>
             <li>
-              <strong>Envio de e-mails</strong>: Resend, que envia os nossos e-mails: os lembretes
-              antes da renovação de um plano anual e as mensagens enviadas pela nossa página de
+              <strong>Envio de e-mails</strong>: Resend, que envia os nossos e-mails: a mensagem de
+              boas-vindas no início de uma assinatura Pro, os lembretes antes da renovação de um
+              plano anual e as mensagens enviadas pela nossa página de
               contato, que chegam até nós por e-mail para podermos responder.
             </li>
             <li>

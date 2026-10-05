@@ -279,6 +279,9 @@ model Subscription {
   // The renewal date (currentPeriodEnd) a yearly reminder email was sent for,
   // so each renewal gets one reminder (lib/billing/reminders.ts).
   renewalReminderFor   DateTime?
+  // The PayPal subscription a "Welcome to Pro" email was sent for, so each
+  // subscription gets one (lib/billing/welcome.ts).
+  welcomeEmailFor      String?
   createdAt            DateTime           @default(now())
   updatedAt            DateTime           @updatedAt
 }

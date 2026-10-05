@@ -66,3 +66,68 @@ export function renewalReminderEmail(locale: Locale, r: RenewalReminder): { subj
       };
   }
 }
+
+export type WelcomeToPro = {
+  name: string | null;
+  plan: "PRO_MONTHLY" | "PRO_ANNUAL";
+  renewsOn: Date | null;
+  dashboardUrl: string;
+  downloadsUrl: string;
+};
+
+// Once, when a PayPal subscription becomes active (lib/billing/welcome.ts).
+export function welcomeToProEmail(locale: Locale, w: WelcomeToPro): { subject: string; text: string } {
+  const date = w.renewsOn ? formatDate(locale, w.renewsOn) : null;
+  const name = w.name?.trim().replace(/[\r\n]+/g, " ") || null;
+  const yearly = w.plan === "PRO_ANNUAL";
+  switch (locale) {
+    case "fr":
+      return {
+        subject: "Bienvenue dans AlphaBes Pro !",
+        text: [
+          name ? `Bonjour ${name},` : "Bonjour,",
+          `Merci ! Votre abonnement AlphaBes Pro ${yearly ? "annuel" : "mensuel"} est actif. Vous avez maintenant accès aux jeux Pro et aux packs de fiches complets en PDF.`,
+          `Les packs de fiches à télécharger : ${w.downloadsUrl}`,
+          `Votre tableau de bord, pour voir votre abonnement${date ? ` (prochain renouvellement le ${date})` : ""} ou le résilier à tout moment : ${w.dashboardUrl}`,
+          "PayPal vous envoie de son côté le reçu de chaque paiement.",
+          "Bon apprentissage avec AlphaBes !\nL'équipe AlphaBes",
+        ].join("\n\n"),
+      };
+    case "es":
+      return {
+        subject: "¡Te damos la bienvenida a AlphaBes Pro!",
+        text: [
+          name ? `Hola, ${name}:` : "Hola:",
+          `¡Gracias! Tu plan ${yearly ? "anual" : "mensual"} de AlphaBes Pro ya está activo. Ahora puedes usar los juegos Pro y descargar los paquetes completos de fichas en PDF.`,
+          `Los paquetes de fichas para descargar: ${w.downloadsUrl}`,
+          `Tu cuenta, para ver tu suscripción${date ? ` (se renueva el ${date})` : ""} o cancelarla cuando quieras: ${w.dashboardUrl}`,
+          "PayPal te envía aparte el recibo de cada pago.",
+          "¡Que disfruten aprendiendo con AlphaBes!\nEl equipo de AlphaBes",
+        ].join("\n\n"),
+      };
+    case "pt":
+      return {
+        subject: "Boas-vindas ao AlphaBes Pro!",
+        text: [
+          name ? `Olá, ${name}!` : "Olá!",
+          `Obrigado! A sua assinatura ${yearly ? "anual" : "mensal"} do AlphaBes Pro está ativa. Agora você tem acesso aos jogos Pro e aos pacotes completos de atividades em PDF.`,
+          `Os pacotes de atividades para baixar: ${w.downloadsUrl}`,
+          `A sua conta, para ver a assinatura${date ? ` (renovação em ${date})` : ""} ou cancelar quando quiser: ${w.dashboardUrl}`,
+          "O PayPal envia separadamente o recibo de cada pagamento.",
+          "Bons estudos com o AlphaBes!\nEquipe AlphaBes",
+        ].join("\n\n"),
+      };
+    default:
+      return {
+        subject: "Welcome to AlphaBes Pro!",
+        text: [
+          name ? `Hello ${name},` : "Hello,",
+          `Thank you! Your AlphaBes Pro ${yearly ? "yearly" : "monthly"} subscription is active. You now have the Pro games and the complete worksheet bundles as PDFs.`,
+          `Download the worksheet bundles: ${w.downloadsUrl}`,
+          `Your dashboard, to see your subscription${date ? ` (next renewal on ${date})` : ""} or cancel it at any time: ${w.dashboardUrl}`,
+          "PayPal sends you a receipt for each payment separately.",
+          "Happy learning with AlphaBes!\nThe AlphaBes team",
+        ].join("\n\n"),
+      };
+  }
+}
