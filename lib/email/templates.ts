@@ -131,3 +131,34 @@ export function welcomeToProEmail(locale: Locale, w: WelcomeToPro): { subject: s
       };
   }
 }
+
+export type DuplicateAlert = {
+  sandbox: boolean;
+  parentEmail: string;
+  userId: string;
+  duplicateSubscriptionId: string;
+  keptSubscriptionId: string | null;
+  payment: { id: string; amount: string | null; time: string } | null;
+};
+
+// To the owner (CONTACT_TO_EMAIL), in English: a second subscription was
+// canceled automatically and its payment needs a refund
+// (lib/billing/duplicate.ts).
+export function duplicateAlertEmail(d: DuplicateAlert): { subject: string; text: string } {
+  const prefix = d.sandbox ? "[sandbox] " : "";
+  return {
+    subject: `${prefix}AlphaBes: refund a duplicate subscription payment (${d.parentEmail.replace(/[\r\n]+/g, " ")})`,
+    text: [
+      `A parent paid for a second AlphaBes Pro subscription while the first one was active (two checkouts at once). AlphaBes canceled the second one at PayPal automatically. Please refund its payment in full; the parent keeps Pro through the first subscription.`,
+      [
+        `Parent: ${d.parentEmail} (account ${d.userId})`,
+        d.payment
+          ? `Payment to refund: ${d.payment.id}${d.payment.amount ? `, ${d.payment.amount}` : ""}, ${d.payment.time}`
+          : `Payment to refund: not listed by PayPal yet; search PayPal Activity for subscription ${d.duplicateSubscriptionId}`,
+        `Duplicate subscription (canceled): ${d.duplicateSubscriptionId}`,
+        `Subscription the parent keeps: ${d.keptSubscriptionId ?? "unknown"}`,
+      ].join("\n"),
+      `To refund: PayPal${d.sandbox ? " sandbox" : ""} → Activity → search for the payment ID → Issue a refund (full amount). Refunding it does not affect the parent's Pro access.`,
+    ].join("\n\n"),
+  };
+}

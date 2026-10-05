@@ -11,6 +11,8 @@ vi.mock("@/lib/paypal/subscriptions", () => ({
   cancelSubscription: async () => {},
 }));
 vi.mock("@/lib/billing/welcome", () => ({ sendWelcomeEmail: (...a: unknown[]) => welcome(...(a as [])) }));
+const alert = vi.fn(async () => "sent");
+vi.mock("@/lib/billing/duplicate", () => ({ sendDuplicateAlert: (...a: unknown[]) => alert(...(a as [])) }));
 
 const { syncSubscription } = await import("@/lib/billing/sync");
 
@@ -25,7 +27,7 @@ const sub = (status: string) => ({
   billing_info: { last_payment: { time: iso(now - 1000) }, next_billing_time: iso(now + 30 * 86_400_000) },
 });
 const prisma = (existing: Record<string, unknown> | null) => ({
-  user: { findUnique: async () => ({ id: "u1", subscription: existing }) },
+  user: { findUnique: async () => ({ id: "u1", email: "p@example.com", subscription: existing }) },
   subscription: { upsert: async () => ({}) },
 });
 
@@ -34,6 +36,7 @@ beforeEach(() => {
   vi.stubEnv("PAYPAL_PLAN_MONTHLY", "P-MONTHLY");
   vi.stubEnv("PAYPAL_PLAN_YEARLY", "P-YEARLY");
   welcome.mockClear();
+  alert.mockClear();
 });
 afterEach(() => {
   vi.unstubAllEnvs();
@@ -62,5 +65,24 @@ describe("syncSubscription → welcome email", () => {
     const r = await syncSubscription(prisma(null) as never, "I-NEW");
     quiet.mockRestore();
     expect(r).toMatchObject({ result: "updated", pro: true });
+  });
+});
+
+describe("syncSubscription → duplicate alert", () => {
+  it("alerts the owner when a second active subscription is canceled, and only then", async () => {
+    const quiet = vi.spyOn(console, "error").mockImplementation(() => {});
+    paypalSub.mockReturnValue(sub("ACTIVE"));
+    const keep = { paypalSubscriptionId: "I-KEEP", status: "ACTIVE", currentPeriodEnd: new Date(now + 20 * 86_400_000) };
+    const r = await syncSubscription(prisma(keep) as never, "I-NEW");
+    quiet.mockRestore();
+    expect(r).toEqual({ result: "duplicate", userId: "u1" });
+    expect(alert).toHaveBeenCalledWith({ parentEmail: "p@example.com", userId: "u1", duplicateSubscriptionId: "I-NEW", keptSubscriptionId: "I-KEEP" });
+    expect(welcome).not.toHaveBeenCalled();
+
+    // The same duplicate seen again after its cancellation: ignored, no alert.
+    alert.mockClear();
+    paypalSub.mockReturnValue(sub("CANCELLED"));
+    expect(await syncSubscription(prisma(keep) as never, "I-NEW")).toMatchObject({ result: "ignored", reason: "not_current" });
+    expect(alert).not.toHaveBeenCalled();
   });
 });

@@ -3,6 +3,7 @@ import { hasPro } from "./entitlement";
 import { paidUntil, planChoiceOf, subscriptionPlanOf, type PlanChoice } from "@/lib/paypal/plans";
 import { cancelSubscription, getSubscription, type PayPalSubscription } from "@/lib/paypal/subscriptions";
 import { sendWelcomeEmail } from "./welcome";
+import { sendDuplicateAlert } from "./duplicate";
 
 // The only code that writes billing state (docs/paypal-plan.md). It copies
 // PayPal's current state of a subscription instead of applying each event's
@@ -151,6 +152,12 @@ export async function syncSubscription(
   if (decision.kind === "duplicate") {
     console.error(`PayPal: duplicate subscription ${sub.id} for user ${userId} canceled; refund its payment.`);
     await cancelSubscription(sub.id, "Duplicate AlphaBes subscription");
+    await sendDuplicateAlert({
+      parentEmail: user.email,
+      userId,
+      duplicateSubscriptionId: sub.id,
+      keptSubscriptionId: user.subscription?.paypalSubscriptionId ?? null,
+    });
     return { result: "duplicate", userId };
   }
 

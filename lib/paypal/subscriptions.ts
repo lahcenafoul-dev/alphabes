@@ -90,3 +90,32 @@ export async function subscriptionIdOfSale(saleId: string): Promise<string | nul
   );
   return sale.billing_agreement_id ?? null;
 }
+
+export interface SubscriptionPayment {
+  id: string; // the transaction (sale) id, as shown in PayPal → Activity
+  status: string;
+  amount: string | null; // e.g. "7.99 USD"
+  time: string;
+}
+
+// The payments of a subscription in the last `days` days, newest first
+// (read-only). Used for the duplicate alert (lib/billing/duplicate.ts).
+export async function recentPayments(id: string, days = 7, now = new Date()): Promise<SubscriptionPayment[]> {
+  const start = new Date(now.getTime() - days * 86_400_000).toISOString();
+  const res = await paypalFetch<{
+    transactions?: {
+      id: string;
+      status: string;
+      time: string;
+      amount_with_breakdown?: { gross_amount?: { value?: string; currency_code?: string } };
+    }[];
+  }>(
+    `/v1/billing/subscriptions/${encodeURIComponent(id)}/transactions?start_time=${encodeURIComponent(start)}&end_time=${encodeURIComponent(now.toISOString())}`,
+  );
+  return (res.transactions ?? [])
+    .map((t) => {
+      const g = t.amount_with_breakdown?.gross_amount;
+      return { id: t.id, status: t.status, amount: g?.value ? `${g.value} ${g.currency_code ?? "USD"}` : null, time: t.time };
+    })
+    .sort((a, b) => b.time.localeCompare(a.time));
+}
