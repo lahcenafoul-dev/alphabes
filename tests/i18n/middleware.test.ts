@@ -1,6 +1,7 @@
 import { beforeAll, describe, expect, it, vi } from "vitest";
 import { NextRequest } from "next/server";
-import { middleware } from "@/middleware";
+import { unstable_doesMiddlewareMatch } from "next/experimental/testing/server";
+import { config, middleware } from "@/middleware";
 
 // Stand-in for the database lookup: only one story exists.
 vi.mock("@/lib/story-exists", () => ({
@@ -66,6 +67,29 @@ describe("middleware routing", () => {
       const res = await middleware(request(path));
       expect(rewrite(res), path).toBe("/_not-found");
       expect(notFoundLocale(res), path).toBe(locale);
+    }
+  });
+
+  it("serves the 404 page for unknown top-level files, not the real root files", async () => {
+    for (const path of ["/sitemap_index.xml", "/foo.xml", "/foo.txt", "/wp-login.php"]) {
+      expect(unstable_doesMiddlewareMatch({ config, url: path }), path).toBe(true);
+      const res = await middleware(request(path));
+      expect(rewrite(res), path).toBe("/_not-found");
+      expect(notFoundLocale(res), path).toBe("en");
+    }
+    for (const path of [
+      "/robots.txt",
+      "/sitemap.xml",
+      "/favicon.ico",
+      "/audio/a.mp3",
+      "/fiches-pdf/packs/x.pdf",
+      "/_next/static/chunks/main.js",
+    ]) {
+      expect(unstable_doesMiddlewareMatch({ config, url: path }), path).toBe(false);
+    }
+    // Pages and the rate-limited API routes still match.
+    for (const path of ["/", "/pricing", "/fr/tarifs", "/api/register"]) {
+      expect(unstable_doesMiddlewareMatch({ config, url: path }), path).toBe(true);
     }
   });
 

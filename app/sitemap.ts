@@ -27,6 +27,7 @@ import { staticWorksheets } from "@/lib/static-worksheets-data";
 import { preschoolTopics } from "@/lib/preschool-data";
 import { kindergartenTopics } from "@/lib/kindergarten-data";
 import { getPrisma } from "@/lib/prisma";
+import { RELEASE_DATE } from "@/lib/release-date";
 import { routing } from "@/i18n/routing";
 import { fromDbLocale } from "@/lib/i18n/db-locale";
 import {
@@ -115,51 +116,51 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     "/cookies",
   ].map((path) => ({
     url: `${baseUrl}${path}`,
-    lastModified: new Date(),
+    lastModified: RELEASE_DATE,
     changeFrequency: "weekly" as const,
     priority: path === "" ? 1 : 0.7,
   }));
 
   const letterRoutes = getAllLetterSlugs().map((letter) => ({
     url: `${baseUrl}/alphabet/${letter}`,
-    lastModified: new Date(),
+    lastModified: RELEASE_DATE,
     changeFrequency: "monthly" as const,
     priority: 0.8,
   }));
 
   const phonicsRoutes = phonicsSkills.map((s) => ({
     url: `${baseUrl}/phonics/${s.slug}`,
-    lastModified: new Date(),
+    lastModified: RELEASE_DATE,
     changeFrequency: "monthly" as const,
     priority: 0.7,
   }));
 
   const worksheetCategoryRoutes = worksheetCategories.map((c) => ({
     url: `${baseUrl}/worksheets/${c.slug}`,
-    lastModified: new Date(),
+    lastModified: RELEASE_DATE,
     changeFrequency: "weekly" as const,
     priority: 0.7,
   }));
 
   const worksheetTypeCategoryRoutes = WORKSHEET_TYPES.map((t) => ({
     url: `${baseUrl}/worksheets/${t.categorySlug}`,
-    lastModified: new Date(),
+    lastModified: RELEASE_DATE,
     changeFrequency: "weekly" as const,
     priority: 0.7,
   }));
 
   const worksheetDetailRoutes = worksheets.map((w) => ({
     url: `${baseUrl}/worksheets/${w.slug}`,
-    lastModified: new Date(),
+    lastModified: RELEASE_DATE,
     changeFrequency: "monthly" as const,
     priority: 0.6,
   }));
 
   const bundleRoutes = [
-    { url: `${baseUrl}/worksheets/bundles`, lastModified: new Date(), changeFrequency: "weekly" as const, priority: 0.6 },
+    { url: `${baseUrl}/worksheets/bundles`, lastModified: RELEASE_DATE, changeFrequency: "weekly" as const, priority: 0.6 },
     ...bundles.map((b) => ({
       url: `${baseUrl}/worksheets/bundles/${b.slug}`,
-      lastModified: new Date(),
+      lastModified: RELEASE_DATE,
       changeFrequency: "monthly" as const,
       priority: 0.5,
     })),
@@ -167,42 +168,42 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const blogRoutes = blogPosts.map((p) => ({
     url: `${baseUrl}/blog/${p.slug}`,
-    lastModified: new Date(),
+    lastModified: RELEASE_DATE,
     changeFrequency: "monthly" as const,
     priority: 0.6,
   }));
 
   const blogCategoryRoutes = blogCategories.map((c) => ({
     url: `${baseUrl}/blog/${c.slug}`,
-    lastModified: new Date(),
+    lastModified: RELEASE_DATE,
     changeFrequency: "weekly" as const,
     priority: 0.6,
   }));
 
   const staticWorksheetCategoryRoutes = staticWorksheetCategories.map((c) => ({
     url: `${baseUrl}/worksheets/${c.slug}`,
-    lastModified: new Date(),
+    lastModified: RELEASE_DATE,
     changeFrequency: "weekly" as const,
     priority: 0.7,
   }));
 
   const staticWorksheetDetailRoutes = staticWorksheets.map((w) => ({
     url: `${baseUrl}/worksheets/${w.slug}`,
-    lastModified: new Date(),
+    lastModified: RELEASE_DATE,
     changeFrequency: "monthly" as const,
     priority: 0.6,
   }));
 
   const preschoolRoutes = preschoolTopics.map((t) => ({
     url: `${baseUrl}/preschool/${t.slug}`,
-    lastModified: new Date(),
+    lastModified: RELEASE_DATE,
     changeFrequency: "monthly" as const,
     priority: 0.6,
   }));
 
   const kindergartenRoutes = kindergartenTopics.map((t) => ({
     url: `${baseUrl}/kindergarten/${t.slug}`,
-    lastModified: new Date(),
+    lastModified: RELEASE_DATE,
     changeFrequency: "monthly" as const,
     priority: 0.6,
   }));
@@ -230,7 +231,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       const { canonical, languages } = alternatesFor(locale, "/games/[slug]", { slug });
       return {
         url: canonical as string,
-        lastModified: new Date(),
+        lastModified: RELEASE_DATE,
         changeFrequency: "monthly" as const,
         priority: 0.6,
         ...(languages && { alternates: { languages: languages as Record<string, string> } }),
@@ -246,25 +247,25 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const frenchOnlyEntries: MetadataRoute.Sitemap = [
     ...[...frenchLetters.filter(isAccentLetter).map((l) => l.slug), ACCENTS_SLUG].map((letter) => ({
       url: absoluteUrl("fr", "/alphabet/[letter]", { letter }),
-      lastModified: new Date(),
+      lastModified: RELEASE_DATE,
       changeFrequency: "monthly" as const,
       priority: 0.8,
     })),
     ...frenchSounds.map((s) => ({
       url: absoluteUrl("fr", "/phonics/[skill]", { skill: s.slug }),
-      lastModified: new Date(),
+      lastModified: RELEASE_DATE,
       changeFrequency: "monthly" as const,
       priority: 0.7,
     })),
     ...[...FICHE_CATEGORIES.map((c) => c.slug), ...fiches.map((f) => f.slug)].map((category) => ({
       url: absoluteUrl("fr", "/worksheets/[category]", { category }),
-      lastModified: new Date(),
+      lastModified: RELEASE_DATE,
       changeFrequency: "monthly" as const,
       priority: 0.6,
     })),
     ...fichePacks.map((p) => ({
       url: absoluteUrl("fr", "/worksheets/bundles/[bundleSlug]", { bundleSlug: p.slug }),
-      lastModified: new Date(),
+      lastModified: RELEASE_DATE,
       changeFrequency: "monthly" as const,
       priority: 0.5,
     })),
@@ -272,7 +273,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       .filter((t) => !t.en)
       .map((t) => ({
         url: absoluteUrl("fr", t.level === "maternelle" ? "/preschool/[topic]" : "/kindergarten/[topic]", { topic: t.slug }),
-        lastModified: new Date(),
+        lastModified: RELEASE_DATE,
         changeFrequency: "monthly" as const,
         priority: 0.6,
       })),
@@ -284,25 +285,25 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const spanishOnlyEntries: MetadataRoute.Sitemap = [
     ...["enie", TILDE_SLUG].map((letter) => ({
       url: absoluteUrl("es", "/alphabet/[letter]", { letter }),
-      lastModified: new Date(),
+      lastModified: RELEASE_DATE,
       changeFrequency: "monthly" as const,
       priority: 0.8,
     })),
     ...spanishSyllablePages.map((p) => ({
       url: absoluteUrl("es", "/phonics/[skill]", { skill: p.slug }),
-      lastModified: new Date(),
+      lastModified: RELEASE_DATE,
       changeFrequency: "monthly" as const,
       priority: 0.7,
     })),
     ...fichaCategoryParams().map((category) => ({
       url: absoluteUrl("es", "/worksheets/[category]", { category }),
-      lastModified: new Date(),
+      lastModified: RELEASE_DATE,
       changeFrequency: "monthly" as const,
       priority: 0.6,
     })),
     ...fichaPacks.map((p) => ({
       url: absoluteUrl("es", "/worksheets/bundles/[bundleSlug]", { bundleSlug: p.slug }),
-      lastModified: new Date(),
+      lastModified: RELEASE_DATE,
       changeFrequency: "monthly" as const,
       priority: 0.5,
     })),
@@ -310,7 +311,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       .filter((t) => !t.en)
       .map((t) => ({
         url: absoluteUrl("es", t.level === "preescolar" ? "/preschool/[topic]" : "/kindergarten/[topic]", { topic: t.slug }),
-        lastModified: new Date(),
+        lastModified: RELEASE_DATE,
         changeFrequency: "monthly" as const,
         priority: 0.6,
       })),
@@ -322,25 +323,25 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const portugueseOnlyEntries: MetadataRoute.Sitemap = [
     ...[CEDILHA_SLUG, PT_ACENTOS_SLUG].map((letter) => ({
       url: absoluteUrl("pt", "/alphabet/[letter]", { letter }),
-      lastModified: new Date(),
+      lastModified: RELEASE_DATE,
       changeFrequency: "monthly" as const,
       priority: 0.8,
     })),
     ...portugueseSyllablePages.map((p) => ({
       url: absoluteUrl("pt", "/phonics/[skill]", { skill: p.slug }),
-      lastModified: new Date(),
+      lastModified: RELEASE_DATE,
       changeFrequency: "monthly" as const,
       priority: 0.7,
     })),
     ...atividadeCategoryParams().map((category) => ({
       url: absoluteUrl("pt", "/worksheets/[category]", { category }),
-      lastModified: new Date(),
+      lastModified: RELEASE_DATE,
       changeFrequency: "monthly" as const,
       priority: 0.6,
     })),
     ...atividadePacks.map((p) => ({
       url: absoluteUrl("pt", "/worksheets/bundles/[bundleSlug]", { bundleSlug: p.slug }),
-      lastModified: new Date(),
+      lastModified: RELEASE_DATE,
       changeFrequency: "monthly" as const,
       priority: 0.5,
     })),
@@ -348,7 +349,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       .filter((t) => !t.en)
       .map((t) => ({
         url: absoluteUrl("pt", t.level === "educacao-infantil" ? "/preschool/[topic]" : "/kindergarten/[topic]", { topic: t.slug }),
-        lastModified: new Date(),
+        lastModified: RELEASE_DATE,
         changeFrequency: "monthly" as const,
         priority: 0.6,
       })),

@@ -67,3 +67,16 @@ export function paidUntil(choice: PlanChoice, paidAt: Date): Date {
   end.setUTCDate(end.getUTCDate() + days);
   return end;
 }
+
+// When Pro ends if the subscription is canceled: the end of the period paid
+// by the last payment, else `fallback`. The sync stores this on a cancel and
+// the cancel confirmation shows it, so the two always agree. It isn't
+// PayPal's next billing time, which PayPal counts in its own time zone and
+// can be up to a day earlier.
+export function proEndIfCanceled(
+  choice: PlanChoice | null,
+  lastPaymentAt: Date | null,
+  fallback: Date | null,
+): Date | null {
+  return choice && lastPaymentAt ? paidUntil(choice, lastPaymentAt) : fallback;
+}

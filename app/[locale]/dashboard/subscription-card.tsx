@@ -4,6 +4,7 @@ import type { Locale } from "@/i18n/routing";
 import ClientMessages from "@/components/ClientMessages";
 import { hasPro } from "@/lib/billing/entitlement";
 import { paypalAutopayUrl } from "@/lib/paypal/client";
+import { planChoiceOf, proEndIfCanceled } from "@/lib/paypal/plans";
 import CancelSubscription from "./cancel-subscription";
 
 // The parent's PayPal subscription: plan, renewal or end date, cancel
@@ -14,6 +15,9 @@ export default async function SubscriptionCard({ locale, sub }: { locale: Locale
   const pro = hasPro(sub);
   const end = sub.currentPeriodEnd;
   const cancelable = sub.status === "ACTIVE" || sub.status === "SUSPENDED";
+  // "Renews on" is PayPal's billing date; the cancel confirmation shows the
+  // date the sync will keep Pro until.
+  const proEnd = proEndIfCanceled(planChoiceOf(sub.paypalPlanId), sub.lastPaymentAt, end);
 
   let status: string | null = null;
   if (sub.status === "SUSPENDED") status = t("suspended");
@@ -34,7 +38,7 @@ export default async function SubscriptionCard({ locale, sub }: { locale: Locale
         <>
           <div className="mt-4 flex flex-wrap items-center gap-4">
             <ClientMessages locale={locale} namespaces={["Billing", "Errors"]}>
-              <CancelSubscription periodEnd={sub.status === "ACTIVE" && end ? end.toISOString() : null} />
+              <CancelSubscription periodEnd={sub.status === "ACTIVE" ? (proEnd?.toISOString() ?? null) : null} />
             </ClientMessages>
             <a
               href={paypalAutopayUrl()}

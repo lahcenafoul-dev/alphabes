@@ -1,6 +1,6 @@
 import type { PrismaClient, Subscription, SubscriptionStatus } from "@prisma/client";
 import { hasPro } from "./entitlement";
-import { paidUntil, planChoiceOf, subscriptionPlanOf, type PlanChoice } from "@/lib/paypal/plans";
+import { paidUntil, planChoiceOf, proEndIfCanceled, subscriptionPlanOf, type PlanChoice } from "@/lib/paypal/plans";
 import { cancelSubscription, getSubscription, type PayPalSubscription } from "@/lib/paypal/subscriptions";
 import { sendWelcomeEmail } from "./welcome";
 import { sendDuplicateAlert } from "./duplicate";
@@ -93,7 +93,7 @@ export function decideSync(
     currentPeriodEnd =
       ended(prev?.status) && prev?.currentPeriodEnd
         ? prev.currentPeriodEnd
-        : (paidEnd ?? (prev?.status === "ACTIVE" ? prev.currentPeriodEnd : null));
+        : proEndIfCanceled(choice, lastPaymentAt, prev?.status === "ACTIVE" ? prev.currentPeriodEnd : null);
     canceledAt = prev?.canceledAt ?? date(sub.status_update_time) ?? now;
   }
 

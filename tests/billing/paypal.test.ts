@@ -2,7 +2,14 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { hasPro } from "@/lib/billing/entitlement";
 import { isSameOrigin } from "@/lib/billing/same-origin";
 import { decideSync, type BillingWrite } from "@/lib/billing/sync";
-import { isPlanChoice, paidUntil, paypalPlanId, planChoiceOf, subscriptionPlanOf } from "@/lib/paypal/plans";
+import {
+  isPlanChoice,
+  paidUntil,
+  paypalPlanId,
+  planChoiceOf,
+  proEndIfCanceled,
+  subscriptionPlanOf,
+} from "@/lib/paypal/plans";
 import { isPayPalSubscriptionId, type PayPalSubscription } from "@/lib/paypal/subscriptions";
 import {
   HANDLED_EVENTS,
@@ -273,6 +280,43 @@ describe("decideSync", () => {
     const expired = write(decideSync(canceled, paypal({ status: "EXPIRED", billing_info: {} }), { now }));
     expect(expired.currentPeriodEnd).toEqual(canceled.currentPeriodEnd);
     expect(expired.canceledAt).toEqual(canceled.canceledAt);
+  });
+
+  it("stores on cancel the date the cancel confirmation showed, not PayPal's billing date", () => {
+    // Launch test 2026-10-06: paid 02:14 UTC, PayPal billed next on 5 November
+    // at 10:00 UTC (its own time zone's date), Pro kept until 6 November.
+    const paid = { last_payment: { time: "2026-10-06T02:14:35Z" }, next_billing_time: "2026-11-05T10:00:00Z" };
+    const active = write(decideSync(free, paypal({ billing_info: paid }), { now }));
+    expect(active.currentPeriodEnd).toEqual(new Date("2026-11-05T10:00:00Z")); // "Renews on"
+
+    // What the dashboard's cancel confirmation shows for that row.
+    const shown = proEndIfCanceled(planChoiceOf(active.paypalPlanId), active.lastPaymentAt, active.currentPeriodEnd);
+    expect(shown).toEqual(new Date("2026-11-06T02:14:35Z"));
+
+    const canceled = write(
+      decideSync(active, paypal({ status: "CANCELLED", billing_info: { last_payment: paid.last_payment } }), {
+        now: new Date("2026-10-06T02:31:40Z"),
+      }),
+    );
+    expect(canceled.currentPeriodEnd).toEqual(shown);
+
+    // Yearly too.
+    const yearly = write(decideSync(free, paypal({ plan_id: "P-YEARLY", billing_info: paid }), { now }));
+    const yearlyShown = proEndIfCanceled(planChoiceOf(yearly.paypalPlanId), yearly.lastPaymentAt, yearly.currentPeriodEnd);
+    const yearlyCanceled = write(
+      decideSync(yearly, paypal({ plan_id: "P-YEARLY", status: "CANCELLED", billing_info: {} }), { now }),
+    );
+    expect(yearlyShown).toEqual(new Date("2027-10-06T02:14:35Z"));
+    expect(yearlyCanceled.currentPeriodEnd).toEqual(yearlyShown);
+  });
+
+  it("proEndIfCanceled falls back without a known plan or a payment", () => {
+    const fallback = new Date("2026-11-05T10:00:00Z");
+    const paidAt = new Date("2026-10-06T02:14:35Z");
+    expect(proEndIfCanceled("monthly", paidAt, fallback)).toEqual(new Date("2026-11-06T02:14:35Z"));
+    expect(proEndIfCanceled(planChoiceOf("P-OTHER"), paidAt, fallback)).toBe(fallback);
+    expect(proEndIfCanceled("monthly", null, fallback)).toBe(fallback);
+    expect(proEndIfCanceled(null, null, null)).toBeNull();
   });
 
   it("falls back to the recorded period end if PayPal omits the last payment", () => {

@@ -6,6 +6,11 @@ const withNextIntl = createNextIntlPlugin("./i18n/request.ts");
 const nextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
+  // Fixed per release (lib/release-date.ts): the sitemap's <lastmod> for
+  // pages in the code, instead of the time of each request.
+  env: {
+    RELEASE_DATE: new Date().toISOString(),
+  },
   // Keep Prisma out of the bundler so its Workers (WASM) build is picked at
   // runtime by OpenNext.
   serverExternalPackages: ["@prisma/client", ".prisma/client"],

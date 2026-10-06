@@ -122,6 +122,11 @@ export const config = {
     // Every page, but not API routes, Next internals, generated metadata
     // images, or files with an extension (robots.txt, sitemap.xml, PDFs, MP3s).
     "/((?!api|_next|_vercel|icon|opengraph-image|.*\\..*).*)",
+    // Unknown top-level files ("/foo.xml", "/sitemap_index.xml"): without
+    // this they reach app/[locale] as a locale and answer 500 on Workers;
+    // here they get the 404 page. Real root files are left alone (on Workers
+    // existing public files never reach the worker anyway).
+    "/((?!(?:robots\\.txt|sitemap\\.xml|favicon\\.ico)$)[^/]+\\.[^/]+)",
     "/api/auth/callback/credentials",
     "/api/register",
     "/api/contact",
