@@ -271,3 +271,56 @@ Not done under I9: the remaining shared JavaScript is React and the Next.js runt
 - First-load JS: game pages **193 → 162 kB**, play pages 195 → 164 kB, phonics skill pages 141 → 129 kB. Other pages unchanged.
 - Preview images loaded on a phone (412 px wide, worksheet hubs and `/fr`): at 1.75× density 33–96 KB → 12–14 KB; at 3× density 63–72 KB → 32–36 KB.
 - Checkout: logged-out subscribe, both plans × 4 languages → 303 to the localized login (unchanged).
+
+### Production (2026-10-07)
+
+Commit `54fe465` pushed as `HEAD:main` at 13:25:49 UTC (fast-forward from `74f8c3f`; the branch was not pushed, so no preview version was uploaded). Workers Builds built it 13:26:17–13:29:57 and deployed version `e7e04d1c` at 13:29:49 (100%).
+
+- **Bindings:** `PAYPAL_MODE` is still `live` (compared, not printed); 17 bindings, including `PRO_FILES`, the cache bucket and the 10 secrets.
+- **Sitemap:** 200 `application/xml`, the same `Cache-Control`. **XSD valid, 0 errors.** 1,778 URLs, exactly the local build's set. 1,746 `lastmod` values = this build (13:27:01); stories keep their own dates.
+- **4 languages unchanged:** every page snapshotted again on production and compared with the morning baseline (1,781 pages: the sitemap plus extras). **0 unexpected differences**; the only changes are the og/twitter tags (1,673 pages) and the new JSON-LD (32 ShortStory, 4 WebSite, 4 Product), exactly as in the local check.
+- **Edge cases:** `/privacy` → 301 `/privacy-policy`; `/en/pricing` and `/en` → 308; `/manifest.webmanifest` (`application/manifest+json`), `/apple-icon` and `/icon` 200; robots.txt lists the 4 dashboards; `/login` 200 noindex; `/nope` and `/fr/nope` 404; `/dashboard` 307 to login. Previews, thumbnails and `favicon.ico`: `max-age=86400, stale-while-revalidate=604800`.
+- **Game CLS** (Playwright, 50 measurements): worst value per page 0–0.036 (before: 0.07–0.31).
+
+**Crawl, before → after** (Googlebot smartphone, every sitemap URL):
+
+| Check | Before (1,666 URLs) | After (1,778 URLs) |
+|---|---|---|
+| Non-200 | 0 | 0 |
+| noindex pages in the sitemap | 2 | **0** |
+| hreflang targets outside the sitemap | 15 | **0** |
+| Indexable pages linked on the site but missing from the sitemap | 115 | **0** (what's left: 835 PDFs, 163 Pro download links, noindex login/dashboard/play pages) |
+| Orphan pages | 1 (`/privacy`) | **0** |
+| No `og:image` | 806 | **0** |
+| `og:url` ≠ canonical | 107 | **0** |
+| No `og:type` / no `og:locale` | 1,550 / 1,642 | **0 / 0** |
+| `twitter:title` = "AlphaBes" | 1,657 | **0** |
+| WebSite / Product / ShortStory JSON-LD | 0 / 0 / 0 | 4 / 4 / 32 |
+| Manifest and apple-touch-icon linked | 0 | 1,778 |
+| Titles > 60 / < 30 characters | 952 / 36 | 979 / 37 (the 112 new sitemap pages bring their titles; batch 2) |
+| Descriptions > 160 / < 70 | 83 / 51 | 110 / 55 (batch 2) |
+| TTFB p50 / p90 | 0.36 s / 0.94 s | 0.33 s / 0.61 s |
+
+**Lighthouse mobile, before → after** (same 20 pages, one run each, lab noise ±10–15 points):
+
+| Page | Perf | CLS | TBT | Page weight |
+|---|---|---|---|---|
+| en / fr / es / pt game | 50 / 68 / 71 / 49 → **86 / 83 / 82 / 85** | 0.29 / 0.27 / 0.31 / 0.29 → **0 / 0 / 0 / 0** | 540 / 410 / 430 / 450 → 240 / 310 / 420 / 370 ms | 330–366 → 301–305 KB |
+| fr / es / pt worksheet hub | 66 / 87 / 84 → 85 / 77 / 77 | 0 | 480 / 310 / 440 → 360 / 280 / 600 ms | 1,078 / 1,141 / 1,067 → **636 / 643 / 613 KB** |
+| home ×4 | 80 / 80 / 78 / 83 → 85 / 75 / 88 / 78 | 0 | 210–560 → 320–580 ms | fr/es/pt 411–443 → 334–370 KB |
+| pricing ×4 | 85 / 85 / 88 / 91 → 77 / 87 / 87 / 87 | 0 | 280–480 → 270–490 ms | unchanged |
+| story ×4 | 90 / 86 / 86 / 68 → 83 / 90 / 87 / 90 | 0 | 210–390 → 240–420 ms | unchanged |
+
+SEO score 100 on all 20 pages. TBT (I9) moved within noise except on the game pages: the remaining main-thread work is React and the Next.js runtime, shared by every page.
+
+### Status after batch 1
+
+| Issue | Status |
+|---|---|
+| I2, I3, I4, I5, I6, I10, I11 | **Fixed** (verified on production) |
+| I9 | **Partly fixed**: game pages −31 kB JS. The shared React/Next runtime and the 4-language game bundle remain (see above) |
+| M3, M4, M7, M8, M9, M11, M12 | **Fixed** |
+| M10 | **Partly fixed**: WebSite, Product/Offer and ShortStory added. Still open: Organization `logo`/`sameAs`, English `LearningResource` `inLanguage`/`image`, letter pages' `LearningResource` `url` |
+| I1, I7, I8, M1, M2 | **Batch 2**, proposals in [seo-batch2-proposals.md](seo-batch2-proposals.md), waiting for the owner's approval |
+| M6 (HSTS), M7 (www 2 hops) | **Owner**, in the Cloudflare dashboard |
+| M5, M13, M14, M15, M16 | Open (not in batch 1) |
