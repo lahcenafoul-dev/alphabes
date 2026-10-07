@@ -432,7 +432,7 @@ Commit `312975d` pushed as `HEAD:main` at 14:18:39 UTC (fast-forward; the branch
 | I1, I8, M1 | **Fixed** |
 | I7 | **Fixed** for the approved parts (phonics, games, worksheet how-to, previews; blog categories noindex). The 104 browser-made worksheets have no preview |
 | M2 | **Fixed** for every page in the proposal; open: 27 Spanish letter worksheets (> 160), 4 English games (< 70), 3 English legal pages (shared default) |
-| Still open from the audit | I9 (shared runtime), M5, M6 (owner: HSTS), M7 (owner: www 2 hops), M10 (logo, English `LearningResource` `inLanguage`), M13, M14, M15, M16 |
+| Still open from the audit | I9 (shared runtime), M5, M7 (owner: www 2 hops), M10 (logo, English `LearningResource` `inLanguage`), M13, M14, M15, M16. M6 (HSTS) fixed, see batch 3 |
 
 ---
 
@@ -450,3 +450,28 @@ Owner's approval: every row of the batch 3 table; the other fr/es/pt legal descr
   - The "last updated" date of the 3 changed pages is now October 7, 2026.
 - **Test:** the 27 Spanish worksheet descriptions stay within 70–160 characters.
 - **Local check:** tsc and lint clean, **402/402 tests**. Every page compared with production: 1,707 identical. 37 pages changed only their description and og/twitter tags, the 3 cookie pages changed their text as above, and 32 stories differ only in the database dates (the local server reads the `dev` branch). **0 descriptions over 160**; none under 70 left to fix (the snapshot shows the sight-word descriptions cut at their quotation marks; the real ones are longer).
+
+### Production (2026-10-07)
+
+Commit `e1fb057` pushed as `HEAD:main` at 22:44:17 UTC; Workers Builds deployed version `edbebc82` (build finished 22:48:02).
+
+- `PAYPAL_MODE` still `live` (compared, not printed); 17 bindings including `PRO_FILES`.
+- Sitemap: **XSD valid, 0 errors**, the same 1,772 URLs as before.
+- The 14 pages checked serve the new descriptions, all `index, follow`:
+  - 27 Spanish worksheets: 145 characters.
+  - The 4 games: 127–141 characters.
+  - The 6 legal pages: 135–149 characters.
+  - The kept fr legal descriptions are unchanged.
+- The 4 cookie pages say "EN / FR / ES / PT"; the old two-language wording is gone.
+
+### M6 (HSTS): fixed
+
+Enabled by the owner in Cloudflare (SSL/TLS → Edge Certificates). Checked with `curl -I` on 2026-10-07: `Strict-Transport-Security: max-age=15552000; includeSubDomains` (no preload) on every https response tested:
+- `/` (10 out of 10 requests), `/fr/jeux`, `/sitemap.xml`, `/es/precios`, a story, a preview JPG, `/favicon.ico`;
+- the `/nope` 404 and the `https://www` 301.
+
+Plain-http responses don't carry it, which is correct (browsers ignore it over http). It comes from Cloudflare, so nothing is added in the app.
+
+### M7 (www in one hop): waiting for the owner
+
+`https://www.alphabes.com/fr/jeux?x=1` takes 1 hop, but `http://www.alphabes.com/fr/jeux?x=1` takes 2: Always Use HTTPS answers first (→ `https://www…`), then the www rule. Path and query are kept. The dashboard change is described in the conversation of 2026-10-07: a Single Redirect for `www.alphabes.com` → `https://alphabes.com` + path (301, query kept), a second one for http on the apex, and Always Use HTTPS turned off. To verify once it's done.
