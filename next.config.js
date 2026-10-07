@@ -51,7 +51,7 @@ const nextConfig = {
         ],
       },
       // Crawlers and proxies may keep the sitemap an hour (its story list is
-      // cached that long on the server too; see app/sitemap.ts).
+      // cached that long on the server too; see lib/sitemap.ts).
       {
         source: "/sitemap.xml",
         headers: [{ key: "Cache-Control", value: "public, max-age=3600, stale-while-revalidate=86400" }],

@@ -43,11 +43,10 @@ import {
 const baseUrl = SITE_URL;
 
 // Stories live in the database, so the sitemap is built per request (the
-// build never needs the database), but the story list is cached for an hour
-// (R2 incremental cache on Workers): Googlebot gets a fast answer that
-// doesn't wait for the database, and a new story appears within the hour.
-export const dynamic = "force-dynamic";
-
+// build never needs the database; app/sitemap.xml/route.ts is dynamic), but
+// the story list is cached for an hour (R2 incremental cache on Workers):
+// Googlebot gets a fast answer that doesn't wait for the database, and a new
+// story appears within the hour.
 const SITEMAP_REVALIDATE_SECONDS = 3600;
 
 // Throws when the database is unreachable, so a failure is never cached.
@@ -91,7 +90,7 @@ async function getStoryRoutes(): Promise<MetadataRoute.Sitemap> {
   }
 }
 
-export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+export async function sitemapEntries(): Promise<MetadataRoute.Sitemap> {
   const staticRoutes = [
     "",
     "/alphabet",
@@ -391,4 +390,30 @@ function withTwins(entries: MetadataRoute.Sitemap): MetadataRoute.Sitemap {
     for (const url of Object.values(twins)) out.push({ ...entry, url, alternates: { languages } });
   }
   return out;
+}
+
+const escapeXml = (s: string) =>
+  s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&apos;");
+
+// The same XML as Next's built-in sitemap, except that the hreflang
+// <xhtml:link> elements come after <priority>: the sitemap 0.9 XSD only
+// allows other namespaces at the end of <url>, and Next writes them right
+// after <loc>.
+export function sitemapXml(entries: MetadataRoute.Sitemap): string {
+  const hasAlternates = entries.some((e) => Object.keys(e.alternates?.languages ?? {}).length > 0);
+  let xml = '<?xml version="1.0" encoding="UTF-8"?>\n';
+  xml += `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"${hasAlternates ? ' xmlns:xhtml="http://www.w3.org/1999/xhtml"' : ""}>\n`;
+  for (const e of entries) {
+    xml += `<url>\n<loc>${escapeXml(e.url)}</loc>\n`;
+    if (e.lastModified) {
+      xml += `<lastmod>${e.lastModified instanceof Date ? e.lastModified.toISOString() : e.lastModified}</lastmod>\n`;
+    }
+    if (e.changeFrequency) xml += `<changefreq>${e.changeFrequency}</changefreq>\n`;
+    if (typeof e.priority === "number") xml += `<priority>${e.priority}</priority>\n`;
+    for (const [hreflang, href] of Object.entries(e.alternates?.languages ?? {})) {
+      if (href) xml += `<xhtml:link rel="alternate" hreflang="${escapeXml(hreflang)}" href="${escapeXml(href)}" />\n`;
+    }
+    xml += "</url>\n";
+  }
+  return xml + "</urlset>\n";
 }
