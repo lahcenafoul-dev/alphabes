@@ -11,6 +11,7 @@ import { schoolTopicsPt } from "@/lib/escola-pt";
 import { spanishSyllablePages } from "@/lib/silabas-es";
 import { fichaCategoryParams, fichaPacks } from "@/lib/fichas-es";
 import { phonicsSkills } from "@/lib/phonics-data";
+import { games } from "@/lib/games-data";
 import { frenchSounds } from "@/lib/sons-fr";
 import { FICHE_CATEGORIES, fichePacks, fiches } from "@/lib/fiches-fr";
 import { frenchGames } from "@/lib/games-fr";
@@ -103,12 +104,9 @@ export async function sitemapEntries(): Promise<MetadataRoute.Sitemap> {
     "/flashcards",
     "/activities",
     "/pricing",
-    "/login",
-    "/register",
     "/blog",
     "/about",
     "/contact",
-    "/privacy",
     "/privacy-policy",
     "/refunds",
     "/terms",
@@ -125,6 +123,22 @@ export async function sitemapEntries(): Promise<MetadataRoute.Sitemap> {
     lastModified: RELEASE_DATE,
     changeFrequency: "monthly" as const,
     priority: 0.8,
+  }));
+
+  // One printable page per letter; withTwins adds the French, Spanish and
+  // Portuguese ones.
+  const letterWorksheetRoutes = getAllLetterSlugs().map((letter) => ({
+    url: `${baseUrl}/alphabet/${letter}/worksheet`,
+    lastModified: RELEASE_DATE,
+    changeFrequency: "monthly" as const,
+    priority: 0.7,
+  }));
+
+  const gameRoutes = games.map((g) => ({
+    url: `${baseUrl}/games/${g.slug}`,
+    lastModified: RELEASE_DATE,
+    changeFrequency: "monthly" as const,
+    priority: 0.6,
   }));
 
   const phonicsRoutes = phonicsSkills.map((s) => ({
@@ -210,6 +224,8 @@ export async function sitemapEntries(): Promise<MetadataRoute.Sitemap> {
   const englishEntries: MetadataRoute.Sitemap = [
     ...staticRoutes,
     ...letterRoutes,
+    ...letterWorksheetRoutes,
+    ...gameRoutes,
     ...phonicsRoutes,
     ...worksheetCategoryRoutes,
     ...worksheetTypeCategoryRoutes,
@@ -223,24 +239,27 @@ export async function sitemapEntries(): Promise<MetadataRoute.Sitemap> {
     ...kindergartenRoutes,
   ];
 
-  // The French, Spanish and Portuguese games. Their English twins aren't in the sitemap,
-  // but the pages exist, so they are given as alternates.
+  // Games with no English twin (the clapping game exists only in Spanish and
+  // Portuguese); the others come with their English twin through withTwins.
   const gameEntries = (locale: "fr" | "es" | "pt", slugs: string[]): MetadataRoute.Sitemap =>
-    slugs.map((slug) => {
+    slugs.flatMap((slug) => {
       const { canonical, languages } = alternatesFor(locale, "/games/[slug]", { slug });
-      return {
-        url: canonical as string,
-        lastModified: RELEASE_DATE,
-        changeFrequency: "monthly" as const,
-        priority: 0.6,
-        ...(languages && { alternates: { languages: languages as Record<string, string> } }),
-      };
+      if (languages && "en" in languages) return [];
+      return [
+        {
+          url: canonical as string,
+          lastModified: RELEASE_DATE,
+          changeFrequency: "monthly" as const,
+          priority: 0.6,
+          ...(languages && { alternates: { languages: languages as Record<string, string> } }),
+        },
+      ];
     });
   const frenchGameEntries = gameEntries("fr", frenchGames.map((g) => g.slug));
   const spanishGameEntries = gameEntries("es", spanishGames.map((g) => g.slug));
   const portugueseGameEntries = gameEntries("pt", portugueseGames.map((g) => g.slug));
 
-  // Pages with no English twin: the letters with accents, the accents page,
+  // Pages with no English twin: the letters with accents and their worksheets, the accents page,
   // the French sound pages, the French worksheets and packs, and the school
   // topics written only in French.
   const frenchOnlyEntries: MetadataRoute.Sitemap = [
@@ -249,6 +268,12 @@ export async function sitemapEntries(): Promise<MetadataRoute.Sitemap> {
       lastModified: RELEASE_DATE,
       changeFrequency: "monthly" as const,
       priority: 0.8,
+    })),
+    ...frenchLetters.filter(isAccentLetter).map((l) => l.slug).map((letter) => ({
+      url: absoluteUrl("fr", "/alphabet/[letter]/worksheet", { letter }),
+      lastModified: RELEASE_DATE,
+      changeFrequency: "monthly" as const,
+      priority: 0.7,
     })),
     ...frenchSounds.map((s) => ({
       url: absoluteUrl("fr", "/phonics/[skill]", { skill: s.slug }),
@@ -278,7 +303,7 @@ export async function sitemapEntries(): Promise<MetadataRoute.Sitemap> {
       })),
   ];
 
-  // Spanish pages with no twin: the ñ, the tilde page, the syllable pages,
+  // Spanish pages with no twin: the ñ and its worksheet, the tilde page, the syllable pages,
   // the Spanish worksheets and packs, and the school topics written only in
   // Spanish.
   const spanishOnlyEntries: MetadataRoute.Sitemap = [
@@ -287,6 +312,12 @@ export async function sitemapEntries(): Promise<MetadataRoute.Sitemap> {
       lastModified: RELEASE_DATE,
       changeFrequency: "monthly" as const,
       priority: 0.8,
+    })),
+    ...["enie"].map((letter) => ({
+      url: absoluteUrl("es", "/alphabet/[letter]/worksheet", { letter }),
+      lastModified: RELEASE_DATE,
+      changeFrequency: "monthly" as const,
+      priority: 0.7,
     })),
     ...spanishSyllablePages.map((p) => ({
       url: absoluteUrl("es", "/phonics/[skill]", { skill: p.slug }),
@@ -316,7 +347,7 @@ export async function sitemapEntries(): Promise<MetadataRoute.Sitemap> {
       })),
   ];
 
-  // Portuguese pages with no twin: the Ç, the accents page, the syllable
+  // Portuguese pages with no twin: the Ç and its worksheet, the accents page, the syllable
   // pages, the worksheets and packs, and the school topics written only in
   // Portuguese.
   const portugueseOnlyEntries: MetadataRoute.Sitemap = [
@@ -325,6 +356,12 @@ export async function sitemapEntries(): Promise<MetadataRoute.Sitemap> {
       lastModified: RELEASE_DATE,
       changeFrequency: "monthly" as const,
       priority: 0.8,
+    })),
+    ...[CEDILHA_SLUG].map((letter) => ({
+      url: absoluteUrl("pt", "/alphabet/[letter]/worksheet", { letter }),
+      lastModified: RELEASE_DATE,
+      changeFrequency: "monthly" as const,
+      priority: 0.7,
     })),
     ...portugueseSyllablePages.map((p) => ({
       url: absoluteUrl("pt", "/phonics/[skill]", { skill: p.slug }),

@@ -7,6 +7,7 @@ import { topicsOfEs } from "@/lib/escuela-es";
 import { topicsOfPt } from "@/lib/escola-pt";
 import { initLocale } from "@/lib/i18n/server";
 import KindergartenTopicEn, { englishTopicParams, topicMetadataEn } from "./topic-en";
+import { withSocialMetadata } from "@/lib/social-metadata";
 
 type Props = { params: Promise<{ locale: string; topic: string }> };
 
@@ -29,7 +30,7 @@ export function generateStaticParams({ params }: { params: { locale: string } })
   return topics.map((topic) => ({ topic }));
 }
 
-export async function generateMetadata(props: Props): Promise<Metadata> {
+async function pageMetadata(props: Props): Promise<Metadata> {
   const { locale: param, topic } = await props.params;
   const locale = initLocale(param);
   if (locale === "fr") return schoolTopicMetadataFr("grande-section", topic);
@@ -46,3 +47,5 @@ export default async function KindergartenTopicPage(props: Props) {
   if (locale === "pt") return <SchoolTopicPt level="primeiro-ano" slug={topic} />;
   return <KindergartenTopicEn slug={topic} />;
 }
+
+export const generateMetadata = withSocialMetadata(pageMetadata);

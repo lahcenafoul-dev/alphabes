@@ -1,18 +1,19 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { blogPosts, blogCategories } from "@/lib/blog-data";
+import { withSocialMetadata } from "@/lib/social-metadata";
 
 const BASE_URL = "https://alphabes.com";
 const title = "AlphaBes Blog: Alphabet, Phonics & Early Learning Guides";
 const description =
   "Practical, original guides for parents and teachers on teaching the alphabet, phonics, letter tracing, and early reading skills.";
 
-export const metadata: Metadata = {
+export const generateMetadata = withSocialMetadata((): Metadata => ({
   title,
   description,
   alternates: { canonical: `${BASE_URL}/blog` },
   openGraph: { title, description, url: `${BASE_URL}/blog` },
-};
+}));
 
 function formatDate(iso: string): string {
   return new Date(iso).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });

@@ -8,6 +8,7 @@ import GameEn, { englishGameParams, gameMetadataEn } from "./game-en";
 import GameFr, { gameMetadataFr } from "./game-fr";
 import GameEs, { gameMetadataEs } from "./game-es";
 import GamePt, { gameMetadataPt } from "./game-pt";
+import { withSocialMetadata } from "@/lib/social-metadata";
 
 type Props = { params: Promise<{ locale: string; slug: string }> };
 
@@ -30,7 +31,7 @@ export function generateStaticParams({ params }: { params: { locale: string } })
   return slugs.map((slug) => ({ slug }));
 }
 
-export async function generateMetadata(props: Props): Promise<Metadata> {
+async function pageMetadata(props: Props): Promise<Metadata> {
   const { locale: param, slug } = await props.params;
   const locale = initLocale(param);
   return byLocale(locale, { en: gameMetadataEn, fr: gameMetadataFr, es: gameMetadataEs, pt: gameMetadataPt })(slug);
@@ -42,3 +43,5 @@ export default async function GamePage(props: Props) {
   const Game = byLocale(locale, { en: GameEn, fr: GameFr, es: GameEs, pt: GamePt });
   return <Game slug={slug} />;
 }
+
+export const generateMetadata = withSocialMetadata(pageMetadata);

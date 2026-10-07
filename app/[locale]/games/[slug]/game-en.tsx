@@ -5,6 +5,7 @@ import { games, getGame } from "@/lib/games-data";
 import FindTheLetterGame from "@/components/games/FindTheLetterGame";
 import MatchLetterPictureGame from "@/components/games/MatchLetterPictureGame";
 import ClientOnly from "@/components/games/ClientOnly";
+import { gameAreaMinHeight } from "@/components/games/game-area";
 import PremiumGameTeaser from "@/components/billing/PremiumGameTeaser";
 import { buildBreadcrumbJsonLd } from "@/lib/json-ld";
 import { alternatesFor } from "@/lib/i18n/routes";
@@ -51,7 +52,7 @@ export default function GameEn({ slug }: { slug: string }) {
       {game.isPremium ? (
         <PremiumGameTeaser locale="en" slug={game.slug} />
       ) : (
-        <div className="mt-8 rounded-block border border-chalkboard/10 p-6 shadow-block">
+        <div className={`mt-8 rounded-block border border-chalkboard/10 p-6 shadow-block ${gameAreaMinHeight(game.slug)}`}>
           <ClientOnly fallback={<p className="text-chalkboard/50">Loading game…</p>}>
             <GameBody slug={game.slug} />
           </ClientOnly>

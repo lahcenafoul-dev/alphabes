@@ -8,7 +8,7 @@
 // Picture words come from the "primera sílaba" worksheets
 // (FIRST_SYLLABLE_WORDS in lib/fichas-es.ts): split into syllables
 // ("ma|no"), so first letters, first syllables and syllable counts are known.
-import { FIRST_SYLLABLE_WORDS, LOOK_ALIKES } from "./fichas-es";
+import { FIRST_SYLLABLE_WORDS, LOOK_ALIKES } from "./fichas-es-words";
 import { spanishLetters, type SpanishLetter, type SpanishWord } from "./letters-es";
 
 export type SpanishGame = {

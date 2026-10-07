@@ -5,8 +5,9 @@ import BundlesEn, { bundlesMetadataEn } from "./bundles-en";
 import BundlesFr, { bundlesMetadataFr } from "./bundles-fr";
 import BundlesEs, { bundlesMetadataEs } from "./bundles-es";
 import BundlesPt, { bundlesMetadataPt } from "./bundles-pt";
+import { withSocialMetadata } from "@/lib/social-metadata";
 
-export async function generateMetadata({ params }: { params: LocaleParams }): Promise<Metadata> {
+async function pageMetadata({ params }: { params: LocaleParams }): Promise<Metadata> {
   const locale = initLocale((await params).locale);
   return byLocale(locale, { en: bundlesMetadataEn, fr: bundlesMetadataFr, es: bundlesMetadataEs, pt: bundlesMetadataPt });
 }
@@ -16,3 +17,5 @@ export default async function BundlesPage({ params }: { params: LocaleParams }) 
   const Page = byLocale(locale, { en: BundlesEn, fr: BundlesFr, es: BundlesEs, pt: BundlesPt });
   return <Page />;
 }
+
+export const generateMetadata = withSocialMetadata(pageMetadata);

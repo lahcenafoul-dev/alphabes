@@ -4,7 +4,7 @@
 //
 // Words come from the "son" worksheets (LETTER_IMAGES in lib/fiches-fr.ts):
 // pictures a child can name, whose first letter and first sound are known.
-import { CLOSE_KEYS, LETTER_IMAGES } from "./fiches-fr";
+import { CLOSE_KEYS, LETTER_IMAGES } from "./fiches-fr-words";
 import { frenchLetters, isAccentLetter, type FrenchLetter, type FrenchWord } from "./letters-fr";
 
 export type FrenchGame = {

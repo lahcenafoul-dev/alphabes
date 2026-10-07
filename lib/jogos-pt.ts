@@ -8,7 +8,7 @@
 // Picture words come from the "sílaba inicial" worksheets
 // (FIRST_SYLLABLE_WORDS in lib/atividades-pt.ts): split into syllables
 // ("bo|la"), so first letters, first syllables and syllable counts are known.
-import { FIRST_SYLLABLE_WORDS, LOOK_ALIKES } from "./atividades-pt";
+import { FIRST_SYLLABLE_WORDS, LOOK_ALIKES } from "./atividades-pt-words";
 import { alphabetLetters, type PortugueseLetter, type PortugueseWord } from "./letters-pt";
 
 export type PortugueseGame = {

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Link } from "@/i18n/navigation";
 import ClientOnly from "@/components/games/ClientOnly";
+import { gameAreaMinHeight } from "@/components/games/game-area";
 import PremiumGameTeaser from "@/components/billing/PremiumGameTeaser";
 import TrouveLaLettre from "@/components/games-fr/TrouveLaLettre";
 import LettreEtImage from "@/components/games-fr/LettreEtImage";
@@ -77,7 +78,7 @@ export default function GameFr({ slug }: { slug: string }) {
       {g.isPremium ? (
         <PremiumGameTeaser locale="fr" slug={g.slug} />
       ) : (
-        <div className="mt-8 rounded-block border border-chalkboard/10 p-6 shadow-block">
+        <div className={`mt-8 rounded-block border border-chalkboard/10 p-6 shadow-block ${gameAreaMinHeight(g.slug)}`}>
           <ClientOnly fallback={<p className="text-chalkboard/50">Chargement du jeu…</p>}>
             <GameBody slug={g.slug} />
           </ClientOnly>

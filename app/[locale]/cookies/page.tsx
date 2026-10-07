@@ -5,8 +5,9 @@ import CookiesEn, { cookiesMetadataEn } from "./cookies-en";
 import CookiesFr, { cookiesMetadataFr } from "./cookies-fr";
 import CookiesEs, { cookiesMetadataEs } from "./cookies-es";
 import CookiesPt, { cookiesMetadataPt } from "./cookies-pt";
+import { withSocialMetadata } from "@/lib/social-metadata";
 
-export async function generateMetadata({ params }: { params: LocaleParams }): Promise<Metadata> {
+async function pageMetadata({ params }: { params: LocaleParams }): Promise<Metadata> {
   const locale = initLocale((await params).locale);
   return byLocale(locale, { en: cookiesMetadataEn, fr: cookiesMetadataFr, es: cookiesMetadataEs, pt: cookiesMetadataPt });
 }
@@ -16,3 +17,5 @@ export default async function CookiesPage({ params }: { params: LocaleParams }) 
   const Page = byLocale(locale, { en: CookiesEn, fr: CookiesFr, es: CookiesEs, pt: CookiesPt });
   return <Page />;
 }
+
+export const generateMetadata = withSocialMetadata(pageMetadata);

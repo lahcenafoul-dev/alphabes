@@ -34,6 +34,8 @@ const nextConfig = {
   // go to the pack's page. Each file was named after its pack.
   async redirects() {
     return [
+      // An older, shorter copy of the privacy policy (docs/seo-audit.md, I4).
+      { source: "/privacy", destination: "/privacy-policy", statusCode: 301 },
       { source: "/fiches-pdf/packs/:slug([a-z0-9-]+).pdf", destination: "/fr/fiches/packs/:slug", permanent: true },
       { source: "/fichas-pdf/paquetes/:slug([a-z0-9-]+).pdf", destination: "/es/fichas/paquetes/:slug", permanent: true },
       { source: "/atividades-pdf/pacotes/:slug([a-z0-9-]+).pdf", destination: "/pt/atividades/pacotes/:slug", permanent: true },

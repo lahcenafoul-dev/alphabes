@@ -8,6 +8,7 @@ import SkillEn, { englishSkillParams, skillMetadataEn } from "./skill-en";
 import SoundFr, { soundMetadataFr } from "./sound-fr";
 import SilabaEs, { syllableMetadataEs } from "./silaba-es";
 import SilabaPt, { syllableMetadataPt } from "./silaba-pt";
+import { withSocialMetadata } from "@/lib/social-metadata";
 
 type Props = { params: Promise<{ locale: string; skill: string }> };
 
@@ -32,7 +33,7 @@ export function generateStaticParams({ params }: { params: { locale: string } })
   return skills.map((skill) => ({ skill }));
 }
 
-export async function generateMetadata(props: Props): Promise<Metadata> {
+async function pageMetadata(props: Props): Promise<Metadata> {
   const { locale: param, skill } = await props.params;
   const locale = initLocale(param);
   return byLocale(locale, { en: skillMetadataEn, fr: soundMetadataFr, es: syllableMetadataEs, pt: syllableMetadataPt })(skill);
@@ -44,3 +45,5 @@ export default async function PhonicsSkillPage(props: Props) {
   const Page = byLocale(locale, { en: SkillEn, fr: SoundFr, es: SilabaEs, pt: SilabaPt });
   return <Page slug={skill} />;
 }
+
+export const generateMetadata = withSocialMetadata(pageMetadata);

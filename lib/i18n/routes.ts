@@ -7,6 +7,11 @@ import { routing, type AppPathname, type Locale } from "@/i18n/routing";
 
 export const SITE_URL = "https://alphabes.com";
 
+// <html lang> and JSON-LD inLanguage. Portuguese is Brazilian
+// (docs/portuguese-plan.md, P1), so phones and screen readers use a Brazilian
+// voice; its hreflang stays "pt".
+export const HTML_LANG: Record<Locale, string> = { en: "en", fr: "fr", es: "es", pt: "pt-BR" };
+
 export const LOCALE_COOKIE = "NEXT_LOCALE";
 export const LOCALE_COOKIE_MAX_AGE = 60 * 60 * 24 * 365;
 

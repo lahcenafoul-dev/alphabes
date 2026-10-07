@@ -81,6 +81,10 @@ describe("middleware routing", () => {
       "/robots.txt",
       "/sitemap.xml",
       "/favicon.ico",
+      "/manifest.webmanifest",
+      "/apple-icon",
+      "/icon",
+      "/opengraph-image",
       "/audio/a.mp3",
       "/fiches-pdf/packs/x.pdf",
       "/_next/static/chunks/main.js",
@@ -158,8 +162,19 @@ describe("middleware routing", () => {
     expect(redirect(await middleware(request("/stories/the-little-apple", "NEXT_LOCALE=fr")))).toBeNull();
   });
 
-  it("redirects /en URLs to the unprefixed English ones", async () => {
-    expect(redirect(await middleware(request("/en/pricing")))).toBe("/pricing");
+  it("redirects /en URLs to the unprefixed English ones, permanently", async () => {
+    for (const [from, to] of [
+      ["/en/pricing", "/pricing"],
+      ["/en", "/"],
+      ["/en/", "/"],
+      ["/en/alphabet/a?x=1", "/alphabet/a?x=1"],
+    ]) {
+      const res = await middleware(request(from));
+      expect(res.status, from).toBe(308);
+      expect(redirect(res), from).toBe(to);
+    }
+    // Not a language prefix.
+    expect(redirect(await middleware(request("/english")))).toBeNull();
   });
 
   it("never sends hreflang Link headers (hreflang lives in the HTML and sitemap)", async () => {

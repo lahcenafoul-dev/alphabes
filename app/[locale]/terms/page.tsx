@@ -5,8 +5,9 @@ import TermsEn, { termsMetadataEn } from "./terms-en";
 import TermsFr, { termsMetadataFr } from "./terms-fr";
 import TermsEs, { termsMetadataEs } from "./terms-es";
 import TermsPt, { termsMetadataPt } from "./terms-pt";
+import { withSocialMetadata } from "@/lib/social-metadata";
 
-export async function generateMetadata({ params }: { params: LocaleParams }): Promise<Metadata> {
+async function pageMetadata({ params }: { params: LocaleParams }): Promise<Metadata> {
   const locale = initLocale((await params).locale);
   return byLocale(locale, { en: termsMetadataEn, fr: termsMetadataFr, es: termsMetadataEs, pt: termsMetadataPt });
 }
@@ -16,3 +17,5 @@ export default async function TermsPage({ params }: { params: LocaleParams }) {
   const Page = byLocale(locale, { en: TermsEn, fr: TermsFr, es: TermsEs, pt: TermsPt });
   return <Page />;
 }
+
+export const generateMetadata = withSocialMetadata(pageMetadata);

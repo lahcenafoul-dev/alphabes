@@ -3,11 +3,13 @@ import { Suspense } from "react";
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { alternatesFor } from "@/lib/i18n/routes";
+import { buildProProductJsonLd } from "@/lib/json-ld";
 import { initLocale, type LocaleParams } from "@/lib/i18n/server";
 import ClientMessages from "@/components/ClientMessages";
 import CheckoutNotice from "./checkout-notice";
+import { withSocialMetadata } from "@/lib/social-metadata";
 
-export async function generateMetadata({ params }: { params: LocaleParams }): Promise<Metadata> {
+async function pageMetadata({ params }: { params: LocaleParams }): Promise<Metadata> {
   const locale = initLocale((await params).locale);
   const t = await getTranslations({ locale, namespace: "Pricing" });
   return {
@@ -98,6 +100,21 @@ export default async function PricingPage({ params }: { params: LocaleParams }) 
           {t("refundLink")}
         </Link>
       </p>
+
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            buildProProductJsonLd(locale, {
+              description: t("intro"),
+              monthlyName: t("monthly.name"),
+              yearlyName: t("annual.name"),
+            }),
+          ),
+        }}
+      />
     </main>
   );
 }
+
+export const generateMetadata = withSocialMetadata(pageMetadata);

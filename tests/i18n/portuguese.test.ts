@@ -84,7 +84,6 @@ describe("Portuguese URLs (docs/portuguese-plan.md)", () => {
   it("lists only the pages written so far", () => {
     expect(isAvailable("pt", "/pricing")).toBe(true);
     expect(isAvailable("pt", "/blog")).toBe(false);
-    expect(isAvailable("pt", "/privacy")).toBe(false);
     for (const pathname of PORTUGUESE_PATHNAMES) expect(isAvailable("pt", pathname)).toBe(true);
   });
 

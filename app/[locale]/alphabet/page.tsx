@@ -5,8 +5,9 @@ import AlphabetEn, { alphabetMetadataEn } from "./alphabet-en";
 import AlphabetFr, { alphabetMetadataFr } from "./alphabet-fr";
 import AlphabetEs, { alphabetMetadataEs } from "./alphabet-es";
 import AlphabetPt, { alphabetMetadataPt } from "./alphabet-pt";
+import { withSocialMetadata } from "@/lib/social-metadata";
 
-export async function generateMetadata({ params }: { params: LocaleParams }): Promise<Metadata> {
+async function pageMetadata({ params }: { params: LocaleParams }): Promise<Metadata> {
   const locale = initLocale((await params).locale);
   return byLocale(locale, { en: alphabetMetadataEn, fr: alphabetMetadataFr, es: alphabetMetadataEs, pt: alphabetMetadataPt });
 }
@@ -16,3 +17,5 @@ export default async function AlphabetPage({ params }: { params: LocaleParams })
   const Page = byLocale(locale, { en: AlphabetEn, fr: AlphabetFr, es: AlphabetEs, pt: AlphabetPt });
   return <Page />;
 }
+
+export const generateMetadata = withSocialMetadata(pageMetadata);

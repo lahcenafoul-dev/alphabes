@@ -225,3 +225,49 @@ Volumes weren't pulled (no paid keyword tool was used). They can be checked in S
 - Many fixes change **English** output (titles, sitemap entries, OG tags). CLAUDE.md's "English URLs and output must not change" rule was written for i18n work, so English changes will be listed for approval too.
 - Code-only fixes that don't change any visible text: I2, I3, I5, I6, I9, I10, I11, M3, M4, M7, M8, M9, M11, M12.
 - Cloudflare dashboard (owner): M6 HSTS, M7 one-hop www.
+
+---
+
+## Phase 2, batch 1 (2026-10-07): fixes with no visible text change
+
+Owner's scope: I2, I3, I4, I5, I6, I9 (safe changes only), I10, I11, and the non-text Minor issues M3, M4, M7, M8, M9, M10 (WebSite, Offer, stories), M11, M12. No title, description, H1 or body text changed in any language.
+
+### What changed
+
+| # | Change | Code |
+|---|---|---|
+| I2 | Sitemap lists the letter worksheet pages (26 en, 30 fr, 27 es, 27 pt) and the 5 English games, so all hreflang targets are in it. The fr/es/pt games now come in with their English twin; only the clapping game (es/pt only) is listed alone | `lib/sitemap.ts` |
+| I3 | `/login` and `/register` left the sitemap | `lib/sitemap.ts` |
+| I4 | `/privacy` → **301** `/privacy-policy`; the old page and its route are gone | `next.config.js`, `i18n/routing.ts` |
+| I5, I6, M3, M4 | Every page's metadata goes through `withSocialMetadata`: `og:url` = canonical, `og:title`/`og:description` = the page's own, `og:image` = the page's image or the site card, `og:type`, `og:site_name`, `og:locale` (en_US, fr_FR, es_LA, pt_BR), and matching `twitter:*`. English stories get their name as `og:title` (their `<title>` is batch 2) | `lib/social-metadata.ts`, every `page.tsx`, `components/LocaleDocument.tsx` |
+| I9 | The French, Spanish and Portuguese games imported a few word lists from the worksheet catalogues, which pulled the whole catalogues (50 kB gzipped) into the browser code of every game page. The lists moved, unchanged, to `lib/*-words.ts` (re-exported where they were) | `lib/fiches-fr-words.ts`, `lib/fichas-es-words.ts`, `lib/atividades-pt-words.ts` |
+| I10 | The free games' box keeps at least the game's smallest measured height while the game loads in the browser | `components/games/game-area.ts`, `game-*.tsx` |
+| I11 | A 320 px copy of each of the 749 previews (`x.320.jpg`, `npm run previews:thumbs`); worksheet cards offer it in `srcset`; the large hero preview keeps 476 px | `scripts/preview-thumbs.mjs`, `components/fiches/FicheParts.tsx` |
+| M7 | `/en/...` → **308** to the unprefixed URL (was 307) | `middleware.ts` |
+| M8 | `/manifest.webmanifest` and `/apple-icon` (180 px), linked from every page | `app/manifest.ts`, `app/apple-icon.tsx`, middleware matcher |
+| M9 | Previews, PDFs, story audio and `favicon.ico`: `max-age=86400, stale-while-revalidate=604800` (was `max-age=0`) | `public/_headers` |
+| M10 | JSON-LD `WebSite` on the 4 home pages; `Product` "AlphaBes Pro" with the monthly and yearly `Offer` (USD, `UnitPriceSpecification`) on the 4 pricing pages; `ShortStory` on every story page | `lib/json-ld.ts` |
+| M11 | Footer column titles are `<p>` with the same classes (were `<h2>`) | `components/Footer.tsx` |
+| M12 | The footer's Dashboard link is `rel="nofollow"`, and robots.txt disallows the dashboard in all 4 languages (was `/dashboard` only) | `components/Footer.tsx`, `app/robots.ts` |
+
+Not done under I9: the remaining shared JavaScript is React and the Next.js runtime (103 kB, the same chunks as before), and a game page still ships the game components of all 4 languages. Splitting those per language would mean restructuring the game pages, which isn't a "safe" change. The Cloudflare Web Analytics beacon (~100 ms) is injected by Cloudflare and can only be turned off in the dashboard.
+
+### Tests added (`tests/seo/`, 17 tests)
+
+- `sitemap-coverage`: every letter worksheet and game is listed in all languages; no URL twice; no noindex, private or unwritten page; every hreflang alternate has its own entry; game alternates equal the pages' own.
+- `social-metadata`: og/twitter completion, canonical as `og:url`, page values kept, locales.
+- `json-ld`: the Offer prices equal what each language's pricing page shows; WebSite and ShortStory URLs and languages.
+- `preview-thumbs`: every fr/es/pt preview has an up-to-date thumbnail.
+- `robots`: the dashboards in 4 languages are disallowed.
+- `tests/i18n/middleware`: `/en`, `/en/`, `/en/x?y` → 308; manifest and icons bypass the middleware.
+
+### Local checks (`next build` + `next start`)
+
+- `tsc` clean, lint clean, **394/394 unit tests** (38 files).
+- **Every page compared with production** (`scripts/i18n-check/snapshot.mjs` + a per-line diff, 1,781 pages in 4 languages): visible text, links, title, description, canonical, hreflang, robots and existing JSON-LD are **identical on every page**. The only differences are the og/twitter tags (1,673 pages) and the new JSON-LD (32 ShortStory, 4 WebSite, 4 Product).
+- After: all 1,778 indexable pages have `og:image`, `og:type`, `og:locale`, `twitter:image`, and `og:url` = canonical; no generic `twitter:title` remains.
+- Sitemap: **XSD valid, 0 errors**, 1,778 URLs = 1,666 − 3 (`/login`, `/register`, `/privacy`) + 115 (exactly the 115 indexable pages the audit found missing). The 1,663 URLs in both have identical entries apart from `lastmod`.
+- Game CLS (Playwright, 5 widths from 360 to 1280 px, the 10 free game pages): **0.07–0.31 before → 0–0.036 after**; the game heights are unchanged (no added blank space). All 22 game pages and 3 play pages render with no console errors; premium pages show their paywall when logged out.
+- First-load JS: game pages **193 → 162 kB**, play pages 195 → 164 kB, phonics skill pages 141 → 129 kB. Other pages unchanged.
+- Preview images loaded on a phone (412 px wide, worksheet hubs and `/fr`): at 1.75× density 33–96 KB → 12–14 KB; at 3× density 63–72 KB → 32–36 KB.
+- Checkout: logged-out subscribe, both plans × 4 languages → 303 to the localized login (unchanged).

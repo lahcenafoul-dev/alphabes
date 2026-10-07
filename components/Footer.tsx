@@ -58,13 +58,19 @@ export default async function Footer({ locale }: { locale: Locale }) {
           .filter((col) => col.links.length > 0)
           .map((col) => (
             <div key={col.title}>
-              <h2 className="font-display font-bold text-sm uppercase tracking-wide text-paper/60">
+              {/* Not a heading: four footer titles on every page would sit in each page's outline. */}
+              <p className="font-display font-bold text-sm uppercase tracking-wide text-paper/60">
                 {t(col.title)}
-              </h2>
+              </p>
               <ul className="mt-4 space-y-2">
                 {col.links.map((link) => (
                   <li key={link.href}>
-                    <Link href={localizedPath(locale, link.href)} className="text-paper/80 hover:text-paper text-sm">
+                    <Link
+                      href={localizedPath(locale, link.href)}
+                      // The dashboard redirects visitors who aren't signed in to the login page.
+                      rel={link.href === "/dashboard" ? "nofollow" : undefined}
+                      className="text-paper/80 hover:text-paper text-sm"
+                    >
                       {t(link.label)}
                     </Link>
                   </li>

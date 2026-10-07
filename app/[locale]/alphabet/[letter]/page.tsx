@@ -10,6 +10,7 @@ import LetterEs, { letterMetadataEs } from "./letter-es";
 import TildeEs, { tildeMetadataEs } from "./tilde-es";
 import LetterPt, { letterMetadataPt } from "./letter-pt";
 import AcentosPt, { acentosMetadataPt } from "./acentos-pt";
+import { withSocialMetadata } from "@/lib/social-metadata";
 
 type Props = { params: Promise<{ locale: string; letter: string }> };
 
@@ -34,7 +35,7 @@ export function generateStaticParams({ params }: { params: { locale: string } })
   return letters.map((letter) => ({ letter }));
 }
 
-export async function generateMetadata(props: Props): Promise<Metadata> {
+async function pageMetadata(props: Props): Promise<Metadata> {
   const { locale: param, letter } = await props.params;
   const locale = initLocale(param);
   if (locale === "en") return letterMetadataEn(letter);
@@ -51,3 +52,5 @@ export default async function LetterPage(props: Props) {
   if (locale === "pt") return letter === ACENTOS_SLUG ? <AcentosPt /> : <LetterPt letter={letter} />;
   return letter === ACCENTS_SLUG ? <AccentsFr /> : <LetterFr letter={letter} />;
 }
+
+export const generateMetadata = withSocialMetadata(pageMetadata);

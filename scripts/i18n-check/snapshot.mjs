@@ -25,8 +25,9 @@ const paths = new Set(
     .map((m) => m[1] || "/")
     .filter((p) => langs.includes(langOf(p))),
 );
-// Pages missing from the sitemap: private pages, 404s, a sample story, and
-// the English game pages (only the French ones are in the sitemap).
+// Extra pages: private pages, 404s, a sample story (stories come from the
+// database), and pages that were missing from the sitemap before 2026-10-07
+// (letter worksheets, English games), kept so older baselines compare.
 const EXTRAS = {
   en: [
     "/dashboard", "/does-not-exist", "/stories/the-little-apple", "/alphabet/a/worksheet",

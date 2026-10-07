@@ -64,7 +64,6 @@ export const routing = defineRouting({
       pt: "/educacao-infantil/[topic]",
     },
     "/pricing": { en: "/pricing", fr: "/tarifs", es: "/precios", pt: "/precos" },
-    "/privacy": { en: "/privacy", fr: "/vie-privee", es: "/privacidad", pt: "/privacidade" },
     "/privacy-policy": {
       en: "/privacy-policy",
       fr: "/confidentialite",

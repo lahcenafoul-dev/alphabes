@@ -4,8 +4,9 @@ import { alternatesFor } from "@/lib/i18n/routes";
 import { initLocale, type LocaleParams } from "@/lib/i18n/server";
 import ClientMessages from "@/components/ClientMessages";
 import ContactForm from "./contact-form";
+import { withSocialMetadata } from "@/lib/social-metadata";
 
-export async function generateMetadata({ params }: { params: LocaleParams }): Promise<Metadata> {
+async function pageMetadata({ params }: { params: LocaleParams }): Promise<Metadata> {
   const locale = initLocale((await params).locale);
   const t = await getTranslations({ locale, namespace: "Contact" });
   return {
@@ -31,3 +32,5 @@ export default async function ContactPage({ params }: { params: LocaleParams }) 
     </main>
   );
 }
+
+export const generateMetadata = withSocialMetadata(pageMetadata);

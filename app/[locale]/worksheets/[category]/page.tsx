@@ -8,6 +8,7 @@ import CategoryEn, { categoryMetadataEn, englishCategoryParams } from "./categor
 import CategoryFr, { categoryMetadataFr } from "./category-fr";
 import CategoryEs, { categoryMetadataEs } from "./category-es";
 import CategoryPt, { categoryMetadataPt } from "./category-pt";
+import { withSocialMetadata } from "@/lib/social-metadata";
 
 type Props = { params: Promise<{ locale: string; category: string }> };
 
@@ -32,7 +33,7 @@ export function generateStaticParams({ params }: { params: { locale: string } })
   return slugs.map((category) => ({ category }));
 }
 
-export async function generateMetadata(props: Props): Promise<Metadata> {
+async function pageMetadata(props: Props): Promise<Metadata> {
   const { locale: param, category } = await props.params;
   const locale = initLocale(param);
   return byLocale(locale, { en: categoryMetadataEn, fr: categoryMetadataFr, es: categoryMetadataEs, pt: categoryMetadataPt })(category);
@@ -44,3 +45,5 @@ export default async function WorksheetCategoryPage(props: Props) {
   const Page = byLocale(locale, { en: CategoryEn, fr: CategoryFr, es: CategoryEs, pt: CategoryPt });
   return <Page slug={category} />;
 }
+
+export const generateMetadata = withSocialMetadata(pageMetadata);

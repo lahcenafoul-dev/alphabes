@@ -5,10 +5,11 @@ import SchoolHubPt, { schoolHubMetadataPt } from "@/components/escola/SchoolHubP
 import { byLocale } from "@/lib/i18n/routes";
 import { initLocale, type LocaleParams } from "@/lib/i18n/server";
 import PreschoolEn, { preschoolMetadataEn } from "./preschool-en";
+import { withSocialMetadata } from "@/lib/social-metadata";
 
 // /fr/maternelle and /es/preescolar: their own hubs (lib/ecole-fr.ts,
 // lib/escuela-es.ts), not translations.
-export async function generateMetadata({ params }: { params: LocaleParams }): Promise<Metadata> {
+async function pageMetadata({ params }: { params: LocaleParams }): Promise<Metadata> {
   const locale = initLocale((await params).locale);
   return byLocale(locale, { en: preschoolMetadataEn, fr: schoolHubMetadataFr("maternelle"), es: schoolHubMetadataEs("preescolar"), pt: schoolHubMetadataPt("educacao-infantil") });
 }
@@ -20,3 +21,5 @@ export default async function PreschoolPage({ params }: { params: LocaleParams }
   if (locale === "pt") return <SchoolHubPt level="educacao-infantil" />;
   return <PreschoolEn />;
 }
+
+export const generateMetadata = withSocialMetadata(pageMetadata);

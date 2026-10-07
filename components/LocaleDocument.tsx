@@ -8,7 +8,8 @@ import IntlClientProvider from "@/components/IntlClientProvider";
 import SiteHeader from "@/components/SiteHeader";
 import { TIME_ZONE } from "@/i18n/request";
 import type { Locale } from "@/i18n/routing";
-import { SITE_URL } from "@/lib/i18n/routes";
+import { HTML_LANG, SITE_URL } from "@/lib/i18n/routes";
+import { OG_LOCALE } from "@/lib/social-metadata";
 
 const baloo = Baloo_2({
   subsets: ["latin"],
@@ -35,11 +36,6 @@ const AREA_SERVED: Record<Exclude<Locale, "en">, string[]> = {
   pt: ["BR", "PT", "AO", "MZ"],
 };
 
-// <html lang> and JSON-LD inLanguage. Portuguese is Brazilian
-// (docs/portuguese-plan.md, P1), so phones and screen readers use a Brazilian
-// voice; its hreflang stays "pt".
-const HTML_LANG: Record<Locale, string> = { en: "en", fr: "fr", es: "es", pt: "pt-BR" };
-
 /** Site-wide default metadata for a language (pages override what they need). */
 export async function buildLocaleMetadata(locale: Locale): Promise<Metadata> {
   const t = await getTranslations({ locale, namespace: "Metadata" });
@@ -57,13 +53,13 @@ export async function buildLocaleMetadata(locale: Locale): Promise<Metadata> {
       url: homeUrl,
       title: t("defaultTitle"),
       description: t("ogDescription"),
-      ...(locale === "fr" && { locale: "fr_FR" }),
-      ...(locale === "es" && { locale: "es_LA" }),
-      ...(locale === "pt" && { locale: "pt_BR" }),
+      locale: OG_LOCALE[locale],
     },
+    // Pages complete these with their own title and description
+    // (withSocialMetadata in lib/social-metadata.ts).
     twitter: {
       card: "summary_large_image",
-      title: "AlphaBes",
+      title: t("defaultTitle"),
       description: t("twitterDescription"),
     },
     robots: {

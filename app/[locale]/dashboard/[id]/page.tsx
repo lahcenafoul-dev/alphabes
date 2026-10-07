@@ -12,10 +12,11 @@ import { isAvailable, localizedPath } from "@/lib/i18n/routes";
 import { initLocale } from "@/lib/i18n/server";
 import ClientMessages from "@/components/ClientMessages";
 import ChildActions from "./child-actions";
+import { withSocialMetadata } from "@/lib/social-metadata";
 
 type Props = { params: Promise<{ locale: string; id: string }> };
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+async function pageMetadata({ params }: Props): Promise<Metadata> {
   const locale = initLocale((await params).locale);
   const t = await getTranslations({ locale, namespace: "ChildDashboard" });
   return {
@@ -169,3 +170,5 @@ export default async function ChildDashboardPage(props: Props) {
     </main>
   );
 }
+
+export const generateMetadata = withSocialMetadata(pageMetadata);

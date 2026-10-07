@@ -8,6 +8,7 @@ import WorksheetEn, { englishWorksheetParams, worksheetMetadataEn } from "./work
 import WorksheetFr, { worksheetMetadataFr } from "./worksheet-fr";
 import WorksheetEs, { worksheetMetadataEs } from "./worksheet-es";
 import WorksheetPt, { worksheetMetadataPt } from "./worksheet-pt";
+import { withSocialMetadata } from "@/lib/social-metadata";
 
 type Props = { params: Promise<{ locale: string; letter: string }> };
 
@@ -30,7 +31,7 @@ export function generateStaticParams({ params }: { params: { locale: string } })
   return letters.map((letter) => ({ letter }));
 }
 
-export async function generateMetadata(props: Props): Promise<Metadata> {
+async function pageMetadata(props: Props): Promise<Metadata> {
   const { locale: param, letter } = await props.params;
   const locale = initLocale(param);
   return byLocale(locale, { en: worksheetMetadataEn, fr: worksheetMetadataFr, es: worksheetMetadataEs, pt: worksheetMetadataPt })(letter);
@@ -42,3 +43,5 @@ export default async function LetterWorksheetPage(props: Props) {
   const Page = byLocale(locale, { en: WorksheetEn, fr: WorksheetFr, es: WorksheetEs, pt: WorksheetPt });
   return <Page letter={letter} />;
 }
+
+export const generateMetadata = withSocialMetadata(pageMetadata);

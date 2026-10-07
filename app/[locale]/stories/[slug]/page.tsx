@@ -11,6 +11,8 @@ import { initLocale } from "@/lib/i18n/server";
 import Paywall from "@/components/billing/Paywall";
 import { hasPro } from "@/lib/billing/entitlement";
 import StoryReader from "./story-reader";
+import { buildShortStoryJsonLd } from "@/lib/json-ld";
+import { withSocialMetadata } from "@/lib/social-metadata";
 
 type Props = { params: Promise<{ locale: string; slug: string }> };
 
@@ -43,13 +45,15 @@ async function findStoryMeta(slug: string, locale: Locale) {
   return { story, otherParams };
 }
 
-export async function generateMetadata(props: Props): Promise<Metadata> {
+async function pageMetadata(props: Props): Promise<Metadata> {
   const { locale: param, slug } = await props.params;
   const locale = initLocale(param);
   const found = await findStoryMeta(slug, locale);
   const alternates = alternatesFor(locale, "/stories/[slug]", { slug }, found?.otherParams);
   // Without its own canonical, a story inherited the home page's.
-  if (locale === "en" || !found) return { alternates };
+  if (!found) return { alternates };
+  // Shared links show the story's name rather than the home page's title.
+  if (locale === "en") return { alternates, openGraph: { title: found.story.title } };
   // A premium story's description quotes only the page everyone can read.
   const text = found.story.pages
     .slice(0, found.story.isPremium ? 1 : 2)
@@ -127,6 +131,7 @@ export default async function StoryPage(props: Props) {
       )}
 
       <h1 className="mt-4 text-3xl font-extrabold">{story.title}</h1>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(buildShortStoryJsonLd(locale, story)) }} />
 
       {locked ? (
         <>
@@ -144,3 +149,5 @@ export default async function StoryPage(props: Props) {
     </main>
   );
 }
+
+export const generateMetadata = withSocialMetadata(pageMetadata);

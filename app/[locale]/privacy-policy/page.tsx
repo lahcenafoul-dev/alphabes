@@ -5,8 +5,9 @@ import PrivacyPolicyEn, { privacyPolicyMetadataEn } from "./privacy-policy-en";
 import PrivacyPolicyFr, { privacyPolicyMetadataFr } from "./privacy-policy-fr";
 import PrivacyPolicyEs, { privacyPolicyMetadataEs } from "./privacy-policy-es";
 import PrivacyPolicyPt, { privacyPolicyMetadataPt } from "./privacy-policy-pt";
+import { withSocialMetadata } from "@/lib/social-metadata";
 
-export async function generateMetadata({ params }: { params: LocaleParams }): Promise<Metadata> {
+async function pageMetadata({ params }: { params: LocaleParams }): Promise<Metadata> {
   const locale = initLocale((await params).locale);
   return byLocale(locale, { en: privacyPolicyMetadataEn, fr: privacyPolicyMetadataFr, es: privacyPolicyMetadataEs, pt: privacyPolicyMetadataPt });
 }
@@ -16,3 +17,5 @@ export default async function PrivacyPolicyPage({ params }: { params: LocalePara
   const Page = byLocale(locale, { en: PrivacyPolicyEn, fr: PrivacyPolicyFr, es: PrivacyPolicyEs, pt: PrivacyPolicyPt });
   return <Page />;
 }
+
+export const generateMetadata = withSocialMetadata(pageMetadata);

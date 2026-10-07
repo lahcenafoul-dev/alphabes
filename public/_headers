@@ -1,2 +1,17 @@
 /_next/static/*
   Cache-Control: public,max-age=31536000,immutable
+
+# Worksheet previews and PDFs, story audio and the favicon keep their names
+# when they are regenerated, so they are cached for a day, not forever.
+/worksheets-pdf/*
+  Cache-Control: public, max-age=86400, stale-while-revalidate=604800
+/fiches-pdf/*
+  Cache-Control: public, max-age=86400, stale-while-revalidate=604800
+/fichas-pdf/*
+  Cache-Control: public, max-age=86400, stale-while-revalidate=604800
+/atividades-pdf/*
+  Cache-Control: public, max-age=86400, stale-while-revalidate=604800
+/audio/*
+  Cache-Control: public, max-age=86400, stale-while-revalidate=604800
+/favicon.ico
+  Cache-Control: public, max-age=86400, stale-while-revalidate=604800

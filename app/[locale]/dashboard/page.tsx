@@ -11,8 +11,9 @@ import { hasPro } from "@/lib/billing/entitlement";
 import { confirmReturn, requestedNotice, type BillingNotice } from "@/lib/billing/return";
 import AddChildForm from "./add-child-form";
 import SubscriptionCard from "./subscription-card";
+import { withSocialMetadata } from "@/lib/social-metadata";
 
-export async function generateMetadata({ params }: { params: LocaleParams }): Promise<Metadata> {
+async function pageMetadata({ params }: { params: LocaleParams }): Promise<Metadata> {
   const locale = initLocale((await params).locale);
   const t = await getTranslations({ locale, namespace: "Dashboard" });
   return {
@@ -133,3 +134,5 @@ export default async function DashboardPage({
     </main>
   );
 }
+
+export const generateMetadata = withSocialMetadata(pageMetadata);

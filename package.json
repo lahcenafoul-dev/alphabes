@@ -18,6 +18,7 @@
     "fichas:es": "tsx scripts/fichas-es/generate.ts",
     "atividades:pt": "tsx scripts/atividades-pt/generate.ts",
     "bundles:en": "tsx scripts/bundles-en/generate.ts",
+    "previews:thumbs": "node scripts/preview-thumbs.mjs",
     "tts:histoires": "tsx scripts/tts-histoires.ts",
     "postinstall": "prisma generate",
     "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",

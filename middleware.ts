@@ -70,17 +70,20 @@ export async function middleware(req: NextRequest) {
     return NextResponse.next();
   }
 
+  // "/en/..." is the English page without its prefix: a permanent redirect
+  // (next-intl's own is a temporary 307).
+  if (/^\/en(\/|$)/.test(pathname)) {
+    const url = req.nextUrl.clone();
+    url.pathname = pathname.slice(3) || "/";
+    return NextResponse.redirect(url, 308);
+  }
+
   const match = matchPath(pathname);
 
   // Unknown URLs, unknown letters/games/worksheets, and French, Spanish or
   // Portuguese pages that haven't been written yet get the 404 page in the
-  // right language (never English content under a French URL). "/en/..." is left to next-intl,
-  // which redirects it to the unprefixed URL.
-  if (
-    !match
-      ? !/^\/en(\/|$)/.test(pathname)
-      : !isAvailable(match.locale, match.pathname) || !paramsExist(match.pathname, match.params, match.locale)
-  ) {
+  // right language (never English content under a French URL).
+  if (!match || !isAvailable(match.locale, match.pathname) || !paramsExist(match.pathname, match.params, match.locale)) {
     return notFound(req, match?.locale ?? prefixLocale(pathname));
   }
   // Stories live in the database, so they're checked with a (cached) query.
@@ -121,12 +124,12 @@ export const config = {
   matcher: [
     // Every page, but not API routes, Next internals, generated metadata
     // images, or files with an extension (robots.txt, sitemap.xml, PDFs, MP3s).
-    "/((?!api|_next|_vercel|icon|opengraph-image|.*\\..*).*)",
+    "/((?!api|_next|_vercel|icon|apple-icon|opengraph-image|.*\\..*).*)",
     // Unknown top-level files ("/foo.xml", "/sitemap_index.xml"): without
     // this they reach app/[locale] as a locale and answer 500 on Workers;
     // here they get the 404 page. Real root files are left alone (on Workers
     // existing public files never reach the worker anyway).
-    "/((?!(?:robots\\.txt|sitemap\\.xml|favicon\\.ico)$)[^/]+\\.[^/]+)",
+    "/((?!(?:robots\\.txt|sitemap\\.xml|favicon\\.ico|manifest\\.webmanifest)$)[^/]+\\.[^/]+)",
     // Dot paths at any depth ("/.env", "/.git/config", "/.x/about"): the
     // patterns above skip them, so they reached app/[locale] as a locale and
     // answered 500 (static to dynamic at runtime); here they get the 404 page.

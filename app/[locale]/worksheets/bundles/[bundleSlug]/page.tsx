@@ -8,6 +8,7 @@ import BundleEn, { bundleMetadataEn, englishBundleParams } from "./bundle-en";
 import PackFr, { packMetadataFr } from "./pack-fr";
 import PackEs, { packMetadataEs } from "./pack-es";
 import PackPt, { packMetadataPt } from "./pack-pt";
+import { withSocialMetadata } from "@/lib/social-metadata";
 
 type Props = { params: Promise<{ locale: string; bundleSlug: string }> };
 
@@ -30,7 +31,7 @@ export function generateStaticParams({ params }: { params: { locale: string } })
   return slugs.map((bundleSlug) => ({ bundleSlug }));
 }
 
-export async function generateMetadata(props: Props): Promise<Metadata> {
+async function pageMetadata(props: Props): Promise<Metadata> {
   const { locale: param, bundleSlug } = await props.params;
   const locale = initLocale(param);
   return byLocale(locale, { en: bundleMetadataEn, fr: packMetadataFr, es: packMetadataEs, pt: packMetadataPt })(bundleSlug);
@@ -42,3 +43,5 @@ export default async function BundleDetailPage(props: Props) {
   const Page = byLocale(locale, { en: BundleEn, fr: PackFr, es: PackEs, pt: PackPt });
   return <Page slug={bundleSlug} />;
 }
+
+export const generateMetadata = withSocialMetadata(pageMetadata);

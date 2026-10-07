@@ -5,8 +5,9 @@ import GamesEn, { gamesMetadataEn } from "./games-en";
 import GamesFr, { gamesMetadataFr } from "./games-fr";
 import GamesEs, { gamesMetadataEs } from "./games-es";
 import GamesPt, { gamesMetadataPt } from "./games-pt";
+import { withSocialMetadata } from "@/lib/social-metadata";
 
-export async function generateMetadata({ params }: { params: LocaleParams }): Promise<Metadata> {
+async function pageMetadata({ params }: { params: LocaleParams }): Promise<Metadata> {
   const locale = initLocale((await params).locale);
   return byLocale(locale, { en: gamesMetadataEn, fr: gamesMetadataFr, es: gamesMetadataEs, pt: gamesMetadataPt });
 }
@@ -16,3 +17,5 @@ export default async function GamesPage({ params }: { params: LocaleParams }) {
   const Games = byLocale(locale, { en: GamesEn, fr: GamesFr, es: GamesEs, pt: GamesPt });
   return <Games />;
 }
+
+export const generateMetadata = withSocialMetadata(pageMetadata);

@@ -13,10 +13,11 @@ import {
 } from "@/lib/blog-data";
 import { buildBreadcrumbJsonLd, buildArticleJsonLd } from "@/lib/json-ld";
 import RelatedArticles from "@/components/blog/RelatedArticles";
+import { withSocialMetadata } from "@/lib/social-metadata";
 
 const BASE_URL = "https://alphabes.com";
 
-type Props = { params: Promise<{ slug: string }> };
+type Props = { params: Promise<{ locale: string; slug: string }> };
 
 // Every valid page is listed in generateStaticParams, so unknown params go
 // straight to the 404 page. (Calling notFound() inside the page instead leaves
@@ -30,7 +31,7 @@ export function generateStaticParams() {
   ];
 }
 
-export async function generateMetadata(props: Props): Promise<Metadata> {
+async function pageMetadata(props: Props): Promise<Metadata> {
   const params = await props.params;
   const slug = params.slug;
 
@@ -275,3 +276,5 @@ function ArticleView({ post }: { post: BlogPost }) {
     </main>
   );
 }
+
+export const generateMetadata = withSocialMetadata(pageMetadata);

@@ -14,6 +14,7 @@ import { localizedPath } from "@/lib/i18n/routes";
 import { initLocale } from "@/lib/i18n/server";
 import { getPrisma } from "@/lib/prisma";
 import PremiumGame from "./premium-game";
+import { withSocialMetadata } from "@/lib/social-metadata";
 
 type Props = { params: Promise<{ locale: string; slug: string }> };
 
@@ -41,7 +42,7 @@ function gameTitle(locale: Locale, slug: string): string | null {
   return g?.title ?? null;
 }
 
-export async function generateMetadata(props: Props): Promise<Metadata> {
+async function pageMetadata(props: Props): Promise<Metadata> {
   const { locale: param, slug } = await props.params;
   const locale = initLocale(param);
   return { title: gameTitle(locale, slug) ?? undefined, robots: { index: false } };
@@ -81,3 +82,5 @@ export default async function PlayPage(props: Props) {
     </main>
   );
 }
+
+export const generateMetadata = withSocialMetadata(pageMetadata);

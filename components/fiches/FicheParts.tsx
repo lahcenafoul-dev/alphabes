@@ -1,4 +1,5 @@
 import { Link } from "@/i18n/navigation";
+import { THUMB_WIDTH, previewThumb } from "@/lib/preview-thumb";
 
 // Building blocks of the French, Spanish and Portuguese worksheet pages
 // (/fr/fiches, /es/fichas, /pt/atividades). French is the default, so the
@@ -32,6 +33,12 @@ export function FichePreview({
     // eslint-disable-next-line @next/next/no-img-element
     <img
       src={fiche.preview}
+      // Cards are 96–246 CSS px wide: phones up to 2× density take the 320 px
+      // copy. The eager one is a page's large hero preview and keeps 476 px.
+      {...(!eager && {
+        srcSet: `${previewThumb(fiche.preview)} ${THUMB_WIDTH}w, ${fiche.preview} 476w`,
+        sizes: "(min-width: 1024px) 246px, (min-width: 640px) 210px, 40vw",
+      })}
       alt={`${LABELS[locale].preview} ${fiche.title}`}
       width={476}
       height={673}
