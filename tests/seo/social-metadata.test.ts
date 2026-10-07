@@ -17,12 +17,12 @@ describe("completeSocial", () => {
       siteName: "AlphaBes",
       locale: "fr_FR",
       url: "https://alphabes.com/fr/tarifs",
-      title: "Tarifs",
-      description: "Les formules.",
+      title: "AlphaBes Pro : formules et tarifs",
       images: siteImage,
     });
-    expect(m.twitter).toMatchObject({ card: "summary_large_image", title: "Tarifs", description: "Les formules.", images: siteImage });
-    expect(m.title).toBe("Tarifs");
+    expect(m.twitter).toMatchObject({ card: "summary_large_image", title: "AlphaBes Pro : formules et tarifs", images: siteImage });
+    // The rewritten title (lib/seo/meta-overrides.ts), fitted with the brand.
+    expect(m.title).toEqual({ absolute: "AlphaBes Pro : formules et tarifs | AlphaBes" });
   });
 
   it("keeps what the page sets itself, but always uses the canonical as og:url", () => {

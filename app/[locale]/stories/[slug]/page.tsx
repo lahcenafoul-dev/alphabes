@@ -52,27 +52,20 @@ async function pageMetadata(props: Props): Promise<Metadata> {
   const alternates = alternatesFor(locale, "/stories/[slug]", { slug }, found?.otherParams);
   // Without its own canonical, a story inherited the home page's.
   if (!found) return { alternates };
-  // Shared links show the story's name rather than the home page's title.
-  if (locale === "en") return { alternates, openGraph: { title: found.story.title } };
-  // A premium story's description quotes only the page everyone can read.
-  const text = found.story.pages
-    .slice(0, found.story.isPremium ? 1 : 2)
-    .map((p) => p.text)
-    .join(" ");
-  const { title, description } = {
-    fr: {
-      title: `${found.story.title} : une histoire à lire et à écouter`,
-      description: `${text} Une histoire illustrée pour les enfants, à lire ensemble ou à écouter.`,
-    },
-    es: {
-      title: `${found.story.title}: un cuento para leer y escuchar`,
-      description: `${text} Un cuento ilustrado para niños, para leer juntos o escuchar.`,
-    },
-    pt: {
-      title: `${found.story.title}: uma história para ler e ouvir`,
-      description: `${text} Uma história ilustrada para crianças, para ler juntos ou ouvir.`,
-    },
+  const { title: name, isPremium, pages } = found.story;
+  const { title, closing } = {
+    en: { title: `${name}: A Short Story to Read and Listen To`, closing: "A short illustrated story for young children to read together or listen to." },
+    fr: { title: `${name} : une histoire à lire et à écouter`, closing: "Une histoire illustrée pour les enfants, à lire ensemble ou à écouter." },
+    es: { title: `${name}: un cuento para leer y escuchar`, closing: "Un cuento ilustrado para niños, para leer juntos o escuchar." },
+    pt: { title: `${name}: uma história para ler e ouvir`, closing: "Uma história ilustrada para crianças, para ler juntos ou ouvir." },
   }[locale];
+  // The opening of the story, then the closing sentence: two pages when that
+  // fits Google's 160 characters, else the first (rule R3). English uses the
+  // first page only, and a premium story never quotes more than the page
+  // everyone can read.
+  const opening = (count: number) => [...pages.slice(0, count).map((p) => p.text), closing].join(" ");
+  const twoPages = opening(2);
+  const description = locale === "en" || isPremium || twoPages.length > 160 ? opening(1) : twoPages;
   return { title, description, alternates, openGraph: { title, description, url: absoluteUrl(locale, "/stories/[slug]", { slug }) } };
 }
 

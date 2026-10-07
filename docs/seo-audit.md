@@ -324,3 +324,71 @@ SEO score 100 on all 20 pages. TBT (I9) moved within noise except on the game pa
 | I1, I7, I8, M1, M2 | **Batch 2**, proposals in [seo-batch2-proposals.md](seo-batch2-proposals.md), waiting for the owner's approval |
 | M6 (HSTS), M7 (www 2 hops) | **Owner**, in the Cloudflare dashboard |
 | M5, M13, M14, M15, M16 | Open (not in batch 1) |
+
+---
+
+## Phase 2, batch 2 (2026-10-07): titles, descriptions and content
+
+Owner's approval, all 4 languages: rules R1, R2 and R3, the hand-rewritten titles and descriptions, the I7 content (phonics sections, "How to use this worksheet", game sections, English worksheet previews), and `noindex` for the blog categories instead of introductions. Proposals: [seo-batch2-proposals.md](seo-batch2-proposals.md).
+
+**Portuguese letter worksheets:** 27 pages = the 26 letters + Ç (`/pt/alfabeto/c-cedilha/atividade`, a page of its own in `lib/letters-pt.ts`). Ç's title starts with "O Ç" like before: *O Ç: traçado em letra bastão, de forma e cursiva*.
+
+### How it's applied
+
+| Change | Code |
+|---|---|
+| Hand-rewritten titles and descriptions (159 entries + the 26 English letter bundles) in one table keyed by path. They replace only `<title>`, the meta description and og/twitter; the data and text on the page are untouched | `lib/seo/meta-overrides.ts`, applied in `lib/social-metadata.ts` |
+| R1 (brand only when ≤ 60) and R2 (worksheet suffix fallbacks) for every page | `fitTitle()` in `lib/social-metadata.ts` |
+| English story titles and descriptions (I1); R3 for fr/es/pt stories | `app/[locale]/stories/[slug]/page.tsx` |
+| Portuguese letter-worksheet title pattern | `worksheet-pt.tsx` |
+| H1: Plans and Pricing / Formules et tarifs / Planes y precios / Planos e preços; English games, stories, flashcards, activities | `messages/*.json`, `*-en.tsx` |
+| Phonics "How to practice at home" and "Watch out for" (8 pages) | `lib/phonics-data.ts`, `skill-en.tsx` |
+| Game "How to play" and "What your child practices" (5 pages) | `lib/games-data.ts`, `game-en.tsx` |
+| "How to use this worksheet" (346 English worksheet pages) | `lib/worksheet-howto.ts`, `category-en.tsx` |
+| Previews of the 242 English worksheets that have a PDF (`npm run previews:en`, pdf.js in Playwright + sharp, 476 px + 320 px), shown in place of the letter placeholder, and used as `og:image` and `LearningResource.image`. The 104 worksheets made in the browser (uppercase, lowercase, coloring, review) have no PDF and keep the placeholder | `scripts/previews-en.mjs`, `public/worksheets-pdf/previews/` |
+| Blog categories (6): `noindex, follow`, out of the sitemap | `blog/[slug]/page.tsx`, `lib/sitemap.ts` |
+
+### Corrections made while checking against the real content
+
+The approved texts were checked against the printed sheets (rendered previews), the game components and the blog articles. These sentences were corrected to match reality:
+
+- **Worksheet how-to (letters):** "Print it in black and white" → "in color or in black and white" (the sheets are in color). "trace … starting at the dot" → "Start with a finger on the page, then use a pencil or crayon" (no start dots, and the same block also covers the recognition, matching and coloring sheets).
+- **Numbers:** "following the arrows" removed (none on the sheets); the number 0 gets "Show an empty hand or an empty plate … zero means none" instead of "Count out 0 objects".
+- **Shapes:** the everyday examples are per shape (a plate for a circle, a roof for a triangle…).
+- **Colors:** "Color the picture" → "Color the shapes".
+- **Sight words:** "don't follow the usual sound rules" → "come up in almost every book" (and, in, it are decodable).
+- **CVC:** the letter-change chain is per word (cat → hat → hot, sun → bun → bin…). **X** uses "like box" (xylophone doesn't start with /ks/).
+- **Games:**
+  - Find the Letter: one target per round, uppercase only, "Try again" instead of a shake, plus the timer.
+  - Match: the picture's name starts with the letter (not always its sound).
+  - Beginning Sounds: the word is shown, with a Listen button.
+  - Letter Tracing: no start dot or arrows; there's an uppercase/lowercase switch; it covers all 26 letters.
+  - Alphabet Quiz: its three kinds of questions.
+- **Descriptions (8):**
+  - `/worksheets/numbers` (no coloring on the sheets), `/worksheets/numbers-cursive` and `/worksheets/letter-cursive` (the cursive isn't joined).
+  - `/worksheets/handwriting` and `/worksheets/alphabet-writing-practice` (one page each, no free-writing lines).
+  - `/kindergarten/handwriting` (the tips are about size, spacing and where letters start, not pencil grip).
+  - `/blog/fun-abc-games-for-kids` and `/blog/how-to-practice-phonics-at-home` (said what the articles actually contain).
+
+### Tests added
+
+- `tests/seo/meta-overrides`: R1/R2 examples; every override path is a real page; every title ≤ 60 characters as shown; every description 70–160.
+- `tests/seo/worksheet-howto`: a how-to text for every letter and static worksheet; a preview and thumbnail for all 242 PDFs.
+- `tests/seo/sitemap-coverage`: no blog category in the sitemap.
+
+### Local checks (`next build` + `next start`)
+
+- `tsc` clean, lint clean, **401/401 unit tests** (40 files).
+- Every page compared with production (1,778 pages, 4 languages):
+  - **French, Spanish and Portuguese visible text unchanged** except the 3 approved pricing H1s.
+  - English text changed only on the approved pages: 5 H1s, 8 phonics, 5 games, 346 worksheets.
+  - The 6 blog categories left the sitemap.
+- On the 1,772 indexable pages: **0 titles over 60 characters** (was 979). 13 under 30 (legal, contact, about: kept, as agreed). Descriptions: 27 over 160 and 4 under 70 (see "Not covered" below).
+- No console errors on the new sections; screenshots at 412 px checked.
+
+### Not covered by the approval (owner's decision)
+
+These pages weren't in the original crawl (they joined the sitemap in batch 1), so they had no proposal:
+
+- 27 Spanish letter-worksheet pages (`/es/abecedario/*/ficha`): description of 167 characters (*Traza la letra A a en la pantalla, con el dedo o el ratón, en letra script o cursiva sobre doble raya, escucha su nombre y descarga una ficha PDF gratis para imprimir.*).
+- 4 English game pages: descriptions of 60–68 characters.

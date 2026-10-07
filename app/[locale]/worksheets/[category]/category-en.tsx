@@ -17,6 +17,8 @@ import PdfDownloadButton from "@/components/worksheets/PdfDownloadButton";
 import PrintButton from "@/components/worksheets/PrintButton";
 import StaticWorksheetButtons from "@/components/worksheets/StaticWorksheetButtons";
 import { getStaticPdfOverride } from "@/lib/static-pdf-overrides";
+import { THUMB_WIDTH, pdfPreview, previewThumb } from "@/lib/preview-thumb";
+import { letterHowTo, staticHowTo } from "@/lib/worksheet-howto";
 import { staticWorksheetCategories, getStaticWorksheetCategory } from "@/lib/static-worksheet-categories";
 import { getStaticWorksheetBySlug, getStaticWorksheetsByCategory, getAllStaticWorksheetSlugs } from "@/lib/static-worksheets-data";
 
@@ -55,11 +57,17 @@ export function categoryMetadataEn(slug: string): Metadata {
 
   const worksheet = getWorksheetBySlug(slug);
   if (worksheet) {
+    const staticPdf = getStaticPdfOverride(worksheet.slug);
     return {
       title: worksheet.seoTitle,
       description: worksheet.description,
       alternates: { canonical: `${BASE_URL}/worksheets/${worksheet.slug}` },
-      openGraph: { title: worksheet.seoTitle, description: worksheet.description, url: `${BASE_URL}/worksheets/${worksheet.slug}` },
+      openGraph: {
+        title: worksheet.seoTitle,
+        description: worksheet.description,
+        url: `${BASE_URL}/worksheets/${worksheet.slug}`,
+        ...(staticPdf && { images: [BASE_URL + pdfPreview(staticPdf)] }),
+      },
     };
   }
 
@@ -78,7 +86,12 @@ export function categoryMetadataEn(slug: string): Metadata {
       title: staticWorksheet.seoTitle,
       description: staticWorksheet.description,
       alternates: { canonical: `${BASE_URL}/worksheets/${staticWorksheet.slug}` },
-      openGraph: { title: staticWorksheet.seoTitle, description: staticWorksheet.description, url: `${BASE_URL}/worksheets/${staticWorksheet.slug}` },
+      openGraph: {
+        title: staticWorksheet.seoTitle,
+        description: staticWorksheet.description,
+        url: `${BASE_URL}/worksheets/${staticWorksheet.slug}`,
+        images: [BASE_URL + pdfPreview(staticWorksheet.pdfPath)],
+      },
     };
   }
 
@@ -267,6 +280,7 @@ function WorksheetDetailView({ slug }: { slug: string }) {
   const related = getRelatedWorksheets(worksheet);
   const prev = getAdjacentWorksheetInType(worksheet, -1);
   const next = getAdjacentWorksheetInType(worksheet, 1);
+  const staticPdf = getStaticPdfOverride(worksheet.slug);
 
   const breadcrumbJsonLd = buildBreadcrumbJsonLd([
     { name: "Home", url: BASE_URL },
@@ -280,6 +294,7 @@ function WorksheetDetailView({ slug }: { slug: string }) {
     url: `${BASE_URL}/worksheets/${worksheet.slug}`,
     skills: worksheet.skills,
     ageLevelLabel: worksheet.ageLevelLabel,
+    ...(staticPdf && { image: BASE_URL + pdfPreview(staticPdf) }),
   });
 
   return (
@@ -316,20 +331,27 @@ function WorksheetDetailView({ slug }: { slug: string }) {
         aria-label="Worksheet preview"
       >
         <p className="text-sm font-bold text-chalkboard/60 print:hidden">Preview</p>
-        <div className="mt-4 flex items-center justify-center gap-8">
-          <div className="text-7xl font-extrabold text-crayon-blue/30 select-none">
-            {worksheet.uppercase}{worksheet.lowercase}
+        {staticPdf ? (
+          <WorksheetPreviewImage pdf={staticPdf} title={worksheet.title} />
+        ) : (
+          // Made in the browser (jsPDF): this section is also what prints.
+          <div className="mt-4 flex items-center justify-center gap-8">
+            <div className="text-7xl font-extrabold text-crayon-blue/30 select-none">
+              {worksheet.uppercase}{worksheet.lowercase}
+            </div>
+            <WorksheetIcon word={worksheet.primaryWord} className="h-24 w-24 text-chalkboard/60" />
           </div>
-          <WorksheetIcon word={worksheet.primaryWord} className="h-24 w-24 text-chalkboard/60" />
-        </div>
+        )}
         <p className="mt-4 text-lg font-display font-bold">{worksheet.primaryWord}</p>
         <p className="mt-2 text-chalkboard/70 max-w-md mx-auto">{worksheet.instructions}</p>
       </section>
 
       <div className="mt-6 flex flex-wrap gap-4 print:hidden">
-        <PrintButton staticPdfUrl={getStaticPdfOverride(worksheet.slug)} />
+        <PrintButton staticPdfUrl={staticPdf} />
         <PdfDownloadButton worksheet={worksheet} />
       </div>
+
+      <HowToUse text={letterHowTo(worksheet.letter)} />
 
       {worksheet.worksheetType === "tracing" && (
         <p className="mt-4 text-sm text-chalkboard/60 print:hidden">
@@ -433,6 +455,7 @@ function StaticWorksheetDetailView({ slug }: { slug: string }) {
     url: `${BASE_URL}/worksheets/${worksheet.slug}`,
     skills: worksheet.skills,
     ageLevelLabel: worksheet.ageLevelLabel,
+    image: BASE_URL + pdfPreview(worksheet.pdfPath),
   });
 
   return (
@@ -468,10 +491,12 @@ function StaticWorksheetDetailView({ slug }: { slug: string }) {
         aria-label="Worksheet preview"
       >
         <p className="text-sm font-bold text-chalkboard/60 print:hidden">Preview</p>
-        <div className="mt-4 text-7xl font-extrabold text-crayon-blue/30 select-none">{worksheet.previewLabel}</div>
+        <WorksheetPreviewImage pdf={worksheet.pdfPath} title={worksheet.title} />
       </section>
 
       <StaticWorksheetButtons pdfUrl={worksheet.pdfPath} slug={worksheet.slug} />
+
+      <HowToUse text={staticHowTo(worksheet.slug)} />
 
       <section className="mt-12 print:hidden" aria-labelledby="related-heading">
         <h2 id="related-heading" className="text-xl font-bold">
@@ -491,6 +516,36 @@ function StaticWorksheetDetailView({ slug }: { slug: string }) {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(learningResourceJsonLd) }} />
     </main>
+  );
+}
+
+function WorksheetPreviewImage({ pdf, title }: { pdf: string; title: string }) {
+  const src = pdfPreview(pdf);
+  return (
+    // Pre-rendered from the PDF (npm run previews:en); image optimization
+    // isn't set up on Workers, so a plain <img> with a smaller copy.
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      src={src}
+      srcSet={`${previewThumb(src)} ${THUMB_WIDTH}w, ${src} 476w`}
+      sizes="(min-width: 640px) 476px, 90vw"
+      alt={`Preview of the worksheet: ${title}`}
+      width={476}
+      height={616}
+      className="mx-auto mt-4 h-auto w-full max-w-[476px] rounded-block border border-chalkboard/10 bg-white"
+    />
+  );
+}
+
+function HowToUse({ text }: { text: string | null }) {
+  if (!text) return null;
+  return (
+    <section className="mt-8 rounded-block bg-crayon-yellow/15 p-6 print:hidden" aria-labelledby="how-to-heading">
+      <h2 id="how-to-heading" className="font-display font-bold text-lg">
+        How to use this worksheet
+      </h2>
+      <p className="mt-2 text-chalkboard/80">{text}</p>
+    </section>
   );
 }
 

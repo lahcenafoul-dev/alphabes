@@ -7,3 +7,8 @@ export const THUMB_WIDTH = 320;
 export function previewThumb(preview: string): string {
   return preview.replace(/\.jpg$/, `.${THUMB_WIDTH}.jpg`);
 }
+
+/** "/worksheets-pdf/tracing/letter-a-tracing.pdf" → "/worksheets-pdf/previews/letter-a-tracing.jpg" (npm run previews:en) */
+export function pdfPreview(pdf: string): string {
+  return `/worksheets-pdf/previews/${pdf.split("/").pop()!.replace(/\.pdf$/, ".jpg")}`;
+}

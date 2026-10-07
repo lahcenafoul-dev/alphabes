@@ -12,7 +12,7 @@ export function worksheetMetadataPt(param: string): Metadata {
   const l = getPortugueseLetter(param);
   if (!l) return {};
   const name = l.slug === CEDILHA_SLUG ? "O Ç" : `Letra ${l.upper}`;
-  const title = `${name}: atividade de traçado em letra bastão, de forma e cursiva`;
+  const title = `${name}: traçado em letra bastão, de forma e cursiva`;
   const description = `Trace ${l.slug === CEDILHA_SLUG ? "o Ç" : `a letra ${l.upper} ${l.lower}`} na tela, com o dedo ou o mouse, em letra bastão, de forma ou cursiva nas linhas de caligrafia, e ouça o nome da letra.`;
   return {
     title,

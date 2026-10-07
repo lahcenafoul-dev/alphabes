@@ -12,7 +12,7 @@ export const gamesMetadataEn: Metadata = {
 export default function GamesEn() {
   return (
     <main id="main-content" className="mx-auto max-w-6xl px-6 py-12">
-      <h1 className="text-4xl font-extrabold">Fun Learning Games</h1>
+      <h1 className="text-4xl font-extrabold">Alphabet Games for Kids</h1>
       <p className="mt-2 text-chalkboard/70 max-w-2xl">
         Five games that work on desktop and mobile, built to reinforce letter recognition and phonics.
       </p>

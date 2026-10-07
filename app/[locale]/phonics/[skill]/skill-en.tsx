@@ -59,6 +59,20 @@ export default function SkillEn({ slug }: { slug: string }) {
         </ul>
       </section>
 
+      <section className="mt-8">
+        <h2 className="font-display font-bold text-lg">How to practice at home</h2>
+        <ol className="mt-3 list-decimal space-y-2 pl-5 text-chalkboard/80">
+          {skill.practice.map((step) => (
+            <li key={step}>{step}</li>
+          ))}
+        </ol>
+      </section>
+
+      <section className="mt-8 rounded-block bg-crayon-yellow/15 p-6">
+        <h2 className="font-display font-bold text-lg">Watch out for</h2>
+        <p className="mt-2 text-chalkboard/80">{skill.watchOut}</p>
+      </section>
+
       <Link
         href="/worksheets/phonics"
         className="mt-8 inline-block rounded-block bg-chalkboard text-paper font-display font-bold px-5 py-2.5 shadow-block hover:shadow-blockHover transition"

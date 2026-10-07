@@ -43,6 +43,9 @@ async function pageMetadata(props: Props): Promise<Metadata> {
       description: category.description,
       alternates: { canonical: `${BASE_URL}/blog/${category.slug}` },
       openGraph: { title, description: category.description, url: `${BASE_URL}/blog/${category.slug}` },
+      // Only one to three articles each: kept out of the index (and the
+      // sitemap) until they have more; their links are still followed.
+      robots: { index: false, follow: true },
     };
   }
 

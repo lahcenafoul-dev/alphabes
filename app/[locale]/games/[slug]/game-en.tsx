@@ -59,6 +59,17 @@ export default function GameEn({ slug }: { slug: string }) {
         </div>
       )}
 
+      <section className="mt-10 grid gap-6 sm:grid-cols-2">
+        <div>
+          <h2 className="font-display font-bold text-lg">How to play</h2>
+          <p className="mt-2 text-chalkboard/80">{game.howToPlay}</p>
+        </div>
+        <div>
+          <h2 className="font-display font-bold text-lg">What your child practices</h2>
+          <p className="mt-2 text-chalkboard/80">{game.practices}</p>
+        </div>
+      </section>
+
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
     </main>
   );

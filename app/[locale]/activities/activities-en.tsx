@@ -18,7 +18,7 @@ const activities = [
 export default function ActivitiesEn() {
   return (
     <main id="main-content" className="mx-auto max-w-5xl px-6 py-12">
-      <h1 className="text-4xl font-extrabold">Activities</h1>
+      <h1 className="text-4xl font-extrabold">Alphabet and Phonics Activities</h1>
       <p className="mt-2 text-chalkboard/70 max-w-2xl">
         Simple, screen-optional activities that pair with any letter lesson.
       </p>

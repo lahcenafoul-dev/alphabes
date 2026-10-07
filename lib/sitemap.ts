@@ -22,7 +22,8 @@ import { worksheetCategories } from "@/lib/worksheet-categories";
 import { WORKSHEET_TYPES } from "@/lib/worksheet-types";
 import { worksheets } from "@/lib/worksheets-data";
 import { bundles } from "@/lib/worksheet-bundles";
-import { blogPosts, blogCategories } from "@/lib/blog-data";
+// The blog category pages are noindex (app/[locale]/blog/[slug]/page.tsx).
+import { blogPosts } from "@/lib/blog-data";
 import { staticWorksheetCategories } from "@/lib/static-worksheet-categories";
 import { staticWorksheets } from "@/lib/static-worksheets-data";
 import { preschoolTopics } from "@/lib/preschool-data";
@@ -186,13 +187,6 @@ export async function sitemapEntries(): Promise<MetadataRoute.Sitemap> {
     priority: 0.6,
   }));
 
-  const blogCategoryRoutes = blogCategories.map((c) => ({
-    url: `${baseUrl}/blog/${c.slug}`,
-    lastModified: RELEASE_DATE,
-    changeFrequency: "weekly" as const,
-    priority: 0.6,
-  }));
-
   const staticWorksheetCategoryRoutes = staticWorksheetCategories.map((c) => ({
     url: `${baseUrl}/worksheets/${c.slug}`,
     lastModified: RELEASE_DATE,
@@ -232,7 +226,6 @@ export async function sitemapEntries(): Promise<MetadataRoute.Sitemap> {
     ...worksheetDetailRoutes,
     ...bundleRoutes,
     ...blogRoutes,
-    ...blogCategoryRoutes,
     ...staticWorksheetCategoryRoutes,
     ...staticWorksheetDetailRoutes,
     ...preschoolRoutes,

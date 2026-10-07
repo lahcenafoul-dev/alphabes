@@ -21,7 +21,7 @@ export default async function StoriesEn() {
         <Link href="/">Home</Link>
       </nav>
 
-      <h1 className="mt-4 text-4xl font-extrabold">Story Time</h1>
+      <h1 className="mt-4 text-4xl font-extrabold">Short Stories for Kids</h1>
       <p className="mt-2 text-chalkboard/70 max-w-2xl">
         Pick a story to read together. Each one comes with pictures and fun words to learn.
       </p>

@@ -13,7 +13,7 @@ export const flashcardsMetadataEn: Metadata = {
 export default function FlashcardsEn() {
   return (
     <main id="main-content" className="mx-auto max-w-6xl px-6 py-12">
-      <h1 className="text-4xl font-extrabold">Flashcards</h1>
+      <h1 className="text-4xl font-extrabold">Alphabet Flashcards</h1>
       <p className="mt-2 text-chalkboard/70 max-w-2xl">
         Flip through letter flashcards to practice recognition, or print a set for offline use.
       </p>

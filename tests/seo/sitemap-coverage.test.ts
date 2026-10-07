@@ -9,6 +9,7 @@ import { games } from "@/lib/games-data";
 import { frenchGames } from "@/lib/games-fr";
 import { spanishGames } from "@/lib/juegos-es";
 import { portugueseGames } from "@/lib/jogos-pt";
+import { blogCategories } from "@/lib/blog-data";
 
 vi.stubEnv("RELEASE_DATE", "2026-10-07T12:00:00.000Z");
 vi.mock("next/cache", () => ({ unstable_cache: (fn: () => unknown) => fn }));
@@ -52,6 +53,8 @@ describe("sitemap coverage", () => {
       expect(isAvailable(match!.locale, match!.pathname), url).toBe(true);
     }
     expect(urls.has("https://alphabes.com/privacy")).toBe(false);
+    // The blog category pages are noindex (docs/seo-batch2-proposals.md).
+    for (const c of blogCategories) expect(urls.has(`https://alphabes.com/blog/${c.slug}`), c.slug).toBe(false);
   });
 
   it("gives every hreflang alternate its own sitemap entry", () => {

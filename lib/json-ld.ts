@@ -20,6 +20,7 @@ export function buildLearningResourceJsonLd(worksheet: {
   url: string;
   skills: string[];
   ageLevelLabel: string;
+  image?: string;
 }) {
   return {
     "@context": "https://schema.org",
@@ -31,6 +32,7 @@ export function buildLearningResourceJsonLd(worksheet: {
     educationalLevel: worksheet.ageLevelLabel,
     teaches: worksheet.skills.join(", "),
     isAccessibleForFree: true,
+    ...(worksheet.image && { image: worksheet.image }),
   };
 }
 
