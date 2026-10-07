@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { META_OVERRIDES } from "@/lib/seo/meta-overrides";
 import { MAX_TITLE, completeSocial, fitTitle } from "@/lib/social-metadata";
 import { isAvailable, matchPath } from "@/lib/i18n/routes";
@@ -57,4 +57,23 @@ describe("META_OVERRIDES", () => {
       }
     }
   });
+});
+
+// The page module loads its handwriting font through next/font, which only runs in Next.
+vi.mock("next/font/google", () => {
+  const font = () => ({ className: "", variable: "", style: {} });
+  return { Baloo_2: font, Nunito: font, Playwrite_BR: font, Playwrite_FR_Trad: font, Playwrite_MX: font };
+});
+
+describe("Spanish letter worksheet descriptions", () => {
+  it("stay within 70–160 characters for the 27 letters", async () => {
+    const { worksheetMetadataEs } = await import("@/app/[locale]/alphabet/[letter]/worksheet/worksheet-es");
+    const { spanishLetters } = await import("@/lib/letters-es");
+    expect(spanishLetters).toHaveLength(27);
+    for (const l of spanishLetters) {
+      const d = String(worksheetMetadataEs(l.slug).description);
+      expect(d.length, `${l.slug}: ${d}`).toBeGreaterThanOrEqual(70);
+      expect(d.length, `${l.slug}: ${d}`).toBeLessThanOrEqual(160);
+    }
+  }, 30_000);
 });

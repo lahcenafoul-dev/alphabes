@@ -433,3 +433,20 @@ Commit `312975d` pushed as `HEAD:main` at 14:18:39 UTC (fast-forward; the branch
 | I7 | **Fixed** for the approved parts (phonics, games, worksheet how-to, previews; blog categories noindex). The 104 browser-made worksheets have no preview |
 | M2 | **Fixed** for every page in the proposal; open: 27 Spanish letter worksheets (> 160), 4 English games (< 70), 3 English legal pages (shared default) |
 | Still open from the audit | I9 (shared runtime), M5, M6 (owner: HSTS), M7 (owner: www 2 hops), M10 (logo, English `LearningResource` `inLanguage`), M13, M14, M15, M16 |
+
+---
+
+## Phase 2, batch 3 (2026-10-07): last descriptions, cookie pages
+
+Owner's approval: every row of the batch 3 table; the other fr/es/pt legal descriptions stay as they are.
+
+- **27 Spanish letter-worksheet pages** (`worksheet-es.tsx`): *Traza la letra A a en la pantalla con el dedo o el ratón, en script o cursiva sobre doble raya, escucha su nombre y descarga la ficha PDF gratis.* (145 characters; was 167).
+- **4 English games** and **6 legal pages** (`/terms`, `/cookies`, `/privacy-policy`, `/fr/conditions-utilisation`, `/es/terminos-de-uso`, `/pt/termos-de-uso`): new descriptions in `lib/seo/meta-overrides.ts`, 127–149 characters.
+- **Cookie pages, language preference:** the switcher has 4 languages.
+  - English: "switch between English and French with the EN / FR buttons" → "switch languages with the EN / FR / ES / PT buttons".
+  - French: "passez de l'anglais au français avec les boutons EN / FR" → "changez de langue avec les boutons EN / FR / ES / PT".
+  - Spanish: "EN / FR / ES" → "EN / FR / ES / PT".
+  - Portuguese was already right.
+  - The "last updated" date of the 3 changed pages is now October 7, 2026.
+- **Test:** the 27 Spanish worksheet descriptions stay within 70–160 characters.
+- **Local check:** tsc and lint clean, **402/402 tests**. Every page compared with production: 1,707 identical. 37 pages changed only their description and og/twitter tags, the 3 cookie pages changed their text as above, and 32 stories differ only in the database dates (the local server reads the `dev` branch). **0 descriptions over 160**; none under 70 left to fix (the snapshot shows the sight-word descriptions cut at their quotation marks; the real ones are longer).

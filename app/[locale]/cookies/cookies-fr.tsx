@@ -12,7 +12,7 @@ export default function CookiesFr() {
   return (
     <main id="main-content" className="mx-auto max-w-2xl px-6 py-12">
       <h1 className="text-4xl font-extrabold">Politique de cookies</h1>
-      <p className="mt-2 text-sm text-chalkboard/50">Dernière mise à jour : 29 septembre 2026</p>
+      <p className="mt-2 text-sm text-chalkboard/50">Dernière mise à jour : 7 octobre 2026</p>
 
       <div className="mt-8 space-y-6 text-chalkboard/80 leading-relaxed">
         <section>
@@ -35,8 +35,8 @@ export default function CookiesFr() {
         <section>
           <h2 className="font-display font-bold text-xl">Préférence de langue</h2>
           <p className="mt-2">
-            Si vous passez de l&apos;anglais au français avec les boutons EN / FR, nous retenons
-            votre choix dans un cookie (NEXT_LOCALE) pendant un an, pour que le site s&apos;ouvre
+            Si vous changez de langue avec les boutons EN / FR / ES / PT, nous retenons votre
+            choix dans un cookie (NEXT_LOCALE) pendant un an, pour que le site s&apos;ouvre
             dans votre langue la prochaine fois. Il n&apos;est déposé que lorsque vous faites ce
             choix et ne contient que le code de la langue.
           </p>

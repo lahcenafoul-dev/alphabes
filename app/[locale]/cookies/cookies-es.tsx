@@ -12,7 +12,7 @@ export default function CookiesEs() {
   return (
     <main id="main-content" className="mx-auto max-w-2xl px-6 py-12">
       <h1 className="text-4xl font-extrabold">Política de cookies</h1>
-      <p className="mt-2 text-sm text-chalkboard/50">Última actualización: 1 de octubre de 2026</p>
+      <p className="mt-2 text-sm text-chalkboard/50">Última actualización: 7 de octubre de 2026</p>
 
       <div className="mt-8 space-y-6 text-chalkboard/80 leading-relaxed">
         <section>
@@ -33,7 +33,7 @@ export default function CookiesEs() {
         <section>
           <h2 className="font-display font-bold text-xl">Preferencia de idioma</h2>
           <p className="mt-2">
-            Si cambias de idioma con los botones EN / FR / ES, guardamos tu elección en una cookie
+            Si cambias de idioma con los botones EN / FR / ES / PT, guardamos tu elección en una cookie
             (NEXT_LOCALE) durante un año, para que el sitio se abra en tu idioma la próxima vez. Solo
             se instala cuando haces esa elección y solo contiene el código del idioma.
           </p>

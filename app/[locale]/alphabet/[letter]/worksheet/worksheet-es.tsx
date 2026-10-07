@@ -12,7 +12,7 @@ export function worksheetMetadataEs(param: string): Metadata {
   const l = getSpanishLetter(param);
   if (!l) return {};
   const title = `Letra ${l.upper}: ficha de trazo en letra script y cursiva`;
-  const description = `Traza la letra ${l.upper} ${l.lower} en la pantalla, con el dedo o el ratón, en letra script o cursiva sobre doble raya, escucha su nombre y descarga una ficha PDF gratis para imprimir.`;
+  const description = `Traza la letra ${l.upper} ${l.lower} en la pantalla con el dedo o el ratón, en script o cursiva sobre doble raya, escucha su nombre y descarga la ficha PDF gratis.`;
   return {
     title,
     description,

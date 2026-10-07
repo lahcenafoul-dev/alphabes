@@ -11,7 +11,7 @@ export default function CookiesEn() {
   return (
     <main id="main-content" className="mx-auto max-w-2xl px-6 py-12">
       <h1 className="text-4xl font-extrabold">Cookie Policy</h1>
-      <p className="mt-2 text-sm text-chalkboard/50">Last updated: September 29, 2026</p>
+      <p className="mt-2 text-sm text-chalkboard/50">Last updated: October 7, 2026</p>
 
       <div className="mt-8 space-y-6 text-chalkboard/80 leading-relaxed">
         <section>
@@ -32,9 +32,8 @@ export default function CookiesEn() {
         <section>
           <h2 className="font-display font-bold text-xl">Language preference</h2>
           <p className="mt-2">
-            If you switch between English and French with the EN / FR buttons, we remember your
-            choice in a cookie (NEXT_LOCALE) for one year, so the site opens in your language next
-            time. It is only set when you make that choice, and it contains nothing but the
+            If you switch languages with the EN / FR / ES / PT buttons, we remember your choice in
+            a cookie (NEXT_LOCALE) for one year, so the site opens in your language next time. It is only set when you make that choice, and it contains nothing but the
             language code.
           </p>
         </section>

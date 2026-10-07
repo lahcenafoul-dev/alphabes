@@ -22,11 +22,11 @@ const PAGES: Record<string, MetaOverride> = {
   "/contact": { description: "Questions, ideas or a problem with a worksheet? Write to the AlphaBes team and we'll get back to you as soon as we can." },
   "/flashcards": { title: "Alphabet Flashcards: A to Z Picture Words" },
   "/games": { title: "Alphabet Games for Kids: Letters and Sounds" },
-  "/games/alphabet-quiz": { title: "Alphabet Quiz: Letter Names and Sounds Game" },
-  "/games/beginning-sound": { title: "Beginning Sounds Game: Hear the First Sound" },
-  "/games/find-the-letter": { title: "Find the Letter: Free Alphabet Game for Kids" },
+  "/games/alphabet-quiz": { title: "Alphabet Quiz: Letter Names and Sounds Game", description: "Ten quick questions on alphabet order, letter sounds and first letters, four choices each. An AlphaBes Pro quiz to see what your child knows." },
+  "/games/beginning-sound": { title: "Beginning Sounds Game: Hear the First Sound", description: "Hear a word, then choose the letter it starts with, over 10 rounds. An AlphaBes Pro phonics game that links first sounds to letters." },
+  "/games/find-the-letter": { title: "Find the Letter: Free Alphabet Game for Kids", description: "Find the letter shown at the top among 24 letters and tap it. A free alphabet game for kids that builds fast uppercase letter recognition." },
   "/games/letter-tracing": { title: "Letter Tracing Game: Trace A to Z on Screen" },
-  "/games/match-letter-picture": { title: "Match the Letter and Picture: Free Phonics Game" },
+  "/games/match-letter-picture": { title: "Match the Letter and Picture: Free Phonics Game", description: "Match each letter to the picture whose name starts with it, over 10 rounds. A free phonics game for preschool and kindergarten." },
   "/kindergarten": { title: "Kindergarten Activities: Sight Words and Writing", description: "Kindergarten activities from AlphaBes: sight words, writing letters without tracing, and phonics, with worksheets and games for ages 5 to 6." },
   "/kindergarten/handwriting": { description: "Kindergarten handwriting: from tracing to writing letters on their own, with tips on letter size, spacing and where each letter starts." },
   "/phonics": { description: "Phonics for kids: letter sounds, beginning sounds, CVC words, blending and word families, with examples, games and printable worksheets." },
@@ -60,6 +60,9 @@ const PAGES: Record<string, MetaOverride> = {
   "/worksheets/shapes": { description: "Shape tracing worksheets: circle, square, triangle, star, heart and more, one shape per page to trace and name. Free printable PDFs." },
   "/worksheets/sight-words": { description: "Sight word worksheets for the first words kids read: a, and, I, in, is, it, the, to, was, you. Read, trace and write. Free PDFs." },
   "/worksheets/tracing": { title: "Tracing Worksheets for Preschool and Pre-K", description: "Tracing worksheets for preschool and pre-K: guided pages for every letter A to Z to build pencil control and letter shapes. Free PDFs." },
+  "/terms": { description: "AlphaBes terms of service: accounts run by parents and teachers, Pro at $7.99 a month or $59 a year through PayPal, cancellation and refunds." },
+  "/cookies": { description: "The cookies AlphaBes uses: a login session cookie, optional Google Analytics only with consent, and your language choice. How to change them." },
+  "/privacy-policy": { description: "What AlphaBes collects and why: parent accounts, child profiles with only a first name and age range, PayPal billing, and your privacy rights." },
   // French
   "/fr/activites": { description: "Huit activités faciles à la maison ou en classe : chasse aux lettres, pâte à modeler, plateau de semoule, loto, mémory… De la PS au CP." },
   "/fr/alphabet": { description: "L'alphabet de A à Z : le nom et le son de chaque lettre, des mots illustrés à écouter, les accents et des fiches de tracé en script et en cursive." },
@@ -91,6 +94,7 @@ const PAGES: Record<string, MetaOverride> = {
   "/fr/sons/oi": { description: "o et i ensemble font [wa], comme dans roi et étoile : des mots illustrés à écouter, une phrase à lire et un petit jeu, pour le CP." },
   "/fr/sons/on": { description: "Le son [ɔ̃] de ballon et de pont, qui s'écrit on, ou om devant b et p : des mots à écouter, une phrase à lire et un petit jeu (CP)." },
   "/fr/tarifs": { title: "AlphaBes Pro : formules et tarifs" },
+  "/fr/conditions-utilisation": { description: "Les conditions d'utilisation d'AlphaBes : comptes gérés par les parents, abonnement Pro via PayPal, résiliation, remboursement et usage des fiches." },
   // Spanish
   "/es": { description: "Fichas gratis para imprimir, trazo de letras, sílabas y primeras lecturas para preescolar y primaria. Juegos y lecciones para niños de 3 a 8 años." },
   "/es/abecedario": { title: "El abecedario para niños: las 27 letras y sus sonidos", description: "El abecedario de la A a la Z, con la Ñ: el nombre y el sonido de cada letra, sus sílabas, palabras con dibujos y el trazo en script y cursiva." },
@@ -116,6 +120,7 @@ const PAGES: Record<string, MetaOverride> = {
   "/es/silabas/palabras-frecuentes": { title: "Palabras frecuentes para leer de corrido: el, la, un, y" },
   "/es/silabas/silabas-mixtas": { title: "Sílabas mixtas (cerradas): sol, pan, mar, con palabras" },
   "/es/silabas/trabadas-con-l": { title: "Sílabas trabadas con l: bla, cla, fla, gla, pla" },
+  "/es/terminos-de-uso": { description: "Los términos de uso de AlphaBes: cuentas a cargo de los padres, la suscripción Pro con PayPal, la cancelación, los reembolsos y el uso de las fichas." },
   // Portuguese
   "/pt": { description: "Atividades de alfabetização grátis para imprimir, traçado, famílias silábicas e primeiras leituras. Jogos e lições para crianças de 3 a 8 anos." },
   "/pt/alfabeto": { title: "O alfabeto para crianças: as 26 letras e os sons", description: "O alfabeto de A a Z, com o Ç: o nome e o som de cada letra, a família silábica, palavras com figuras e o traçado em bastão, forma e cursiva." },
@@ -144,6 +149,7 @@ const PAGES: Record<string, MetaOverride> = {
   "/pt/silabas/encontros-com-r": { title: "Encontros consonantais com R: bra, cra, pra, tra" },
   "/pt/silabas/encontros-vocalicos": { title: "Encontros vocálicos: ai, ei, oi, ou, au, eu, ui" },
   "/pt/silabas/palavras-frequentes": { title: "Palavras frequentes para ler com fluência: o, a, um, e" },
+  "/pt/termos-de-uso": { description: "Os termos de uso do AlphaBes: contas criadas pelos pais, a assinatura Pro pelo PayPal, cancelamento, reembolsos e o uso das atividades." },
 };
 
 // English letter bundles: one description pattern for the 26 letters (rule R4).
