@@ -127,6 +127,10 @@ export const config = {
     // here they get the 404 page. Real root files are left alone (on Workers
     // existing public files never reach the worker anyway).
     "/((?!(?:robots\\.txt|sitemap\\.xml|favicon\\.ico)$)[^/]+\\.[^/]+)",
+    // Dot paths at any depth ("/.env", "/.git/config", "/.x/about"): the
+    // patterns above skip them, so they reached app/[locale] as a locale and
+    // answered 500 (static to dynamic at runtime); here they get the 404 page.
+    "/(\\.[^/]*(?:/.*)?)",
     "/api/auth/callback/credentials",
     "/api/register",
     "/api/contact",
