@@ -392,3 +392,44 @@ These pages weren't in the original crawl (they joined the sitemap in batch 1), 
 
 - 27 Spanish letter-worksheet pages (`/es/abecedario/*/ficha`): description of 167 characters (*Traza la letra A a en la pantalla, con el dedo o el ratón, en letra script o cursiva sobre doble raya, escucha su nombre y descarga una ficha PDF gratis para imprimir.*).
 - 4 English game pages: descriptions of 60–68 characters.
+- 3 English legal pages (`/terms`, `/cookies`, `/privacy-policy`) still use the site's default description, shared by all three. They were outside the proposals (legal pages); a one-line description each would fix it.
+
+### Production (2026-10-07)
+
+Commit `312975d` pushed as `HEAD:main` at 14:18:39 UTC (fast-forward; the branch was not pushed). Workers Builds finished at 14:23:47 and deployed version `3fed0361` (100%).
+
+- **Bindings:** `PAYPAL_MODE` still `live` (compared, not printed); 17 bindings including `PRO_FILES`.
+- **Sitemap:** XSD valid, 0 errors. 1,772 URLs: the previous 1,778 minus exactly the 6 blog categories, nothing added. **No noindex page in the sitemap** (0 in the crawl).
+- **4 languages:** production compared page by page with the version before batch 2. The result is identical to the local check: **French, Spanish and Portuguese visible text unchanged** except the 3 approved pricing H1s. English text changed only on the approved pages. The blog categories serve `noindex, follow`.
+- **Sample titles:**
+  - `/pricing`: *AlphaBes Pro: Plans and Pricing | AlphaBes*
+  - `/fr/tarifs`: *AlphaBes Pro : formules et tarifs | AlphaBes*
+  - `/stories/the-little-apple`: *The Little Apple: A Short Story to Read and Listen To*
+  - `/pt/alfabeto/c-cedilha/atividade`: *O Ç: traçado em letra bastão, de forma e cursiva | AlphaBes*
+
+**Crawl of every sitemap URL (Googlebot smartphone), audit → batch 1 → batch 2:**
+
+| Check | Audit | After batch 1 | After batch 2 |
+|---|---|---|---|
+| Sitemap URLs | 1,666 | 1,778 | 1,772 |
+| Non-200 | 0 | 0 | 0 |
+| noindex pages in the sitemap | 2 | 0 | 0 |
+| hreflang targets outside the sitemap | 15 | 0 | 0 |
+| Titles > 60 characters | 952 | 979 | **0** |
+| Titles < 30 characters | 36 | 37 | 13 (legal, contact, about: kept) |
+| Duplicate titles (pages) | 12 | 10 | 2 (`/es/cookies`, `/pt/cookies`: "Política de cookies", correct in both languages) |
+| Descriptions > 160 | 83 | 110 | 27 (Spanish letter worksheets, not in the approval) |
+| Descriptions < 70 | 51 | 55 | 4 (English games, not in the approval) |
+| Duplicate descriptions (pages) | 15 | 12 | 3 (English legal pages) |
+| Pages with `og:image` | 860 | 1,778 | 1,772 |
+| English worksheets with a real preview | 0 | 0 | 242 |
+| Words per page, median | 225 | 221 | 234 (`/phonics/cvc-words` 123 → 203, `/games/find-the-letter` 97 → 160, `/worksheets/number-3-tracing` 136 → 187) |
+
+### Status after batch 2
+
+| Issue | Status |
+|---|---|
+| I1, I8, M1 | **Fixed** |
+| I7 | **Fixed** for the approved parts (phonics, games, worksheet how-to, previews; blog categories noindex). The 104 browser-made worksheets have no preview |
+| M2 | **Fixed** for every page in the proposal; open: 27 Spanish letter worksheets (> 160), 4 English games (< 70), 3 English legal pages (shared default) |
+| Still open from the audit | I9 (shared runtime), M5, M6 (owner: HSTS), M7 (owner: www 2 hops), M10 (logo, English `LearningResource` `inLanguage`), M13, M14, M15, M16 |
