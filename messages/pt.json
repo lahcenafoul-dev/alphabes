@@ -56,7 +56,8 @@
     "refunds": "Política de reembolso",
     "cookies": "Política de cookies",
     "copyright": "© {year} AlphaBes. Todos os direitos reservados.",
-    "tagline": "Feito para pequenos curiosos de 3 a 8 anos."
+    "tagline": "Feito para pequenos curiosos de 3 a 8 anos.",
+    "photos": "Fotos: <link>Pixabay</link>"
   },
   "CookieConsent": {
     "region": "Consentimento de cookies",
@@ -179,7 +180,7 @@
     "emptyText": "Adicione um perfil para acompanhar o progresso do seu filho ou da sua filha com o alfabeto e as sílabas.",
     "ages": "{band} anos",
     "lessonsCompleted": "{count, plural, =0 {Nenhuma lição concluída} one {# lição concluída} other {# lições concluídas}}",
-    "storyTime": "📚 Histórias",
+    "storyTime": "Histórias",
     "language": "{language, select, PT {Aprende em português} FR {Aprende em francês} ES {Aprende em espanhol} other {Aprende em inglês}}",
     "upsell": "Desbloqueie os jogos premium e os pacotes de atividades em um único PDF com o Pro.",
     "seePlans": "Ver os planos Pro"
@@ -225,8 +226,8 @@
     "dashboard": "Minha conta",
     "ages": "{band} anos",
     "startAlphabet": "Começar o alfabeto →",
-    "storyTime": "📚 Histórias",
-    "games": "🎮 Jogos",
+    "storyTime": "Histórias",
+    "games": "Jogos",
     "language": "{language, select, PT {Aprende em português.} FR {Aprende em francês: os links abaixo abrem as páginas em francês.} ES {Aprende em espanhol: os links abaixo abrem as páginas em espanhol.} other {Aprende em inglês: os links abaixo abrem as páginas em inglês.}}",
     "lessonsCompleted": "Lições concluídas",
     "quizAverage": "Média nos quizzes",

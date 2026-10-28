@@ -6,6 +6,7 @@ import AudioButton from "@/components/AudioButton";
 import StoryAudio from "@/components/StoryAudio";
 import type { Locale } from "@/i18n/routing";
 import { localizedPath } from "@/lib/i18n/routes";
+import UiIcon, { InlineIcon } from "@/components/UiIcon";
 
 const LABELS = {
   en: {
@@ -14,7 +15,7 @@ const LABELS = {
     page: "Page",
     of: "of",
     next: "Next →",
-    finish: "Finish 🎉",
+    finish: "Finish",
     greatJob: "Great job!",
     finished: (title: string) => `You finished "${title}"!`,
     more: "More Stories",
@@ -27,7 +28,7 @@ const LABELS = {
     page: "Page",
     of: "sur",
     next: "Suivant →",
-    finish: "Terminer 🎉",
+    finish: "Terminer",
     greatJob: "Bravo !",
     finished: (title: string) => `Tu as fini « ${title} » !`,
     more: "D'autres histoires",
@@ -40,7 +41,7 @@ const LABELS = {
     page: "Página",
     of: "de",
     next: "Siguiente →",
-    finish: "Terminar 🎉",
+    finish: "Terminar",
     greatJob: "¡Muy bien!",
     finished: (title: string) => `¡Terminaste «${title}»!`,
     more: "Más cuentos",
@@ -53,7 +54,7 @@ const LABELS = {
     page: "Página",
     of: "de",
     next: "Próxima →",
-    finish: "Terminar 🎉",
+    finish: "Terminar",
     greatJob: "Muito bem!",
     finished: (title: string) => `Você terminou “${title}”!`,
     more: "Mais histórias",
@@ -129,7 +130,7 @@ export default function StoryReader({ story, childProfiles, locale = "en" }: Pro
 if (finished) {
     return (
       <div className="text-center py-20">
-        <div className="text-6xl mb-4">🎉</div>
+        <UiIcon name="party" className="mx-auto mb-4 h-16 w-16 text-crayon-purple" />
         <h2 className="text-3xl font-extrabold text-crayon-green">{t.greatJob}</h2>
         <p className="mt-2 text-chalkboard/70">{t.finished(story.title)}</p>
         <div className="mt-6 flex justify-center gap-4">
@@ -199,6 +200,7 @@ if (finished) {
             className="rounded-block bg-crayon-green text-white px-6 py-3 font-bold"
           >
             {t.finish}
+            <InlineIcon name="party" after />
           </button>
         ) : (
           <button

@@ -4,6 +4,7 @@ import { useState } from "react";
 import { getAllLetterSlugs } from "@/lib/letters-data";
 import { shuffle } from "@/lib/games/utils";
 import GameTracingCanvas from "@/components/games/GameTracingCanvas";
+import { InlineIcon } from "@/components/UiIcon";
 
 const SEQUENCE = shuffle(getAllLetterSlugs());
 
@@ -31,7 +32,7 @@ export default function LetterTracingGame() {
   if (finished) {
     return (
       <div className="text-center py-8">
-        <p className="text-2xl font-display font-bold">🎉 You traced the whole alphabet!</p>
+        <p className="text-2xl font-display font-bold"><InlineIcon name="party" />You traced the whole alphabet!</p>
         <button
           onClick={playAgain}
           className="mt-6 rounded-block bg-crayon-blue text-white px-6 py-3 font-display font-bold shadow-block hover:shadow-blockHover transition"
@@ -80,7 +81,8 @@ export default function LetterTracingGame() {
         onClick={next}
         className="mt-4 rounded-block bg-crayon-green text-white px-6 py-3 font-display font-bold shadow-block hover:shadow-blockHover transition"
       >
-        ✅ Done, Next Letter →
+        <InlineIcon name="check" />
+        Done, Next Letter →
       </button>
     </div>
   );

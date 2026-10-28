@@ -1,9 +1,9 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { getAllLetterSlugs, getLetterContent } from "@/lib/letters-data";
-import { wordEmojis } from "@/lib/wordEmojis";
 import { buildBreadcrumbJsonLd } from "@/lib/json-ld";
 import { alternatesFor } from "@/lib/i18n/routes";
+import WordIllustration from "@/components/WordIllustration";
 
 const BASE_URL = "https://alphabes.com";
 
@@ -208,7 +208,6 @@ export default function AlphabetEn() {
             const content = getLetterContent(l)!;
             const word = content.exampleWords[0]?.word ?? content.uppercase;
             const secondWord = content.exampleWords[1]?.word;
-            const emoji = wordEmojis[word] || "📦";
             const wordsLabel = secondWord ? `${word} and ${secondWord}` : word;
             return (
               <li key={l}>
@@ -223,9 +222,7 @@ export default function AlphabetEn() {
                   >
                     {content.uppercase}{content.lowercase}
                   </span>
-                  <span className="mt-3 block text-2xl" role="img" aria-label={wordsLabel}>
-                    {emoji}
-                  </span>
+                  <WordIllustration word={word} title={wordsLabel} className="mx-auto mt-3 block h-12 w-12" />
                   <p className="mt-2 font-display font-bold text-sm">
                     {content.uppercase} is for {word}
                     {secondWord ? `, ${secondWord}` : ""}

@@ -4,6 +4,7 @@ import { useState } from "react";
 import { getAllLetterSlugs, getLetterContent } from "@/lib/letters-data";
 import { shuffle, pickDistractors } from "@/lib/games/utils";
 import WorksheetIcon from "@/components/icons/WorksheetIcon";
+import { InlineIcon } from "@/components/UiIcon";
 
 const LETTERS = getAllLetterSlugs();
 const TOTAL_QUESTIONS = 10;
@@ -99,7 +100,7 @@ export default function AlphabetQuizGame() {
   if (finished) {
     return (
       <div className="text-center py-8">
-        <p className="text-2xl font-display font-bold">🎉 Quiz complete!</p>
+        <p className="text-2xl font-display font-bold"><InlineIcon name="party" />Quiz complete!</p>
         <p className="mt-2 text-chalkboard/70">
           You scored {score} out of {TOTAL_QUESTIONS}.
         </p>
@@ -134,7 +135,17 @@ export default function AlphabetQuizGame() {
           feedback === "correct" ? "text-crayon-green" : feedback === "wrong" ? "text-crayon-red" : "text-transparent"
         }`}
       >
-        {feedback === "correct" ? "✓ Correct!" : feedback === "wrong" ? `✗ The answer was ${question.correctChoice}` : "placeholder"}
+        {feedback === "correct" ? (
+          <>
+            <InlineIcon name="check" />
+            Correct!
+          </>
+        ) : feedback === "wrong" ? (
+          <>
+            <InlineIcon name="cross" />
+            {`The answer was ${question.correctChoice}`}
+          </>
+        ) : "placeholder"}
       </p>
 
       <div className="mt-2 grid grid-cols-2 gap-4 max-w-sm mx-auto">

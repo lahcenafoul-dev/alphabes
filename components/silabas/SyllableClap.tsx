@@ -4,12 +4,14 @@ import { useState } from "react";
 import { useSpeech } from "@/components/ListenButton";
 import type { SoundWord } from "@/lib/sons-fr";
 import { plainWord } from "@/lib/sons-fr";
+import WordIllustration from "@/components/WordIllustration";
+import { InlineIcon } from "@/components/UiIcon";
 
 const LABELS = {
   es: {
     intro: "Escucha la palabra por sílabas y aplaude una vez por cada sílaba. ¿Cuántas palmadas diste?",
     picture: "Dibujo",
-    listen: "👏 Escuchar por sílabas",
+    listen: "Escuchar por sílabas",
     question: "¿Cuántas sílabas tiene?",
     right: (word: string, n: number) => `¡Sí! ${word} tiene ${n} ${n === 1 ? "sílaba" : "sílabas"}.`,
     wrong: "Casi. Escucha otra vez y aplaude con cada sílaba.",
@@ -18,7 +20,7 @@ const LABELS = {
   pt: {
     intro: "Ouça a palavra separada em sílabas e bata uma palma para cada sílaba. Quantas palmas você bateu?",
     picture: "Figura",
-    listen: "👏 Ouvir por sílabas",
+    listen: "Ouvir por sílabas",
     question: "Quantas sílabas ela tem?",
     right: (word: string, n: number) => `Isso! ${word} tem ${n} ${n === 1 ? "sílaba" : "sílabas"}.`,
     wrong: "Quase. Ouça de novo e bata uma palma para cada sílaba.",
@@ -55,9 +57,7 @@ export default function SyllableClap({ words, locale = "es" }: { words: SoundWor
         {t.intro}
       </p>
       <div className="mt-4 flex flex-wrap items-center gap-6">
-        <div className="text-6xl" role="img" aria-label={`${t.picture}: ${plain}`}>
-          {w.emoji}
-        </div>
+        <WordIllustration word={w.word} picture={w.picture} title={`${t.picture}: ${plain}`} className="h-20 w-20" />
         <div>
           <p className="font-display font-extrabold text-3xl" aria-live="polite">
             {right ? (
@@ -76,6 +76,7 @@ export default function SyllableClap({ words, locale = "es" }: { words: SoundWor
             onClick={() => void say(`${parts.join(", ")}. ${plain}`, 0.6)}
             className="mt-2 text-sm font-bold text-crayon-blue underline underline-offset-2"
           >
+            <InlineIcon name="clap" />
             {t.listen}
           </button>
         </div>

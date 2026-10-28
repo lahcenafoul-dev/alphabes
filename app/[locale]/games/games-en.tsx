@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { games } from "@/lib/games-data";
 import { alternatesFor } from "@/lib/i18n/routes";
+import { InlineIcon } from "@/components/UiIcon";
 
 export const gamesMetadataEn: Metadata = {
   title: "Learning Games",
@@ -29,7 +30,8 @@ export default function GamesEn() {
                 href={`/games/${g.slug}`}
                 className="rounded-block bg-chalkboard text-paper font-display font-bold px-4 py-2 text-sm shadow-block hover:shadow-blockHover transition"
               >
-                ▶ Play
+                <InlineIcon name="play" className="fill-current" />
+                Play
               </Link>
             </div>
           </div>

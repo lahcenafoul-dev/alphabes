@@ -56,7 +56,8 @@
     "refunds": "Refund Policy",
     "cookies": "Cookie Policy",
     "copyright": "© {year} AlphaBes. All rights reserved.",
-    "tagline": "Made for curious learners ages 3-8."
+    "tagline": "Made for curious learners ages 3-8.",
+    "photos": "Photos: <link>Pixabay</link>"
   },
   "CookieConsent": {
     "region": "Cookie consent",
@@ -179,7 +180,7 @@
     "emptyText": "Add a child profile to start tracking alphabet and phonics progress.",
     "ages": "Ages {band}",
     "lessonsCompleted": "{count} lessons completed",
-    "storyTime": "📚 Story Time",
+    "storyTime": "Story Time",
     "language": "{language, select, FR {Learns in French} ES {Learns in Spanish} PT {Learns in Portuguese} other {Learns in English}}",
     "upsell": "Unlock the premium games and whole-bundle downloads with Pro.",
     "seePlans": "See Pro Plans"
@@ -225,8 +226,8 @@
     "dashboard": "Dashboard",
     "ages": "Ages {band}",
     "startAlphabet": "Start Learning the Alphabet →",
-    "storyTime": "📚 Story Time",
-    "games": "🎮 Games",
+    "storyTime": "Story Time",
+    "games": "Games",
     "language": "{language, select, FR {Learns in French: the links below open the French pages.} ES {Learns in Spanish: the links below open the Spanish pages.} PT {Learns in Portuguese: the links below open the Portuguese pages.} other {Learns in English.}}",
     "lessonsCompleted": "Lessons Completed",
     "quizAverage": "Quiz Average",

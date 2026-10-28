@@ -4,6 +4,8 @@ import { useState } from "react";
 import { useSpeech } from "@/components/ListenButton";
 import { clapWords, plain, syllablesOf } from "@/lib/juegos-es";
 import { EndScreen, FeedbackLine, ScoreBar, listenClass, type Feedback } from "./ui";
+import WordIllustration from "@/components/WordIllustration";
+import { InlineIcon } from "@/components/UiIcon";
 
 const TOTAL = 10;
 
@@ -67,8 +69,8 @@ export default function AplaudeLasSilabas() {
       <ScoreBar round={roundNum} total={TOTAL} score={score} />
 
       <div className="mt-6 text-center">
-        <div className="mx-auto flex h-32 w-32 items-center justify-center rounded-full bg-crayon-yellow/25 text-7xl" role="img" aria-label={name}>
-          {word.emoji}
+        <div className="mx-auto flex h-32 w-32 items-center justify-center rounded-block border border-chalkboard/10 bg-white shadow-[0_2px_12px_rgba(31,42,68,0.08)]">
+          <WordIllustration word={word.word} picture={word.picture} title={name} className="h-24 w-24" />
         </div>
         <p className="mt-4 font-display font-extrabold text-3xl" aria-live="polite">
           {solved
@@ -82,14 +84,16 @@ export default function AplaudeLasSilabas() {
         </p>
         <div className="mt-3 flex flex-wrap justify-center gap-3">
           <button type="button" onClick={() => void say(name, 0.75)} className={listenClass}>
-            🔊 Escuchar
+            <InlineIcon name="listen" />
+            Escuchar
           </button>
           <button
             type="button"
             onClick={bySyllables}
             className="rounded-block border-2 border-chalkboard/20 px-5 py-2.5 font-display font-bold hover:border-crayon-blue transition"
           >
-            👏 Escuchar por sílabas
+            <InlineIcon name="clap" />
+            Escuchar por sílabas
           </button>
         </div>
       </div>

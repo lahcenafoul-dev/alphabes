@@ -4,6 +4,7 @@ import { SCHOOL_HUBS_PT, getSchoolTopicPt, topicsOfPt, type SchoolLevelPt } from
 import { absoluteUrl, alternatesFor, localizedPath } from "@/lib/i18n/routes";
 import { buildBreadcrumbJsonLd } from "@/lib/json-ld";
 import { hrefOf } from "./SchoolHubPt";
+import UiIcon from "@/components/UiIcon";
 
 // /pt/educacao-infantil/[topic] and /pt/primeiro-ano/[topic].
 
@@ -55,7 +56,7 @@ export default function SchoolTopicPt({ level, slug }: { level: SchoolLevelPt; s
       </nav>
 
       <h1 className="mt-4 text-4xl font-extrabold">
-        <span aria-hidden="true">{t.emoji} </span>
+        <UiIcon name={t.icon} className="mr-2 inline-block h-9 w-9 align-[-0.15em] text-crayon-purple" />
         {t.title}
       </h1>
       {t.intro.map((p) => (

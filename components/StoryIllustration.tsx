@@ -432,10 +432,18 @@ function getScene(scene: string | null, endLabel: string) {
           <path d="M185 175 Q200 190 215 175" stroke="#78350f" strokeWidth="4" fill="none" />
         </svg>
       );
+    // A story without its own pictures yet: an open book, never a blank box.
     default:
       return (
         <svg viewBox="0 0 400 300" className="w-full h-full">
-          <rect width="400" height="300" fill="#e5e7eb" />
+          <rect width="400" height="300" fill="#FFF1C9" />
+          <ellipse cx="200" cy="250" rx="140" ry="14" fill="#1F2A44" opacity="0.08" />
+          <path d="M200 92 Q150 66 84 74 L84 232 Q150 224 200 248 Z" fill="#FFFDF7" stroke="#1F2A44" strokeWidth="6" strokeLinejoin="round" />
+          <path d="M200 92 Q250 66 316 74 L316 232 Q250 224 200 248 Z" fill="#FFFDF7" stroke="#1F2A44" strokeWidth="6" strokeLinejoin="round" />
+          <path d="M108 112 Q150 106 180 118 M108 142 Q150 136 180 148 M108 172 Q150 166 180 178 M220 118 Q250 106 292 112 M220 148 Q250 136 292 142 M220 178 Q250 166 292 172" stroke="#C9CED8" strokeWidth="6" strokeLinecap="round" fill="none" />
+          <circle cx="76" cy="52" r="10" fill="#FFC93C" />
+          <circle cx="330" cy="40" r="7" fill="#FF5A5F" />
+          <circle cx="352" cy="96" r="6" fill="#3EA6FF" />
         </svg>
       );
   }

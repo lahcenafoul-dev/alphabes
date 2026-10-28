@@ -4,6 +4,7 @@
 //
 // Topics with an English twin (`en`) are also paired in TRANSLATED_PARAMS
 // (lib/i18n/routes.ts); tests check that the two agree.
+import type { UiIconName } from "@/components/UiIcon";
 import type { AppPathname } from "@/i18n/routing";
 
 export type SchoolLevel = "maternelle" | "grande-section";
@@ -18,7 +19,7 @@ export type SchoolTopic = {
   title: string;
   metaTitle: string;
   summary: string;
-  emoji: string;
+  icon: UiIconName;
   intro: string[];
   tips: string[];
   activity: { title: string; material: string; steps: string[] };
@@ -41,7 +42,7 @@ export const schoolTopics: SchoolTopic[] = [
     title: "Le graphisme en maternelle",
     metaTitle: "Le graphisme en maternelle : préparer la main à l'écriture",
     summary: "Traits, ronds, ponts et boucles : les gestes qui préparent à l'écriture, bien avant les lettres.",
-    emoji: "〰️",
+    icon: "waves",
     intro: [
       "Avant d'écrire des lettres, la main apprend des gestes : tirer un trait de haut en bas, tourner un rond dans le bon sens, enchaîner des ponts et des vagues. C'est le graphisme, une activité centrale de la petite et de la moyenne section.",
       "Ces gestes sont les morceaux des lettres de demain : le rond deviendra le o et le a, le pont deviendra le n et le m, la boucle deviendra le l et le e de la cursive. Un enfant qui les maîtrise apprendra à écrire avec beaucoup moins d'effort.",
@@ -75,7 +76,7 @@ export const schoolTopics: SchoolTopic[] = [
     title: "Tracer les lettres en maternelle",
     metaTitle: "Tracer les lettres en maternelle : capitales d'abord, sans stress",
     summary: "Les capitales d'abord, en suivant des pointillés, pour apprendre la forme et le sens de chaque lettre.",
-    emoji: "✏️",
+    icon: "pencil",
     intro: [
       "En petite et moyenne section, on écrit d'abord en capitales d'imprimerie (A, B, C) : ce sont des traits et des ronds, plus faciles à tracer que les lettres attachées. Le prénom de l'enfant est en général le premier mot qu'il apprend à écrire.",
       "Tracer en suivant des pointillés apprend la forme de la lettre et l'ordre des gestes. L'important n'est pas un tracé parfait, mais de partir du bon endroit et d'aller dans le bon sens.",
@@ -109,7 +110,7 @@ export const schoolTopics: SchoolTopic[] = [
     title: "Coloriage des lettres en maternelle",
     metaTitle: "Coloriage des lettres en maternelle : apprendre l'alphabet en coloriant",
     summary: "Colorier une grande lettre et ses images : la main s'exerce et la lettre devient familière.",
-    emoji: "🖍️",
+    icon: "palette",
     intro: [
       "Colorier, c'est déjà travailler la main : tenir le crayon, rester à peu près dans la forme, changer de couleur. Ce sont les mêmes muscles que pour écrire.",
       "Quand le coloriage montre une grande lettre et des images qui commencent par cette lettre, l'enfant la regarde longtemps et en parle : il apprend sans s'en rendre compte.",
@@ -143,7 +144,7 @@ export const schoolTopics: SchoolTopic[] = [
     title: "Les syllabes en grande section",
     metaTitle: "Les syllabes en grande section : frapper, compter, assembler",
     summary: "Découper les mots en syllabes à l'oral, puis assembler une consonne et une voyelle : ma, li, to.",
-    emoji: "👏",
+    icon: "clap",
     intro: [
       "En grande section, l'enfant apprend à entendre que les mots sont faits de morceaux : les syllabes. « Ca-na-pé » en a trois, « chat » une seule. Ce travail à l'oral est la base de la lecture.",
       "Vers la fin de l'année, beaucoup d'enfants commencent à assembler une consonne et une voyelle : m et a font « ma ». C'est le cœur de la lecture en français, qui se poursuit au CP.",
@@ -177,7 +178,7 @@ export const schoolTopics: SchoolTopic[] = [
     title: "Les mots-outils en grande section",
     metaTitle: "Les mots-outils en grande section : le, la, un, et, est…",
     summary: "Les petits mots très fréquents (le, la, un, et, est) qu'on apprend à reconnaître d'un coup d'œil.",
-    emoji: "🧩",
+    icon: "puzzle",
     intro: [
       "Les mots-outils sont les petits mots qui reviennent dans presque toutes les phrases : le, la, les, un, une, et, est, il, elle… Les reconnaître d'un coup d'œil permet de lire une phrase sans s'arrêter à chaque mot.",
       "En grande section, on en découvre quelques-uns, souvent dans les phrases de la classe ou dans les albums. Au CP, on en apprend beaucoup plus, en même temps que les sons.",
@@ -211,7 +212,7 @@ export const schoolTopics: SchoolTopic[] = [
     title: "L'écriture cursive en grande section",
     metaTitle: "L'écriture cursive en grande section : les lettres attachées",
     summary: "Passer des capitales aux lettres attachées, sur les lignes du cahier, en commençant par les boucles.",
-    emoji: "✍️",
+    icon: "writing",
     intro: [
       "En grande section, on commence l'écriture cursive : les lettres attachées qu'on écrira à l'école jusqu'au bout. Elle s'apprend sur des lignes (souvent le grand carreau Seyès), en respectant la hauteur de chaque lettre.",
       "On commence par les lettres faites de boucles et de ponts (e, l, i, u, n, m), puis on écrit son prénom et de petits mots. Chaque lettre a un point de départ et un sens : c'est ce qui permet ensuite de les attacher.",

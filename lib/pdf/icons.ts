@@ -7,7 +7,12 @@
 // All icons are built from a handful of shared shape primitives so the set
 // stays visually consistent. Every shape is outline-only (stroke, no fill)
 // so pages remain printer- and coloring-friendly.
+//
+// The matching, beginning-sounds and review templates show the word's cartoon picture
+// instead when one is loaded (drawWordPicture); coloring keeps the line art,
+// since the child colours it in.
 import type { jsPDF } from "jspdf";
+import { pictureKey } from "../picture-key";
 
 const INK: [number, number, number] = [60, 60, 60];
 
@@ -231,6 +236,34 @@ export const ICONS: Record<string, (doc: jsPDF, cx: number, cy: number, size: nu
   yak: (doc, cx, cy, size) => animalHead(doc, cx, cy, size, "none", { horns: true, mane: true, snout: true }),
   zebra: (doc, cx, cy, size) => animalHead(doc, cx, cy, size, "none", { mane: true, stripes: true, snout: true }),
 };
+
+/** Photos of example words as JPEG data URLs, keyed by picture key (lib/pdf/photos.ts loads them). */
+export type WordPhotos = Record<string, string>;
+
+/**
+ * A word's cartoon picture when one was loaded (a `photoSize` mm square, unframed),
+ * else its line art, else a letter tile.
+ */
+export function drawWordPicture(
+  doc: jsPDF,
+  photos: WordPhotos,
+  word: string,
+  cx: number,
+  cy: number,
+  photoSize: number,
+  icon: { size: number; fallbackSize: number; letter: string },
+): void {
+  const photo = photos[pictureKey(word)];
+  if (photo) {
+    const half = photoSize / 2;
+    // The cartoons are on white, like the page: no frame around them.
+    doc.addImage(photo, "JPEG", cx - half, cy - half, photoSize, photoSize);
+    return;
+  }
+  const draw = ICONS[word.toLowerCase()];
+  if (draw) draw(doc, cx, cy, icon.size);
+  else drawFallbackIcon(doc, cx, cy, icon.fallbackSize, icon.letter);
+}
 
 /** Used only if a lookup ever misses one of the 26 primary words above. */
 export function drawFallbackIcon(doc: jsPDF, cx: number, cy: number, size: number, letter: string): void {

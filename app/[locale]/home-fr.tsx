@@ -6,6 +6,7 @@ import { FicheCard } from "@/components/fiches/FicheParts";
 import { getFiche } from "@/lib/fiches-fr";
 import { frenchGames } from "@/lib/games-fr";
 import { frenchLetters, isAccentLetter } from "@/lib/letters-fr";
+import { IconTile } from "@/components/UiIcon";
 
 const title = "Apprendre l'alphabet : fiches et jeux gratuits | AlphaBes";
 const description =
@@ -241,9 +242,7 @@ export default function HomeFr() {
                 href={{ pathname: "/games/[slug]", params: { slug: g.slug } }}
                 className="rounded-block bg-paper p-5 shadow-block hover:shadow-blockHover transition font-display font-bold text-center"
               >
-                <span className="block text-3xl" aria-hidden="true">
-                  {g.emoji}
-                </span>
+                <IconTile name={g.icon} className="mx-auto mb-2 h-12 w-12" />
                 {g.title}
               </Link>
             ))}

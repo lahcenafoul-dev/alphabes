@@ -56,7 +56,8 @@
     "refunds": "Politique de remboursement",
     "cookies": "Politique de cookies",
     "copyright": "© {year} AlphaBes. Tous droits réservés.",
-    "tagline": "Conçu pour les petits curieux de 3 à 8 ans."
+    "tagline": "Conçu pour les petits curieux de 3 à 8 ans.",
+    "photos": "Photos : <link>Pixabay</link>"
   },
   "CookieConsent": {
     "region": "Consentement aux cookies",
@@ -179,7 +180,7 @@
     "emptyText": "Ajoutez un profil pour suivre les progrès de votre enfant sur l'alphabet et les sons.",
     "ages": "{band} ans",
     "lessonsCompleted": "{count, plural, =0 {Aucune leçon terminée} one {# leçon terminée} other {# leçons terminées}}",
-    "storyTime": "📚 Histoires",
+    "storyTime": "Histoires",
     "language": "{language, select, FR {Apprend en français} ES {Apprend en espagnol} PT {Apprend en portugais} other {Apprend en anglais}}",
     "upsell": "Débloquez les jeux premium et les packs de fiches en un seul PDF avec Pro.",
     "seePlans": "Voir les formules Pro"
@@ -225,8 +226,8 @@
     "dashboard": "Tableau de bord",
     "ages": "{band} ans",
     "startAlphabet": "Commencer l'alphabet →",
-    "storyTime": "📚 Histoires",
-    "games": "🎮 Jeux",
+    "storyTime": "Histoires",
+    "games": "Jeux",
     "language": "{language, select, FR {Apprend en français.} ES {Apprend en espagnol : les liens ci-dessous ouvrent les pages en espagnol.} PT {Apprend en portugais : les liens ci-dessous ouvrent les pages en portugais.} other {Apprend en anglais : les liens ci-dessous ouvrent les pages en anglais.}}",
     "lessonsCompleted": "Leçons terminées",
     "quizAverage": "Moyenne aux quiz",

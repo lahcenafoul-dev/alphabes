@@ -52,5 +52,7 @@ describe("structured data", () => {
       isAccessibleForFree: true,
     });
     expect(buildShortStoryJsonLd("en", { ...story, coverUrl: null })).not.toHaveProperty("image");
+    // A scene drawn by components/StoryIllustration.tsx is not a file.
+    expect(buildShortStoryJsonLd("en", { ...story, coverUrl: "apple-1" })).not.toHaveProperty("image");
   });
 });

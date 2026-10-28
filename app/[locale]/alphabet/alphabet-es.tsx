@@ -3,6 +3,7 @@ import { Link } from "@/i18n/navigation";
 import { absoluteUrl, alternatesFor } from "@/lib/i18n/routes";
 import { buildBreadcrumbJsonLd } from "@/lib/json-ld";
 import { TILDE_SLUG, letterWithWord, spanishLetters } from "@/lib/letters-es";
+import WordIllustration from "@/components/WordIllustration";
 
 const title = "El abecedario para niños: las 27 letras, sus sonidos y palabras";
 const description =
@@ -135,8 +136,8 @@ export default function AlphabetEs() {
                     {l.upper}{l.lower}
                   </span>
                   <span className="mt-1 block text-xs text-chalkboard/60">«{l.name}»</span>
-                  <span className="mt-2 block text-2xl" aria-hidden="true">
-                    {w1.emoji}
+                  <span className="mt-2 block" aria-hidden="true">
+                    <WordIllustration word={w1.word} picture={w1.picture} className="mx-auto h-10 w-10" />
                   </span>
                   <span className="mt-2 block font-display font-bold text-sm">{letterWithWord(l, w1)}</span>
                 </Link>

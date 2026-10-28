@@ -8,6 +8,7 @@
 // Picture words come from the "sílaba inicial" worksheets
 // (FIRST_SYLLABLE_WORDS in lib/atividades-pt.ts): split into syllables
 // ("bo|la"), so first letters, first syllables and syllable counts are known.
+import type { UiIconName } from "@/components/UiIcon";
 import { FIRST_SYLLABLE_WORDS, LOOK_ALIKES } from "./atividades-pt-words";
 import { alphabetLetters, type PortugueseLetter, type PortugueseWord } from "./letters-pt";
 
@@ -20,7 +21,7 @@ export type PortugueseGame = {
   description: string;
   /** What the child does and what it teaches, for parents (game page). */
   forParents: string;
-  emoji: string;
+  icon: UiIconName;
   age: string;
   isPremium: boolean;
 };
@@ -33,7 +34,7 @@ export const portugueseGames: PortugueseGame[] = [
     description: "Ouça o nome de uma letra e encontre-a entre outras, em maiúsculas ou em minúsculas.",
     forParents:
       "A criança ouve o nome da letra e procura na grade. As letras parecidas (b, d, p, q; m e n) estão misturadas de propósito: assim ela aprende a diferenciá-las. Comecem pelas maiúsculas, a letra bastão, e depois passem para as minúsculas.",
-    emoji: "🔎",
+    icon: "search",
     age: "3 a 5 anos",
     isPremium: false,
   },
@@ -44,7 +45,7 @@ export const portugueseGames: PortugueseGame[] = [
     description: "Uma letra e quatro figuras: toque na figura cujo nome começa com essa letra.",
     forParents:
       "Cada figura é dita em voz alta quando a criança toca nela, para que ela ouça a palavra. Assim ela liga a letra ao começo da palavra, o primeiro passo para ler. Nunca aparecem juntas duas letras que podem começar com o mesmo som (c e s, g e j, e e i), para que o jogo dependa do ouvido e não da ortografia.",
-    emoji: "🖼️",
+    icon: "image",
     age: "4 a 6 anos",
     isPremium: false,
   },
@@ -55,7 +56,7 @@ export const portugueseGames: PortugueseGame[] = [
     description: "Ouça o nome de uma figura e escolha, entre quatro, a sílaba com que ela começa: pa de pato, lu de lua.",
     forParents:
       "Na alfabetização, a criança lê pelas famílias silábicas, por isso o jogo trabalha o ouvido com a primeira sílaba da palavra. As opções misturam a mesma consoante com outra vogal (pa, pe, po) e outra consoante com a mesma vogal (pa, ma): é preciso ouvir as duas letras. Nunca aparecem duas sílabas com o mesmo som (ce e se, ge e je, xa e cha).",
-    emoji: "👂",
+    icon: "ear",
     age: "4 a 6 anos",
     isPremium: true,
   },
@@ -66,7 +67,7 @@ export const portugueseGames: PortugueseGame[] = [
     description: "Traçar as letras com o dedo na tela, em letra de forma ou cursiva, nas linhas de caligrafia.",
     forParents:
       "A criança segue os pontinhos com o dedo ou o mouse. Na cursiva, as linhas são as do caderno de caligrafia, com a letra cursiva da escola. Mostre primeiro onde a letra começa.",
-    emoji: "✏️",
+    icon: "pencil",
     age: "4 a 7 anos",
     isPremium: true,
   },
@@ -77,7 +78,7 @@ export const portugueseGames: PortugueseGame[] = [
     description: "Dez perguntas para revisar: a ordem das letras, o nome delas, vogal ou consoante e a primeira letra das palavras.",
     forParents:
       "Uma revisão divertida para o fim da pré-escola ou o 1º ano: que letra vem depois, que letra se ouve, se é vogal ou consoante e com que letra começa uma palavra.",
-    emoji: "🏆",
+    icon: "trophy",
     age: "5 a 7 anos",
     isPremium: true,
   },
@@ -87,7 +88,7 @@ export const portugueseGames: PortugueseGame[] = [
     description: "Ouça uma palavra, bata uma palma para cada sílaba e diga quantas ela tem: bor-bo-le-ta, quatro palmas!",
     forParents:
       "Separar as palavras em sílabas batendo palmas é o exercício clássico de consciência fonológica antes de ler. Batam palmas juntos na primeira vez e digam a palavra devagar. Na dúvida, o botão “Ouvir por sílabas” diz a palavra separada. As palavras vão de uma sílaba (sol) a cinco (hipopótamo).",
-    emoji: "👏",
+    icon: "clap",
     age: "4 a 6 anos",
     isPremium: false,
   },
@@ -264,19 +265,19 @@ export function firstSyllableRound(): SyllableRound {
 
 // "Bata palmas": the picture words plus a few short and long ones, so every
 // count from 1 to 5 comes up.
-const w = (word: string, withArticle: string, emoji: string): PortugueseWord => ({ word, withArticle, emoji });
+const w = (word: string, withArticle: string, picture: string): PortugueseWord => ({ word, withArticle, picture });
 export const CLAP_WORDS: PortugueseWord[] = [
   ...Object.values(FIRST_SYLLABLE_WORDS).flat(),
-  w("sol", "o sol", "☀️"),
-  w("pão", "um pão", "🍞"),
-  w("flor", "uma flor", "🌸"),
-  w("trem", "um trem", "🚂"),
-  w("mar", "o mar", "🌊"),
-  w("mel", "o mel", "🍯"),
-  w("bor|bo|le|ta", "uma borboleta", "🦋"),
-  w("bi|ci|cle|ta", "uma bicicleta", "🚲"),
-  w("te|le|vi|são", "uma televisão", "📺"),
-  w("cro|co|di|lo", "um crocodilo", "🐊"),
+  w("sol", "o sol", "sun"),
+  w("pão", "um pão", "bread"),
+  w("flor", "uma flor", "flower"),
+  w("trem", "um trem", "train"),
+  w("mar", "o mar", "wave"),
+  w("mel", "o mel", "honey"),
+  w("bor|bo|le|ta", "uma borboleta", "butterfly"),
+  w("bi|ci|cle|ta", "uma bicicleta", "bicycle"),
+  w("te|le|vi|são", "uma televisão", "television"),
+  w("cro|co|di|lo", "um crocodilo", "crocodile"),
 ];
 
 /** Ten words for one game, with at least one of each count from 1 to 5. */
@@ -290,11 +291,11 @@ export function clapWords(total = 10): PortugueseWord[] {
 export type QuizQuestion = {
   kind: "after" | "heard" | "vowel" | "picture";
   prompt: string;
-  /** Read aloud by the 🔊 button. */
+  /** Read aloud by the listen button. */
   spoken: string;
   choices: string[];
   answer: string;
-  emoji?: string;
+  picture?: string;
   /** The picture's name, for screen readers. */
   label?: string;
 };
@@ -353,7 +354,7 @@ export function quizQuestion(): QuizQuestion {
     spoken: plain(word.word),
     choices: letterChoices(answer, true),
     answer: answer.upper,
-    emoji: word.emoji,
+    picture: word.picture,
     label: plain(word.word),
   };
 }

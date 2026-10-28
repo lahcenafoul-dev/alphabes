@@ -13,7 +13,8 @@ export type PortugueseWord = {
   word: string;
   /** With its article, as a child would say it ("um avião"). */
   withArticle: string;
-  emoji: string;
+  /** Its picture (components/WordIllustration.tsx). */
+  picture: string;
 };
 
 export type PortugueseLetter = {
@@ -52,7 +53,7 @@ export type PortugueseLetter = {
 export const ACENTOS_SLUG = "acentos";
 export const CEDILHA_SLUG = "c-cedilha";
 
-const w = (word: string, withArticle: string, emoji: string): PortugueseWord => ({ word, withArticle, emoji });
+const w = (word: string, withArticle: string, picture: string): PortugueseWord => ({ word, withArticle, picture });
 
 export const portugueseLetters: PortugueseLetter[] = [
   {
@@ -65,7 +66,7 @@ export const portugueseLetters: PortugueseLetter[] = [
     nameSpoken: "a",
     soundSpoken: "a. Como em abelha, avião.",
     sound: "A letra A soa [a], como no começo de abelha e de avião. É uma vogal: sai com a boca bem aberta. Com o til, ã, o som passa pelo nariz, como em maçã e mãe.",
-    words: [w("Abelha", "uma abelha", "🐝"), w("Avião", "um avião", "✈️")],
+    words: [w("Abelha", "uma abelha", "bee"), w("Avião", "um avião", "airplane")],
     tip: "O A costuma ser a primeira letra que a criança reconhece, porque abre o alfabeto e aparece em muitos nomes. Procurem juntos o A nas embalagens, nas placas e nas capas dos livros.",
     faq: {
       question: "Com que idade a criança reconhece a letra A?",
@@ -83,7 +84,7 @@ export const portugueseLetters: PortugueseLetter[] = [
     nameSpoken: "bê",
     soundSpoken: "ba, be, bi, bo, bu. Como em bola, baleia.",
     sound: "A letra B soa [b]: os lábios se juntam e se abrem, como em bola e baleia. Ela quase sempre vem com uma vogal, e assim nasce a família do B: ba, be, bi, bo, bu.",
-    words: [w("Bola", "uma bola", "⚽"), w("Baleia", "uma baleia", "🐳")],
+    words: [w("Bola", "uma bola", "ball"), w("Baleia", "uma baleia", "whale")],
     tip: "As crianças pequenas trocam muito o b e o d na escrita: é normal até uns 7 anos. Ao traçar o b, comece pelo “pauzinho” e depois faça a “barriguinha”; o d começa pela barriguinha.",
     faq: {
       question: "Qual é a diferença entre o B e o P?",
@@ -101,7 +102,7 @@ export const portugueseLetters: PortugueseLetter[] = [
     nameSpoken: "cê",
     soundSpoken: "ca, co, cu. Como em casa. ce, ci. Como em cebola.",
     sound: "A letra C tem dois sons. Com a, o e u ela soa [k], como em casa (ca, co, cu). Com e e i ela soa [s], como em cebola (ce, ci). Para ter o som [s] antes de a, o e u, usa-se o Ç: maçã, poço, açúcar.",
-    words: [w("Casa", "uma casa", "🏠"), w("Cebola", "uma cebola", "🧅")],
+    words: [w("Casa", "uma casa", "house"), w("Cebola", "uma cebola", "onion")],
     tip: "Não precisa explicar tudo de uma vez. Comecem com ca, co, cu (casa, cola, cubo) e, quando a criança estiver segura, apresentem ce e ci como a “surpresa” do C. Para o som [k] com e e i, escreve-se qu: queijo, quilo.",
     faq: {
       question: "Quando o C tem som de K e quando tem som de S?",
@@ -119,8 +120,8 @@ export const portugueseLetters: PortugueseLetter[] = [
     nameSpoken: "cê cedilha",
     soundSpoken: "ça, ço, çu. Como em maçã, palhaço.",
     sound: "O Ç é o C com uma “cobrinha” embaixo, a cedilha. Ele soa sempre [s] e só aparece antes de a, o e u: ça, ço, çu, como em maçã e palhaço. Antes de e e i ele não é usado, porque ali o C já soa [s] sozinho (cebola, cinema).",
-    words: [w("Maçã", "uma maçã", "🍎"), w("Palhaço", "um palhaço", "🤡")],
-    wordsInside: [w("Coração", "um coração", "❤️"), w("Taça", "uma taça", "🏆")],
+    words: [w("Maçã", "uma maçã", "apple"), w("Palhaço", "um palhaço", "clown")],
+    wordsInside: [w("Coração", "um coração", "heart"), w("Taça", "uma taça", "trophy")],
     tip: "O Ç não é uma letra nova: é o C com cedilha, e por isso não entra na conta das 26 letras do alfabeto. Nenhuma palavra em português começa com Ç. Ao escrever, a criança vai aprender que ce e ci nunca levam cedilha.",
     faq: {
       question: "Por que nenhuma palavra começa com Ç?",
@@ -138,7 +139,7 @@ export const portugueseLetters: PortugueseLetter[] = [
     nameSpoken: "dê",
     soundSpoken: "da, de, di, do, du. Como em dado, dente.",
     sound: "A letra D soa [d], como em dado: a ponta da língua toca atrás dos dentes de cima. Em grande parte do Brasil, antes do som de i (di, e o de no fim das palavras) ela soa “dji”, como em dia e em dente. A escrita não muda: é sempre d.",
-    words: [w("Dado", "um dado", "🎲"), w("Dente", "um dente", "🦷")],
+    words: [w("Dado", "um dado", "dice"), w("Dente", "um dente", "tooth")],
     tip: "Se a criança escrever “djia” para dia, é porque ela escreve o que ouve: explique com calma que o som “dji” se escreve com di. O mesmo acontece com o T (tia soa “tchia”).",
     faq: {
       question: "Por que o D às vezes soa “dji”?",
@@ -157,7 +158,7 @@ export const portugueseLetters: PortugueseLetter[] = [
     nameSpoken: "é",
     soundSpoken: "é, ê. Como em elefante, estrela.",
     sound: "A letra E tem dois sons: aberto, [ɛ], como em café e em pé, e fechado, [e], como em você e em elefante. No fim das palavras, quase sempre soa como i: dente se diz “denti”.",
-    words: [w("Elefante", "um elefante", "🐘"), w("Estrela", "uma estrela", "⭐")],
+    words: [w("Elefante", "um elefante", "elephant"), w("Estrela", "uma estrela", "star")],
     tip: "As vogais (a, e, i, o, u) são a base da leitura: com elas se formam todas as sílabas. O acento ajuda a saber o som do E: é aberto em café, ê fechado em você.",
     faq: {
       question: "Por que o E no fim da palavra soa como I?",
@@ -175,7 +176,7 @@ export const portugueseLetters: PortugueseLetter[] = [
     nameSpoken: "efe",
     soundSpoken: "fa, fe, fi, fo, fu. Como em foca, flor.",
     sound: "A letra F soa [f]: os dentes de cima encostam no lábio de baixo e o ar sai, como em foca e flor.",
-    words: [w("Foca", "uma foca", "🦭"), w("Flor", "uma flor", "🌸")],
+    words: [w("Foca", "uma foca", "seal"), w("Flor", "uma flor", "flower")],
     tip: "O F e o V se fazem do mesmo jeito; a diferença é que no V a garganta vibra. Brinquem de “soprar” o F (fffff) e de “zumbir” o V (vvvvv).",
     faq: {
       question: "Qual é a diferença entre o F e o V?",
@@ -193,7 +194,7 @@ export const portugueseLetters: PortugueseLetter[] = [
     nameSpoken: "gê",
     soundSpoken: "ga, go, gu. Como em gato. ge, gi. Como em girafa.",
     sound: "A letra G tem dois sons. Com a, o e u ela soa [g], como em gato (ga, go, gu). Com e e i ela soa como o J, [ʒ], como em girafa (ge, gi). Para ter o som [g] antes de e e i, escreve-se gu: guerra, guitarra.",
-    words: [w("Gato", "um gato", "🐱"), w("Girafa", "uma girafa", "🦒")],
+    words: [w("Gato", "um gato", "cat"), w("Girafa", "uma girafa", "giraffe")],
     tip: "Comecem com ga, go, gu (gato, galo, gota) e só depois apresentem ge e gi, que soam como j (gelo, girafa). O gu de guerra e guitarra, em que o u não soa, vem por último.",
     faq: {
       question: "Quando o G soa como J?",
@@ -211,7 +212,7 @@ export const portugueseLetters: PortugueseLetter[] = [
     nameSpoken: "agá",
     soundSpoken: "O H no começo da palavra não tem som. Hora. Hipopótamo.",
     sound: "No começo das palavras, o H não tem som: helicóptero se lê “elicóptero”. Mesmo assim ele é importante, porque junto com outras letras forma os dígrafos ch (chave), lh (palhaço) e nh (ninho), que têm sons próprios.",
-    words: [w("Helicóptero", "um helicóptero", "🚁"), w("Hipopótamo", "um hipopótamo", "🦛")],
+    words: [w("Helicóptero", "um helicóptero", "helicopter"), w("Hipopótamo", "um hipopótamo", "hippo")],
     tip: "Como o H não tem som no começo da palavra, a criança só aprende onde ele vai vendo muitas vezes as palavras escritas: hora, hoje, homem. Mais importante é perceber o H nos dígrafos ch, lh e nh, que ela vai encontrar o tempo todo.",
     faq: {
       question: "Para que serve o H se ele não tem som?",
@@ -229,7 +230,7 @@ export const portugueseLetters: PortugueseLetter[] = [
     nameSpoken: "i",
     soundSpoken: "i. Como em iguana, ilha.",
     sound: "A letra I soa [i], como no começo de iguana e de ilha. É uma vogal e quase sempre soa igual. Com outra vogal ela forma encontros como ai, ei e oi: pai, rei, boi.",
-    words: [w("Iguana", "uma iguana", "🦎"), w("Ilha", "uma ilha", "🏝️")],
+    words: [w("Iguana", "uma iguana", "lizard"), w("Ilha", "uma ilha", "island")],
     tip: "O i minúsculo tem um pingo, e as crianças adoram lembrar disso. Ao traçar, primeiro o pauzinho, depois o pingo. Para brincar com o som, digam juntos palavras que terminam em i: saci, abacaxi, caqui.",
     faq: {
       question: "Quando o I tem acento?",
@@ -247,7 +248,7 @@ export const portugueseLetters: PortugueseLetter[] = [
     nameSpoken: "jota",
     soundSpoken: "ja, je, ji, jo, ju. Como em jacaré, janela.",
     sound: "A letra J soa [ʒ], como em jacaré e janela. É o mesmo som do G em ge e gi: gelo, girafa.",
-    words: [w("Jacaré", "um jacaré", "🐊"), w("Janela", "uma janela", "🪟")],
+    words: [w("Jacaré", "um jacaré", "crocodile"), w("Janela", "uma janela", "window")],
     tip: "Como o J e o G de ge e gi soam igual, a criança só descobre qual usar vendo as palavras escritas: jeito e gente, jiboia e girafa. No começo, basta ler ja, je, ji, jo, ju.",
     faq: {
       question: "O J e o G soam igual?",
@@ -266,7 +267,7 @@ export const portugueseLetters: PortugueseLetter[] = [
     nameSpoken: "cá",
     soundSpoken: "ca. Como em kiwi, karaokê.",
     sound: "A letra K soa [k], como o C de casa. Ela aparece em palavras de outras línguas e em nomes: kiwi, karaokê, ketchup, Kátia.",
-    words: [w("Kiwi", "um kiwi", "🥝"), w("Karaokê", "um karaokê", "🎤")],
+    words: [w("Kiwi", "um kiwi", "kiwi"), w("Karaokê", "um karaokê", "microphone")],
     tip: "O K é raro: a criança vai encontrá-lo sobretudo em nomes (Kauã, Kátia), em marcas e em palavras como kiwi. Não é preciso treinar sílabas com K; basta reconhecer a letra.",
     faq: {
       question: "Por que o K está no alfabeto?",
@@ -284,7 +285,7 @@ export const portugueseLetters: PortugueseLetter[] = [
     nameSpoken: "ele",
     soundSpoken: "la, le, li, lo, lu. Como em leão, lua.",
     sound: "A letra L soa [l], como em leão e lua: a ponta da língua toca o céu da boca, atrás dos dentes. No fim da sílaba, no Brasil, ela soa como u: sal, papel e anel se dizem “sau”, “papeu” e “aneu”.",
-    words: [w("Leão", "um leão", "🦁"), w("Lua", "a lua", "🌙")],
+    words: [w("Leão", "um leão", "lion"), w("Lua", "a lua", "moon")],
     tip: "Como o L no fim da sílaba soa como u, é comum a criança escrever “papeu” em vez de papel ou “sau” em vez de sal. É uma troca normal no começo, que diminui com a leitura.",
     faq: {
       question: "Por que o L no fim da palavra soa como U?",
@@ -302,7 +303,7 @@ export const portugueseLetters: PortugueseLetter[] = [
     nameSpoken: "eme",
     soundSpoken: "ma, me, mi, mo, mu. Como em macaco, mala.",
     sound: "A letra M soa [m]: os lábios se fecham e o som sai pelo nariz, como em macaco e mala. No fim da sílaba ela não soa sozinha: deixa a vogal de antes nasal, como em campo e bombom.",
-    words: [w("Macaco", "um macaco", "🐒"), w("Mala", "uma mala", "🧳")],
+    words: [w("Macaco", "um macaco", "monkey"), w("Mala", "uma mala", "suitcase")],
     tip: "A família do M (ma, me, mi, mo, mu) costuma ser a primeira família silábica ensinada, porque o som do M é fácil de prolongar (mmmm) e com ele a criança logo lê palavras como mala, mola e Mimi.",
     faq: {
       question: "Quando se usa M antes de P e B?",
@@ -320,7 +321,7 @@ export const portugueseLetters: PortugueseLetter[] = [
     nameSpoken: "ene",
     soundSpoken: "na, ne, ni, no, nu. Como em navio, nuvem.",
     sound: "A letra N soa [n], como em navio e nuvem: a ponta da língua toca atrás dos dentes de cima e o som sai pelo nariz. No fim da sílaba, ela deixa a vogal nasal, como em canto e ponte, e com o H forma o nh de ninho.",
-    words: [w("Navio", "um navio", "🚢"), w("Nuvem", "uma nuvem", "☁️")],
+    words: [w("Navio", "um navio", "ship"), w("Nuvem", "uma nuvem", "cloud")],
     tip: "Aproveite para mostrar o nh: ninho, galinha, banho. A criança percebe que o h muda o som do n.",
     faq: {
       question: "O que é o NH?",
@@ -339,7 +340,7 @@ export const portugueseLetters: PortugueseLetter[] = [
     nameSpoken: "ó",
     soundSpoken: "ó, ô. Como em ovo, ovelha.",
     sound: "A letra O tem dois sons: aberto, [ɔ], como em avó e bola, e fechado, [o], como em avô e ovo. No fim das palavras, quase sempre soa como u: gato se diz “gatu”.",
-    words: [w("Ovo", "um ovo", "🥚"), w("Ovelha", "uma ovelha", "🐑")],
+    words: [w("Ovo", "um ovo", "egg"), w("Ovelha", "uma ovelha", "sheep")],
     tip: "Brinquem com o par avó e avô: só o acento muda, e com ele o som do O. O acento agudo (ó) mostra o som aberto, e o circunflexo (ô), o fechado.",
     faq: {
       question: "Por que o O no fim da palavra soa como U?",
@@ -357,7 +358,7 @@ export const portugueseLetters: PortugueseLetter[] = [
     nameSpoken: "pê",
     soundSpoken: "pa, pe, pi, po, pu. Como em pato, peixe.",
     sound: "A letra P soa [p]: os lábios se fecham e se abrem com um sopro, como em pato e peixe.",
-    words: [w("Pato", "um pato", "🦆"), w("Peixe", "um peixe", "🐟")],
+    words: [w("Pato", "um pato", "duck"), w("Peixe", "um peixe", "fish")],
     tip: "Segure um papelzinho na frente da boca da criança: ao dizer “pa”, ele se mexe; ao dizer “ba”, quase nada. É um jeito divertido de sentir a diferença entre o P e o B.",
     faq: {
       question: "Por que a criança troca o P e o B ao escrever?",
@@ -375,7 +376,7 @@ export const portugueseLetters: PortugueseLetter[] = [
     nameSpoken: "quê",
     soundSpoken: "qua, que, qui, quo. Como em queijo, quatro.",
     sound: "A letra Q vem sempre com o u. Em que e qui o u não soa: queijo e quilo se dizem “keijo” e “kilo”. Em qua e quo o u soa: quatro, quando.",
-    words: [w("Queijo", "um queijo", "🧀"), w("Quatro", "o número quatro", "4️⃣")],
+    words: [w("Queijo", "um queijo", "cheese"), w("Quatro", "o número quatro", "number-4")],
     tip: "Apresente o Q junto com o u, como uma dupla inseparável: qu. Depois mostre que em queijo e quilo o u fica “quietinho”, e em quatro e quadrado ele aparece.",
     faq: {
       question: "Por que o Q sempre vem com U?",
@@ -393,8 +394,8 @@ export const portugueseLetters: PortugueseLetter[] = [
     nameSpoken: "erre",
     soundSpoken: "ra, re, ri, ro, ru. Como em rato, relógio.",
     sound: "A letra R tem dois sons. No começo da palavra e no rr, o som é forte, como em rato e carro (em muitas regiões do Brasil ele parece um h soprado). Entre vogais, o som é fraco, batido, como em caro e barata.",
-    words: [w("Rato", "um rato", "🐭"), w("Relógio", "um relógio", "⌚")],
-    wordsInside: [w("Carro", "um carro", "🚗"), w("Pera", "uma pera", "🍐")],
+    words: [w("Rato", "um rato", "mouse"), w("Relógio", "um relógio", "watch")],
+    wordsInside: [w("Carro", "um carro", "car"), w("Pera", "uma pera", "pear")],
     tip: "Comparem caro e carro, ou muro e murro: com um r o som é fraco, com dois é forte. Esses pares ajudam a criança a entender por que às vezes se escreve rr.",
     faq: {
       question: "Quando se escreve RR?",
@@ -412,8 +413,8 @@ export const portugueseLetters: PortugueseLetter[] = [
     nameSpoken: "esse",
     soundSpoken: "sa, se, si, so, su. Como em sapo, sol.",
     sound: "A letra S soa [s] no começo das palavras, como em sapo e sol. Entre duas vogais, ela soa [z]: casa, mesa, rosa. Para ter o som [s] entre vogais, escreve-se ss: pássaro, osso.",
-    words: [w("Sapo", "um sapo", "🐸"), w("Sol", "o sol", "☀️")],
-    wordsInside: [w("Rosa", "uma rosa", "🌹"), w("Pássaro", "um pássaro", "🐦")],
+    words: [w("Sapo", "um sapo", "frog"), w("Sol", "o sol", "sun")],
+    wordsInside: [w("Rosa", "uma rosa", "rose"), w("Pássaro", "um pássaro", "bird")],
     tip: "Mostre os dois sons do S na mesma conversa: sapo (som de s) e rosa (som de z). Depois apresente o ss como o jeito de manter o som de s entre vogais: osso, pássaro, assado.",
     faq: {
       question: "Por que o S às vezes tem som de Z?",
@@ -431,7 +432,7 @@ export const portugueseLetters: PortugueseLetter[] = [
     nameSpoken: "tê",
     soundSpoken: "ta, te, ti, to, tu. Como em tartaruga, tomate.",
     sound: "A letra T soa [t], como em tartaruga e tomate: a ponta da língua toca atrás dos dentes de cima. Em grande parte do Brasil, antes do som de i ela soa “tchi”, como em tia e em leite. A escrita não muda.",
-    words: [w("Tartaruga", "uma tartaruga", "🐢"), w("Tomate", "um tomate", "🍅")],
+    words: [w("Tartaruga", "uma tartaruga", "turtle"), w("Tomate", "um tomate", "tomato")],
     tip: "Se a criança escrever “tchia” para tia, ela está escrevendo o que ouve. Explique que o som “tchi” se escreve ti ou te: tia, tigre, leite.",
     faq: {
       question: "Qual é a diferença entre o T e o D?",
@@ -449,7 +450,7 @@ export const portugueseLetters: PortugueseLetter[] = [
     nameSpoken: "u",
     soundSpoken: "u. Como em uva, urso.",
     sound: "A letra U soa [u], como no começo de uva e de urso. É uma vogal e quase sempre soa igual. Em que, qui, gue e gui ela fica muda: queijo, guitarra.",
-    words: [w("Uva", "uma uva", "🍇"), w("Urso", "um urso", "🐻")],
+    words: [w("Uva", "uma uva", "grapes"), w("Urso", "um urso", "bear")],
     tip: "Brinquem de “fazer bico” para dizer u. Muitas crianças escrevem u no lugar do o ou do l no fim das palavras (“gatu”, “sau”), porque é o som que ouvem: é uma fase normal.",
     faq: {
       question: "Quando o U não soa?",
@@ -467,7 +468,7 @@ export const portugueseLetters: PortugueseLetter[] = [
     nameSpoken: "vê",
     soundSpoken: "va, ve, vi, vo, vu. Como em vaca, vulcão.",
     sound: "A letra V soa [v]: os dentes de cima encostam no lábio de baixo e a garganta vibra, como em vaca e vulcão.",
-    words: [w("Vaca", "uma vaca", "🐄"), w("Vulcão", "um vulcão", "🌋")],
+    words: [w("Vaca", "uma vaca", "cow"), w("Vulcão", "um vulcão", "volcano")],
     tip: "Em português, o V e o B têm sons bem diferentes: compare vela e bela. Se a criança trocar, peça para ela sentir os dentes encostando no lábio quando diz o V.",
     faq: {
       question: "Qual é a diferença entre o V e o F?",
@@ -486,7 +487,7 @@ export const portugueseLetters: PortugueseLetter[] = [
     nameSpoken: "dáblio",
     soundSpoken: "Como em kiwi, waffle.",
     sound: "A letra W aparece em palavras de outras línguas e em nomes. Às vezes soa como u, como em kiwi e waffle, e às vezes como v, como em alguns nomes: Wagner.",
-    words: [w("Kiwi", "um kiwi", "🥝"), w("Waffle", "um waffle", "🧇")],
+    words: [w("Kiwi", "um kiwi", "kiwi"), w("Waffle", "um waffle", "waffle")],
     tip: "O W é raro: a criança vai vê-lo em nomes (Wesley, Wanda), em marcas e em palavras como show e kiwi. Não é preciso treinar sílabas com W; basta reconhecer a letra.",
     faq: {
       question: "Como se pronuncia o W?",
@@ -504,7 +505,7 @@ export const portugueseLetters: PortugueseLetter[] = [
     nameSpoken: "xis",
     soundSpoken: "xa, xe, xi, xo, xu. Como em xícara, abacaxi.",
     sound: "A letra X tem vários sons. O mais comum, e o primeiro que a criança aprende, é [ʃ], o mesmo do ch: xícara, abacaxi, peixe. Em outras palavras ela soa [ks] (táxi), [z] (exemplo) ou [s] (próximo).",
-    words: [w("Xícara", "uma xícara", "☕"), w("Abacaxi", "um abacaxi", "🍍")],
+    words: [w("Xícara", "uma xícara", "cup"), w("Abacaxi", "um abacaxi", "pineapple")],
     tip: "Para as crianças de 3 a 8 anos, basta o som de “ch”: xícara, xixi, peixe, caixa. Os outros sons do X vêm com a leitura, palavra por palavra.",
     faq: {
       question: "Quando se escreve X e quando se escreve CH?",
@@ -523,7 +524,7 @@ export const portugueseLetters: PortugueseLetter[] = [
     nameSpoken: "ípsilon",
     soundSpoken: "i. Como em yakisoba, yoga.",
     sound: "A letra Y soa [i]. Ela aparece em palavras de outras línguas, como yakisoba e yoga, e em nomes como Yasmin e Yuri.",
-    words: [w("Yakisoba", "um yakisoba", "🍜"), w("Yoga", "fazer yoga", "🧘")],
+    words: [w("Yakisoba", "um yakisoba", "noodles"), w("Yoga", "fazer yoga", "yoga")],
     tip: "O Y é raro e aparece em nomes (Yasmin, Yuri) e em palavras de outras línguas. Não é preciso treinar sílabas com Y; o importante é a criança reconhecer a letra e saber que ela soa como i.",
     faq: {
       question: "O Y é uma letra do alfabeto português?",
@@ -541,7 +542,7 @@ export const portugueseLetters: PortugueseLetter[] = [
     nameSpoken: "zê",
     soundSpoken: "za, ze, zi, zo, zu. Como em zebra, zero.",
     sound: "A letra Z soa [z], como em zebra e zero: é um zumbido, como o de uma abelha (zzzz). No fim das palavras, soa como s: nariz, feliz, luz.",
-    words: [w("Zebra", "uma zebra", "🦓"), w("Zero", "o número zero", "0️⃣")],
+    words: [w("Zebra", "uma zebra", "zebra"), w("Zero", "o número zero", "number-0")],
     tip: "Brinquem de zumbir como uma abelha: zzzz. Mais tarde a criança vai descobrir que o som de z também se escreve com s entre vogais (casa, mesa), e que só a prática mostra qual usar.",
     faq: {
       question: "Por que casa se escreve com S e não com Z?",
@@ -583,7 +584,7 @@ export function letterWithWord(l: PortugueseLetter, word: PortugueseWord): strin
 
 // The accents page (/pt/alfabeto/acentos): accented vowels are not new
 // letters, so they share one page. The examples are said aloud by the page.
-export type AcentoExample = { text: string; emoji: string };
+export type AcentoExample = { text: string; picture: string };
 export type AcentoGroup = {
   id: string;
   title: string;
@@ -599,10 +600,10 @@ export const acentoGroups: AcentoGroup[] = [
     marks: "á é í ó ú",
     explanation: "O acento agudo mostra a sílaba mais forte da palavra e, no é e no ó, o som aberto da vogal: café, avó. Sem o acento, sofá se leria “sófa”.",
     examples: [
-      { text: "sofá", emoji: "🛋️" },
-      { text: "café", emoji: "☕" },
-      { text: "ímã", emoji: "🧲" },
-      { text: "avó", emoji: "👵" },
+      { text: "sofá", picture: "sofa" },
+      { text: "café", picture: "cup" },
+      { text: "ímã", picture: "magnet" },
+      { text: "avó", picture: "grandma" },
     ],
   },
   {
@@ -611,10 +612,10 @@ export const acentoGroups: AcentoGroup[] = [
     marks: "â ê ô",
     explanation: "O “chapeuzinho” mostra a sílaba forte e o som fechado da vogal: lâmpada, bebê, avô. Compare avó, com som aberto, e avô, com som fechado.",
     examples: [
-      { text: "lâmpada", emoji: "💡" },
-      { text: "bebê", emoji: "👶" },
-      { text: "avô", emoji: "👴" },
-      { text: "robô", emoji: "🤖" },
+      { text: "lâmpada", picture: "light-bulb" },
+      { text: "bebê", picture: "baby" },
+      { text: "avô", picture: "grandpa" },
+      { text: "robô", picture: "robot" },
     ],
   },
   {
@@ -623,10 +624,10 @@ export const acentoGroups: AcentoGroup[] = [
     marks: "ã õ",
     explanation: "O til mostra que a vogal é nasal: o som passa pelo nariz. Ele aparece no ã e no õ, e nos grupos ão, ãe e õe: mão, mãe, limões.",
     examples: [
-      { text: "mão", emoji: "✋" },
-      { text: "maçã", emoji: "🍎" },
-      { text: "pão", emoji: "🍞" },
-      { text: "limões", emoji: "🍋" },
+      { text: "mão", picture: "hand" },
+      { text: "maçã", picture: "apple" },
+      { text: "pão", picture: "bread" },
+      { text: "limões", picture: "lemon" },
     ],
   },
   {
@@ -634,6 +635,6 @@ export const acentoGroups: AcentoGroup[] = [
     title: "O acento grave: para mais tarde",
     marks: "à",
     explanation: "O à aparece quando duas palavras se juntam (a + a), como em “Vamos à praia”. O som é o mesmo do a. A criança só vai estudá-lo mais tarde, no ensino fundamental.",
-    examples: [{ text: "Vamos à praia.", emoji: "🏖️" }],
+    examples: [{ text: "Vamos à praia.", picture: "beach" }],
   },
 ];

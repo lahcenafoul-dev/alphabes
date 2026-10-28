@@ -3,6 +3,7 @@ import { Link } from "@/i18n/navigation";
 import { absoluteUrl, alternatesFor } from "@/lib/i18n/routes";
 import { buildBreadcrumbJsonLd } from "@/lib/json-ld";
 import { SYLLABLE_GROUPS, spanishSyllablePages } from "@/lib/silabas-es";
+import { ClapIcon } from "@/components/UiIcon";
 
 const title = "Las sílabas: aprender a leer en español con el método silábico";
 const description =
@@ -153,7 +154,7 @@ export default function PhonicsEs() {
                     className="flex h-full gap-4 rounded-block border border-chalkboard/10 bg-paper p-4 shadow-block hover:border-crayon-blue hover:shadow-blockHover transition-colors"
                   >
                     <span className="letter-block bg-crayon-blue h-14 min-w-14 px-2 text-2xl shrink-0" aria-hidden="true">
-                      {p.short}
+                      {p.icon ? <ClapIcon className="h-1/2 w-1/2" /> : p.short}
                     </span>
                     <span>
                       <span className="block font-display font-bold">{p.title}</span>

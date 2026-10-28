@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { shuffle, pickDistractors } from "@/lib/games/utils";
+import { InlineIcon } from "@/components/UiIcon";
 
 const ALPHABET = "abcdefghijklmnopqrstuvwxyz".split("");
 const GRID_SIZE = 24;
@@ -66,7 +67,17 @@ export default function FindTheLetterGame() {
           feedback === "correct" ? "text-crayon-green" : feedback === "wrong" ? "text-crayon-red" : "text-transparent"
         }`}
       >
-        {feedback === "correct" ? "✓ Correct!" : feedback === "wrong" ? "✗ Try again" : "placeholder"}
+        {feedback === "correct" ? (
+          <>
+            <InlineIcon name="check" />
+            Correct!
+          </>
+        ) : feedback === "wrong" ? (
+          <>
+            <InlineIcon name="cross" />
+            Try again
+          </>
+        ) : "placeholder"}
       </p>
 
       <div className="mt-2 grid grid-cols-4 sm:grid-cols-6 gap-3">

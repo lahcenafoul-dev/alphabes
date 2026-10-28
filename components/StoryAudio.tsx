@@ -3,11 +3,12 @@
 import { useEffect, useRef, useState } from "react";
 import { useSpeech } from "@/components/ListenButton";
 import { stopSpeaking } from "@/lib/speech";
+import { InlineIcon } from "@/components/UiIcon";
 
 const LABELS = {
-  fr: { listen: "🔊 Écouter", stop: "⏹ Arrêter", listenAria: "Écouter la page", stopAria: "Arrêter la lecture" },
-  es: { listen: "🔊 Escuchar", stop: "⏹ Detener", listenAria: "Escuchar la página", stopAria: "Detener la lectura" },
-  pt: { listen: "🔊 Ouvir", stop: "⏹ Parar", listenAria: "Ouvir a página", stopAria: "Parar a leitura" },
+  fr: { listen: "Écouter", stop: "Arrêter", listenAria: "Écouter la page", stopAria: "Arrêter la lecture" },
+  es: { listen: "Escuchar", stop: "Detener", listenAria: "Escuchar la página", stopAria: "Detener la lectura" },
+  pt: { listen: "Ouvir", stop: "Parar", listenAria: "Ouvir a página", stopAria: "Parar a leitura" },
 };
 
 // "Écouter" / "Escuchar" / "Ouvir" on a French, Spanish or Portuguese story page: plays the page's
@@ -80,6 +81,7 @@ export default function StoryAudio({
         aria-label={playing ? t.stopAria : t.listenAria}
         className="rounded-block bg-crayon-blue text-white px-4 py-2 font-bold flex items-center gap-2"
       >
+        <InlineIcon name={playing ? "stop" : "listen"} />
         {playing ? t.stop : t.listen}
       </button>
       {notice}

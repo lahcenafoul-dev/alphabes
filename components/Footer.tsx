@@ -83,6 +83,15 @@ export default async function Footer({ locale }: { locale: Locale }) {
         <div className="mx-auto max-w-6xl px-6 py-6 flex flex-wrap items-center justify-between gap-3 text-sm text-paper/60">
           <p>{t("copyright", { year: new Date().getFullYear() })}</p>
           <p>{t("tagline")}</p>
+          <p>
+            {t.rich("photos", {
+              link: (chunks) => (
+                <a href="https://pixabay.com/" target="_blank" rel="noopener noreferrer" className="underline hover:text-paper">
+                  {chunks}
+                </a>
+              ),
+            })}
+          </p>
         </div>
       </div>
     </footer>

@@ -1,9 +1,9 @@
 import type { jsPDF } from "jspdf";
 import { PAGE_MARGIN, drawWorksheetHeader, drawWorksheetTitle, drawWorksheetFooter } from "../chrome";
-import { ICONS, drawFallbackIcon } from "../icons";
+import { drawWordPicture, type WordPhotos } from "../icons";
 import type { WorksheetRecord } from "../../worksheets-data";
 
-export function drawLetterPictureMatching(doc: jsPDF, w: WorksheetRecord): void {
+export function drawLetterPictureMatching(doc: jsPDF, w: WorksheetRecord, photos: WordPhotos = {}): void {
   const { uppercase: U, lowercase: L, letter } = w;
   const pageWidth = doc.internal.pageSize.getWidth();
 
@@ -26,12 +26,7 @@ export function drawLetterPictureMatching(doc: jsPDF, w: WorksheetRecord): void 
 
   words.slice(0, 2).forEach((ex, i) => {
     const y = startY + i * gap;
-    const draw = ICONS[ex.word.toLowerCase()];
-    if (draw) {
-      draw(doc, rightX, y - 6, 28);
-    } else {
-      drawFallbackIcon(doc, rightX, y - 6, 16, letter);
-    }
+    drawWordPicture(doc, photos, ex.word, rightX, y - 6, 26, { size: 28, fallbackSize: 16, letter });
     doc.setFont("helvetica", "normal");
     doc.setFontSize(10);
     doc.setTextColor(80, 80, 80);

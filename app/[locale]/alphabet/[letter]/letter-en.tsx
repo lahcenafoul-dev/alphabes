@@ -2,11 +2,11 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { getAllLetterSlugs, getLetterContent } from "@/lib/letters-data";
 import SpeakButton from "@/components/SpeakButton";
-import { wordEmojis } from "@/lib/wordEmojis";
 import { buildBreadcrumbJsonLd } from "@/lib/json-ld";
 import { alternatesFor } from "@/lib/i18n/routes";
 import { getWorksheetsByLetter } from "@/lib/worksheets-data";
 import { getCursiveWorksheetForLetter } from "@/lib/static-worksheets-data";
+import WordIllustration from "@/components/WordIllustration";
 
 /** English letter params: every letter, "A" as well as "a" (lookups lowercase). */
 export function englishLetterParams(): string[] {
@@ -124,16 +124,10 @@ export default function LetterEn({ letter }: { letter: string }) {
             {content.exampleWords.map((w) => (
               <li
                 key={w.word}
-                className="rounded-block bg-paper border border-chalkboard/10 p-4 text-center shadow-block"
+                className="flex flex-col items-center rounded-block border border-chalkboard/10 bg-white p-3 text-center shadow-[0_2px_12px_rgba(31,42,68,0.08)] sm:p-4"
               >
-                <div
-                  className="mx-auto h-16 w-16 rounded-full bg-crayon-green/20 flex items-center justify-center text-4xl"
-                  role="img"
-                  aria-label={w.imageAlt}
-                >
-                  {wordEmojis[w.word] || "📦"}
-                </div>
-                <p className="mt-2 font-display font-bold">{w.word}</p>
+                <WordIllustration word={w.word} title={w.imageAlt} className="block h-auto w-full max-w-[9rem]" />
+                <p className="mt-3 font-display text-lg font-bold leading-tight">{w.word}</p>
               </li>
             ))}
           </ul>

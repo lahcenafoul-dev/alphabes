@@ -22,3 +22,9 @@ test-results
 
 # Upload log of scripts/upload-pro-files.mjs (what is already in the R2 bucket)
 .pro-files-uploaded.json
+
+# Local photo review page (scripts/fetch-word-photos.mjs)
+scripts/review.html
+
+# Retired word pictures (Pixabay photos), kept locally only
+/public/words-old/

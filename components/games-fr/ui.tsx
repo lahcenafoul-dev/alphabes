@@ -1,5 +1,7 @@
 "use client";
 
+import UiIcon, { InlineIcon } from "@/components/UiIcon";
+
 // Pieces shared by the French games (components/games-fr): the feedback
 // line, the end screen and the button styles.
 
@@ -17,7 +19,12 @@ export function FeedbackLine({ feedback, className = "" }: { feedback: Feedback;
       aria-live="polite"
       className={`min-h-6 text-sm font-bold ${feedback ? (feedback.ok ? "text-crayon-green" : "text-crayon-red") : ""} ${className}`}
     >
-      {feedback ? `${feedback.ok ? "✓" : "✗"} ${feedback.text}` : ""}
+      {feedback && (
+        <>
+          <InlineIcon name={feedback.ok ? "check" : "cross"} />
+          {feedback.text}
+        </>
+      )}
     </p>
   );
 }
@@ -35,9 +42,7 @@ export function EndScreen({ score, total, onAgain }: { score: number; total: num
   const cheer = score === total ? "Parfait !" : score >= total * 0.7 ? "Bravo !" : "Bien joué !";
   return (
     <div className="text-center py-8">
-      <p className="text-5xl" aria-hidden="true">
-        🎉
-      </p>
+      <UiIcon name="party" className="mx-auto h-14 w-14 text-crayon-purple" />
       <p className="mt-3 text-2xl font-display font-bold">{cheer}</p>
       <p className="mt-2 text-chalkboard/70">
         {score} bonne{score > 1 ? "s" : ""} réponse{score > 1 ? "s" : ""} sur {total}.

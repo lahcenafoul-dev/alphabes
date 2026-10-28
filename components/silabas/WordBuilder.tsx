@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { useSpeech } from "@/components/ListenButton";
 import type { BuildWord } from "@/lib/silabas-es";
+import WordIllustration from "@/components/WordIllustration";
+import { InlineIcon } from "@/components/UiIcon";
 
 const LABELS = {
   es: {
@@ -12,7 +14,7 @@ const LABELS = {
     syllables: "Sílabas",
     done: (parts: string, word: string) => `¡Muy bien! ${parts} = ${word}`,
     miss: (s: string) => `«${s}» no va aquí. Escucha la palabra y busca la sílaba que sigue.`,
-    listen: "🔊 Escuchar la palabra",
+    listen: "Escuchar la palabra",
     next: "Otra palabra →",
   },
   pt: {
@@ -22,7 +24,7 @@ const LABELS = {
     syllables: "Sílabas",
     done: (parts: string, word: string) => `Muito bem! ${parts} = ${word}`,
     miss: (s: string) => `“${s}” não vai aqui. Ouça a palavra e procure a próxima sílaba.`,
-    listen: "🔊 Ouvir a palavra",
+    listen: "Ouvir a palavra",
     next: "Outra palavra →",
   },
 };
@@ -73,9 +75,7 @@ export default function WordBuilder({ words, locale = "es" }: { words: BuildWord
     <div>
       <p className="text-sm text-chalkboard/70">{t.intro}</p>
       <div className="mt-4 flex flex-wrap items-center gap-6">
-        <div className="text-6xl" role="img" aria-label={`${t.picture}: ${w.word}`}>
-          {w.emoji}
-        </div>
+        <WordIllustration word={w.word} picture={w.picture} title={`${t.picture}: ${w.word}`} className="h-20 w-20" />
         <ol className="flex gap-2" aria-label={t.yourWord}>
           {w.syllables.map((s, i) => (
             <li
@@ -115,6 +115,7 @@ export default function WordBuilder({ words, locale = "es" }: { words: BuildWord
           onClick={() => void say(w.withArticle, 0.75)}
           className="rounded-block border-2 border-chalkboard/20 px-4 py-2 font-display font-bold hover:border-crayon-blue transition"
         >
+          <InlineIcon name="listen" />
           {t.listen}
         </button>
         <button

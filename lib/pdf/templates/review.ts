@@ -1,9 +1,9 @@
 import type { jsPDF } from "jspdf";
 import { PAGE_MARGIN, drawWorksheetHeader, drawWorksheetTitle, drawWorksheetFooter } from "../chrome";
-import { ICONS, drawFallbackIcon } from "../icons";
+import { drawWordPicture, type WordPhotos } from "../icons";
 import type { WorksheetRecord } from "../../worksheets-data";
 
-export function drawLetterReview(doc: jsPDF, w: WorksheetRecord): void {
+export function drawLetterReview(doc: jsPDF, w: WorksheetRecord, photos: WordPhotos = {}): void {
   const { uppercase: U, lowercase: L, letter, primaryWord } = w;
   const pageWidth = doc.internal.pageSize.getWidth();
 
@@ -47,9 +47,7 @@ export function drawLetterReview(doc: jsPDF, w: WorksheetRecord): void {
   doc.setFont("helvetica", "normal");
   doc.setFontSize(11);
   doc.text(`3. Say the word. Does it start with ${U}?`, PAGE_MARGIN, 158);
-  const draw = ICONS[primaryWord.toLowerCase()];
-  if (draw) draw(doc, PAGE_MARGIN + 20, 180, 26);
-  else drawFallbackIcon(doc, PAGE_MARGIN + 20, 180, 16, letter);
+  drawWordPicture(doc, photos, primaryWord, PAGE_MARGIN + 20, 180, 26, { size: 26, fallbackSize: 16, letter });
   doc.setFont("helvetica", "bold");
   doc.setFontSize(13);
   doc.text(primaryWord, PAGE_MARGIN + 45, 182);

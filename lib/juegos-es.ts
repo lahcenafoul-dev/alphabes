@@ -8,6 +8,7 @@
 // Picture words come from the "primera sílaba" worksheets
 // (FIRST_SYLLABLE_WORDS in lib/fichas-es.ts): split into syllables
 // ("ma|no"), so first letters, first syllables and syllable counts are known.
+import type { UiIconName } from "@/components/UiIcon";
 import { FIRST_SYLLABLE_WORDS, LOOK_ALIKES } from "./fichas-es-words";
 import { spanishLetters, type SpanishLetter, type SpanishWord } from "./letters-es";
 
@@ -20,7 +21,7 @@ export type SpanishGame = {
   description: string;
   /** What the child does and what it teaches, for parents (game page). */
   forParents: string;
-  emoji: string;
+  icon: UiIconName;
   age: string;
   isPremium: boolean;
 };
@@ -33,7 +34,7 @@ export const spanishGames: SpanishGame[] = [
     description: "Se escucha el nombre de una letra y hay que encontrarla entre otras, en mayúsculas o en minúsculas.",
     forParents:
       "Tu hijo o hija escucha el nombre de la letra y la busca en la cuadrícula. Las letras que se parecen (b, d, p, q; n y ñ) están mezcladas a propósito: así se aprende a distinguirlas. Empiecen con las mayúsculas y pasen después a las minúsculas.",
-    emoji: "🔎",
+    icon: "search",
     age: "3 a 5 años",
     isPremium: false,
   },
@@ -44,7 +45,7 @@ export const spanishGames: SpanishGame[] = [
     description: "Una letra y cuatro dibujos: hay que tocar el dibujo cuyo nombre empieza con esa letra.",
     forParents:
       "Cada dibujo se nombra en voz alta al tocarlo, para que se escuche la palabra. Así se une la letra con el principio de la palabra, el primer paso para leer. Nunca aparecen juntas dos letras que suenan igual al principio (b y v, c y s, g y j), para que el juego dependa del oído y no de la ortografía.",
-    emoji: "🖼️",
+    icon: "image",
     age: "4 a 6 años",
     isPremium: false,
   },
@@ -55,7 +56,7 @@ export const spanishGames: SpanishGame[] = [
     description: "Se escucha el nombre de un dibujo y se elige, entre cuatro, la sílaba con la que empieza: pa de pato, lu de luna.",
     forParents:
       "En español se lee por sílabas, así que el juego trabaja el oído con la primera sílaba de la palabra. Las opciones mezclan la misma consonante con otra vocal (pa, pe, po) y otra consonante con la misma vocal (pa, ma): hay que escuchar las dos letras. Nunca se ofrecen dos sílabas que suenan igual (ba y va, ca y ka).",
-    emoji: "👂",
+    icon: "ear",
     age: "4 a 6 años",
     isPremium: true,
   },
@@ -66,7 +67,7 @@ export const spanishGames: SpanishGame[] = [
     description: "Trazar las letras con el dedo en la pantalla, en letra script o cursiva, sobre doble raya como en el cuaderno.",
     forParents:
       "Tu hijo o hija sigue los puntos con el dedo o el ratón. En cursiva, las líneas son las del cuaderno de doble raya, con la letra ligada que se enseña en muchas escuelas. Muéstrale primero dónde empieza la letra.",
-    emoji: "✏️",
+    icon: "pencil",
     age: "4 a 7 años",
     isPremium: true,
   },
@@ -77,7 +78,7 @@ export const spanishGames: SpanishGame[] = [
     description: "Diez preguntas para repasar: el orden de las letras, su nombre, vocal o consonante y la primera letra de las palabras.",
     forParents:
       "Un pequeño repaso divertido para el final del kínder o el primer grado: qué letra va después (¡después de la ene viene la eñe!), qué letra se escucha, si es vocal o consonante y con qué letra empieza una palabra.",
-    emoji: "🏆",
+    icon: "trophy",
     age: "5 a 7 años",
     isPremium: true,
   },
@@ -87,7 +88,7 @@ export const spanishGames: SpanishGame[] = [
     description: "Se escucha una palabra, se aplaude una vez por cada sílaba y se dice cuántas tiene: ma-ri-po-sa, ¡cuatro palmadas!",
     forParents:
       "Separar las palabras en sílabas, aplaudiendo, es el ejercicio clásico antes de leer en español. Aplaudan juntos la primera vez y digan la palabra despacio. Si duda, el botón «Escuchar por sílabas» la dice separada. Las palabras van de una sílaba (sol) a cinco (hipopótamo).",
-    emoji: "👏",
+    icon: "clap",
     age: "4 a 6 años",
     isPremium: false,
   },
@@ -266,19 +267,19 @@ export function firstSyllableRound(): SyllableRound {
 
 // "Aplaude las sílabas": the picture words plus a few short and long ones,
 // so every count from 1 to 5 comes up.
-const w = (word: string, withArticle: string, emoji: string): SpanishWord => ({ word, withArticle, emoji });
+const w = (word: string, withArticle: string, picture: string): SpanishWord => ({ word, withArticle, picture });
 export const CLAP_WORDS: SpanishWord[] = [
   ...Object.values(FIRST_SYLLABLE_WORDS).flat(),
-  w("sol", "el sol", "☀️"),
-  w("pan", "un pan", "🍞"),
-  w("flor", "una flor", "🌸"),
-  w("tren", "un tren", "🚂"),
-  w("pez", "un pez", "🐟"),
-  w("mar", "el mar", "🌊"),
-  w("hi|po|pó|ta|mo", "un hipopótamo", "🦛"),
-  w("co|co|dri|lo", "un cocodrilo", "🐊"),
-  w("bi|ci|cle|ta", "una bicicleta", "🚲"),
-  w("te|le|vi|sión", "una televisión", "📺"),
+  w("sol", "el sol", "sun"),
+  w("pan", "un pan", "bread"),
+  w("flor", "una flor", "flower"),
+  w("tren", "un tren", "train"),
+  w("pez", "un pez", "fish"),
+  w("mar", "el mar", "wave"),
+  w("hi|po|pó|ta|mo", "un hipopótamo", "hippo"),
+  w("co|co|dri|lo", "un cocodrilo", "crocodile"),
+  w("bi|ci|cle|ta", "una bicicleta", "bicycle"),
+  w("te|le|vi|sión", "una televisión", "television"),
 ];
 
 /** Ten words for one game, with at least one of each count from 1 to 4 and a 5 when one exists. */
@@ -292,11 +293,11 @@ export function clapWords(total = 10): SpanishWord[] {
 export type QuizQuestion = {
   kind: "after" | "heard" | "vowel" | "picture";
   prompt: string;
-  /** Read aloud by the 🔊 button. */
+  /** Read aloud by the listen button. */
   spoken: string;
   choices: string[];
   answer: string;
-  emoji?: string;
+  picture?: string;
   /** The picture's name, for screen readers. */
   label?: string;
 };
@@ -355,7 +356,7 @@ export function quizQuestion(): QuizQuestion {
     spoken: plain(word.word),
     choices: letterChoices(answer, true),
     answer: answer.upper,
-    emoji: word.emoji,
+    picture: word.picture,
     label: plain(word.word),
   };
 }

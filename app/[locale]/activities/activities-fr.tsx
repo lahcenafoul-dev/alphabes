@@ -1,7 +1,9 @@
+import type { UiIconName } from "@/components/UiIcon";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { absoluteUrl, alternatesFor, localizedPath } from "@/lib/i18n/routes";
 import { buildBreadcrumbJsonLd } from "@/lib/json-ld";
+import UiIcon from "@/components/UiIcon";
 
 const title = "Activités pour apprendre les lettres et les sons, sans écran";
 const description =
@@ -16,7 +18,7 @@ export const activitiesMetadataFr: Metadata = {
 
 type Activity = {
   id: string;
-  emoji: string;
+  icon: UiIconName;
   title: string;
   age: string;
   summary: string;
@@ -30,7 +32,7 @@ const fiches = (category: string) => localizedPath("fr", "/worksheets/[category]
 const activities: Activity[] = [
   {
     id: "chasse-aux-lettres",
-    emoji: "🔎",
+    icon: "search",
     title: "La chasse aux lettres",
     age: "3-6 ans",
     summary: "Retrouver les lettres de son prénom dans des magazines, les découper et les coller.",
@@ -45,7 +47,7 @@ const activities: Activity[] = [
   },
   {
     id: "pate-a-modeler",
-    emoji: "🟠",
+    icon: "shapes",
     title: "Les lettres en pâte à modeler",
     age: "3-5 ans",
     summary: "Rouler des boudins et former les lettres sur un grand modèle.",
@@ -60,7 +62,7 @@ const activities: Activity[] = [
   },
   {
     id: "plateau-semoule",
-    emoji: "🏖️",
+    icon: "hand",
     title: "Écrire dans la semoule",
     age: "3-6 ans",
     summary: "Tracer les lettres du doigt dans un plateau de semoule, de sable ou de sel.",
@@ -75,7 +77,7 @@ const activities: Activity[] = [
   },
   {
     id: "sac-a-sons",
-    emoji: "👜",
+    icon: "bag",
     title: "Le sac à sons",
     age: "4-6 ans",
     summary: "Trier des objets de la maison selon le son qu'on entend au début de leur nom.",
@@ -90,7 +92,7 @@ const activities: Activity[] = [
   },
   {
     id: "loto-des-lettres",
-    emoji: "🎲",
+    icon: "dice",
     title: "Le loto des lettres",
     age: "4-6 ans",
     summary: "Un loto fait maison pour reconnaître les lettres en jouant à plusieurs.",
@@ -105,7 +107,7 @@ const activities: Activity[] = [
   },
   {
     id: "syllabes-en-sautant",
-    emoji: "🦘",
+    icon: "jump",
     title: "Les syllabes en sautant",
     age: "5-6 ans",
     summary: "Faire un saut par syllabe : le corps aide à entendre les morceaux des mots.",
@@ -120,7 +122,7 @@ const activities: Activity[] = [
   },
   {
     id: "coloriage-magique",
-    emoji: "🎨",
+    icon: "palette",
     title: "Le coloriage de la lettre",
     age: "3-5 ans",
     summary: "Colorier une grande lettre et les images dont le nom commence par elle.",
@@ -135,7 +137,7 @@ const activities: Activity[] = [
   },
   {
     id: "memory-capitales-minuscules",
-    emoji: "🃏",
+    icon: "cards",
     title: "Le mémory capitale-minuscule",
     age: "5-7 ans",
     summary: "Retrouver les paires A-a, B-b… pour relier les deux écritures d'une lettre.",
@@ -189,7 +191,7 @@ export default function ActivitiesFr() {
           <li key={a.id} id={a.id} className="flex flex-col rounded-block border border-chalkboard/10 p-6 shadow-block scroll-mt-24">
             <div className="flex items-start justify-between gap-3">
               <h2 className="font-display font-bold text-lg">
-                <span aria-hidden="true">{a.emoji} </span>
+                <UiIcon name={a.icon} className="mr-2 inline-block h-5 w-5 align-[-0.15em] text-crayon-purple" />
                 {a.title}
               </h2>
               <span className="shrink-0 rounded-full bg-crayon-yellow/25 px-3 py-1 text-xs font-bold">{a.age}</span>

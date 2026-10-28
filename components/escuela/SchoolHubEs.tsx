@@ -3,6 +3,7 @@ import Link from "next/link";
 import { SCHOOL_HUBS_ES, topicsOfEs, type SchoolLevelEs, type TopicLinkEs } from "@/lib/escuela-es";
 import { absoluteUrl, alternatesFor, localizedPath } from "@/lib/i18n/routes";
 import { buildBreadcrumbJsonLd } from "@/lib/json-ld";
+import { IconTile } from "@/components/UiIcon";
 
 // /es/preescolar and /es/kinder.
 
@@ -89,9 +90,7 @@ export default function SchoolHubEs({ level }: { level: SchoolLevelEs }) {
               href={localizedPath("es", hub.topicPathname, { topic: t.slug })}
               className="rounded-block border border-chalkboard/10 p-6 shadow-block hover:border-crayon-blue hover:shadow-blockHover transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-crayon-blue"
             >
-              <span className="text-3xl" aria-hidden="true">
-                {t.emoji}
-              </span>
+              <IconTile name={t.icon} className="h-12 w-12" />
               <h3 className="mt-2 font-display font-bold text-xl">{t.title}</h3>
               <p className="mt-2 text-sm text-chalkboard/70">{t.summary}</p>
             </Link>

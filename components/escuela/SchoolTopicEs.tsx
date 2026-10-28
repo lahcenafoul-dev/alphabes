@@ -4,6 +4,7 @@ import { SCHOOL_HUBS_ES, getSchoolTopicEs, topicsOfEs, type SchoolLevelEs } from
 import { absoluteUrl, alternatesFor, localizedPath } from "@/lib/i18n/routes";
 import { buildBreadcrumbJsonLd } from "@/lib/json-ld";
 import { hrefOf } from "./SchoolHubEs";
+import UiIcon from "@/components/UiIcon";
 
 // /es/preescolar/[topic] and /es/kinder/[topic].
 
@@ -55,7 +56,7 @@ export default function SchoolTopicEs({ level, slug }: { level: SchoolLevelEs; s
       </nav>
 
       <h1 className="mt-4 text-4xl font-extrabold">
-        <span aria-hidden="true">{t.emoji} </span>
+        <UiIcon name={t.icon} className="mr-2 inline-block h-9 w-9 align-[-0.15em] text-crayon-purple" />
         {t.title}
       </h1>
       {t.intro.map((p) => (

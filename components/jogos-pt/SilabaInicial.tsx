@@ -4,6 +4,8 @@ import { useState } from "react";
 import { useSpeech } from "@/components/ListenButton";
 import { firstSyllableRound, plain, syllablesOf } from "@/lib/jogos-pt";
 import { EndScreen, FeedbackLine, ScoreBar, choiceClass, listenClass, type Feedback } from "./ui";
+import WordIllustration from "@/components/WordIllustration";
+import { InlineIcon } from "@/components/UiIcon";
 
 const TOTAL = 10;
 
@@ -64,15 +66,12 @@ export default function SilabaInicial() {
       <ScoreBar round={roundNum} total={TOTAL} score={score} />
 
       <div className="mt-6 text-center">
-        <div
-          className="mx-auto flex h-32 w-32 items-center justify-center rounded-full bg-crayon-yellow/25 text-7xl"
-          role="img"
-          aria-label="Figura para dizer o nome"
-        >
-          {round.word.emoji}
+        <div className="mx-auto flex h-32 w-32 items-center justify-center rounded-block border border-chalkboard/10 bg-white shadow-[0_2px_12px_rgba(31,42,68,0.08)]">
+          <WordIllustration word={round.word.word} picture={round.word.picture} title="Figura para dizer o nome" className="h-24 w-24" />
         </div>
         <button type="button" onClick={listen} className={`${listenClass} mt-4`}>
-          🔊 Ouvir a palavra
+          <InlineIcon name="listen" />
+          Ouvir a palavra
         </button>
         <p className="mt-4 text-lg font-display font-bold">Com que sílaba começa a palavra?</p>
       </div>

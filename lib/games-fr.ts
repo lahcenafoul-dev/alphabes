@@ -4,6 +4,7 @@
 //
 // Words come from the "son" worksheets (LETTER_IMAGES in lib/fiches-fr.ts):
 // pictures a child can name, whose first letter and first sound are known.
+import type { UiIconName } from "@/components/UiIcon";
 import { CLOSE_KEYS, LETTER_IMAGES } from "./fiches-fr-words";
 import { frenchLetters, isAccentLetter, type FrenchLetter, type FrenchWord } from "./letters-fr";
 
@@ -16,7 +17,7 @@ export type FrenchGame = {
   description: string;
   /** What the child does and what it teaches, for parents (game page). */
   forParents: string;
-  emoji: string;
+  icon: UiIconName;
   age: string;
   isPremium: boolean;
 };
@@ -29,7 +30,7 @@ export const frenchGames: FrenchGame[] = [
     description: "Une lettre est demandée : l'enfant la retrouve parmi d'autres lettres, en capitales ou en minuscules.",
     forParents:
       "L'enfant entend le nom de la lettre et la cherche dans la grille. Les lettres qui se ressemblent (b, d, p, q) sont mêlées exprès : c'est là que se fait l'apprentissage. Commencez en capitales, puis passez aux minuscules.",
-    emoji: "🔎",
+    icon: "search",
     age: "3-5 ans",
     isPremium: false,
   },
@@ -40,7 +41,7 @@ export const frenchGames: FrenchGame[] = [
     description: "Une lettre, quatre images : l'enfant touche l'image dont le nom commence par cette lettre.",
     forParents:
       "Chaque image est nommée à voix haute quand on la touche, pour que l'enfant entende le mot. Il relie ainsi la lettre au début du mot, première étape avant de lire.",
-    emoji: "🖼️",
+    icon: "image",
     age: "4-6 ans",
     isPremium: false,
   },
@@ -51,7 +52,7 @@ export const frenchGames: FrenchGame[] = [
     description: "On écoute le nom d'une image, puis on choisit la lettre du son qu'on entend au début.",
     forParents:
       "Ici, on travaille l'oreille : entendre le premier son d'un mot (le « a » d'avion, le « mmm » de moto). Les mots choisis commencent par un son clair, et deux sons trop proches ne sont jamais proposés ensemble.",
-    emoji: "👂",
+    icon: "ear",
     age: "4-6 ans",
     isPremium: true,
   },
@@ -62,7 +63,7 @@ export const frenchGames: FrenchGame[] = [
     description: "Tracer les lettres du doigt sur l'écran, en script ou en cursive sur les lignes du cahier.",
     forParents:
       "L'enfant suit les pointillés avec le doigt ou la souris. En cursive, les lignes sont celles du cahier (réglure Seyès) : la même écriture qu'à l'école. Montrez-lui d'abord où commence la lettre.",
-    emoji: "✏️",
+    icon: "pencil",
     age: "4-7 ans",
     isPremium: true,
   },
@@ -73,7 +74,7 @@ export const frenchGames: FrenchGame[] = [
     description: "Dix questions pour réviser : l'ordre des lettres, leur nom, voyelle ou consonne, et le début des mots.",
     forParents:
       "Un petit bilan amusant pour la fin de la grande section ou le CP : quelle lettre vient après, quelle lettre entends-tu, voyelle ou consonne, par quelle lettre commence ce mot.",
-    emoji: "🏆",
+    icon: "trophy",
     age: "5-7 ans",
     isPremium: true,
   },
@@ -176,11 +177,11 @@ export function firstSoundRound(byLetter = false): SoundRound {
 export type QuizQuestion = {
   kind: "after" | "heard" | "vowel" | "picture";
   prompt: string;
-  /** Read aloud by the 🔊 button. */
+  /** Read aloud by the listen button. */
   spoken: string;
   choices: string[];
   answer: string;
-  emoji?: string;
+  picture?: string;
   /** The picture's name, for screen readers. */
   label?: string;
 };
@@ -231,7 +232,7 @@ export function quizQuestion(): QuizQuestion {
     spoken: round.word.word,
     choices: round.choices.map((l) => l.upper),
     answer: round.answer.upper,
-    emoji: round.word.emoji,
+    picture: round.word.picture,
     label: round.word.word,
   };
 }

@@ -2,6 +2,7 @@
 
 import { speak } from "@/lib/speech";
 import { drawTracingWorksheet } from "@/lib/pdf/templates/tracing";
+import { InlineIcon } from "@/components/UiIcon";
 
 type Props = {
   letter: string;
@@ -29,13 +30,15 @@ export default function WorksheetClient({ letter, word }: Props) {
         onClick={playSound}
         className="rounded-block bg-crayon-blue text-white px-6 py-3 font-bold"
       >
-        🔊 Listen
+        <InlineIcon name="listen" />
+        Listen
       </button>
       <button
         onClick={downloadPDF}
         className="rounded-block bg-crayon-green text-white px-6 py-3 font-bold"
       >
-        ⬇️ Download PDF
+        <InlineIcon name="download" />
+        Download PDF
       </button>
     </div>
   );

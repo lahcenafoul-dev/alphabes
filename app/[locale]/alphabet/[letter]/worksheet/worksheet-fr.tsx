@@ -6,6 +6,7 @@ import { cursiveFont } from "@/lib/fonts/cursive";
 import { absoluteUrl, alternatesFor } from "@/lib/i18n/routes";
 import { buildBreadcrumbJsonLd } from "@/lib/json-ld";
 import { getFrenchLetter } from "@/lib/letters-fr";
+import WordIllustration from "@/components/WordIllustration";
 
 export function worksheetMetadataFr(param: string): Metadata {
   const l = getFrenchLetter(param);
@@ -62,9 +63,7 @@ export default function WorksheetFr({ letter }: { letter: string }) {
           <p className="mt-1 text-sm text-chalkboard/60">en cursive</p>
         </div>
         <div>
-          <div className="text-6xl" role="img" aria-label={word.word}>
-            {word.emoji}
-          </div>
+          <WordIllustration word={word.word} picture={word.picture} className="mx-auto h-20 w-20" />
           <p className="mt-2 text-2xl font-display font-bold">{word.word}</p>
         </div>
       </div>
@@ -81,7 +80,7 @@ export default function WorksheetFr({ letter }: { letter: string }) {
           text={pair}
           cursive={{ text: pair, fontFamily: cursiveFont.style.fontFamily }}
           labels={{
-            clear: "🔄 Effacer et recommencer",
+            clear: "Effacer et recommencer",
             styleGroup: "Écriture",
             script: "Script",
             cursive: "Cursive",

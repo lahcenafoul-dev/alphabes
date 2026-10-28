@@ -7,6 +7,8 @@ import { absoluteUrl, alternatesFor } from "@/lib/i18n/routes";
 import { buildBreadcrumbJsonLd } from "@/lib/json-ld";
 import { getSpanishLetter } from "@/lib/letters-es";
 import { getFicha } from "@/lib/fichas-es";
+import WordIllustration from "@/components/WordIllustration";
+import { InlineIcon } from "@/components/UiIcon";
 
 export function worksheetMetadataEs(param: string): Metadata {
   const l = getSpanishLetter(param);
@@ -64,9 +66,7 @@ export default function WorksheetEs({ letter }: { letter: string }) {
           <p className="mt-1 text-sm text-chalkboard/60">en cursiva</p>
         </div>
         <div>
-          <div className="text-6xl" role="img" aria-label={word.word}>
-            {word.emoji}
-          </div>
+          <WordIllustration word={word.word} picture={word.picture} className="mx-auto h-20 w-20" />
           <p className="mt-2 text-2xl font-display font-bold">{word.word}</p>
         </div>
       </div>
@@ -83,7 +83,7 @@ export default function WorksheetEs({ letter }: { letter: string }) {
           text={pair}
           cursive={{ text: pair, fontFamily: cursivaFont.style.fontFamily, ruling: "doble-raya" }}
           labels={{
-            clear: "🔄 Borrar y volver a empezar",
+            clear: "Borrar y volver a empezar",
             styleGroup: "Tipo de letra",
             script: "Script",
             cursive: "Cursiva",
@@ -98,13 +98,16 @@ export default function WorksheetEs({ letter }: { letter: string }) {
           text={`${l.nameSpoken}. ${word.withArticle}.`}
           className="rounded-block bg-crayon-blue text-white px-6 py-3 font-bold"
         >
-          🔊 Escuchar
+          <InlineIcon name="listen" />
+          Escuchar
         </ListenButton>
         <a href={trazo.pdf} download={`ficha-letra-${l.slug}.pdf`} className="rounded-block bg-crayon-green text-white px-6 py-3 font-bold shadow-block hover:shadow-blockHover transition">
-          ⬇️ Ficha de trazo (PDF)
+          <InlineIcon name="download" />
+          Ficha de trazo (PDF)
         </a>
         <a href={cursiva.pdf} download={`ficha-cursiva-letra-${l.slug}.pdf`} className="rounded-block bg-crayon-purple text-white px-6 py-3 font-bold shadow-block hover:shadow-blockHover transition">
-          ⬇️ Ficha en cursiva (PDF)
+          <InlineIcon name="download" />
+          Ficha en cursiva (PDF)
         </a>
       </div>
       <p className="mt-3 text-sm text-chalkboard/60">

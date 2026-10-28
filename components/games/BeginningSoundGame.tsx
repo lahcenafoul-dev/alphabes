@@ -4,6 +4,7 @@ import { useState } from "react";
 import { getAllLetterSlugs, getLetterContent } from "@/lib/letters-data";
 import { shuffle, pickDistractors } from "@/lib/games/utils";
 import { speak } from "@/lib/speech";
+import { InlineIcon } from "@/components/UiIcon";
 
 const LETTERS = getAllLetterSlugs();
 const TOTAL_ROUNDS = 10;
@@ -55,7 +56,7 @@ export default function BeginningSoundGame() {
   if (finished) {
     return (
       <div className="text-center py-8">
-        <p className="text-2xl font-display font-bold">🎉 All done!</p>
+        <p className="text-2xl font-display font-bold"><InlineIcon name="party" />All done!</p>
         <p className="mt-2 text-chalkboard/70">
           You got {score} out of {TOTAL_ROUNDS} beginning sounds right.
         </p>
@@ -84,7 +85,8 @@ export default function BeginningSoundGame() {
           onClick={() => speak(round.word, 0.8)}
           className="mt-3 rounded-block bg-crayon-blue text-white px-5 py-2.5 font-bold"
         >
-          🔊 Listen
+          <InlineIcon name="listen" />
+          Listen
         </button>
       </div>
 
@@ -96,7 +98,17 @@ export default function BeginningSoundGame() {
           feedback === "correct" ? "text-crayon-green" : feedback === "wrong" ? "text-crayon-red" : "text-transparent"
         }`}
       >
-        {feedback === "correct" ? "✓ Correct!" : feedback === "wrong" ? "✗ Try again" : "placeholder"}
+        {feedback === "correct" ? (
+          <>
+            <InlineIcon name="check" />
+            Correct!
+          </>
+        ) : feedback === "wrong" ? (
+          <>
+            <InlineIcon name="cross" />
+            Try again
+          </>
+        ) : "placeholder"}
       </p>
 
       <div className="mt-2 grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-md mx-auto">

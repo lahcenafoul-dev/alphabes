@@ -4,6 +4,8 @@ import { useState } from "react";
 import { useFrenchSpeech } from "@/components/ListenButton";
 import { quizQuestion } from "@/lib/games-fr";
 import { EndScreen, FeedbackLine, ScoreBar, choiceClass, listenClass, type Feedback } from "./ui";
+import WordIllustration from "@/components/WordIllustration";
+import { InlineIcon } from "@/components/UiIcon";
 
 const TOTAL = 10;
 
@@ -51,13 +53,9 @@ export default function QuizAlphabet() {
 
       <div className="mt-6 text-center">
         <p className="text-xl font-display font-bold">{question.prompt}</p>
-        {question.emoji && (
-          <div
-            className="mx-auto mt-4 flex h-28 w-28 items-center justify-center rounded-full bg-crayon-yellow/25 text-6xl"
-            role="img"
-            aria-label={question.label}
-          >
-            {question.emoji}
+        {question.picture && (
+          <div className="mx-auto mt-4 flex h-28 w-28 items-center justify-center rounded-block border border-chalkboard/10 bg-white shadow-[0_2px_12px_rgba(31,42,68,0.08)]">
+            <WordIllustration word={question.label ?? ""} picture={question.picture} className="h-20 w-20" />
           </div>
         )}
         <button
@@ -66,7 +64,8 @@ export default function QuizAlphabet() {
           className={`${listenClass} mt-4`}
           aria-label={question.kind === "heard" ? "Écouter la lettre" : "Écouter la question"}
         >
-          🔊 Écouter
+          <InlineIcon name="listen" />
+          Écouter
         </button>
       </div>
 

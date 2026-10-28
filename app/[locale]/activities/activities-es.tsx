@@ -1,7 +1,9 @@
+import type { UiIconName } from "@/components/UiIcon";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { absoluteUrl, alternatesFor, localizedPath } from "@/lib/i18n/routes";
 import { buildBreadcrumbJsonLd } from "@/lib/json-ld";
+import UiIcon from "@/components/UiIcon";
 
 const title = "Actividades para aprender las letras y las sílabas, sin pantallas";
 const description =
@@ -16,7 +18,7 @@ export const activitiesMetadataEs: Metadata = {
 
 type Activity = {
   id: string;
-  emoji: string;
+  icon: UiIconName;
   title: string;
   age: string;
   summary: string;
@@ -34,7 +36,7 @@ const silabas = (skill: string) => localizedPath("es", "/phonics/[skill]", { ski
 const activities: Activity[] = [
   {
     id: "busca-las-letras",
-    emoji: "🔎",
+    icon: "search",
     title: "Busca las letras de tu nombre",
     age: "3 a 6 años",
     summary: "Encontrar las letras de su nombre en revistas, recortarlas y pegarlas en orden.",
@@ -49,7 +51,7 @@ const activities: Activity[] = [
   },
   {
     id: "letras-de-plastilina",
-    emoji: "🟠",
+    icon: "shapes",
     title: "Letras de plastilina",
     age: "3 a 5 años",
     summary: "Hacer rollitos de plastilina y formar las letras sobre un modelo grande.",
@@ -64,7 +66,7 @@ const activities: Activity[] = [
   },
   {
     id: "bandeja-de-sal",
-    emoji: "🏖️",
+    icon: "hand",
     title: "Escribir en la bandeja de sal",
     age: "3 a 6 años",
     summary: "Trazar las letras con el dedo en una bandeja con sal, arena o harina.",
@@ -79,7 +81,7 @@ const activities: Activity[] = [
   },
   {
     id: "veo-veo-silabas",
-    emoji: "👀",
+    icon: "eye",
     title: "«Veo, veo» con sílabas",
     age: "4 a 6 años",
     summary: "El juego de siempre, pero con la primera sílaba: «Veo, veo una cosa que empieza con pa…».",
@@ -94,7 +96,7 @@ const activities: Activity[] = [
   },
   {
     id: "salta-las-silabas",
-    emoji: "🦘",
+    icon: "jump",
     title: "Aplaude y salta las sílabas",
     age: "4 a 6 años",
     summary: "Una palmada o un salto por sílaba: el cuerpo ayuda a escuchar los pedazos de las palabras.",
@@ -109,7 +111,7 @@ const activities: Activity[] = [
   },
   {
     id: "silabas-en-tapas",
-    emoji: "🔤",
+    icon: "letters",
     title: "Palabras con tapas de botella",
     age: "5 a 7 años",
     summary: "Escribir sílabas en tapas de botella y juntarlas para formar palabras: ma + no = mano.",
@@ -124,7 +126,7 @@ const activities: Activity[] = [
   },
   {
     id: "bingo-de-letras",
-    emoji: "🎲",
+    icon: "dice",
     title: "El bingo de las letras",
     age: "4 a 6 años",
     summary: "Un bingo hecho en casa para reconocer las letras jugando entre varios.",
@@ -139,7 +141,7 @@ const activities: Activity[] = [
   },
   {
     id: "memoria-mayusculas-minusculas",
-    emoji: "🃏",
+    icon: "cards",
     title: "Juego de memoria: mayúscula y minúscula",
     age: "5 a 7 años",
     summary: "Encontrar las parejas A-a, B-b, Ñ-ñ… para unir las dos formas de cada letra.",
@@ -193,7 +195,7 @@ export default function ActivitiesEs() {
           <li key={a.id} id={a.id} className="flex flex-col rounded-block border border-chalkboard/10 p-6 shadow-block scroll-mt-24">
             <div className="flex items-start justify-between gap-3">
               <h2 className="font-display font-bold text-lg">
-                <span aria-hidden="true">{a.emoji} </span>
+                <UiIcon name={a.icon} className="mr-2 inline-block h-5 w-5 align-[-0.15em] text-crayon-purple" />
                 {a.title}
               </h2>
               <span className="shrink-0 rounded-full bg-crayon-yellow/25 px-3 py-1 text-xs font-bold">{a.age}</span>

@@ -18,6 +18,8 @@ import {
   type SpanishSyllablePage,
 } from "@/lib/silabas-es";
 import { plainWord, type SoundWord } from "@/lib/sons-fr";
+import { ClapIcon, InlineIcon } from "@/components/UiIcon";
+import WordIllustration from "@/components/WordIllustration";
 
 export function syllableMetadataEs(slug: string): Metadata {
   const p = getSpanishSyllablePage(slug);
@@ -36,25 +38,20 @@ const primaryButton =
 
 function WordCard({ w, marks }: { w: SoundWord; marks: SpanishSyllablePage["marks"] }) {
   return (
-    <li className="rounded-block bg-paper border border-chalkboard/10 p-4 text-center shadow-block">
-      <div
-        className="mx-auto h-16 w-16 rounded-full bg-crayon-green/20 flex items-center justify-center text-4xl"
-        role="img"
-        aria-label={plainWord(w.word)}
-      >
-        {w.emoji}
-      </div>
-      <p className="mt-2 font-display font-bold text-2xl">
+    <li className="flex flex-col items-center rounded-block border border-chalkboard/10 bg-white p-3 text-center shadow-[0_2px_12px_rgba(31,42,68,0.08)] sm:p-4">
+      <WordIllustration word={w.word} picture={w.picture} title={plainWord(w.word)} className="block h-auto w-full max-w-[9rem]" />
+      <p className="mt-3 font-display font-bold text-2xl leading-tight">
         <MarkedWord word={w.word} marks={marks} />
       </p>
-      <p className="text-sm text-chalkboard/60">{w.withArticle}</p>
+      <p className="text-sm text-chalkboard/75">{w.withArticle}</p>
       <ListenButton
         locale="es"
         text={w.withArticle}
         ariaLabel={`Escuchar: ${w.withArticle}`}
-        className="mt-2 text-sm font-bold text-crayon-blue underline underline-offset-2"
+        className="mt-2 inline-flex items-center gap-1 text-sm font-bold text-[#1F6FB8] underline underline-offset-2"
       >
-        🔊 Escuchar
+        <InlineIcon name="listen" />
+        Escuchar
       </ListenButton>
     </li>
   );
@@ -111,7 +108,7 @@ export default function SilabaEs({ slug }: { slug: string }) {
 
       <header className="mt-6 flex flex-wrap items-center gap-6">
         <div className="letter-block bg-crayon-purple h-24 min-w-24 px-4 text-5xl shrink-0" aria-hidden="true">
-          {p.short}
+          {p.icon ? <ClapIcon className="h-1/2 w-1/2" /> : p.short}
         </div>
         <div>
           <h1 className="text-4xl font-extrabold">{p.title}</h1>
@@ -121,7 +118,8 @@ export default function SilabaEs({ slug }: { slug: string }) {
 
       <div className="mt-6">
         <ListenButton locale="es" text={p.spoken} rate={0.75} className={primaryButton}>
-          🔊 Escuchar
+          <InlineIcon name="listen" />
+          Escuchar
         </ListenButton>
       </div>
 
@@ -230,7 +228,8 @@ export default function SilabaEs({ slug }: { slug: string }) {
             ariaLabel="Escuchar la oración"
             className="mt-3 text-sm font-bold text-crayon-blue underline underline-offset-2"
           >
-            🔊 Escuchar la oración
+            <InlineIcon name="listen" />
+            Escuchar la oración
           </ListenButton>
         </section>
       )}

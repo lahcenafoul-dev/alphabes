@@ -12,6 +12,7 @@ import { confirmReturn, requestedNotice, type BillingNotice } from "@/lib/billin
 import AddChildForm from "./add-child-form";
 import SubscriptionCard from "./subscription-card";
 import { withSocialMetadata } from "@/lib/social-metadata";
+import { InlineIcon } from "@/components/UiIcon";
 
 async function pageMetadata({ params }: { params: LocaleParams }): Promise<Metadata> {
   const locale = initLocale((await params).locale);
@@ -114,6 +115,7 @@ export default async function DashboardPage({
                 href="/stories"
                 className="inline-block rounded-block bg-crayon-purple text-white px-6 py-3 font-display font-bold"
               >
+                <InlineIcon name="stories" />
                 {t("storyTime")}
               </Link>
             </div>

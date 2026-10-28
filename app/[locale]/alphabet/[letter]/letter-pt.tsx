@@ -14,6 +14,8 @@ import {
   type PortugueseLetter,
   type PortugueseWord,
 } from "@/lib/letters-pt";
+import WordIllustration from "@/components/WordIllustration";
+import { InlineIcon } from "@/components/UiIcon";
 
 // The syllable page (lib/silabas-pt.ts) that practises each letter; k, w and
 // y have none (they only appear in names and borrowed words).
@@ -71,25 +73,27 @@ const primaryButton =
 const secondaryButton =
   "inline-flex items-center gap-2 rounded-block border-2 border-chalkboard/20 bg-paper px-5 py-2.5 font-display font-bold hover:border-crayon-blue transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-crayon-blue";
 
+// Example word cards: pure white, so the cartoons (white background) sit on
+// them with no visible edge; a soft shadow around the card, nothing behind
+// the picture.
+const wordCard =
+  "flex flex-col items-center rounded-block border border-chalkboard/10 bg-white p-3 text-center shadow-[0_2px_12px_rgba(31,42,68,0.08)] sm:p-4";
+const wordPicture = "block h-auto w-full max-w-[9rem]";
+
 function WordCard({ w }: { w: PortugueseWord }) {
   return (
-    <li className="rounded-block bg-paper border border-chalkboard/10 p-4 text-center shadow-block">
-      <div
-        className="mx-auto h-16 w-16 rounded-full bg-crayon-green/20 flex items-center justify-center text-4xl"
-        role="img"
-        aria-label={w.word}
-      >
-        {w.emoji}
-      </div>
-      <p className="mt-2 font-display font-bold text-lg">{w.word}</p>
-      <p className="text-sm text-chalkboard/60">{w.withArticle}</p>
+    <li className={wordCard}>
+      <WordIllustration word={w.word} picture={w.picture} className={wordPicture} />
+      <p className="mt-3 font-display text-lg font-bold leading-tight">{w.word}</p>
+      <p className="text-sm text-chalkboard/75">{w.withArticle}</p>
       <ListenButton
         locale="pt"
         text={w.withArticle}
         ariaLabel={`Ouvir: ${w.withArticle}`}
-        className="mt-2 text-sm font-bold text-crayon-blue underline underline-offset-2"
+        className="mt-2 inline-flex items-center gap-1 text-sm font-bold text-[#1F6FB8] underline underline-offset-2"
       >
-        🔊 Ouvir
+        <InlineIcon name="listen" />
+        Ouvir
       </ListenButton>
     </li>
   );
@@ -162,10 +166,12 @@ export default function LetterPt({ letter }: { letter: string }) {
 
       <div className="mt-6 flex flex-wrap gap-3">
         <ListenButton locale="pt" text={l.nameSpoken} rate={0.7} className={primaryButton}>
-          🔊 O nome da letra
+          <InlineIcon name="listen" />
+          O nome da letra
         </ListenButton>
         <ListenButton locale="pt" text={l.soundSpoken} rate={0.75} className={secondaryButton}>
-          🔊 {l.kind === "vogal" ? "O som" : "A família silábica"}
+          <InlineIcon name="listen" />
+          {l.kind === "vogal" ? "O som" : "A família silábica"}
         </ListenButton>
       </div>
 
@@ -226,7 +232,7 @@ export default function LetterPt({ letter }: { letter: string }) {
             href={{ pathname: "/alphabet/[letter]/worksheet", params: { letter: l.slug } }}
             className="block rounded-block border border-chalkboard/10 p-4 shadow-block hover:border-crayon-blue hover:shadow-blockHover transition"
           >
-            <p className="font-display font-bold">✏️ Traçar {cedilha ? "o Ç" : `a letra ${l.upper}`}</p>
+            <p className="font-display font-bold"><InlineIcon name="pencil" />Traçar {cedilha ? "o Ç" : `a letra ${l.upper}`}</p>
             <p className="mt-1 text-sm text-chalkboard/70">
               Na tela, com o dedo ou o mouse, em letra bastão, de forma ou cursiva.
             </p>
@@ -235,7 +241,7 @@ export default function LetterPt({ letter }: { letter: string }) {
             href="/flashcards"
             className="block rounded-block border border-chalkboard/10 p-4 shadow-block hover:border-crayon-blue hover:shadow-blockHover transition"
           >
-            <p className="font-display font-bold">🖼️ Os cartões do alfabeto</p>
+            <p className="font-display font-bold"><InlineIcon name="image" />Os cartões do alfabeto</p>
             <p className="mt-1 text-sm text-chalkboard/70">Todas as palavras de A a Z, com figuras, para ouvir.</p>
           </Link>
           {syllables && (
@@ -243,7 +249,7 @@ export default function LetterPt({ letter }: { letter: string }) {
               href={{ pathname: "/phonics/[skill]", params: { skill: syllables.skill } }}
               className="block rounded-block border border-chalkboard/10 p-4 shadow-block hover:border-crayon-blue hover:shadow-blockHover transition sm:col-span-2"
             >
-              <p className="font-display font-bold">🗣️ Para ler: {syllables.label}</p>
+              <p className="font-display font-bold"><InlineIcon name="speak" />Para ler: {syllables.label}</p>
               <p className="mt-1 text-sm text-chalkboard/70">Sílabas para ouvir, palavras e uma frase para ler.</p>
             </Link>
           )}

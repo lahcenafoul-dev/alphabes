@@ -7,6 +7,8 @@ import { absoluteUrl, alternatesFor } from "@/lib/i18n/routes";
 import { buildBreadcrumbJsonLd } from "@/lib/json-ld";
 import { CEDILHA_SLUG, getPortugueseLetter } from "@/lib/letters-pt";
 import { getAtividade } from "@/lib/atividades-pt";
+import WordIllustration from "@/components/WordIllustration";
+import { InlineIcon } from "@/components/UiIcon";
 
 export function worksheetMetadataPt(param: string): Metadata {
   const l = getPortugueseLetter(param);
@@ -74,9 +76,7 @@ export default function WorksheetPt({ letter }: { letter: string }) {
           <p className="mt-1 text-sm text-chalkboard/60">letra cursiva</p>
         </div>
         <div>
-          <div className="text-6xl" role="img" aria-label={word.word}>
-            {word.emoji}
-          </div>
+          <WordIllustration word={word.word} picture={word.picture} className="mx-auto h-20 w-20" />
           <p className="mt-2 text-2xl font-display font-bold">{word.word}</p>
         </div>
       </div>
@@ -96,7 +96,7 @@ export default function WorksheetPt({ letter }: { letter: string }) {
           ]}
           cursive={{ text: pair, fontFamily: cursivaFont.style.fontFamily, ruling: "caligrafia" }}
           labels={{
-            clear: "🔄 Apagar e começar de novo",
+            clear: "Apagar e começar de novo",
             styleGroup: "Tipo de letra",
             cursive: "Cursiva",
             canvas: `Espaço para traçar ${l.slug === CEDILHA_SLUG ? "o Ç" : `a letra ${l.upper}`}`,
@@ -110,16 +110,20 @@ export default function WorksheetPt({ letter }: { letter: string }) {
           text={`${l.nameSpoken}. ${word.withArticle}.`}
           className="rounded-block bg-crayon-blue text-white px-6 py-3 font-bold"
         >
-          🔊 Ouvir
+          <InlineIcon name="listen" />
+          Ouvir
         </ListenButton>
         <a href={bastao.pdf} download={`atividade-letra-bastao-${l.slug}.pdf`} className="rounded-block bg-crayon-green text-white px-6 py-3 font-bold shadow-block hover:shadow-blockHover transition">
-          ⬇️ Letra bastão (PDF)
+          <InlineIcon name="download" />
+          Letra bastão (PDF)
         </a>
         <a href={forma.pdf} download={`atividade-letra-de-forma-${l.slug}.pdf`} className="rounded-block bg-crayon-green text-white px-6 py-3 font-bold shadow-block hover:shadow-blockHover transition">
-          ⬇️ Letra de forma (PDF)
+          <InlineIcon name="download" />
+          Letra de forma (PDF)
         </a>
         <a href={cursiva.pdf} download={`atividade-cursiva-${l.slug}.pdf`} className="rounded-block bg-crayon-purple text-white px-6 py-3 font-bold shadow-block hover:shadow-blockHover transition">
-          ⬇️ Letra cursiva (PDF)
+          <InlineIcon name="download" />
+          Letra cursiva (PDF)
         </a>
       </div>
       <p className="mt-3 text-sm text-chalkboard/60">

@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { hasIllustration } from "@/components/illustrations";
 import { paramsExist } from "@/lib/i18n/known-params";
 import {
   FRENCH_SOUND_SLUGS,
@@ -42,7 +43,7 @@ describe("French sound data", () => {
   it("gives every word a picture and an article form that says the word", () => {
     for (const s of frenchSounds) {
       for (const w of allWords(s)) {
-        expect(w.emoji, w.word).not.toBe("");
+        expect(hasIllustration(w.picture), w.word).toBe(true);
         expect(w.withArticle.toLowerCase(), `${s.slug}: ${w.word}`).toContain(plainWord(w.word).toLowerCase());
       }
     }

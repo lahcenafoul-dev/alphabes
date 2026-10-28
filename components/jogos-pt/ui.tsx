@@ -1,5 +1,7 @@
 "use client";
 
+import UiIcon from "@/components/UiIcon";
+
 // Pieces shared by the Portuguese games (components/jogos-pt). The feedback
 // line and button styles are the French games' ones; the score and the end
 // screen are written in Portuguese here.
@@ -18,9 +20,7 @@ export function EndScreen({ score, total, onAgain }: { score: number; total: num
   const cheer = score === total ? "Perfeito!" : score >= total * 0.7 ? "Muito bem!" : "Bom trabalho!";
   return (
     <div className="text-center py-8">
-      <p className="text-5xl" aria-hidden="true">
-        🎉
-      </p>
+      <UiIcon name="party" className="mx-auto h-14 w-14 text-crayon-purple" />
       <p className="mt-3 text-2xl font-display font-bold">{cheer}</p>
       <p className="mt-2 text-chalkboard/70">
         {score} {score === 1 ? "resposta certa" : "respostas certas"} de {total}.

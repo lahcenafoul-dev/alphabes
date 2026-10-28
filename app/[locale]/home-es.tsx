@@ -6,6 +6,7 @@ import { alternatesFor, isAvailable } from "@/lib/i18n/routes";
 import { FicheCard } from "@/components/fiches/FicheParts";
 import { getFicha } from "@/lib/fichas-es";
 import { spanishGames } from "@/lib/juegos-es";
+import { IconTile } from "@/components/UiIcon";
 
 const title = "Aprender el abecedario: fichas y juegos gratis | AlphaBes";
 const description =
@@ -259,9 +260,7 @@ export default function HomeEs() {
                 href={{ pathname: "/games/[slug]", params: { slug: g.slug } }}
                 className="rounded-block bg-paper p-5 shadow-block hover:shadow-blockHover transition font-display font-bold text-center"
               >
-                <span className="block text-3xl" aria-hidden="true">
-                  {g.emoji}
-                </span>
+                <IconTile name={g.icon} className="mx-auto mb-2 h-12 w-12" />
                 {g.title}
               </Link>
             ))}

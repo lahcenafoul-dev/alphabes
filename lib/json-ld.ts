@@ -123,7 +123,9 @@ export function buildShortStoryJsonLd(
     name: story.title,
     url: absoluteUrl(locale, "/stories/[slug]", { slug: story.slug }),
     inLanguage: HTML_LANG[locale],
-    ...(story.coverUrl && { image: new URL(story.coverUrl, SITE_URL).href }),
+    // Covers drawn by components/StoryIllustration.tsx are scene names
+    // ("apple-1"), not files: only a real path or URL is an image.
+    ...(story.coverUrl && /^(\/|https?:\/\/)/.test(story.coverUrl) && { image: new URL(story.coverUrl, SITE_URL).href }),
     audience: { "@type": "PeopleAudience", suggestedMinAge: story.ageRangeMin, suggestedMaxAge: story.ageRangeMax },
     isAccessibleForFree: !story.isPremium,
     publisher: ORGANIZATION,

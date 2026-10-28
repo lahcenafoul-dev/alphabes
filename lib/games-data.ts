@@ -41,7 +41,7 @@ export const games: GameContent[] = [
     description: "Listen to a word and choose the letter that matches its first sound.",
     isPremium: true,
     howToPlay:
-      "A word appears with a 🔊 Listen button to hear it. Choose, among four letters, the one the word starts with. There are 10 rounds, then your score.",
+      "A word appears with a Listen button to hear it. Choose, among four letters, the one the word starts with. There are 10 rounds, then your score.",
     practices: "Hearing the first sound of a word and linking it to its letter.",
   },
   {

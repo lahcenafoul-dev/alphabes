@@ -1,5 +1,7 @@
 "use client";
 
+import { InlineIcon } from "@/components/UiIcon";
+
 export default function AudioButton({ scene }: { scene: string | null }) {
   if (!scene) return null;
 
@@ -14,7 +16,8 @@ export default function AudioButton({ scene }: { scene: string | null }) {
       aria-label="Listen"
       className="rounded-block bg-crayon-blue text-white px-4 py-2 font-bold flex items-center gap-2"
     >
-      🔊 Listen
+      <InlineIcon name="listen" />
+      Listen
     </button>
   );
 }

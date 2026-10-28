@@ -3,6 +3,7 @@ import { Link } from "@/i18n/navigation";
 import { absoluteUrl, alternatesFor } from "@/lib/i18n/routes";
 import { buildBreadcrumbJsonLd } from "@/lib/json-ld";
 import { ACCENTS_SLUG, frenchLetters, isAccentLetter } from "@/lib/letters-fr";
+import WordIllustration from "@/components/WordIllustration";
 
 const title = "L'alphabet de A à Z : lettres, sons et mots pour enfants";
 const description =
@@ -137,8 +138,8 @@ export default function AlphabetFr() {
                     {l.upper}{l.lower}
                   </span>
                   <span className="mt-1 block text-xs text-chalkboard/60">« {l.name} »</span>
-                  <span className="mt-2 block text-2xl" aria-hidden="true">
-                    {w1.emoji}
+                  <span className="mt-2 block" aria-hidden="true">
+                    <WordIllustration word={w1.word} picture={w1.picture} className="mx-auto h-10 w-10" />
                   </span>
                   <span className="mt-2 block font-display font-bold text-sm">
                     {l.upper} comme {w1.word}
@@ -167,7 +168,9 @@ export default function AlphabetFr() {
                 <span className="letter-block bg-crayon-purple mx-auto flex aspect-square w-16 items-center justify-center text-2xl" aria-hidden="true">
                   {l.upper}{l.lower}
                 </span>
-                <span className="mt-2 block text-2xl" aria-hidden="true">{l.words[0].emoji}</span>
+                <span className="mt-2 block" aria-hidden="true">
+                  <WordIllustration word={l.words[0].word} picture={l.words[0].picture} className="mx-auto h-10 w-10" />
+                </span>
                 <span className="mt-2 block font-display font-bold text-sm">{l.name}</span>
               </Link>
             </li>
@@ -177,7 +180,9 @@ export default function AlphabetFr() {
               <span className="letter-block bg-paper mx-auto flex aspect-square w-16 items-center justify-center text-xl" aria-hidden="true">
                 à ô
               </span>
-              <span className="mt-2 block text-2xl" aria-hidden="true">🏰</span>
+              <span className="mt-2 block" aria-hidden="true">
+                <WordIllustration word="château" picture="castle" className="mx-auto h-10 w-10" />
+              </span>
               <span className="mt-2 block font-display font-bold text-sm">Tous les accents</span>
             </Link>
           </li>

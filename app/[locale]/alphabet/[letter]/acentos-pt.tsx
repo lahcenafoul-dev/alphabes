@@ -4,6 +4,8 @@ import ListenButton from "@/components/ListenButton";
 import { absoluteUrl, alternatesFor } from "@/lib/i18n/routes";
 import { buildBreadcrumbJsonLd } from "@/lib/json-ld";
 import { ACENTOS_SLUG, CEDILHA_SLUG, acentoGroups } from "@/lib/letters-pt";
+import WordIllustration from "@/components/WordIllustration";
+import UiIcon from "@/components/UiIcon";
 
 const title = "Os acentos e o til: á, â, ã, é, ê, ó, ô, õ explicados para crianças";
 const description =
@@ -86,7 +88,9 @@ export default function AcentosPt() {
                     ariaLabel={`Ouvir: ${ex.text}`}
                     className="inline-flex items-center gap-2 rounded-block border border-chalkboard/15 px-4 py-2 font-display font-bold hover:border-crayon-blue transition-colors"
                   >
-                    <span aria-hidden="true">{ex.emoji}</span> {ex.text} <span aria-hidden="true">🔊</span>
+                    <span aria-hidden="true">
+                      <WordIllustration word={ex.text} picture={ex.picture} className="inline-block h-7 w-7" />
+                    </span> {ex.text} <UiIcon name="listen" className="h-5 w-5" />
                   </ListenButton>
                 </li>
               ))}

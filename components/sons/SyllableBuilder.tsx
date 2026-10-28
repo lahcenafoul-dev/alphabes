@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useSpeech } from "@/components/ListenButton";
 import { BUILDER_CONSONANTS, BUILDER_VOWELS } from "@/lib/sons-fr";
 import { ptSyllableSpoken } from "@/lib/silabas-pt";
+import { InlineIcon } from "@/components/UiIcon";
 
 const LABELS = {
   fr: {
@@ -11,21 +12,21 @@ const LABELS = {
     consonant: "Consonne",
     vowel: "Voyelle",
     listenTo: "Écouter la syllabe",
-    listen: "🔊 Écouter",
+    listen: "Écouter",
   },
   es: {
     intro: "Elige una consonante y luego una vocal: escucha la sílaba.",
     consonant: "Consonante",
     vowel: "Vocal",
     listenTo: "Escuchar la sílaba",
-    listen: "🔊 Escuchar",
+    listen: "Escuchar",
   },
   pt: {
     intro: "Escolha uma consoante e depois uma vogal: ouça a sílaba.",
     consonant: "Consoante",
     vowel: "Vogal",
     listenTo: "Ouvir a sílaba",
-    listen: "🔊 Ouvir",
+    listen: "Ouvir",
   },
 };
 
@@ -108,7 +109,10 @@ export default function SyllableBuilder({
             <span className="text-[#1D6FC2]">{consonant}</span>
             <span className="text-[#C8323A]">{vowel}</span>
           </span>
-          <span className="mt-1 block text-sm font-bold text-[#1D6FC2]">{t.listen}</span>
+          <span className="mt-1 block text-sm font-bold text-[#1D6FC2]">
+            <InlineIcon name="listen" />
+            {t.listen}
+          </span>
         </button>
       </div>
       {notice}
