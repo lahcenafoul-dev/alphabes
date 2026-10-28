@@ -1,6 +1,5 @@
 // Word pictures: the site's own cartoon picture of the word when there is
-// one (public/words/<key>.webp, listed in lib/word-photos.ts, made from
-// public/words-src/ by scripts/own-word-pictures.mjs), otherwise a letter
+// one (public/words/<key>.webp, listed in lib/word-photos.ts), otherwise a letter
 // tile. Never a photo, emoji or another drawing style, so every card reads as
 // one set (the retired Pixabay photos are in public/words-old/, not deployed).
 //

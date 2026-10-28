@@ -1,27 +1,30 @@
-// node scripts/own-word-pictures.mjs
+// node scripts/own-word-pictures.mjs <folder> <key> [<key> ...]
 //
-// Converts the site's own word pictures, public/words-src/<key>.jpg (cartoon
-// clip art on white, provided by the owner), into public/words/<key>.webp
-// (480 x 480 WebP, under 40 KB), the same files scripts/fetch-word-photos.mjs
-// downloads from Pixabay. Each gets an `own: true` credit in
-// public/words/credits.json, so the Pixabay script never replaces it. Then
-// run `node scripts/fetch-word-photos.mjs --review` to update
-// lib/word-photos.ts.
-import { existsSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
-import { join } from "node:path";
+// Converts the site's own word pictures, <folder>/<key>.jpg (cartoon clip art
+// on white, provided by the owner), into public/words/<key>.webp (480 x 480
+// WebP, under 40 KB), the same files scripts/fetch-word-photos.mjs downloads
+// from Pixabay. The originals are kept outside the repo (the owner's copy is
+// C:\alphabes-originals\words-src), never in public/. Only the keys named are
+// converted, so newer WebPs added by hand are not replaced. Each gets an
+// `own: true` credit in public/words/credits.json, so the Pixabay script never
+// replaces it. Then run `node scripts/fetch-word-photos.mjs --review` to
+// update lib/word-photos.ts.
+import { existsSync, readFileSync, writeFileSync } from "node:fs";
+import { basename, join } from "node:path";
 import sharp from "sharp";
 
-const ROOT = process.cwd();
-const SRC = join(ROOT, "public", "words-src");
-const OUT = join(ROOT, "public", "words");
+const [SRC, ...keys] = process.argv.slice(2);
+if (!SRC || keys.length === 0) throw new Error("usage: node scripts/own-word-pictures.mjs <folder> <key> [<key> ...]");
+const OUT = join(process.cwd(), "public", "words");
 const CREDITS_FILE = join(OUT, "credits.json");
 const SIZE = 480;
 const MAX_BYTES = 40 * 1024;
 
 const credits = existsSync(CREDITS_FILE) ? JSON.parse(readFileSync(CREDITS_FILE, "utf8")) : [];
 
-for (const file of readdirSync(SRC).filter((f) => f.endsWith(".jpg")).sort()) {
-  const key = file.slice(0, -4);
+for (const key of keys) {
+  const file = `${key}.jpg`;
+  if (!existsSync(join(SRC, file))) throw new Error(`${join(SRC, file)} not found`);
   let quality = 80;
   let webp;
   for (;;) {
@@ -36,7 +39,7 @@ for (const file of readdirSync(SRC).filter((f) => f.endsWith(".jpg")).sort()) {
   if (webp.length > MAX_BYTES) throw new Error(`${key}: still ${Math.round(webp.length / 1024)} KB at quality 50`);
   writeFileSync(join(OUT, `${key}.webp`), webp);
 
-  const entry = { word: key, source: `public/words-src/${file}`, photographer: "AlphaBes", license: "Provided by the site owner", own: true };
+  const entry = { word: key, source: `alphabes-originals/${basename(SRC)}/${file}`, photographer: "AlphaBes", license: "Provided by the site owner", own: true };
   const i = credits.findIndex((c) => c.word === key);
   if (i >= 0) credits[i] = entry;
   else credits.push(entry);

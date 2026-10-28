@@ -257,7 +257,7 @@ async function main() {
   const picks = list(args.pick).map((p) => p.split(":"));
   for (const k of [...only, ...redo, ...picks.map(([k]) => k)]) {
     if (!keys.includes(k)) throw new Error(`"${k}" is not a word picture key`);
-    if (creditOf(k)?.own) throw new Error(`"${k}" is the site's own picture: replace public/words-src/${k}.jpg and run scripts/own-word-pictures.mjs`);
+    if (creditOf(k)?.own) throw new Error(`"${k}" is the site's own picture: replace its original and run scripts/own-word-pictures.mjs <folder> ${k}`);
   }
 
   for (const k of redo) {
