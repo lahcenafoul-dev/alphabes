@@ -375,6 +375,9 @@ d: {
       { word: "Watch", imageAlt: "A wrist watch" },
       { word: "Watermelon", imageAlt: "A slice of watermelon" },
       { word: "Wolf", imageAlt: "A gray wolf" },
+      { word: "Witch", imageAlt: "A friendly witch with a pointed hat and a broom" },
+      { word: "Wizard", imageAlt: "A wizard with a starry hat and a staff" },
+      { word: "Woman", imageAlt: "A smiling woman in a yellow dress" },
     ],
     faq: [
       { question: "What sound does the letter W make?", answer: "The letter W makes the W sound, as in Whale and Watch." },
