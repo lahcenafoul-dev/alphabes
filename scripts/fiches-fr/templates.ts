@@ -22,6 +22,7 @@ import {
   type Fiche,
 } from "../../lib/fiches-fr";
 import { pictureEmoji, picturePrint } from "../picture-emoji";
+import { tracingSheet } from "../tracing-layout";
 
 export const W = 180; // inner width, mm
 const GREY = "#b9b9b9";
@@ -38,6 +39,8 @@ export const esc = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;")
 // ------------------------------------------------------------------ page
 
 export function pageHtml(fiche: Fiche, body: string): string {
+  // Tracing sheets are a whole page in the shared layout (trace()).
+  if (fiche.category === "trace-des-lettres") return body;
   const category = getFicheCategory(fiche.category)!;
   return `<section class="page">
   <header class="band"><span class="brand">AlphaBes.com</span><span class="kind">${esc(category.name)}</span></header>
@@ -214,29 +217,30 @@ function wordRows(words: string[], I: number, greyMax = 99, blank = true): strin
 
 // ------------------------------------------------------------------ letter sheets
 
+/** The whole page (scripts/tracing-layout.ts): pageHtml() passes it through. */
 function trace(f: Fiche): string {
   const l = letterOf(f);
   const word = l.words[0];
-  const top = `<div style="display:flex;align-items:center;justify-content:space-between">
-    <svg width="120mm" height="52mm" viewBox="0 0 120 52">
-      <text x="2" y="${hasTail(l.upper) ? 36 : 44}" font-family="script" font-weight="700" font-size="${hasTail(l.upper) ? 46 : 56}" fill="#fff" paint-order="stroke" stroke="${OUTLINE}" stroke-width="1">${esc(l.upper)}</text>
-      <text x="62" y="${hasTail(l.lower) ? 36 : 44}" font-family="script" font-weight="700" font-size="${hasTail(l.lower) ? 46 : 56}" fill="#fff" paint-order="stroke" stroke="${OUTLINE}" stroke-width="1">${esc(l.lower)}</text>
-    </svg>
-    <div style="text-align:center"><div class="emoji" style="font-size:24mm;line-height:1.1">${picturePrint(word.picture)}</div><div style="font-size:6mm">${esc(word.word.toLowerCase())}</div></div>
-  </div>
-  <div style="display:flex;gap:10mm;align-items:baseline;margin:2mm 0 3mm;font-size:4mm;color:#555">Les trois écritures :
-    <span style="font-size:9mm;color:#1f2a44">${esc(l.upper)}</span><span style="font-size:9mm;color:#1f2a44">${esc(l.lower)}</span><span class="cur" style="font-size:8mm;color:#1f2a44">${esc(l.lower)}</span></div>`;
-  const size = 21;
-  const g = guideRows(6, size, 25);
-  const rows = [
-    fill({ text: l.upper, x0: 2, x1: W - 2, y: g.baseline(0), size, font: "script", kind: "model-outline", gap: 7 }),
-    fill({ text: l.upper, x0: 2, x1: W - 2, y: g.baseline(1), size, font: "script", kind: "outline", gap: 7 }),
-    fill({ text: l.upper, x0: 2, x1: W - 2, y: g.baseline(2), size, font: "script", kind: "model-blank", gap: 0 }),
-    fill({ text: l.lower, x0: 2, x1: W - 2, y: g.baseline(3), size, font: "script", kind: "model-outline", gap: 7 }),
-    fill({ text: l.lower, x0: 2, x1: W - 2, y: g.baseline(4), size, font: "script", kind: "outline", gap: 7 }),
-    fill({ text: l.lower, x0: 2, x1: W - 2, y: g.baseline(5), size, font: "script", kind: "model-blank", gap: 0 }),
-  ].join("");
-  return top + g.svg(rows);
+  const text = plainWord(word.word).toLowerCase();
+  return tracingSheet({
+    page: "a4",
+    badge: l.upper,
+    title: `Tracer la lettre ${l.upper}`,
+    name: "Prénom :",
+    date: "Date :",
+    pair: `${l.upper}${l.lower}`,
+    isFor: `${l.upper} comme `,
+    word: text,
+    letter: l.lower,
+    picture: word.picture,
+    rows: [
+      { label: `Repasse la capitale ${l.upper}`, text: l.upper, kind: "letter" },
+      { label: `Repasse la minuscule ${l.lower}`, text: l.lower, kind: "letter" },
+      { label: "Repasse le mot", text, kind: "word" },
+      { label: "Maintenant, écris tout seul", text: "", kind: "own" },
+    ],
+    footer: ["Fiche gratuite · alphabes.com/fr/fiches", getFicheCategory(f.category)!.level],
+  });
 }
 
 function cursive(f: Fiche): string {

@@ -15,12 +15,15 @@ import { mkdirSync, readFileSync, statSync } from "fs";
 import { dirname, join } from "path";
 import { chromium, type Page } from "@playwright/test";
 import { preparePictures } from "../picture-emoji";
+import { TRACING_CSS } from "../tracing-layout";
 import { fichePacks, fiches, type Fiche } from "../../lib/fiches-fr";
 import { PAGE_CSS, ficheBody, layoutFills, pageHtml } from "./templates";
 
 const ROOT = process.cwd();
 const OUT = join(ROOT, "public");
 const FONTS = join(ROOT, "scripts", "fiches-fr", "fonts");
+// Baloo 2, for the tracing sheets (scripts/tracing-layout.ts).
+const BALOO = join(ROOT, "scripts", "worksheets-en", "fonts", "Baloo2-Variable.ttf");
 
 const args = process.argv.slice(2);
 const filter = args.find((a) => !a.startsWith("--"));
@@ -37,7 +40,9 @@ ${fontFace("cursive-fr", "PlaywriteFRTrad-Regular.ttf")}
 ${fontFace("script", "Andika-Regular.ttf")}
 ${fontFace("script", "Andika-Bold.ttf", 700)}
 ${fontFace("emoji", "NotoEmoji-Regular.ttf")}
+@font-face { font-family: "display"; font-weight: 400 800; src: url(data:font/ttf;base64,${readFileSync(BALOO).toString("base64")}) format("truetype") }
 ${PAGE_CSS}
+${TRACING_CSS}
 </style>
 <script>/* tsx wraps functions in __name(); layoutFills runs here, so define it. */ var __name = (f) => f;</script>
 </head><body></body></html>`;

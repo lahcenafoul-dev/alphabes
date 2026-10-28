@@ -23,12 +23,10 @@ import {
 } from "../../lib/fichas-es";
 import {
   BLUE_LINE,
-  CAP,
   LIGHT_LINE,
   OUTLINE,
   PAGE_CSS,
   W,
-  XH,
   esc,
   fill,
   hasTail,
@@ -38,6 +36,7 @@ import {
   type FillKind,
 } from "../fiches-fr/templates";
 import { pictureEmoji, picturePrint } from "../picture-emoji";
+import { tracingSheet } from "../tracing-layout";
 
 export const PAGE_CSS_ES = `${PAGE_CSS}
 .cur-es { font-family: cursive-es }
@@ -49,6 +48,8 @@ const plain = (word: string) => word.replace(/\|/g, "");
 // ------------------------------------------------------------------ page
 
 export function pageHtml(ficha: Ficha, body: string): string {
+  // Tracing sheets are a whole page in the shared layout (trazo()).
+  if (ficha.category === "trazo-de-letras") return body;
   const category = getFichaCategory(ficha.category)!;
   return `<section class="page">
   <header class="band"><span class="brand">AlphaBes.com</span><span class="kind">${esc(category.name)}</span></header>
@@ -83,18 +84,6 @@ function dobleRaya(rows: number, xh: number): Ruling {
   for (let r = 0; r < rows; r++) {
     const b = baseline(r);
     lines.push(...rowLines(b - 2 * xh, b - xh, b, b + xh));
-  }
-  return { height, baseline, svg: svgBox(height, lines) };
-}
-
-/** Doble raya for letra script (Andika at `size` mm): capital, x-height, baseline, descender. */
-function dobleRayaScript(rows: number, size: number, pitch: number): Ruling {
-  const height = rows * pitch;
-  const baseline = (r: number) => r * pitch + size * CAP + 3;
-  const lines: string[] = [];
-  for (let r = 0; r < rows; r++) {
-    const b = baseline(r);
-    lines.push(...rowLines(b - size * CAP, b - size * XH, b, b + size * 0.25));
   }
   return { height, baseline, svg: svgBox(height, lines) };
 }
@@ -143,33 +132,30 @@ export function letterWords(l: SpanishLetter): SpanishWord[] {
 
 // ------------------------------------------------------------------ letter sheets
 
+/** The whole page (scripts/tracing-layout.ts): pageHtml() passes it through. */
 function trazo(f: Ficha): string {
   const l = letterOf(f);
   const word = l.words[0];
-  const top = `<div style="display:flex;align-items:center;justify-content:space-between">
-    <svg width="120mm" height="52mm" viewBox="0 0 120 52">
-      <text x="2" y="${hasTail(l.upper) ? 36 : 44}" font-family="script" font-weight="700" font-size="${hasTail(l.upper) ? 46 : 56}" fill="#fff" paint-order="stroke" stroke="${OUTLINE}" stroke-width="1">${esc(l.upper)}</text>
-      <text x="62" y="${hasTail(l.lower) ? 36 : 44}" font-family="script" font-weight="700" font-size="${hasTail(l.lower) ? 46 : 56}" fill="#fff" paint-order="stroke" stroke="${OUTLINE}" stroke-width="1">${esc(l.lower)}</text>
-    </svg>
-    <div style="text-align:center"><div class="emoji" style="font-size:24mm;line-height:1.1">${picturePrint(word.picture)}</div><div style="font-size:6mm">${esc(word.word.toLowerCase())}</div></div>
-  </div>
-  <div style="display:flex;gap:10mm;align-items:baseline;margin:2mm 0 3mm;font-size:4mm;color:#555">Tres formas de escribirla:
-    <span style="font-size:9mm;color:#1f2a44">${esc(l.upper)}</span><span style="font-size:9mm;color:#1f2a44">${esc(l.lower)}</span><span class="cur-es" style="font-size:8mm;color:#1f2a44">${esc(l.lower)}</span></div>`;
-  const size = 18;
-  const r = dobleRayaScript(6, size, 23.5);
-  const rows = (
-    [
-      [l.upper, "model-outline"],
-      [l.upper, "outline"],
-      [l.upper, "model-blank"],
-      [l.lower, "model-outline"],
-      [l.lower, "outline"],
-      [l.lower, "model-blank"],
-    ] as [string, FillKind][]
-  )
-    .map(([text, kind], i) => fill({ text, x0: 2, x1: W - 2, y: r.baseline(i), size, font: "script", kind, gap: 7 }))
-    .join("");
-  return top + r.svg(rows);
+  const text = plain(word.word).toLowerCase();
+  return tracingSheet({
+    page: "a4",
+    badge: l.upper,
+    title: `Trazar la letra ${l.upper}`,
+    name: "Nombre:",
+    date: "Fecha:",
+    pair: `${l.upper}${l.lower}`,
+    isFor: `${l.upper} de `,
+    word: text,
+    letter: l.lower,
+    picture: word.picture,
+    rows: [
+      { label: `Repasa la mayúscula ${l.upper}`, text: l.upper, kind: "letter" },
+      { label: `Repasa la minúscula ${l.lower}`, text: l.lower, kind: "letter" },
+      { label: "Repasa la palabra", text, kind: "word" },
+      { label: "Ahora escribe tú solo", text: "", kind: "own" },
+    ],
+    footer: ["Ficha gratis · alphabes.com/es/fichas", getFichaCategory(f.category)!.level],
+  });
 }
 
 function cursiva(f: Ficha): string {

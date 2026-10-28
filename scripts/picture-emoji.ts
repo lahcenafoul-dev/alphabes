@@ -382,27 +382,49 @@ const PRINT_PX = 240;
 // this light in every channel become pure white.
 const NEAR_WHITE = 246;
 
-/** Loads every cartoon in public/words/ as a small JPEG. Await it before picturePrint(). */
+// The big picture of the tracing sheets (scripts/tracing-layout.ts) prints
+// ~64 mm wide, so it keeps the cartoons' full 480 px (~190 dpi there).
+let heroes: Map<string, string> | undefined;
+
+const jpegUrl = async (data: Buffer, width: number, height: number, channels: 3 | 4) =>
+  `data:image/jpeg;base64,${(await sharp(data, { raw: { width, height, channels } }).jpeg({ quality: 76, mozjpeg: true }).toBuffer()).toString("base64")}`;
+
+/**
+ * A cartoon as JPEG data URLs, small (PRINT_PX) and full size, with its
+ * near-white background made pure white. Decodes the WebP once for both.
+ */
+async function cartoonJpegs(file: string): Promise<{ small: string; hero: string }> {
+  const { data, info } = await sharp(file).flatten({ background: "#ffffff" }).raw().toBuffer({ resolveWithObject: true });
+  for (let i = 0; i < data.length; i += info.channels) {
+    if (data[i] >= NEAR_WHITE && data[i + 1] >= NEAR_WHITE && data[i + 2] >= NEAR_WHITE) data.fill(255, i, i + 3);
+  }
+  const channels = info.channels as 3 | 4;
+  const small = await sharp(data, { raw: { width: info.width, height: info.height, channels } })
+    .resize(PRINT_PX, PRINT_PX, { fit: "inside" })
+    .raw()
+    .toBuffer({ resolveWithObject: true });
+  return {
+    small: await jpegUrl(small.data, small.info.width, small.info.height, channels),
+    hero: await jpegUrl(data, info.width, info.height, channels),
+  };
+}
+
+/**
+ * Loads every cartoon in public/words/ as a small JPEG, and as a large one
+ * for pictureHero(). Await it before picturePrint() or pictureHero().
+ */
 export async function preparePictures(): Promise<void> {
   const dir = join(process.cwd(), "public", "words");
-  const files = existsSync(dir) ? readdirSync(dir).filter((f) => f.endsWith(".webp")) : [];
-  const entries = await Promise.all(
-    files.map(async (f) => {
-      const { data, info } = await sharp(join(dir, f))
-        .flatten({ background: "#ffffff" })
-        .resize(PRINT_PX, PRINT_PX, { fit: "inside" })
-        .raw()
-        .toBuffer({ resolveWithObject: true });
-      for (let i = 0; i < data.length; i += info.channels) {
-        if (data[i] >= NEAR_WHITE && data[i + 1] >= NEAR_WHITE && data[i + 2] >= NEAR_WHITE) data.fill(255, i, i + 3);
-      }
-      const jpeg = await sharp(data, { raw: { width: info.width, height: info.height, channels: info.channels } })
-        .jpeg({ quality: 76, mozjpeg: true })
-        .toBuffer();
-      return [f.slice(0, -".webp".length), `data:image/jpeg;base64,${jpeg.toString("base64")}`] as const;
-    }),
-  );
-  photos = new Map(entries);
+  const keys = existsSync(dir) ? readdirSync(dir).filter((f) => f.endsWith(".webp")).map((f) => f.slice(0, -".webp".length)) : [];
+  const all = await Promise.all(keys.map(async (k) => [k, await cartoonJpegs(join(dir, `${k}.webp`))] as const));
+  photos = new Map(all.map(([k, j]) => [k, j.small]));
+  heroes = new Map(all.map(([k, j]) => [k, j.hero]));
+}
+
+/** The word's cartoon as a large JPEG data URL (tracing sheets), or null if there is none. */
+export function pictureHero(picture: string): string | null {
+  if (!heroes) throw new Error("Call preparePictures() before pictureHero() (scripts/picture-emoji.ts)");
+  return heroes.get(picture) ?? null;
 }
 
 /**

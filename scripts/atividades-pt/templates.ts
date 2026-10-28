@@ -24,12 +24,10 @@ import {
 } from "../../lib/atividades-pt";
 import {
   BLUE_LINE,
-  CAP,
   LIGHT_LINE,
   OUTLINE,
   PAGE_CSS,
   W,
-  XH,
   esc,
   fill,
   hasTail,
@@ -39,6 +37,7 @@ import {
   type FillKind,
 } from "../fiches-fr/templates";
 import { pictureEmoji, picturePrint } from "../picture-emoji";
+import { tracingSheet } from "../tracing-layout";
 
 export const PAGE_CSS_PT = `${PAGE_CSS}
 .cur-pt { font-family: cursive-pt }
@@ -50,6 +49,8 @@ const plain = (word: string) => word.replace(/\|/g, "");
 // ------------------------------------------------------------------ page
 
 export function pageHtml(a: Atividade, body: string): string {
+  // Tracing sheets are a whole page in the shared layout (tracingPage()).
+  if (a.category === "letra-bastao" || a.category === "letra-de-forma") return body;
   const category = getAtividadeCategory(a.category)!;
   return `<section class="page">
   <header class="band"><span class="brand">AlphaBes.com</span><span class="kind">${esc(category.name)}</span></header>
@@ -85,18 +86,6 @@ function caligrafia(rows: number, xh: number): Ruling {
   for (let r = 0; r < rows; r++) {
     const b = baseline(r);
     lines.push(...rowLines(b - 2.3 * xh, b - xh, b, b + 1.3 * xh));
-  }
-  return { height, baseline, svg: svgBox(height, lines) };
-}
-
-/** Lines for print letters (Andika at `size` mm): capital, x-height, baseline, descender. */
-function pautaForma(rows: number, size: number, pitch: number): Ruling {
-  const height = rows * pitch;
-  const baseline = (r: number) => r * pitch + size * CAP + 3;
-  const lines: string[] = [];
-  for (let r = 0; r < rows; r++) {
-    const b = baseline(r);
-    lines.push(...rowLines(b - size * CAP, b - size * XH, b, b + size * 0.25));
   }
   return { height, baseline, svg: svgBox(height, lines) };
 }
@@ -139,58 +128,39 @@ export function letterWords(l: PortugueseLetter): PortugueseWord[] {
   return out;
 }
 
-/** The big outlined letter and the picture at the top of the tracing sheets. */
-function tracingTop(ch: string, word: PortugueseWord, wordText: string): string {
-  const tail = hasTail(ch);
-  return `<div style="display:flex;align-items:center;justify-content:space-between">
-    <svg width="90mm" height="52mm" viewBox="0 0 90 52">
-      <text x="45" y="${tail ? 36 : 44}" text-anchor="middle" font-family="script" font-weight="700" font-size="${tail ? 46 : 56}" fill="#fff" paint-order="stroke" stroke="${OUTLINE}" stroke-width="1">${esc(ch)}</text>
-    </svg>
-    <div style="text-align:center"><div class="emoji" style="font-size:24mm;line-height:1.1">${picturePrint(word.picture)}</div><div style="font-size:6mm">${esc(wordText)}</div></div>
-  </div>`;
-}
-
-/** Print tracing rows: the letter (outlined model, outlines, empty), then the word (outlined model, empty). */
-function printRows(ch: string, word: string): string {
-  const size = 18;
-  const r = pautaForma(5, size, 23.5);
-  const rows = (
-    [
-      [ch, "model-outline", 7],
-      [ch, "outline", 7],
-      [ch, "model-blank", 7],
-      [word, "model-outline", 9],
-      [word, "model-blank", 9],
-    ] as [string, FillKind, number][]
-  )
-    .map(([text, kind, gap], i) => fill({ text, x0: 2, x1: W - 2, y: r.baseline(i), size, font: "script", kind, gap, max: text.length > 1 ? 2 : 99 }))
-    .join("");
-  return r.svg(rows);
+/**
+ * The bastão (capitals) and forma (lowercase) sheets: a whole page in the
+ * shared layout (scripts/tracing-layout.ts), which pageHtml() passes through.
+ */
+function tracingPage(a: Atividade, capitals: boolean): string {
+  const l = letterOf(a);
+  const word = l.words[0];
+  const ch = capitals ? l.upper : l.lower;
+  const text = capitals ? plain(word.word).toUpperCase() : plain(word.word).toLowerCase();
+  return tracingSheet({
+    page: "a4",
+    badge: ch,
+    title: capitals ? `Letra bastão ${l.upper}` : `Letra de forma ${l.lower}`,
+    name: "Nome:",
+    date: "Data:",
+    pair: `${l.upper}${l.lower}`,
+    isFor: `${l.upper} de `,
+    word: plain(word.word).toLowerCase(),
+    letter: l.lower,
+    picture: word.picture,
+    rows: [
+      { label: `Cubra a letra ${ch}`, text: ch, kind: "letter" },
+      { label: "Cubra a palavra", text, kind: "word" },
+      { label: "Agora escreva sozinho", text: "", kind: "own" },
+    ],
+    footer: ["Atividade grátis · alphabes.com/pt/atividades", getAtividadeCategory(a.category)!.level],
+  });
 }
 
 // ------------------------------------------------------------------ letter sheets
 
-function bastao(a: Atividade): string {
-  const l = letterOf(a);
-  const word = l.words[0];
-  const caps = word.word.toUpperCase();
-  return (
-    tracingTop(l.upper, word, caps) +
-    `<p style="font-size:4.4mm;color:#555;margin:2mm 0 3mm">A letra bastão é a letra de forma maiúscula: ${esc(l.upper)}. Cubra e depois escreva a palavra <strong>${esc(caps)}</strong>.</p>` +
-    printRows(l.upper, caps)
-  );
-}
-
-function forma(a: Atividade): string {
-  const l = letterOf(a);
-  const word = l.words[0];
-  const lower = word.word.toLowerCase();
-  return (
-    tracingTop(l.lower, word, lower) +
-    `<p style="font-size:4.4mm;color:#555;margin:2mm 0 3mm">A letra de forma minúscula é a letra dos livros: ${esc(l.lower)}. Cubra e depois escreva a palavra <strong>${esc(lower)}</strong>.</p>` +
-    printRows(l.lower, lower)
-  );
-}
+const bastao = (a: Atividade) => tracingPage(a, true);
+const forma = (a: Atividade) => tracingPage(a, false);
 
 function cursiva(a: Atividade): string {
   const l = letterOf(a);
