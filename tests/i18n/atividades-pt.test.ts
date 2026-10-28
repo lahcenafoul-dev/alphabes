@@ -1,6 +1,6 @@
 import { existsSync, statSync } from "fs";
 import { join } from "path";
-import { describe, expect, it } from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 import { paramsExist } from "@/lib/i18n/known-params";
 import { alternatesFor, counterpartPath, localizedPath, matchPath, sectionFallbackPath } from "@/lib/i18n/routes";
 import {
@@ -19,6 +19,7 @@ import { ficheCategoryParams } from "@/lib/fiches-fr";
 import { CEDILHA_SLUG, portugueseLetters } from "@/lib/letters-pt";
 import { getPortugueseSyllablePage, portugueseSyllablePages } from "@/lib/silabas-pt";
 import { atividadeBody, letterWords, pageHtml } from "../../scripts/atividades-pt/templates";
+import { preparePictures } from "../../scripts/picture-emoji";
 
 const publicFile = (path: string) => join(process.cwd(), "public", path);
 const strip = (s: string) => s.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
@@ -138,6 +139,8 @@ describe("Portuguese syllable worksheets", () => {
 });
 
 describe("Portuguese worksheet templates", () => {
+  beforeAll(() => preparePictures(), 60_000);
+
   it("render every worksheet without throwing, in Portuguese", () => {
     for (const a of atividades) {
       const html = pageHtml(a, atividadeBody(a));

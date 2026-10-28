@@ -1,11 +1,12 @@
 // How the pre-rendered French, Spanish and Portuguese worksheet PDFs
 // (scripts/fiches-fr, fichas-es and atividades-pt) print a word picture: its
-// photo (public/words/<key>.webp) when there is one, else its emoji in the
-// Noto Emoji font. Colouring pages print the emoji's outline. The website
-// shows the same words with components/WordIllustration.tsx; the data only
-// stores the key.
-import { existsSync, readFileSync } from "fs";
+// cartoon (public/words/<key>.webp, shown whole with no frame) when there is
+// one, else its emoji in the Noto Emoji font. Colouring pages print the
+// emoji's outline. The website shows the same words with
+// components/WordIllustration.tsx; the data only stores the key.
+import { existsSync, readdirSync } from "fs";
 import { join } from "path";
+import sharp from "sharp";
 
 const PICTURE_EMOJI: Record<string, string> = {
   airplane: "✈️",
@@ -370,19 +371,48 @@ export function pictureEmoji(picture: string): string {
   return emoji;
 }
 
-const photos = new Map<string, string | null>();
+let photos: Map<string, string> | undefined;
+
+// The cartoons print at most ~24 mm wide, so 240 px is ~250 dpi. JPEG,
+// because Chromium keeps JPEG data as it is in the PDF but stores a decoded
+// WebP losslessly (a page with 9 cartoons went from 55 KB to 464 KB).
+const PRINT_PX = 240;
+// The cartoons' "white" is often 248-253, which prints as a faint grey
+// square (Chromium's PDF output ignores mix-blend-mode), so pixels at least
+// this light in every channel become pure white.
+const NEAR_WHITE = 246;
+
+/** Loads every cartoon in public/words/ as a small JPEG. Await it before picturePrint(). */
+export async function preparePictures(): Promise<void> {
+  const dir = join(process.cwd(), "public", "words");
+  const files = existsSync(dir) ? readdirSync(dir).filter((f) => f.endsWith(".webp")) : [];
+  const entries = await Promise.all(
+    files.map(async (f) => {
+      const { data, info } = await sharp(join(dir, f))
+        .flatten({ background: "#ffffff" })
+        .resize(PRINT_PX, PRINT_PX, { fit: "inside" })
+        .raw()
+        .toBuffer({ resolveWithObject: true });
+      for (let i = 0; i < data.length; i += info.channels) {
+        if (data[i] >= NEAR_WHITE && data[i + 1] >= NEAR_WHITE && data[i + 2] >= NEAR_WHITE) data.fill(255, i, i + 3);
+      }
+      const jpeg = await sharp(data, { raw: { width: info.width, height: info.height, channels: info.channels } })
+        .jpeg({ quality: 76, mozjpeg: true })
+        .toBuffer();
+      return [f.slice(0, -".webp".length), `data:image/jpeg;base64,${jpeg.toString("base64")}`] as const;
+    }),
+  );
+  photos = new Map(entries);
+}
 
 /**
- * The word's photo as an <img> sized 1em (so it takes the place and size of
+ * The word's cartoon as an <img> sized 1em (so it takes the place and size of
  * the emoji it replaces), else its emoji. The PDF scripts wait for images to
  * decode before printing.
  */
 export function picturePrint(picture: string): string {
-  if (!photos.has(picture)) {
-    const file = join(process.cwd(), "public", "words", `${picture}.webp`);
-    photos.set(picture, existsSync(file) ? `data:image/webp;base64,${readFileSync(file).toString("base64")}` : null);
-  }
+  if (!photos) throw new Error("Call preparePictures() before picturePrint() (scripts/picture-emoji.ts)");
   const src = photos.get(picture);
   if (!src) return pictureEmoji(picture);
-  return `<img src="${src}" alt="" style="width:1em;height:1em;object-fit:cover;border-radius:0.14em;border:0.25mm solid #d6d6d6;vertical-align:middle">`;
+  return `<img src="${src}" alt="" style="width:1em;height:1em;object-fit:contain;mix-blend-mode:multiply;vertical-align:middle">`;
 }

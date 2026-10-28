@@ -17,6 +17,7 @@
 import { mkdirSync, readFileSync, statSync } from "fs";
 import { dirname, join } from "path";
 import { chromium, type Page } from "@playwright/test";
+import { preparePictures } from "../picture-emoji";
 import { atividadePacks, atividades, type Atividade } from "../../lib/atividades-pt";
 import { layoutFills } from "../fiches-fr/templates";
 import { PAGE_CSS_PT, atividadeBody, pageHtml } from "./templates";
@@ -56,6 +57,9 @@ async function render(page: Page, html: string, title: string, pdfFile: string, 
     { html, title },
   );
   await page.evaluate(() => Promise.all([...document.images].map((img) => img.decode().catch(() => {}))));
+  // Load every @font-face before measuring: fonts.ready alone can resolve before
+  // the cursive font starts loading, and layoutFills then squeezes the words.
+  await page.evaluate(() => Promise.all([...document.fonts].map((f) => f.load())));
   await page.evaluate(() => document.fonts.ready);
   await page.evaluate(layoutFills);
   mkdirSync(dirname(pdfFile), { recursive: true });
@@ -73,6 +77,7 @@ async function main() {
   const list: Atividade[] = filter ? atividades.filter((a) => parts.some((p) => a.slug.includes(p))) : atividades;
   if (!list.length) throw new Error(`No worksheet matches "${filter}"`);
 
+  await preparePictures();
   const browser = await chromium.launch();
   // A4 at 96 dpi is 794 × 1123 px; 0.6 gives ~476 px wide previews.
   const context = await browser.newContext({ viewport: { width: 794, height: 1123 }, deviceScaleFactor: 0.6 });

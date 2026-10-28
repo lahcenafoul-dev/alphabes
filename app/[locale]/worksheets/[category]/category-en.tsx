@@ -12,7 +12,7 @@ import {
   getAdjacentWorksheetInType,
 } from "@/lib/worksheets-data";
 import { buildBreadcrumbJsonLd, buildLearningResourceJsonLd } from "@/lib/json-ld";
-import WorksheetIcon from "@/components/icons/WorksheetIcon";
+import WordIllustration from "@/components/WordIllustration";
 import PdfDownloadButton from "@/components/worksheets/PdfDownloadButton";
 import PrintButton from "@/components/worksheets/PrintButton";
 import StaticWorksheetButtons from "@/components/worksheets/StaticWorksheetButtons";
@@ -339,7 +339,7 @@ function WorksheetDetailView({ slug }: { slug: string }) {
             <div className="text-7xl font-extrabold text-crayon-blue/30 select-none">
               {worksheet.uppercase}{worksheet.lowercase}
             </div>
-            <WorksheetIcon word={worksheet.primaryWord} className="h-24 w-24 text-chalkboard/60" />
+            <WordIllustration word={worksheet.primaryWord} className="h-28 w-28" />
           </div>
         )}
         <p className="mt-4 text-lg font-display font-bold">{worksheet.primaryWord}</p>

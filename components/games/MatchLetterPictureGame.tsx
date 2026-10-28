@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { getAllLetterSlugs, getLetterContent } from "@/lib/letters-data";
 import { shuffle, pickDistractors } from "@/lib/games/utils";
-import WorksheetIcon from "@/components/icons/WorksheetIcon";
+import WordIllustration from "@/components/WordIllustration";
 import { InlineIcon } from "@/components/UiIcon";
 
 const LETTERS = getAllLetterSlugs();
@@ -111,10 +111,9 @@ export default function MatchLetterPictureGame() {
             key={word}
             type="button"
             onClick={() => handlePick(word)}
-            className="rounded-block border border-chalkboard/10 p-4 text-center shadow-block hover:border-crayon-blue"
+            className="rounded-block border border-chalkboard/10 bg-white p-4 text-center shadow-block hover:border-crayon-blue"
           >
-            <WorksheetIcon word={word} className="h-16 w-16 mx-auto text-chalkboard/70" />
-            <span className="sr-only">{word}</span>
+            <WordIllustration word={word} className="mx-auto h-20 w-20" />
           </button>
         ))}
       </div>
