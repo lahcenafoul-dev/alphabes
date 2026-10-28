@@ -17,6 +17,7 @@
     "fiches:fr": "tsx scripts/fiches-fr/generate.ts",
     "fichas:es": "tsx scripts/fichas-es/generate.ts",
     "atividades:pt": "tsx scripts/atividades-pt/generate.ts",
+    "worksheets:en": "tsx scripts/worksheets-en/generate.ts",
     "bundles:en": "tsx scripts/bundles-en/generate.ts",
     "previews:thumbs": "node scripts/preview-thumbs.mjs",
     "previews:en": "node scripts/previews-en.mjs",

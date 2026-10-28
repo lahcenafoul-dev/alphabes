@@ -18,6 +18,7 @@ import { mkdirSync, readFileSync, statSync } from "fs";
 import { dirname, join } from "path";
 import { chromium, type Page } from "@playwright/test";
 import { preparePictures } from "../picture-emoji";
+import { TRACING_CSS } from "../tracing-layout";
 import { fichaPacks, fichas, type Ficha } from "../../lib/fichas-es";
 import { layoutFills } from "../fiches-fr/templates";
 import { PAGE_CSS_ES, fichaBody, pageHtml } from "./templates";
@@ -26,6 +27,8 @@ const ROOT = process.cwd();
 const OUT = join(ROOT, "public");
 const FONTS_ES = join(ROOT, "scripts", "fichas-es", "fonts");
 const FONTS_SHARED = join(ROOT, "scripts", "fiches-fr", "fonts");
+// Baloo 2, for the tracing sheets (scripts/tracing-layout.ts).
+const FONTS_EN = join(ROOT, "scripts", "worksheets-en", "fonts");
 
 const args = process.argv.slice(2);
 const filter = args.find((a) => !a.startsWith("--"));
@@ -33,7 +36,7 @@ const onlyPacks = args.find((a) => a.startsWith("--packs="))?.slice(8).split(","
 const withPacks = (!filter || !!onlyPacks) && !args.includes("--no-packs");
 const withPreviews = !args.includes("--no-previews");
 
-function fontFace(family: string, dir: string, file: string, weight = 400): string {
+function fontFace(family: string, dir: string, file: string, weight: number | string = 400): string {
   const data = readFileSync(join(dir, file)).toString("base64");
   return `@font-face { font-family: "${family}"; font-weight: ${weight}; src: url(data:font/ttf;base64,${data}) format("truetype") }`;
 }
@@ -43,7 +46,9 @@ ${fontFace("cursive-es", FONTS_ES, "PlaywriteMX-Regular.ttf")}
 ${fontFace("script", FONTS_SHARED, "Andika-Regular.ttf")}
 ${fontFace("script", FONTS_SHARED, "Andika-Bold.ttf", 700)}
 ${fontFace("emoji", FONTS_SHARED, "NotoEmoji-Regular.ttf")}
+${fontFace("display", FONTS_EN, "Baloo2-Variable.ttf", "400 800")}
 ${PAGE_CSS_ES}
+${TRACING_CSS}
 </style>
 <script>/* tsx wraps functions in __name(); layoutFills runs here, so define it. */ var __name = (f) => f;</script>
 </head><body></body></html>`;
