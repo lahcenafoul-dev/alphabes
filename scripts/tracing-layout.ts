@@ -8,6 +8,9 @@
 //   - a small footer.
 // Each language passes its own words; the page is US Letter (English) or A4.
 // The shells must declare the "display" (Baloo 2) and "script" (Andika) fonts.
+// The other English letter sheets (scripts/worksheets-en) reuse the header and
+// hero with their own exercises: rows with another size or the cursive font,
+// and HTML blocks (picture tiles, matching columns, stars).
 import { CAP, XH, esc, fill } from "./fiches-fr/templates";
 import { pictureEmoji, pictureHero } from "./picture-emoji";
 
@@ -45,10 +48,50 @@ export const TRACING_CSS = `
 [data-tp] .tp-rows svg { display: block; overflow: visible }
 /* Tracing copies: layoutFills draws them as outlined letters; dash the outline. */
 [data-tp] .tp-rows text[paint-order] { stroke-dasharray: 1.6 1.1; stroke-linecap: round; stroke-width: 0.9px; stroke: #8c9bab }
-[data-tp] .tp-footer { position: static; display: flex; justify-content: space-between; font-size: 3.6mm; color: #374151; padding-bottom: 8mm }
+[data-tp] .tp-pair.tp-cursive { font-family: cursive-en, script; font-weight: 400; font-size: 30mm; line-height: 1.3; letter-spacing: 0; padding-bottom: 11mm }
+[data-tp] .tp-tiles { display: flex; flex-wrap: wrap; gap: 3mm }
+[data-tp] .tp-tile { width: 22mm; height: 22mm; border: 0.35mm solid #cbd5e1; border-radius: 3mm; display: flex; align-items: center; justify-content: center; font-size: 17mm; line-height: 1 }
+[data-tp] .tp-tile.tp-letter { width: 15mm; height: 15mm; font-family: display, script; font-weight: 700; font-size: 9mm; padding-top: 1mm }
+[data-tp] .tp-match { display: flex; justify-content: space-between; padding: 0 12mm }
+[data-tp] .tp-match > div { display: flex; flex-direction: column; gap: 2mm }
+[data-tp] .tp-match .tp-tile { width: 11.5mm; height: 11.5mm; font-size: 9mm }
+[data-tp] .tp-tiles.tp-small .tp-tile { width: 18mm; height: 18mm; font-size: 14mm }
+[data-tp] .tp-match .tp-tile.tp-letter { font-size: 7mm }
+[data-tp] .tp-match .tp-dot { width: 2.4mm; height: 2.4mm; border-radius: 50%; background: #8c9bab; align-self: center }
+[data-tp] .tp-match .tp-item { display: flex; gap: 3mm; align-items: center }
+[data-tp] .tp-missing { display: flex; flex-direction: column; gap: 3mm }
+[data-tp] .tp-missing > div { display: flex; align-items: center; gap: 6mm; font-family: display, script; font-weight: 700; font-size: 11mm; line-height: 1 }
+[data-tp] .tp-missing .tp-pic-s { font-size: 15mm; line-height: 1 }
+[data-tp] .tp-missing .tp-gap { display: inline-block; width: 9mm; border-bottom: 0.7mm solid #D1343A; margin: 0 1mm; height: 9mm; vertical-align: baseline }
+[data-tp] .tp-count { font-size: 5mm }
+[data-tp] .tp-count span { display: inline-block; width: 18mm; border-bottom: 0.35mm solid #9aa6b5; margin: 0 2mm }
+[data-tp] .tp-stars { display: flex; align-items: center; gap: 3mm; font-size: 4.2mm; color: #4b5563 }
+[data-tp] .tp-stars b { font-size: 7mm; color: #cbd5e1; font-weight: 400; font-family: sans-serif }
+[data-tp] .tp-footer { position: static; display: flex; justify-content: space-between; font-size: 3.6mm; color: #1f2937; padding-bottom: 8mm }
 `;
 
-export type TracingRow = { label: string; text: string; kind: "letter" | "word" | "own" };
+export type TracingRow =
+  | {
+      label: string;
+      text: string;
+      kind: "letter" | "word" | "own";
+      /** Font size in mm; the default suits the tracing sheets. */
+      size?: number;
+      /** "cur-en" is the English cursive (Playwrite US Trad). */
+      font?: "script" | "cur-en";
+    }
+  | { label: string; kind: "html"; html: string };
+
+type Metrics = { cap: number; xh: number; above: number; below: number };
+
+// Where the guide lines sit, in em: the cap and x-heights, and the room left
+// above the capital line and below the baseline. A function, because
+// fiches-fr/templates (CAP, XH) and this module import each other.
+const metrics = (font: "script" | "cur-en"): Metrics =>
+  font === "script"
+    ? { cap: CAP, xh: XH, above: 0.255, below: 0.27 }
+    : // Playwrite's capitals are a full em tall and its loops go below the baseline.
+      { cap: 1, xh: 0.5, above: 0.12, below: 0.42 };
 
 export type TracingSheet = {
   page: "letter" | "a4";
@@ -60,6 +103,8 @@ export type TracingSheet = {
   date: string;
   /** The big letters, e.g. "Ee". */
   pair: string;
+  /** Shows the big letters in cursive (the cursive sheets). */
+  pairCursive?: boolean;
   /** "E is for ", "E comme "… */
   isFor: string;
   /** The word; its first occurrence of `letter` is coloured. */
@@ -72,12 +117,12 @@ export type TracingSheet = {
 };
 
 /** One handwriting row: capital line, dashed x-height and baseline, with room above. */
-function row(width: number, size: number, content: (baseline: number) => string): string {
-  const height = size * 1.25;
-  const b = size * 0.98;
+function row(width: number, size: number, content: (baseline: number) => string, m = metrics("script")): string {
+  const b = Math.round(size * (m.cap + m.above) * 1000) / 1000;
+  const height = Math.round(size * (m.cap + m.above + m.below) * 1000) / 1000;
   const lines = [
-    `<line x1="0" x2="${width}" y1="${b - size * CAP}" y2="${b - size * CAP}" stroke="#cfe0f2" stroke-width="0.35"/>`,
-    `<line x1="0" x2="${width}" y1="${b - size * XH}" y2="${b - size * XH}" stroke="#8fb3dc" stroke-width="0.3" stroke-dasharray="1.6 1.6"/>`,
+    `<line x1="0" x2="${width}" y1="${b - size * m.cap}" y2="${b - size * m.cap}" stroke="#cfe0f2" stroke-width="0.35"/>`,
+    `<line x1="0" x2="${width}" y1="${b - size * m.xh}" y2="${b - size * m.xh}" stroke="#8fb3dc" stroke-width="0.3" stroke-dasharray="1.6 1.6"/>`,
     `<line x1="0" x2="${width}" y1="${b}" y2="${b}" stroke="#5b7fa8" stroke-width="0.4"/>`,
   ];
   return `<svg width="${width}mm" height="${height}mm" viewBox="0 0 ${width} ${height}">${lines.join("")}${content(b)}</svg>`;
@@ -99,12 +144,14 @@ export function tracingSheet(s: TracingSheet): string {
   const size = 22;
   const rows = s.rows
     .map((r) => {
+      if (r.kind === "html") return `<div>${r.label ? `<p class="tp-label">${esc(r.label)}</p>` : ""}${r.html}</div>`;
+      const font = r.font ?? "script";
       // The word is smaller, so the model and at least one dotted copy fit.
-      const rowSize = r.kind === "letter" ? size : r.text.length > 8 ? 11 : r.text.length > 6 ? 13 : 15;
+      const rowSize = r.size ?? (r.kind === "letter" ? size : r.kind === "own" ? 15 : r.text.length > 8 ? 11 : r.text.length > 6 ? 13 : 15);
       const svg =
         r.kind === "own"
-          ? row(width, 15, () => "")
-          : row(width, rowSize, (y) => fill({ text: r.text, x0: 1, x1: width - 1, y, size: rowSize, font: "script", kind: "model-outline", gap: r.kind === "letter" ? 9 : 8 }));
+          ? row(width, rowSize, () => "", metrics(font))
+          : row(width, rowSize, (y) => fill({ text: r.text, x0: 1, x1: width - 1, y, size: rowSize, font, kind: "model-outline", gap: r.kind === "letter" ? 9 : 8 }), metrics(font));
       return `<div><p class="tp-label">${esc(r.label)}</p>${svg}</div>`;
     })
     .join("");
@@ -117,7 +164,7 @@ export function tracingSheet(s: TracingSheet): string {
   <div class="tp-who"><span>${esc(s.name)}</span><span class="tp-date">${esc(s.date)}</span></div>
   <div class="tp-hero">
     <div class="tp-display">
-      <div class="tp-pair">${esc(s.pair)}</div>
+      <div class="tp-pair${s.pairCursive ? " tp-cursive" : ""}">${esc(s.pair)}</div>
       <div class="tp-isfor">${esc(s.isFor)}${colouredWord(s.word, s.letter, colour)}</div>
     </div>
     ${picture}
