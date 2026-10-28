@@ -1,6 +1,6 @@
 import { existsSync, statSync } from "fs";
 import { join } from "path";
-import { describe, expect, it } from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 import { paramsExist } from "@/lib/i18n/known-params";
 import { alternatesFor, counterpartPath, localizedPath, matchPath, sectionFallbackPath } from "@/lib/i18n/routes";
 import {
@@ -16,6 +16,7 @@ import {
 import { frenchLetters } from "@/lib/letters-fr";
 import { getAllWorksheetSlugs } from "@/lib/worksheets-data";
 import { ficheBody, letterWords, pageHtml } from "../../scripts/fiches-fr/templates";
+import { preparePictures } from "../../scripts/picture-emoji";
 
 const publicFile = (path: string) => join(process.cwd(), "public", path);
 
@@ -62,6 +63,8 @@ describe("French worksheet catalogue", () => {
 });
 
 describe("French worksheet templates", () => {
+  beforeAll(() => preparePictures(), 60_000);
+
   it("render every worksheet without throwing", () => {
     for (const f of fiches) {
       const html = pageHtml(f, ficheBody(f));

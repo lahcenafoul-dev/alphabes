@@ -1,6 +1,6 @@
 import { existsSync, statSync } from "fs";
 import { join } from "path";
-import { describe, expect, it } from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 import { paramsExist } from "@/lib/i18n/known-params";
 import { alternatesFor, counterpartPath, localizedPath, matchPath, sectionFallbackPath } from "@/lib/i18n/routes";
 import {
@@ -18,6 +18,7 @@ import { ficheCategoryParams } from "@/lib/fiches-fr";
 import { spanishLetters } from "@/lib/letters-es";
 import { getSpanishSyllablePage, spanishSyllablePages } from "@/lib/silabas-es";
 import { fichaBody, letterWords, pageHtml } from "../../scripts/fichas-es/templates";
+import { preparePictures } from "../../scripts/picture-emoji";
 
 const publicFile = (path: string) => join(process.cwd(), "public", path);
 const strip = (s: string) => s.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
@@ -106,6 +107,8 @@ describe("Spanish syllable worksheets", () => {
 });
 
 describe("Spanish worksheet templates", () => {
+  beforeAll(() => preparePictures(), 60_000);
+
   it("render every worksheet without throwing, in Spanish", () => {
     for (const f of fichas) {
       const html = pageHtml(f, fichaBody(f));

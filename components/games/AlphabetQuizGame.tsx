@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { getAllLetterSlugs, getLetterContent } from "@/lib/letters-data";
 import { shuffle, pickDistractors } from "@/lib/games/utils";
-import WorksheetIcon from "@/components/icons/WorksheetIcon";
+import WordIllustration from "@/components/WordIllustration";
 import { InlineIcon } from "@/components/UiIcon";
 
 const LETTERS = getAllLetterSlugs();
@@ -124,8 +124,7 @@ export default function AlphabetQuizGame() {
 
       {question.icon && (
         <div className="mt-3 flex justify-center">
-          <WorksheetIcon word={question.icon} className="h-20 w-20 text-chalkboard/70" />
-          <span className="sr-only">{question.icon}</span>
+          <WordIllustration word={question.icon} className="h-24 w-24" />
         </div>
       )}
 

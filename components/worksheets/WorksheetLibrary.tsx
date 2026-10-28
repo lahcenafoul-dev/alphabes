@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import WorksheetIcon from "@/components/icons/WorksheetIcon";
+import WordIllustration from "@/components/WordIllustration";
 import { WORKSHEET_TYPES } from "@/lib/worksheet-types";
 
 export type LibraryCardData = {
@@ -93,11 +93,10 @@ export default function WorksheetLibrary({ items }: { items: LibraryCardData[] }
 
       <ul className="mt-4 grid sm:grid-cols-2 md:grid-cols-3 gap-6">
         {shown.map((item) => (
-          <li key={item.slug} className="rounded-block border border-chalkboard/10 p-5 shadow-block">
+          <li key={item.slug} className="rounded-block border border-chalkboard/10 bg-white p-5 shadow-block">
             <div className="flex items-center gap-3">
               <div className="letter-block bg-crayon-blue h-12 w-12 text-lg shrink-0">{item.uppercase}</div>
-              <WorksheetIcon word={item.primaryWord} className="h-12 w-12 text-chalkboard/70" />
-              <span className="sr-only">{item.primaryWord} illustration</span>
+              <WordIllustration word={item.primaryWord} className="h-14 w-14" />
             </div>
             <p className="mt-3 font-display font-bold">{item.title}</p>
             <p className="mt-1 text-sm text-chalkboard/60">
