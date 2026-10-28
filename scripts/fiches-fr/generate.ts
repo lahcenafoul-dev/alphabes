@@ -49,6 +49,7 @@ async function render(page: Page, html: string, title: string, pdfFile: string, 
     },
     { html, title },
   );
+  await page.evaluate(() => Promise.all([...document.images].map((img) => img.decode().catch(() => {}))));
   await page.evaluate(() => document.fonts.ready);
   await page.evaluate(layoutFills);
   mkdirSync(dirname(pdfFile), { recursive: true });

@@ -5,6 +5,7 @@ import type { Metadata } from "next";
 import TracingCanvas from "@/components/TracingCanvas";
 import { buildBreadcrumbJsonLd } from "@/lib/json-ld";
 import { alternatesFor } from "@/lib/i18n/routes";
+import WordIllustration from "@/components/WordIllustration";
 
 /** English worksheet params: "A" as well as "a" (lookups lowercase). */
 export function englishWorksheetParams(): string[] {
@@ -30,7 +31,7 @@ export default function WorksheetEn({ letter: letterParam }: { letter: string })
   // The page only renders letters listed by englishWorksheetParams().
   const data = getLetterData(letterParam)!;
 
-  const { letter, word, emoji } = data;
+  const { letter, word } = data;
   const upper = letter.toUpperCase();
 
   const breadcrumbJsonLd = buildBreadcrumbJsonLd([
@@ -58,7 +59,7 @@ export default function WorksheetEn({ letter: letterParam }: { letter: string })
         <div className="text-8xl font-extrabold text-crayon-blue/30 select-none">
           {upper}{letter}
         </div>
-        <div className="mt-4 text-6xl">{emoji}</div>
+        <WordIllustration word={word} className="mx-auto mt-4 h-28 w-28" />
         <p className="mt-2 text-2xl font-display font-bold">{word}</p>
       </div>
 

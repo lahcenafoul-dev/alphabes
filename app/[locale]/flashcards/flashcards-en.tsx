@@ -3,6 +3,7 @@ import Link from "next/link";
 import { alphabetData } from "@/lib/alphabet-data";
 import SpeakButton from "@/components/SpeakButton";
 import { alternatesFor } from "@/lib/i18n/routes";
+import WordIllustration from "@/components/WordIllustration";
 
 export const flashcardsMetadataEn: Metadata = {
   title: "Flashcards",
@@ -18,7 +19,7 @@ export default function FlashcardsEn() {
         Flip through letter flashcards to practice recognition, or print a set for offline use.
       </p>
       <div className="mt-8 grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-4">
-        {alphabetData.map(({ letter, word, emoji }) => (
+        {alphabetData.map(({ letter, word }) => (
           <div
             key={letter}
             className="letter-block bg-crayon-yellow aspect-[3/4] flex-col gap-1 p-2 text-center"
@@ -29,8 +30,8 @@ export default function FlashcardsEn() {
               aria-label={`Letter ${letter.toUpperCase()}: ${word}. View the lesson.`}
             >
               <span className="text-3xl font-extrabold">{letter.toUpperCase()}</span>
-              <span className="text-2xl" aria-hidden="true">
-                {emoji}
+              <span aria-hidden="true">
+                <WordIllustration word={word} className="mx-auto h-12 w-12" />
               </span>
               <span className="text-xs font-display font-bold">{word}</span>
             </Link>

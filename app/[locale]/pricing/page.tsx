@@ -8,6 +8,7 @@ import { initLocale, type LocaleParams } from "@/lib/i18n/server";
 import ClientMessages from "@/components/ClientMessages";
 import CheckoutNotice from "./checkout-notice";
 import { withSocialMetadata } from "@/lib/social-metadata";
+import { InlineIcon } from "@/components/UiIcon";
 
 async function pageMetadata({ params }: { params: LocaleParams }): Promise<Metadata> {
   const locale = initLocale((await params).locale);
@@ -65,7 +66,10 @@ export default async function PricingPage({ params }: { params: LocaleParams }) 
             </p>
             <ul className="mt-4 space-y-2 text-sm text-chalkboard/70 flex-1">
               {plan.features.map((f) => (
-                <li key={f}>✓ {f}</li>
+                <li key={f}>
+                    <InlineIcon name="check" className="text-crayon-green" />
+                    {f}
+                  </li>
               ))}
             </ul>
             {plan.choice ? (

@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { useSpeech } from "@/components/ListenButton";
 import type { SoundHunt as Hunt } from "@/lib/sons-fr";
+import WordIllustration from "@/components/WordIllustration";
+import { InlineIcon } from "@/components/UiIcon";
 
 const LABELS = {
   fr: {
@@ -64,13 +66,13 @@ export default function SoundHunt({ hunt, locale = "fr" }: { hunt: Hunt; locale?
                 aria-label={`${t.listen} ${item.withArticle}`}
                 className={`w-full h-full rounded-block border-2 p-3 text-center shadow-block transition ${tone} focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-crayon-blue`}
               >
-                <span className="block text-4xl" aria-hidden="true">
-                  {item.emoji}
+                <span className="block" aria-hidden="true">
+                  <WordIllustration word={item.word} picture={item.picture} className="mx-auto h-12 w-12" />
                 </span>
                 <span className="mt-1 block font-display font-bold">{item.word}</span>
                 {shown && (
                   <span className="mt-1 block text-xs text-chalkboard/80" aria-live="polite">
-                    <span aria-hidden="true">{item.answer ? "✅ " : "✖️ "}</span>
+                    <InlineIcon name={item.answer ? "check" : "cross"} className={item.answer ? "text-crayon-green" : "text-crayon-red"} />
                     {(item.answer ? hunt.yes : hunt.no).replace("{mot}", item.word)}
                   </span>
                 )}

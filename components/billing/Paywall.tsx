@@ -3,6 +3,7 @@ import { Link } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 import type { Access } from "@/lib/billing/access";
 import { localizedPath } from "@/lib/i18n/routes";
+import { InlineIcon } from "@/components/UiIcon";
 
 // Shown in place of Pro content (a premium game, the rest of a premium
 // story, a whole-bundle download) to visitors without Pro.
@@ -25,7 +26,7 @@ export default async function Paywall({
       className="mt-8 rounded-block border-2 border-crayon-purple/40 bg-crayon-purple/5 p-6 text-center"
     >
       <h2 id="paywall-heading" className="font-display font-bold text-xl">
-        <span aria-hidden="true">🔒 </span>
+        <InlineIcon name="lock" />
         {t("title")}
       </h2>
       <p className="mt-2 text-chalkboard/80 max-w-xl mx-auto">{access.suspended ? t("suspended") : t(kind)}</p>

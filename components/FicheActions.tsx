@@ -1,5 +1,6 @@
 import ListenButton from "@/components/ListenButton";
 import { getFiche } from "@/lib/fiches-fr";
+import { InlineIcon } from "@/components/UiIcon";
 
 const link =
   "rounded-block text-white px-6 py-3 font-bold shadow-block hover:shadow-blockHover transition";
@@ -13,13 +14,16 @@ export default function FicheActions({ slug, spoken }: { slug: string; spoken: s
   return (
     <div className="mt-6 flex flex-wrap gap-4">
       <ListenButton text={spoken} className="rounded-block bg-crayon-blue text-white px-6 py-3 font-bold">
-        🔊 Écouter
+        <InlineIcon name="listen" />
+        Écouter
       </ListenButton>
       <a href={trace.pdf} download={`fiche-lettre-${slug}.pdf`} className={`${link} bg-crayon-green`}>
-        ⬇️ Fiche de tracé (PDF)
+        <InlineIcon name="download" />
+        Fiche de tracé (PDF)
       </a>
       <a href={cursive.pdf} download={`fiche-cursive-lettre-${slug}.pdf`} className={`${link} bg-crayon-purple`}>
-        ⬇️ Fiche en cursive (PDF)
+        <InlineIcon name="download" />
+        Fiche en cursive (PDF)
       </a>
     </div>
   );

@@ -189,7 +189,7 @@ d: {
     slug: "j", order: 10, uppercase: "J", lowercase: "j",
     phonicsSound: "J sound", ipa: "/dʒ/",
     exampleWords: [
-      { word: "Jelly", imageAlt: "A jar of jelly" },
+      { word: "Jelly", imageAlt: "A pink jellyfish" },
       { word: "Jacket", imageAlt: "A blue jacket" },
       { word: "Jar", imageAlt: "A glass jar" },
       { word: "Juice", imageAlt: "A glass of juice" },
@@ -287,7 +287,7 @@ d: {
     slug: "q", order: 17, uppercase: "Q", lowercase: "q",
     phonicsSound: "Qu sound", ipa: "/kw/",
     exampleWords: [
-      { word: "Queen", imageAlt: "A crowned queen" },
+      { word: "Queen", imageAlt: "A queen's golden crown" },
       { word: "Quilt", imageAlt: "A patterned quilt" },
       { word: "Question", imageAlt: "A question mark" },
       { word: "Quail", imageAlt: "A small quail bird" },

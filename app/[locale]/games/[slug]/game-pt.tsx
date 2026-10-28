@@ -9,6 +9,7 @@ import BataPalmas from "@/components/jogos-pt/BataPalmas";
 import { absoluteUrl, alternatesFor } from "@/lib/i18n/routes";
 import { buildBreadcrumbJsonLd } from "@/lib/json-ld";
 import { getPortugueseGame, portugueseGames } from "@/lib/jogos-pt";
+import UiIcon from "@/components/UiIcon";
 
 export function gameMetadataPt(slug: string): Metadata {
   const g = getPortugueseGame(slug);
@@ -73,7 +74,7 @@ export default function GamePt({ slug }: { slug: string }) {
       </nav>
 
       <h1 className="mt-4 text-4xl font-extrabold">
-        <span aria-hidden="true">{g.emoji} </span>
+        <UiIcon name={g.icon} className="mr-2 inline-block h-9 w-9 align-[-0.15em] text-crayon-purple" />
         {g.title}
       </h1>
       <p className="mt-2 text-chalkboard/70 max-w-2xl">{g.description}</p>
@@ -107,7 +108,7 @@ export default function GamePt({ slug }: { slug: string }) {
                 href={{ pathname: "/games/[slug]", params: { slug: o.slug } }}
                 className="inline-block rounded-block border border-chalkboard/15 px-4 py-2 text-sm font-display font-bold hover:border-crayon-blue transition-colors"
               >
-                <span aria-hidden="true">{o.emoji} </span>
+                <UiIcon name={o.icon} className="mr-1.5 inline-block h-4 w-4 align-[-0.15em] text-crayon-purple" />
                 {o.title}
               </Link>
             </li>

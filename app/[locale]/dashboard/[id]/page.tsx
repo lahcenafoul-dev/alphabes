@@ -13,6 +13,7 @@ import { initLocale } from "@/lib/i18n/server";
 import ClientMessages from "@/components/ClientMessages";
 import ChildActions from "./child-actions";
 import { withSocialMetadata } from "@/lib/social-metadata";
+import { InlineIcon, type UiIconName } from "@/components/UiIcon";
 
 type Props = { params: Promise<{ locale: string; id: string }> };
 
@@ -51,10 +52,10 @@ export default async function ChildDashboardPage(props: Props) {
   if (!child || child.parent.email !== email) notFound();
 
   const childLocale = fromDbLocale(child.language);
-  const childLinks: { pathname: AppPathname; label: "startAlphabet" | "games" | "storyTime"; color: string }[] = [
+  const childLinks: { pathname: AppPathname; label: "startAlphabet" | "games" | "storyTime"; color: string; icon?: UiIconName }[] = [
     { pathname: "/alphabet", label: "startAlphabet", color: "bg-crayon-green" },
-    { pathname: "/games", label: "games", color: "bg-crayon-purple" },
-    { pathname: "/stories", label: "storyTime", color: "bg-crayon-blue" },
+    { pathname: "/games", label: "games", color: "bg-crayon-purple", icon: "games" },
+    { pathname: "/stories", label: "storyTime", color: "bg-crayon-blue", icon: "stories" },
   ];
 
   const totalCompleted = child.progress.length;
@@ -89,6 +90,7 @@ export default async function ChildDashboardPage(props: Props) {
               hrefLang={childLocale === locale ? undefined : childLocale}
               className={`inline-block rounded-block ${l.color} text-white px-6 py-3 font-display font-bold`}
             >
+              {l.icon && <InlineIcon name={l.icon} />}
               {t(l.label)}
             </NextLink>
           ))}

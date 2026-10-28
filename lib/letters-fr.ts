@@ -9,7 +9,8 @@ export type FrenchWord = {
   word: string;
   /** With its article, as a child would say it ("un avion"). */
   withArticle: string;
-  emoji: string;
+  /** Its picture (components/WordIllustration.tsx). */
+  picture: string;
 };
 
 export type FrenchLetter = {
@@ -55,8 +56,8 @@ export const frenchLetters: FrenchLetter[] = [
     soundSpoken: "a. Comme dans avion, abeille.",
     sound: "Le A fait le son [a], comme au début d'avion et d'abeille. C'est l'un des premiers sons que les enfants entendent et répètent, dans papa ou dans leur prénom.",
     words: [
-      { word: "Avion", withArticle: "un avion", emoji: "✈️" },
-      { word: "Abeille", withArticle: "une abeille", emoji: "🐝" },
+      { word: "Avion", withArticle: "un avion", picture: "airplane" },
+      { word: "Abeille", withArticle: "une abeille", picture: "bee" },
     ],
     tip: "Le A est souvent la première lettre que l'enfant reconnaît, parce qu'elle ouvre l'alphabet et se trouve dans beaucoup de prénoms. Cherchez ensemble les A sur les paquets, les affiches et les couvertures de livres.",
     faq: {
@@ -76,8 +77,8 @@ export const frenchLetters: FrenchLetter[] = [
     soundSpoken: "ba, bo, bi. Comme dans ballon, banane.",
     sound: "Le B fait le son [b] : on serre les lèvres, puis on les ouvre d'un coup, comme dans ballon et banane.",
     words: [
-      { word: "Ballon", withArticle: "un ballon", emoji: "🎈" },
-      { word: "Banane", withArticle: "une banane", emoji: "🍌" },
+      { word: "Ballon", withArticle: "un ballon", picture: "balloon" },
+      { word: "Banane", withArticle: "une banane", picture: "banana" },
     ],
     tip: "Les petits confondent souvent b et d, c'est normal jusqu'à 7 ans environ. Tracez-les en cursive : le b commence par une grande boucle vers le haut, le d par un rond. Ce geste différent aide à les distinguer.",
     faq: {
@@ -97,8 +98,8 @@ export const frenchLetters: FrenchLetter[] = [
     soundSpoken: "ca, co, cu. Comme dans canard. ce, ci. Comme dans citron.",
     sound: "Le C a deux sons. Devant a, o et u, il fait [k], comme dans canard (ca, co, cu). Devant e, i et y, il fait [s], comme dans citron (ce, ci).",
     words: [
-      { word: "Canard", withArticle: "un canard", emoji: "🦆" },
-      { word: "Citron", withArticle: "un citron", emoji: "🍋" },
+      { word: "Canard", withArticle: "un canard", picture: "duck" },
+      { word: "Citron", withArticle: "un citron", picture: "lemon" },
     ],
     tip: "Inutile de tout expliquer d'un coup. Commencez par le son [k] de canard, puis présentez citron comme la « surprise » du C. La cédille (ç) viendra ensuite.",
     faq: {
@@ -118,8 +119,8 @@ export const frenchLetters: FrenchLetter[] = [
     soundSpoken: "da, do, di. Comme dans dauphin, dinosaure.",
     sound: "Le D fait le son [d], comme dans dauphin et dinosaure : le bout de la langue touche le haut, juste derrière les dents.",
     words: [
-      { word: "Dauphin", withArticle: "un dauphin", emoji: "🐬" },
-      { word: "Dinosaure", withArticle: "un dinosaure", emoji: "🦕" },
+      { word: "Dauphin", withArticle: "un dauphin", picture: "dolphin" },
+      { word: "Dinosaure", withArticle: "un dinosaure", picture: "dinosaur" },
     ],
     tip: "Pour ne pas confondre d et b, tracez le d en commençant par le rond, puis montez le grand trait. Le b, lui, commence par le trait.",
     faq: {
@@ -139,8 +140,8 @@ export const frenchLetters: FrenchLetter[] = [
     soundSpoken: "e. Comme dans petit. è. Comme dans escargot, elfe.",
     sound: "Le nom de la lettre E se dit [ə], comme dans petit ou cheval. Mais escargot et elfe commencent par le son [ɛ] (è) : devant deux consonnes, le E se prononce souvent è, même sans accent.",
     words: [
-      { word: "Escargot", withArticle: "un escargot", emoji: "🐌" },
-      { word: "Elfe", withArticle: "un elfe", emoji: "🧝" },
+      { word: "Escargot", withArticle: "un escargot", picture: "snail" },
+      { word: "Elfe", withArticle: "un elfe", picture: "elf" },
     ],
     tip: "Escargot et elfe ne commencent pas par le son du nom de la lettre, mais par è [ɛ]. C'est normal : devant deux consonnes (es-car-got, el-fe), le E se prononce è. Pour entendre le son [ə] du nom de la lettre, pensez à petit, cheval ou chemin.",
     faq: {
@@ -160,8 +161,8 @@ export const frenchLetters: FrenchLetter[] = [
     soundSpoken: "fa, fo, fi. Comme dans fraise, fleur.",
     sound: "Le F fait le son [f] : un souffle entre les dents du haut et la lèvre du bas, comme dans fraise et fleur.",
     words: [
-      { word: "Fraise", withArticle: "une fraise", emoji: "🍓" },
-      { word: "Fleur", withArticle: "une fleur", emoji: "🌸" },
+      { word: "Fraise", withArticle: "une fraise", picture: "strawberry" },
+      { word: "Fleur", withArticle: "une fleur", picture: "flower" },
     ],
     tip: "Le [f] est un son qu'on peut tenir longtemps : ffffff. Jouez à souffler comme le vent pour le faire durer, puis ajoutez une voyelle : fa, fo, fi.",
     faq: {
@@ -181,8 +182,8 @@ export const frenchLetters: FrenchLetter[] = [
     soundSpoken: "ga, go, gu. Comme dans gâteau. ge, gi. Comme dans girafe.",
     sound: "Comme le C, le G a deux sons. Devant a, o et u, il fait [g], comme dans gâteau (ga, go, gu). Devant e, i et y, il fait [ʒ], comme dans girafe (ge, gi).",
     words: [
-      { word: "Gâteau", withArticle: "un gâteau", emoji: "🎂" },
-      { word: "Girafe", withArticle: "une girafe", emoji: "🦒" },
+      { word: "Gâteau", withArticle: "un gâteau", picture: "cake" },
+      { word: "Girafe", withArticle: "une girafe", picture: "giraffe" },
     ],
     tip: "Montrez d'abord le G dur de gâteau. Girafe arrive ensuite, comme le deuxième son du G : c'est le même son que le J de jouet.",
     faq: {
@@ -202,8 +203,8 @@ export const frenchLetters: FrenchLetter[] = [
     soundSpoken: "Le H ne fait pas de bruit. Hibou. Hérisson.",
     sound: "Le H ne fait aucun son : dans hibou et hérisson, on entend directement la voyelle qui suit. C'est une lettre muette.",
     words: [
-      { word: "Hibou", withArticle: "un hibou", emoji: "🦉" },
-      { word: "Hérisson", withArticle: "un hérisson", emoji: "🦔" },
+      { word: "Hibou", withArticle: "un hibou", picture: "owl" },
+      { word: "Hérisson", withArticle: "un hérisson", picture: "hedgehog" },
     ],
     tip: "On dit « le hibou » et « le hérisson », pas « l'hibou » : ces mots commencent par un H dit aspiré, qui empêche la liaison. Avec d'autres mots, comme l'hiver ou l'herbe, on fait l'élision.",
     faq: {
@@ -222,8 +223,8 @@ export const frenchLetters: FrenchLetter[] = [
     soundSpoken: "i. Comme dans iguane, île.",
     sound: "Le I fait le son [i], comme dans iguane et île. On sourit en le disant !",
     words: [
-      { word: "Iguane", withArticle: "un iguane", emoji: "🦎" },
-      { word: "Île", withArticle: "une île", emoji: "🏝️" },
+      { word: "Iguane", withArticle: "un iguane", picture: "lizard" },
+      { word: "Île", withArticle: "une île", picture: "island" },
     ],
     tip: "N'oubliez pas le point du i minuscule : on le pose à la fin, une fois la lettre tracée. Dans île, le I porte un accent circonflexe qui ne change pas le son.",
     faq: {
@@ -243,8 +244,8 @@ export const frenchLetters: FrenchLetter[] = [
     soundSpoken: "ja, jo, ju. Comme dans jus, jouet.",
     sound: "Le J fait le son [ʒ], comme dans jus et jouet. C'est le même son que le G de girafe.",
     words: [
-      { word: "Jus", withArticle: "un jus", emoji: "🧃" },
-      { word: "Jouet", withArticle: "un jouet", emoji: "🧸" },
+      { word: "Jus", withArticle: "un jus", picture: "juice" },
+      { word: "Jouet", withArticle: "un jouet", picture: "teddy-bear" },
     ],
     tip: "Faites durer le son : jjjjj, comme un moteur qui ronronne. Avec la même bouche mais sans faire vibrer la gorge, on obtient le son [ʃ] de chat.",
     faq: {
@@ -264,8 +265,8 @@ export const frenchLetters: FrenchLetter[] = [
     soundSpoken: "ka, ko, ki. Comme dans koala, kangourou.",
     sound: "Le K fait le son [k], comme dans koala et kangourou. C'est le même son que le C de canard.",
     words: [
-      { word: "Koala", withArticle: "un koala", emoji: "🐨" },
-      { word: "Kangourou", withArticle: "un kangourou", emoji: "🦘" },
+      { word: "Koala", withArticle: "un koala", picture: "koala" },
+      { word: "Kangourou", withArticle: "un kangourou", picture: "kangaroo" },
     ],
     tip: "Le K est rare en français : on le trouve surtout dans des mots venus d'autres langues (kiwi, koala, kimono). Le son [k] s'écrit bien plus souvent avec C ou QU.",
     faq: {
@@ -285,8 +286,8 @@ export const frenchLetters: FrenchLetter[] = [
     soundSpoken: "la, lo, li. Comme dans lion, lune.",
     sound: "Le L fait le son [l] : le bout de la langue touche le haut, derrière les dents, comme dans lion et lune.",
     words: [
-      { word: "Lion", withArticle: "un lion", emoji: "🦁" },
-      { word: "Lune", withArticle: "la lune", emoji: "🌙" },
+      { word: "Lion", withArticle: "un lion", picture: "lion" },
+      { word: "Lune", withArticle: "la lune", picture: "moon" },
     ],
     tip: "Le L se prononce facilement et se tient longtemps : llll. C'est souvent avec lui que l'enfant lit ses premières syllabes : la, lo, li, lu.",
     faq: {
@@ -305,8 +306,8 @@ export const frenchLetters: FrenchLetter[] = [
     soundSpoken: "ma, mo, mi. Comme dans moto, maison.",
     sound: "Le M fait le son [m] : on ferme la bouche et on fait vibrer, comme dans moto et maison.",
     words: [
-      { word: "Moto", withArticle: "une moto", emoji: "🏍️" },
-      { word: "Maison", withArticle: "une maison", emoji: "🏠" },
+      { word: "Moto", withArticle: "une moto", picture: "motorbike" },
+      { word: "Maison", withArticle: "une maison", picture: "house" },
     ],
     tip: "Mmmm, c'est bon ! Le [m] est souvent le premier son des bébés, dans « maman ». Profitez-en pour lire ensemble ma, mi, mo.",
     faq: {
@@ -326,8 +327,8 @@ export const frenchLetters: FrenchLetter[] = [
     soundSpoken: "na, no, ni. Comme dans nuage, nid.",
     sound: "Le N fait le son [n], comme dans nuage et nid : la langue touche le haut, et l'air passe par le nez.",
     words: [
-      { word: "Nuage", withArticle: "un nuage", emoji: "☁️" },
-      { word: "Nid", withArticle: "un nid", emoji: "🪺" },
+      { word: "Nuage", withArticle: "un nuage", picture: "cloud" },
+      { word: "Nid", withArticle: "un nid", picture: "nest" },
     ],
     tip: "Après une voyelle, le N forme parfois un nouveau son : on (ballon), an (maman), in (lapin). On ne l'entend alors plus comme [n]. Ces sons viennent au CP.",
     faq: {
@@ -347,8 +348,8 @@ export const frenchLetters: FrenchLetter[] = [
     soundSpoken: "o. Comme dans olive, orange.",
     sound: "Le O fait le son [o], comme dans olive et orange. La bouche fait un rond, comme la lettre !",
     words: [
-      { word: "Olive", withArticle: "une olive", emoji: "🫒" },
-      { word: "Orange", withArticle: "une orange", emoji: "🍊" },
+      { word: "Olive", withArticle: "une olive", picture: "olive" },
+      { word: "Orange", withArticle: "une orange", picture: "orange" },
     ],
     tip: "Montrez que la bouche prend la forme de la lettre. Le o se trace en tournant vers la gauche, en partant du haut, comme le a et le d.",
     faq: {
@@ -368,8 +369,8 @@ export const frenchLetters: FrenchLetter[] = [
     soundSpoken: "pa, po, pi. Comme dans pomme, papillon.",
     sound: "Le P fait le son [p] : on serre les lèvres, puis on souffle d'un coup, comme dans pomme et papillon.",
     words: [
-      { word: "Pomme", withArticle: "une pomme", emoji: "🍎" },
-      { word: "Papillon", withArticle: "un papillon", emoji: "🦋" },
+      { word: "Pomme", withArticle: "une pomme", picture: "apple" },
+      { word: "Papillon", withArticle: "un papillon", picture: "butterfly" },
     ],
     tip: "Tenez un mouchoir devant la bouche de l'enfant : avec le [p], il bouge ! Avec le [b], presque pas. Un jeu simple pour sentir la différence.",
     faq: {
@@ -389,8 +390,8 @@ export const frenchLetters: FrenchLetter[] = [
     soundSpoken: "qua, quo, qui. Comme dans quatre, quille.",
     sound: "Le Q fait le son [k], comme dans quatre et quille. En français, il est presque toujours suivi d'un U : « qu » se lit [k].",
     words: [
-      { word: "Quatre", withArticle: "quatre", emoji: "4️⃣" },
-      { word: "Quille", withArticle: "une quille", emoji: "🎳" },
+      { word: "Quatre", withArticle: "quatre", picture: "number-4" },
+      { word: "Quille", withArticle: "une quille", picture: "bowling" },
     ],
     tip: "Apprenez « qu » comme un tout : le Q et le U vont ensemble et font [k]. Dans quatre et quille, le U ne se prononce pas.",
     faq: {
@@ -410,8 +411,8 @@ export const frenchLetters: FrenchLetter[] = [
     soundSpoken: "ra, ro, ri. Comme dans robot, renard.",
     sound: "Le R fait le son [ʁ], qui se fait au fond de la gorge, comme dans robot et renard.",
     words: [
-      { word: "Robot", withArticle: "un robot", emoji: "🤖" },
-      { word: "Renard", withArticle: "un renard", emoji: "🦊" },
+      { word: "Robot", withArticle: "un robot", picture: "robot" },
+      { word: "Renard", withArticle: "un renard", picture: "fox" },
     ],
     tip: "Le R français est difficile pour certains enfants jusqu'à 5 ou 6 ans. Faites-le gronder comme un lion ou ronronner comme un chat, sans insister s'il ne vient pas encore.",
     faq: {
@@ -430,8 +431,8 @@ export const frenchLetters: FrenchLetter[] = [
     soundSpoken: "sa, so, si. Comme dans soleil, serpent.",
     sound: "Le S fait le son [s], comme dans soleil et serpent. Le serpent siffle : ssssss ! Entre deux voyelles, il fait [z], comme dans une rose.",
     words: [
-      { word: "Soleil", withArticle: "le soleil", emoji: "☀️" },
-      { word: "Serpent", withArticle: "un serpent", emoji: "🐍" },
+      { word: "Soleil", withArticle: "le soleil", picture: "sun" },
+      { word: "Serpent", withArticle: "un serpent", picture: "snake" },
     ],
     tip: "Entre deux voyelles, le S se prononce [z] : une rose, une maison. Pour garder le son [s], on double le S : un poisson (et non un poison !).",
     faq: {
@@ -451,8 +452,8 @@ export const frenchLetters: FrenchLetter[] = [
     soundSpoken: "ta, to, ti. Comme dans tortue, tomate.",
     sound: "Le T fait le son [t] : la langue tape derrière les dents du haut, comme dans tortue et tomate.",
     words: [
-      { word: "Tortue", withArticle: "une tortue", emoji: "🐢" },
-      { word: "Tomate", withArticle: "une tomate", emoji: "🍅" },
+      { word: "Tortue", withArticle: "une tortue", picture: "turtle" },
+      { word: "Tomate", withArticle: "une tomate", picture: "tomato" },
     ],
     tip: "Le T se trace en deux gestes : le grand trait qui descend, puis la barre. En cursive, la barre se pose à la fin du mot, comme le point du i.",
     faq: {
@@ -472,12 +473,12 @@ export const frenchLetters: FrenchLetter[] = [
     soundSpoken: "u. Comme dans usine, univers, lune, tortue.",
     sound: "Le U fait le son [y], comme dans usine et univers. Pour le dire, on avance les lèvres en rond, comme pour siffler, et on dit « i ».",
     words: [
-      { word: "Usine", withArticle: "une usine", emoji: "🏭" },
-      { word: "Univers", withArticle: "l'univers", emoji: "🌌" },
+      { word: "Usine", withArticle: "une usine", picture: "factory" },
+      { word: "Univers", withArticle: "l'univers", picture: "galaxy" },
     ],
     wordsInside: [
-      { word: "Lune", withArticle: "la lune", emoji: "🌙" },
-      { word: "Tortue", withArticle: "une tortue", emoji: "🐢" },
+      { word: "Lune", withArticle: "la lune", picture: "moon" },
+      { word: "Tortue", withArticle: "une tortue", picture: "turtle" },
     ],
     tip: "Peu de mots d'enfant commencent par U, mais on l'entend partout au milieu des mots : la lune, une tortue, une jupe. Faites-le chercher dans les mots de tous les jours.",
     faq: {
@@ -497,8 +498,8 @@ export const frenchLetters: FrenchLetter[] = [
     soundSpoken: "va, vo, vi. Comme dans vache, vélo.",
     sound: "Le V fait le son [v], comme dans vache et vélo : les dents du haut touchent la lèvre du bas, et ça vibre.",
     words: [
-      { word: "Vache", withArticle: "une vache", emoji: "🐄" },
-      { word: "Vélo", withArticle: "un vélo", emoji: "🚲" },
+      { word: "Vache", withArticle: "une vache", picture: "cow" },
+      { word: "Vélo", withArticle: "un vélo", picture: "bicycle" },
     ],
     tip: "V et F se font au même endroit. Avec le V, la gorge vibre ; avec le F, non. Posez la main sur la gorge pour sentir la différence.",
     faq: {
@@ -518,8 +519,8 @@ export const frenchLetters: FrenchLetter[] = [
     soundSpoken: "Wagon, avec le son v. Kiwi, avec le son w.",
     sound: "Le W est rare en français. Il fait [v] dans wagon et [w] dans kiwi, comme dans beaucoup de mots venus de l'anglais.",
     words: [
-      { word: "Wagon", withArticle: "un wagon", emoji: "🚃" },
-      { word: "Kiwi", withArticle: "un kiwi", emoji: "🥝" },
+      { word: "Wagon", withArticle: "un wagon", picture: "wagon" },
+      { word: "Kiwi", withArticle: "un kiwi", picture: "kiwi" },
     ],
     tip: "Pas besoin d'y passer beaucoup de temps : le W se trouve surtout dans des mots empruntés (wagon, kiwi, week-end). Son nom, double vé, amuse souvent les enfants.",
     faq: {
@@ -539,8 +540,8 @@ export const frenchLetters: FrenchLetter[] = [
     soundSpoken: "Xylophone. Taxi.",
     sound: "Le X fait le plus souvent le son [ks], comme dans taxi ou xylophone. On le rencontre rarement au début d'un mot.",
     words: [
-      { word: "Xylophone", withArticle: "un xylophone", emoji: "🎼" },
-      { word: "Taxi", withArticle: "un taxi", emoji: "🚕" },
+      { word: "Xylophone", withArticle: "un xylophone", picture: "music-score" },
+      { word: "Taxi", withArticle: "un taxi", picture: "taxi" },
     ],
     tip: "Le X est plus souvent au milieu ou à la fin des mots qu'au début : taxi, boxe, et il est muet à la fin de deux, des jeux ou des chevaux. Montrez-le surtout dans taxi.",
     faq: {
@@ -559,8 +560,8 @@ export const frenchLetters: FrenchLetter[] = [
     soundSpoken: "yo, yo. Comme dans yoyo, yeux.",
     sound: "Au début d'un mot, comme dans yoyo et yeux, le Y fait le son [j], celui qu'on entend aussi dans une paille. Au milieu d'un mot, il se prononce souvent [i], comme dans un cygne ou un stylo.",
     words: [
-      { word: "Yoyo", withArticle: "un yoyo", emoji: "🪀" },
-      { word: "Yeux", withArticle: "les yeux", emoji: "👀" },
+      { word: "Yoyo", withArticle: "un yoyo", picture: "yo-yo" },
+      { word: "Yeux", withArticle: "les yeux", picture: "eyes" },
     ],
     tip: "Pour l'enfant, il suffit de retenir que le Y ressemble à un I avec deux bras, et qu'il se lit souvent comme un i.",
     faq: {
@@ -580,8 +581,8 @@ export const frenchLetters: FrenchLetter[] = [
     soundSpoken: "za, zo, zi. Comme dans zèbre, zéro.",
     sound: "Le Z fait le son [z], comme dans zèbre et zéro. C'est le bruit de l'abeille : zzzzz !",
     words: [
-      { word: "Zèbre", withArticle: "un zèbre", emoji: "🦓" },
-      { word: "Zéro", withArticle: "zéro", emoji: "0️⃣" },
+      { word: "Zèbre", withArticle: "un zèbre", picture: "zebra" },
+      { word: "Zéro", withArticle: "zéro", picture: "number-0" },
     ],
     tip: "Le son [z] s'écrit aussi avec un S entre deux voyelles (une rose, une maison). Le Z, lui, se reconnaît facilement grâce à son zigzag.",
     faq: {
@@ -601,8 +602,8 @@ export const frenchLetters: FrenchLetter[] = [
     soundSpoken: "é. Comme dans éléphant, étoile.",
     sound: "Le É fait le son [e], comme dans éléphant et étoile. L'accent aigu monte vers la droite.",
     words: [
-      { word: "Éléphant", withArticle: "un éléphant", emoji: "🐘" },
-      { word: "Étoile", withArticle: "une étoile", emoji: "⭐" },
+      { word: "Éléphant", withArticle: "un éléphant", picture: "elephant" },
+      { word: "Étoile", withArticle: "une étoile", picture: "star" },
     ],
     tip: "Le son [e] s'écrit aussi -er et -ez à la fin des mots (manger, le nez). Mais au début des mots, é est le plus fréquent : éléphant, école, étoile.",
     faq: {
@@ -622,8 +623,8 @@ export const frenchLetters: FrenchLetter[] = [
     soundSpoken: "è. Comme dans chèvre, zèbre.",
     sound: "Le È fait le son [ɛ], comme dans chèvre et zèbre. L'accent grave descend vers la droite.",
     words: [
-      { word: "Chèvre", withArticle: "une chèvre", emoji: "🐐" },
-      { word: "Zèbre", withArticle: "un zèbre", emoji: "🦓" },
+      { word: "Chèvre", withArticle: "une chèvre", picture: "goat" },
+      { word: "Zèbre", withArticle: "un zèbre", picture: "zebra" },
     ],
     tip: "Presque aucun mot ne commence par è : on le trouve au milieu des mots (une chèvre, une flèche, la mère). Le même son s'écrit aussi ê et ai : la forêt, une fraise.",
     faq: {
@@ -643,8 +644,8 @@ export const frenchLetters: FrenchLetter[] = [
     soundSpoken: "ê. Comme dans fête, forêt.",
     sound: "Le Ê fait le son [ɛ], comme le è, dans fête et forêt. L'accent circonflexe ressemble à un petit chapeau.",
     words: [
-      { word: "Fête", withArticle: "une fête", emoji: "🎉" },
-      { word: "Forêt", withArticle: "une forêt", emoji: "🌲" },
+      { word: "Fête", withArticle: "une fête", picture: "party-popper" },
+      { word: "Forêt", withArticle: "une forêt", picture: "fir-tree" },
     ],
     tip: "L'accent circonflexe remplace souvent un S qui a disparu : forêt et forestier, fête et festival. Une petite histoire que les grands enfants adorent.",
     faq: {
@@ -664,8 +665,8 @@ export const frenchLetters: FrenchLetter[] = [
     soundSpoken: "ça, ço, çu. Comme dans garçon, glaçon.",
     sound: "Le Ç fait le son [s], comme dans garçon et glaçon. La cédille, la petite queue sous le C, lui dit de faire [s] devant a, o et u.",
     words: [
-      { word: "Garçon", withArticle: "un garçon", emoji: "👦" },
-      { word: "Glaçon", withArticle: "un glaçon", emoji: "🧊" },
+      { word: "Garçon", withArticle: "un garçon", picture: "boy" },
+      { word: "Glaçon", withArticle: "un glaçon", picture: "ice" },
     ],
     tip: "Devant e et i, le C fait déjà [s] tout seul (cerise, citron). La cédille ne sert donc que devant a, o et u : ça, garçon, reçu.",
     faq: {
@@ -699,7 +700,7 @@ export function frenchNeighbors(slug: string): { prev: FrenchLetter; next: Frenc
 
 // Accents that don't get a letter page of their own: they're explained on
 // /fr/alphabet/accents. The examples are said aloud by the page.
-export type AccentExample = { text: string; emoji: string };
+export type AccentExample = { text: string; picture: string };
 export type AccentGroup = {
   id: string;
   title: string;
@@ -714,14 +715,14 @@ export const otherAccents: AccentGroup[] = [
     title: "à, l'accent grave sur le a",
     marks: "à",
     explanation: "Il ne change pas le son : on entend toujours [a]. Il sert à distinguer « à » (je vais à la plage) de « a », le verbe avoir (il a un vélo).",
-    examples: [{ text: "à la plage", emoji: "🏖️" }],
+    examples: [{ text: "à la plage", picture: "beach" }],
   },
   {
     id: "u-grave",
     title: "ù, l'accent grave sur le u",
     marks: "ù",
     explanation: "On ne le trouve que dans un seul mot : où. Il permet de distinguer « où » (où est le chat ?) de « ou » (du pain ou des pâtes). Le son ne change pas.",
-    examples: [{ text: "Où est le chat ?", emoji: "🐱" }],
+    examples: [{ text: "Où est le chat ?", picture: "cat" }],
   },
   {
     id: "circonflexe",
@@ -729,10 +730,10 @@ export const otherAccents: AccentGroup[] = [
     marks: "â î ô û",
     explanation: "Le petit chapeau remplace souvent un S qui a disparu (château vient de castel, île de isle). Sur a, i et u, il ne change presque pas le son. Sur le o, il donne un o fermé, comme dans hôpital.",
     examples: [
-      { text: "un château", emoji: "🏰" },
-      { text: "une île", emoji: "🏝️" },
-      { text: "un hôpital", emoji: "🏥" },
-      { text: "une bûche", emoji: "🪵" },
+      { text: "un château", picture: "castle" },
+      { text: "une île", picture: "island" },
+      { text: "un hôpital", picture: "hospital" },
+      { text: "une bûche", picture: "log" },
     ],
   },
   {
@@ -741,8 +742,8 @@ export const otherAccents: AccentGroup[] = [
     marks: "ë ï",
     explanation: "Les deux points disent de prononcer la voyelle toute seule, séparément de la précédente : No-ël, ma-ïs. Sans tréma, on lirait « mais ».",
     examples: [
-      { text: "Noël", emoji: "🎄" },
-      { text: "du maïs", emoji: "🌽" },
+      { text: "Noël", picture: "christmas-tree" },
+      { text: "du maïs", picture: "corn" },
     ],
   },
   {
@@ -751,8 +752,8 @@ export const otherAccents: AccentGroup[] = [
     marks: "œ",
     explanation: "Le o et le e sont collés. Ensemble, ils se prononcent comme « eu » : un cœur, un œuf, ma sœur.",
     examples: [
-      { text: "un cœur", emoji: "❤️" },
-      { text: "un œuf", emoji: "🥚" },
+      { text: "un cœur", picture: "heart" },
+      { text: "un œuf", picture: "egg" },
     ],
   },
 ];

@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { hasIllustration } from "@/components/illustrations";
 import { paramsExist } from "@/lib/i18n/known-params";
 import { alternatesFor, counterpartPath, isLocaleOnly, localizedPath, matchPath } from "@/lib/i18n/routes";
 import {
@@ -22,7 +23,7 @@ describe("French letter data", () => {
       expect(l.upper, l.slug).toBe(l.lower.toUpperCase());
       expect(l.words, l.slug).toHaveLength(2);
       for (const w of [...l.words, ...(l.wordsInside ?? [])]) {
-        expect(w.emoji, w.word).not.toBe("");
+        expect(hasIllustration(w.picture), w.word).toBe(true);
         expect(w.withArticle.toLowerCase(), w.word).toContain(w.word.toLowerCase());
       }
       expect(l.name && l.sound && l.tip && l.soundSpoken && l.faq.answer, l.slug).toBeTruthy();

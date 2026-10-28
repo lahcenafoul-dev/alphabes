@@ -3,6 +3,8 @@ import { Link } from "@/i18n/navigation";
 import ListenButton from "@/components/ListenButton";
 import { absoluteUrl, alternatesFor } from "@/lib/i18n/routes";
 import { spanishLetters } from "@/lib/letters-es";
+import WordIllustration from "@/components/WordIllustration";
+import { InlineIcon } from "@/components/UiIcon";
 
 const title = "Tarjetas del abecedario: palabras con dibujos para escuchar";
 const description =
@@ -64,10 +66,12 @@ export default function FlashcardsEs() {
                     ariaLabel={`${w.withArticle}, con la letra ${l.upper}. Escuchar.`}
                     className={`flex w-full flex-col items-center gap-1 rounded-block ${cardColors[i % cardColors.length]} p-4 shadow-block hover:shadow-blockHover transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-crayon-blue`}
                   >
-                    <span className="text-5xl" aria-hidden="true">{w.emoji}</span>
+                    <span aria-hidden="true">
+                      <WordIllustration word={w.word} picture={w.picture} className="mx-auto h-16 w-16" />
+                    </span>
                     <span className="mt-1 font-display text-xl font-bold">{w.word}</span>
                     <span className="text-sm text-chalkboard/70">{w.withArticle}</span>
-                    <span className="mt-1 text-xs font-bold text-crayon-blue" aria-hidden="true">🔊 Escuchar</span>
+                    <span className="mt-1 text-xs font-bold text-crayon-blue" aria-hidden="true"><InlineIcon name="listen" />Escuchar</span>
                   </ListenButton>
                 </li>
               ))}

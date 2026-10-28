@@ -1,6 +1,7 @@
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
+import { InlineIcon } from "@/components/UiIcon";
 
 // Stands in for a premium game on its static, indexable page. The game itself
 // is on the play page, which checks Pro on the server for every request
@@ -24,7 +25,8 @@ export default async function PremiumGameTeaser({ locale, slug }: { locale: Loca
           href={{ pathname: "/games/[slug]/play", params: { slug } }}
           className="rounded-block bg-crayon-purple text-white font-display font-bold px-6 py-3 shadow-block hover:shadow-blockHover transition"
         >
-          ▶ {t("play")}
+          <InlineIcon name="play" className="fill-current" />
+          {t("play")}
         </Link>
         <Link
           href="/pricing"

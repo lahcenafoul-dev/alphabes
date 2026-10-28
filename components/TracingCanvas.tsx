@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { InlineIcon } from "@/components/UiIcon";
 
 /**
  * School ruling drawn behind cursive: French Seyès lines (baseline, x-height
@@ -37,7 +38,7 @@ type Props = {
 };
 
 const DEFAULT_LABELS: Labels = {
-  clear: "🔄 Clear & Retry",
+  clear: "Clear & Retry",
   styleGroup: "Letter style",
   script: "Print",
   cursive: "Cursive",
@@ -222,6 +223,7 @@ export default function TracingCanvas({ letter = "", text, cursive, prints, labe
         onClick={reset}
         className="mt-3 rounded-block bg-crayon-red text-white px-4 py-2 font-bold text-sm"
       >
+        <InlineIcon name="retry" />
         {l.clear}
       </button>
     </div>

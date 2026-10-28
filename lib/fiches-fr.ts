@@ -66,7 +66,7 @@ export type FichePack = {
 
 // ---------------------------------------------------------------- content
 
-const w = (word: string, withArticle: string, emoji: string): FrenchWord => ({ word, withArticle, emoji });
+const w = (word: string, withArticle: string, picture: string): FrenchWord => ({ word, withArticle, picture });
 
 // In ./fiches-fr-words.ts, so the games can use them without bundling the whole catalogue.
 export { LETTER_IMAGES, CLOSE_KEYS, type LetterImages };
@@ -114,16 +114,16 @@ export const SHAPES: Shape[] = [
 
 export type Colour = { slug: string; name: string; hex: string; thing: FrenchWord };
 export const COLOURS: Colour[] = [
-  { slug: "rouge", name: "rouge", hex: "#E53935", thing: w("fraise", "la fraise", "🍓") },
-  { slug: "bleu", name: "bleu", hex: "#1E88E5", thing: w("baleine", "la baleine", "🐳") },
-  { slug: "jaune", name: "jaune", hex: "#FDD835", thing: w("soleil", "le soleil", "☀️") },
-  { slug: "vert", name: "vert", hex: "#43A047", thing: w("grenouille", "la grenouille", "🐸") },
-  { slug: "orange", name: "orange", hex: "#FB8C00", thing: w("carotte", "la carotte", "🥕") },
-  { slug: "violet", name: "violet", hex: "#8E24AA", thing: w("raisin", "le raisin", "🍇") },
-  { slug: "rose", name: "rose", hex: "#F48FB1", thing: w("cochon", "le cochon", "🐷") },
-  { slug: "marron", name: "marron", hex: "#795548", thing: w("ours", "l'ours", "🐻") },
-  { slug: "gris", name: "gris", hex: "#9E9E9E", thing: w("éléphant", "l'éléphant", "🐘") },
-  { slug: "noir", name: "noir", hex: "#212121", thing: w("chapeau", "le chapeau", "🎩") },
+  { slug: "rouge", name: "rouge", hex: "#E53935", thing: w("fraise", "la fraise", "strawberry") },
+  { slug: "bleu", name: "bleu", hex: "#1E88E5", thing: w("baleine", "la baleine", "whale") },
+  { slug: "jaune", name: "jaune", hex: "#FDD835", thing: w("soleil", "le soleil", "sun") },
+  { slug: "vert", name: "vert", hex: "#43A047", thing: w("grenouille", "la grenouille", "frog") },
+  { slug: "orange", name: "orange", hex: "#FB8C00", thing: w("carotte", "la carotte", "carrot") },
+  { slug: "violet", name: "violet", hex: "#8E24AA", thing: w("raisin", "le raisin", "grapes") },
+  { slug: "rose", name: "rose", hex: "#F48FB1", thing: w("cochon", "le cochon", "pig") },
+  { slug: "marron", name: "marron", hex: "#795548", thing: w("ours", "l'ours", "bear") },
+  { slug: "gris", name: "gris", hex: "#9E9E9E", thing: w("éléphant", "l'éléphant", "elephant") },
+  { slug: "noir", name: "noir", hex: "#212121", thing: w("chapeau", "le chapeau", "hat") },
 ];
 
 /** Mots-outils, four per sheet, with a sentence that uses them. */
@@ -137,19 +137,19 @@ export const MOTS_OUTILS_GROUPS: { words: string[]; sentence: string }[] = [
 
 /** Syllable sheets: consonant + vowels, then words cut into syllables ("vé|lo"). */
 export const SYLLABLE_SHEETS: { consonant: string; words: FrenchWord[] }[] = [
-  { consonant: "l", words: [w("lu|ne", "la lune", "🌙"), w("vé|lo", "un vélo", "🚲"), w("sa|la|de", "une salade", "🥗"), w("la|ma", "un lama", "🦙")] },
-  { consonant: "m", words: [w("mo|to", "une moto", "🏍️"), w("to|ma|te", "une tomate", "🍅"), w("pom|me", "une pomme", "🍎"), w("la|ma", "un lama", "🦙")] },
-  { consonant: "r", words: [w("ro|bot", "un robot", "🤖"), w("ro|be", "une robe", "👗"), w("pi|ra|te", "un pirate", "🏴‍☠️"), w("ca|rot|te", "une carotte", "🥕")] },
-  { consonant: "s", words: [w("sa|la|de", "une salade", "🥗"), w("so|da", "un soda", "🥤"), w("si|rè|ne", "une sirène", "🧜"), w("su|cet|te", "une sucette", "🍭")] },
-  { consonant: "f", words: [w("fée", "une fée", "🧚"), w("ca|fé", "un café", "☕"), w("gi|ra|fe", "une girafe", "🦒")] },
-  { consonant: "v", words: [w("vé|lo", "un vélo", "🚲"), w("va|li|se", "une valise", "🧳"), w("vi|pè|re", "une vipère", "🐍")] },
-  { consonant: "n", words: [w("ba|na|ne", "une banane", "🍌"), w("ca|na|pé", "un canapé", "🛋️"), w("a|na|nas", "un ananas", "🍍"), w("lu|ne", "la lune", "🌙")] },
-  { consonant: "p", words: [w("pi|ra|te", "un pirate", "🏴‍☠️"), w("pa|ta|te", "une patate", "🥔"), w("pi|a|no", "un piano", "🎹"), w("pom|me", "une pomme", "🍎")] },
-  { consonant: "t", words: [w("to|ma|te", "une tomate", "🍅"), w("tu|li|pe", "une tulipe", "🌷"), w("mo|to", "une moto", "🏍️"), w("tas|se", "une tasse", "☕")] },
-  { consonant: "d", words: [w("dé", "un dé", "🎲"), w("sa|la|de", "une salade", "🥗"), w("ju|do", "le judo", "🥋")] },
-  { consonant: "b", words: [w("ba|na|ne", "une banane", "🍌"), w("bé|bé", "un bébé", "👶"), w("ro|be", "une robe", "👗")] },
-  { consonant: "c", words: [w("ca|na|pé", "un canapé", "🛋️"), w("co|co", "une noix de coco", "🥥"), w("ca|deau", "un cadeau", "🎁")] },
-  { consonant: "j", words: [w("ju|do", "le judo", "🥋"), w("ju|pe", "une jupe", "👗"), w("jus", "du jus", "🧃")] },
+  { consonant: "l", words: [w("lu|ne", "la lune", "moon"), w("vé|lo", "un vélo", "bicycle"), w("sa|la|de", "une salade", "salad"), w("la|ma", "un lama", "llama")] },
+  { consonant: "m", words: [w("mo|to", "une moto", "motorbike"), w("to|ma|te", "une tomate", "tomato"), w("pom|me", "une pomme", "apple"), w("la|ma", "un lama", "llama")] },
+  { consonant: "r", words: [w("ro|bot", "un robot", "robot"), w("ro|be", "une robe", "dress"), w("pi|ra|te", "un pirate", "pirate-flag"), w("ca|rot|te", "une carotte", "carrot")] },
+  { consonant: "s", words: [w("sa|la|de", "une salade", "salad"), w("so|da", "un soda", "soda"), w("si|rè|ne", "une sirène", "mermaid"), w("su|cet|te", "une sucette", "lollipop")] },
+  { consonant: "f", words: [w("fée", "une fée", "fairy"), w("ca|fé", "un café", "cup"), w("gi|ra|fe", "une girafe", "giraffe")] },
+  { consonant: "v", words: [w("vé|lo", "un vélo", "bicycle"), w("va|li|se", "une valise", "suitcase"), w("vi|pè|re", "une vipère", "snake")] },
+  { consonant: "n", words: [w("ba|na|ne", "une banane", "banana"), w("ca|na|pé", "un canapé", "sofa"), w("a|na|nas", "un ananas", "pineapple"), w("lu|ne", "la lune", "moon")] },
+  { consonant: "p", words: [w("pi|ra|te", "un pirate", "pirate-flag"), w("pa|ta|te", "une patate", "potato"), w("pi|a|no", "un piano", "piano"), w("pom|me", "une pomme", "apple")] },
+  { consonant: "t", words: [w("to|ma|te", "une tomate", "tomato"), w("tu|li|pe", "une tulipe", "tulip"), w("mo|to", "une moto", "motorbike"), w("tas|se", "une tasse", "cup")] },
+  { consonant: "d", words: [w("dé", "un dé", "dice"), w("sa|la|de", "une salade", "salad"), w("ju|do", "le judo", "judo")] },
+  { consonant: "b", words: [w("ba|na|ne", "une banane", "banana"), w("bé|bé", "un bébé", "baby"), w("ro|be", "une robe", "dress")] },
+  { consonant: "c", words: [w("ca|na|pé", "un canapé", "sofa"), w("co|co", "une noix de coco", "coconut"), w("ca|deau", "un cadeau", "gift")] },
+  { consonant: "j", words: [w("ju|do", "le judo", "judo"), w("ju|pe", "une jupe", "dress"), w("jus", "du jus", "juice")] },
 ];
 export const SYLLABLE_VOWELS = ["a", "e", "i", "o", "u", "é"];
 

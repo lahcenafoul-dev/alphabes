@@ -1,5 +1,6 @@
 import { Link } from "@/i18n/navigation";
 import { THUMB_WIDTH, previewThumb } from "@/lib/preview-thumb";
+import { InlineIcon } from "@/components/UiIcon";
 
 // Building blocks of the French, Spanish and Portuguese worksheet pages
 // (/fr/fiches, /es/fichas, /pt/atividades). French is the default, so the
@@ -10,9 +11,9 @@ export type PrintableSheet = { slug: string; title: string; label: string; previ
 type SheetLocale = "fr" | "es" | "pt";
 
 const LABELS = {
-  fr: { preview: "Aperçu de la fiche :", print: "🖨️ Imprimer", download: "⬇️ Télécharger le PDF", pages: "pages" },
-  es: { preview: "Vista previa de la ficha:", print: "🖨️ Imprimir", download: "⬇️ Descargar el PDF", pages: "páginas" },
-  pt: { preview: "Prévia da atividade:", print: "🖨️ Imprimir", download: "⬇️ Baixar o PDF", pages: "páginas" },
+  fr: { preview: "Aperçu de la fiche :", print: "Imprimer", download: "Télécharger le PDF", pages: "pages" },
+  es: { preview: "Vista previa de la ficha:", print: "Imprimir", download: "Descargar el PDF", pages: "páginas" },
+  pt: { preview: "Prévia da atividade:", print: "Imprimir", download: "Baixar o PDF", pages: "páginas" },
 };
 
 /** Preview of a worksheet page: a small pre-rendered JPEG (scripts/fiches-fr, scripts/fichas-es, scripts/atividades-pt). */
@@ -90,9 +91,11 @@ export function PdfButtons({
   return (
     <div className="flex flex-wrap gap-4 print:hidden">
       <a href={pdf} target="_blank" rel="noopener" className={`${button} bg-crayon-blue`}>
+        <InlineIcon name="print" />
         {t.print}
       </a>
       <a href={pdf} download={fileName} className={`${button} bg-crayon-green`}>
+        <InlineIcon name="download" />
         {t.download}
         {pages && pages > 1 ? ` (${pages} ${t.pages})` : ""}
       </a>

@@ -1,10 +1,9 @@
 import { getAllLetterSlugs, getLetterContent } from "./letters-data";
-import { wordEmojis } from "./wordEmojis";
 
 export type LetterData = {
   letter: string;
+  /** Pictured by components/WordIllustration.tsx. */
   word: string;
-  emoji: string;
 };
 
 // A few letters showcase a different example word than letters-data.ts's
@@ -23,18 +22,9 @@ const preferredWord: Partial<Record<string, string>> = {
   y: "Yo-yo",
 };
 
-// wordEmojis.ts doesn't have (or has a different emoji for) these words.
-const emojiOverrides: Record<string, string> = {
-  "Ice cream": "🍦",
-  Queen: "👑",
-  Xylophone: "🎼",
-};
-
 export const alphabetData: LetterData[] = getAllLetterSlugs().map((slug) => {
-  const exampleWords = getLetterContent(slug)?.exampleWords.map((w) => w.word) ?? [];
-  const word = preferredWord[slug] ?? exampleWords.find((w) => wordEmojis[w]) ?? exampleWords[0] ?? slug.toUpperCase();
-  const emoji = emojiOverrides[word] ?? wordEmojis[word] ?? "";
-  return { letter: slug, word, emoji };
+  const word = preferredWord[slug] ?? getLetterContent(slug)?.exampleWords[0]?.word ?? slug.toUpperCase();
+  return { letter: slug, word };
 });
 
 export function getLetterData(letter: string) {

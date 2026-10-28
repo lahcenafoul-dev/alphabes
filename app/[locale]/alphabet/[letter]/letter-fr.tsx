@@ -14,6 +14,8 @@ import {
   type FrenchLetter,
   type FrenchWord,
 } from "@/lib/letters-fr";
+import WordIllustration from "@/components/WordIllustration";
+import { InlineIcon } from "@/components/UiIcon";
 
 /** "B", or "É (e accent aigu)" for a letter with an accent: used in titles. */
 function letterLabel(l: FrenchLetter): string {
@@ -40,24 +42,26 @@ const primaryButton =
 const secondaryButton =
   "inline-flex items-center gap-2 rounded-block border-2 border-chalkboard/20 bg-paper px-5 py-2.5 font-display font-bold hover:border-crayon-blue transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-crayon-blue";
 
+// Example word cards: pure white, so the cartoons (white background) sit on
+// them with no visible edge; a soft shadow around the card, nothing behind
+// the picture.
+const wordCard =
+  "flex flex-col items-center rounded-block border border-chalkboard/10 bg-white p-3 text-center shadow-[0_2px_12px_rgba(31,42,68,0.08)] sm:p-4";
+const wordPicture = "block h-auto w-full max-w-[9rem]";
+
 function WordCard({ w }: { w: FrenchWord }) {
   return (
-    <li className="rounded-block bg-paper border border-chalkboard/10 p-4 text-center shadow-block">
-      <div
-        className="mx-auto h-16 w-16 rounded-full bg-crayon-green/20 flex items-center justify-center text-4xl"
-        role="img"
-        aria-label={w.word}
-      >
-        {w.emoji}
-      </div>
-      <p className="mt-2 font-display font-bold text-lg">{w.word}</p>
-      <p className="text-sm text-chalkboard/60">{w.withArticle}</p>
+    <li className={wordCard}>
+      <WordIllustration word={w.word} picture={w.picture} className={wordPicture} />
+      <p className="mt-3 font-display text-lg font-bold leading-tight">{w.word}</p>
+      <p className="text-sm text-chalkboard/75">{w.withArticle}</p>
       <ListenButton
         text={w.withArticle}
         ariaLabel={`Écouter : ${w.withArticle}`}
-        className="mt-2 text-sm font-bold text-crayon-blue underline underline-offset-2"
+        className="mt-2 inline-flex items-center gap-1 text-sm font-bold text-[#1F6FB8] underline underline-offset-2"
       >
-        🔊 Écouter
+        <InlineIcon name="listen" />
+        Écouter
       </ListenButton>
     </li>
   );
@@ -121,10 +125,12 @@ export default function LetterFr({ letter }: { letter: string }) {
 
       <div className="mt-6 flex flex-wrap gap-3">
         <ListenButton text={l.nameSpoken} rate={0.7} className={primaryButton}>
-          🔊 Le nom de la lettre
+          <InlineIcon name="listen" />
+          Le nom de la lettre
         </ListenButton>
         <ListenButton text={l.soundSpoken} rate={0.75} className={secondaryButton}>
-          🔊 Le son
+          <InlineIcon name="listen" />
+          Le son
         </ListenButton>
       </div>
 
@@ -189,7 +195,7 @@ export default function LetterFr({ letter }: { letter: string }) {
             href={{ pathname: "/alphabet/[letter]/worksheet", params: { letter: l.slug } }}
             className="block rounded-block border border-chalkboard/10 p-4 shadow-block hover:border-crayon-blue hover:shadow-blockHover transition"
           >
-            <p className="font-display font-bold">✏️ Tracer la lettre {l.upper}</p>
+            <p className="font-display font-bold"><InlineIcon name="pencil" />Tracer la lettre {l.upper}</p>
             <p className="mt-1 text-sm text-chalkboard/70">
               À l&apos;écran, au doigt ou à la souris, en script ou en cursive. Fiche PDF à imprimer.
             </p>
@@ -198,7 +204,7 @@ export default function LetterFr({ letter }: { letter: string }) {
             href="/flashcards"
             className="block rounded-block border border-chalkboard/10 p-4 shadow-block hover:border-crayon-blue hover:shadow-blockHover transition"
           >
-            <p className="font-display font-bold">🖼️ L&apos;imagier de l&apos;alphabet</p>
+            <p className="font-display font-bold"><InlineIcon name="image" />L&apos;imagier de l&apos;alphabet</p>
             <p className="mt-1 text-sm text-chalkboard/70">
               Tous les mots de A à Z, en images, à écouter.
             </p>

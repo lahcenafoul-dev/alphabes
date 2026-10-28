@@ -64,7 +64,7 @@ export type FichaPack = {
 
 // ---------------------------------------------------------------- content
 
-const w = (word: string, withArticle: string, emoji: string): SpanishWord => ({ word, withArticle, emoji });
+const w = (word: string, withArticle: string, picture: string): SpanishWord => ({ word, withArticle, picture });
 
 // In ./fichas-es-words.ts, so the games can use them without bundling the whole catalogue.
 export { FIRST_SYLLABLE_WORDS, LOOK_ALIKES };
@@ -100,16 +100,16 @@ export type Colour = {
 /** "café (marrón)" for a colour with another regional name, else the name. */
 export const colourLabel = (c: Colour) => (c.alt ? `${c.name} (${c.alt})` : c.name);
 export const COLOURS: Colour[] = [
-  { slug: "rojo", name: "rojo", hex: "#E53935", thing: w("manzana", "la manzana", "🍎") },
-  { slug: "azul", name: "azul", hex: "#1E88E5", thing: w("ballena", "la ballena", "🐳") },
-  { slug: "amarillo", name: "amarillo", hex: "#FDD835", thing: w("sol", "el sol", "☀️") },
-  { slug: "verde", name: "verde", hex: "#43A047", thing: w("rana", "la rana", "🐸") },
-  { slug: "naranja", name: "naranja", hex: "#FB8C00", thing: w("zanahoria", "la zanahoria", "🥕") },
-  { slug: "morado", name: "morado", hex: "#8E24AA", thing: w("uvas", "las uvas", "🍇") },
-  { slug: "rosa", name: "rosa", hex: "#F48FB1", thing: w("flamenco", "el flamenco", "🦩") },
-  { slug: "cafe", name: "café", alt: "marrón", hex: "#795548", thing: w("oso", "el oso", "🐻") },
-  { slug: "gris", name: "gris", hex: "#9E9E9E", thing: w("elefante", "el elefante", "🐘") },
-  { slug: "negro", name: "negro", hex: "#212121", thing: w("sombrero", "el sombrero", "🎩") },
+  { slug: "rojo", name: "rojo", hex: "#E53935", thing: w("manzana", "la manzana", "apple") },
+  { slug: "azul", name: "azul", hex: "#1E88E5", thing: w("ballena", "la ballena", "whale") },
+  { slug: "amarillo", name: "amarillo", hex: "#FDD835", thing: w("sol", "el sol", "sun") },
+  { slug: "verde", name: "verde", hex: "#43A047", thing: w("rana", "la rana", "frog") },
+  { slug: "naranja", name: "naranja", hex: "#FB8C00", thing: w("zanahoria", "la zanahoria", "carrot") },
+  { slug: "morado", name: "morado", hex: "#8E24AA", thing: w("uvas", "las uvas", "grapes") },
+  { slug: "rosa", name: "rosa", hex: "#F48FB1", thing: w("flamenco", "el flamenco", "flamingo") },
+  { slug: "cafe", name: "café", alt: "marrón", hex: "#795548", thing: w("oso", "el oso", "bear") },
+  { slug: "gris", name: "gris", hex: "#9E9E9E", thing: w("elefante", "el elefante", "elephant") },
+  { slug: "negro", name: "negro", hex: "#212121", thing: w("sombrero", "el sombrero", "hat") },
 ];
 
 /** Frequent words, four per sheet, with a sentence that uses them. */
@@ -149,43 +149,43 @@ const sheet = (
 ): SyllableSheet => ({ slug, label, syllables: syllables.split(" "), words, pages, ...extra });
 
 export const SYLLABLE_SHEETS: SyllableSheet[] = [
-  sheet("silabas-m", "m", "ma me mi mo mu", ["silabas-directas"], [w("ma|no", "una mano", "✋"), w("mo|no", "un mono", "🐒"), w("mo|to", "una moto", "🏍️"), w("ma|ri|po|sa", "una mariposa", "🦋")]),
-  sheet("silabas-p", "p", "pa pe pi po pu", ["silabas-directas"], [w("pa|to", "un pato", "🦆"), w("pe|lo|ta", "una pelota", "⚽"), w("pa|lo|ma", "una paloma", "🕊️"), w("pe|ra", "una pera", "🍐")]),
-  sheet("silabas-s", "s", "sa se si so su", ["silabas-directas", "ce-ci-y-z"], [w("so|pa", "una sopa", "🍲"), w("sa|po", "un sapo", "🐸"), w("si|lla", "una silla", "🪑"), w("ca|sa", "una casa", "🏠")]),
-  sheet("silabas-l", "l", "la le li lo lu", ["silabas-directas"], [w("lu|na", "una luna", "🌙"), w("lo|ro", "un loro", "🦜"), w("le|ón", "un león", "🦁"), w("li|món", "un limón", "🍋")]),
-  sheet("silabas-t", "t", "ta te ti to tu", ["silabas-directas"], [w("to|ma|te", "un tomate", "🍅"), w("pa|to", "un pato", "🦆"), w("ti|je|ras", "unas tijeras", "✂️"), w("ta|za", "una taza", "☕")]),
-  sheet("silabas-d", "d", "da de di do du", ["silabas-directas"], [w("da|do", "un dado", "🎲"), w("de|do", "un dedo", "👆"), w("di|ne|ro", "el dinero", "💵"), w("du|cha", "una ducha", "🚿")]),
-  sheet("silabas-n", "n", "na ne ni no nu", ["silabas-directas"], [w("nu|be", "una nube", "☁️"), w("na|riz", "una nariz", "👃"), w("ni|do", "un nido", "🪺"), w("lu|na", "una luna", "🌙")]),
-  sheet("silabas-f", "f", "fa fe fi fo fu", ["silabas-directas"], [w("fo|ca", "una foca", "🦭"), w("fue|go", "un fuego", "🔥"), w("ca|fé", "un café", "☕"), w("fan|tas|ma", "un fantasma", "👻")]),
-  sheet("silabas-b", "b", "ba be bi bo bu", ["silabas-directas", "b-y-v"], [w("bo|ta", "una bota", "👢"), w("bu|rro", "un burro", "🫏"), w("ba|lle|na", "una ballena", "🐳"), w("be|bé", "un bebé", "👶")]),
-  sheet("silabas-v", "v", "va ve vi vo vu", ["b-y-v"], [w("va|ca", "una vaca", "🐄"), w("ve|la", "una vela", "🕯️"), w("u|va", "una uva", "🍇"), w("vol|cán", "un volcán", "🌋")]),
-  sheet("silabas-r", "r suave", "ra re ri ro ru", ["r-y-rr"], [w("pe|ra", "una pera", "🍐"), w("lo|ro", "un loro", "🦜"), w("co|ro|na", "una corona", "👑"), w("ma|ri|po|sa", "una mariposa", "🦋")], { note: "Entre dos vocales, la r suena suave." }),
-  sheet("silabas-rr", "rr", "rra rre rri rro rru", ["r-y-rr"], [w("pe|rro", "un perro", "🐶"), w("zo|rro", "un zorro", "🦊"), w("bu|rro", "un burro", "🫏"), w("go|rra", "una gorra", "🧢")], { note: "La rr suena fuerte, como la r al principio de ratón." }),
-  sheet("silabas-j", "j", "ja je ji jo ju", ["ge-gi-y-j"], [w("ji|ra|fa", "una jirafa", "🦒"), w("ja|bón", "un jabón", "🧼"), w("o|jo", "un ojo", "👁️"), w("a|jo", "un ajo", "🧄")]),
-  sheet("silabas-enie", "ñ", "ña ñe ñi ño ñu", ["enie"], [w("ni|ño", "un niño", "🧒"), w("a|ra|ña", "una araña", "🕷️"), w("u|ña", "una uña", "💅"), w("ba|ño", "un baño", "🛁")]),
-  sheet("silabas-ll", "ll", "lla lle lli llo llu", ["ll-y-y"], [w("lla|ve", "una llave", "🔑"), w("llu|via", "la lluvia", "🌧️"), w("es|tre|lla", "una estrella", "⭐"), w("po|lli|to", "un pollito", "🐥")]),
-  sheet("silabas-y", "y", "ya ye yi yo yu", ["ll-y-y"], [w("yo|yó", "un yoyó", "🪀"), w("ya|te", "un yate", "🛥️"), w("pla|ya", "una playa", "🏖️"), w("ra|yo", "un rayo", "⚡")]),
-  sheet("silabas-ch", "ch", "cha che chi cho chu", ["ch"], [w("cho|co|la|te", "un chocolate", "🍫"), w("le|che", "la leche", "🥛"), w("cu|cha|ra", "una cuchara", "🥄"), w("mo|chi|la", "una mochila", "🎒")]),
-  sheet("silabas-h", "h", "ha he hi ho hu", ["h-muda"], [w("he|la|do", "un helado", "🍦"), w("hue|vo", "un huevo", "🥚"), w("hor|mi|ga", "una hormiga", "🐜"), w("bú|ho", "un búho", "🦉")], { note: "La h no suena: ha se lee «a»." }),
-  sheet("silabas-z", "z", "za zo zu", ["ce-ci-y-z"], [w("za|pa|to", "un zapato", "👞"), w("zo|rro", "un zorro", "🦊"), w("ta|za", "una taza", "☕")]),
-  sheet("silabas-ca-co-cu", "ca, co, cu", "ca co cu", ["ca-co-cu-que-qui"], [w("ca|sa", "una casa", "🏠"), w("co|ne|jo", "un conejo", "🐰"), w("cu|cha|ra", "una cuchara", "🥄"), w("fo|ca", "una foca", "🦭")]),
-  sheet("silabas-que-qui", "que, qui", "que qui", ["ca-co-cu-que-qui"], [w("que|so", "un queso", "🧀"), w("mos|qui|to", "un mosquito", "🦟"), w("ra|que|ta", "una raqueta", "🎾"), w("pa|que|te", "un paquete", "📦")], { note: "En que y qui, la u no suena." }),
-  sheet("silabas-ce-ci", "ce, ci", "ce ci", ["ce-ci-y-z"], [w("ce|re|za", "una cereza", "🍒"), w("ce|bra", "una cebra", "🦓"), w("ci|ne", "un cine", "🎬")], { note: "En Latinoamérica, ce y ci suenan como se y si." }),
-  sheet("silabas-ga-go-gu", "ga, go, gu", "ga go gu", ["ga-go-gu-gue-gui"], [w("ga|to", "un gato", "🐱"), w("go|ri|la", "un gorila", "🦍"), w("gu|sa|no", "un gusano", "🐛"), w("la|go", "un lago", "🏞️")]),
-  sheet("silabas-gue-gui", "gue, gui", "gue gui", ["ga-go-gu-gue-gui", "dieresis"], [w("gui|ta|rra", "una guitarra", "🎸"), w("ham|bur|gue|sa", "una hamburguesa", "🍔"), w("á|gui|la", "un águila", "🦅")], { note: "En gue y gui, la u no suena." }),
-  sheet("silabas-ge-gi", "ge, gi", "ge gi", ["ge-gi-y-j"], [w("gi|ra|sol", "un girasol", "🌻"), w("ge|ma", "una gema", "💎"), w("ma|gia", "la magia", "🪄")], { note: "Ge y gi suenan como je y ji." }),
-  sheet("trabadas-bl", "bl", "bla ble bli blo blu", ["trabadas-con-l"], [w("blu|sa", "una blusa", "👚"), w("ca|ble", "un cable", "🔌"), w("pue|blo", "un pueblo", "🏘️")], { blend: true }),
-  sheet("trabadas-cl", "cl", "cla cle cli clo clu", ["trabadas-con-l"], [w("clip", "un clip", "📎"), w("bi|ci|cle|ta", "una bicicleta", "🚲"), w("te|cla|do", "un teclado", "⌨️")], { blend: true }),
-  sheet("trabadas-fl", "fl", "fla fle fli flo flu", ["trabadas-con-l"], [w("flor", "una flor", "🌸"), w("flau|ta", "una flauta", "🪈"), w("fle|cha", "una flecha", "🏹"), w("flan", "un flan", "🍮")], { blend: true }),
-  sheet("trabadas-gl", "gl", "gla gle gli glo glu", ["trabadas-con-l"], [w("glo|bo", "un globo", "🎈"), w("i|gle|sia", "una iglesia", "⛪"), w("re|gla", "una regla", "📏")], { blend: true }),
-  sheet("trabadas-pl", "pl", "pla ple pli plo plu", ["trabadas-con-l"], [w("pla|to", "un plato", "🍽️"), w("plu|ma", "una pluma", "🪶"), w("pla|ya", "una playa", "🏖️"), w("plan|ta", "una planta", "🪴")], { blend: true }),
-  sheet("trabadas-br", "br", "bra bre bri bro bru", ["trabadas-con-r"], [w("bra|zo", "un brazo", "💪"), w("bru|ja", "una bruja", "🧙‍♀️"), w("li|bro", "un libro", "📖"), w("ca|bra", "una cabra", "🐐")], { blend: true }),
-  sheet("trabadas-cr", "cr", "cra cre cri cro cru", ["trabadas-con-r"], [w("mi|cró|fo|no", "un micrófono", "🎤"), w("se|cre|to", "un secreto", "🤫"), w("crá|ne|o", "un cráneo", "💀")], { blend: true }),
-  sheet("trabadas-dr", "dr", "dra dre dri dro dru", ["trabadas-con-r"], [w("co|co|dri|lo", "un cocodrilo", "🐊"), w("dra|gón", "un dragón", "🐉"), w("la|dri|llo", "un ladrillo", "🧱"), w("pie|dra", "una piedra", "🪨")], { blend: true }),
-  sheet("trabadas-fr", "fr", "fra fre fri fro fru", ["trabadas-con-r"], [w("fru|ta", "una fruta", "🍎"), w("frí|o", "el frío", "🥶"), w("fras|co", "un frasco", "🫙")], { blend: true }),
-  sheet("trabadas-gr", "gr", "gra gre gri gro gru", ["trabadas-con-r"], [w("gri|llo", "un grillo", "🦗"), w("ti|gre", "un tigre", "🐯"), w("can|gre|jo", "un cangrejo", "🦀")], { blend: true }),
-  sheet("trabadas-pr", "pr", "pra pre pri pro pru", ["trabadas-con-r"], [w("prín|ci|pe", "un príncipe", "🤴"), w("prin|ce|sa", "una princesa", "👸"), w("pre|mio", "un premio", "🏆")], { blend: true }),
-  sheet("trabadas-tr", "tr", "tra tre tri tro tru", ["trabadas-con-r"], [w("tren", "un tren", "🚂"), w("trom|pe|ta", "una trompeta", "🎺"), w("es|tre|lla", "una estrella", "⭐")], { blend: true }),
+  sheet("silabas-m", "m", "ma me mi mo mu", ["silabas-directas"], [w("ma|no", "una mano", "hand"), w("mo|no", "un mono", "monkey"), w("mo|to", "una moto", "motorbike"), w("ma|ri|po|sa", "una mariposa", "butterfly")]),
+  sheet("silabas-p", "p", "pa pe pi po pu", ["silabas-directas"], [w("pa|to", "un pato", "duck"), w("pe|lo|ta", "una pelota", "ball"), w("pa|lo|ma", "una paloma", "dove"), w("pe|ra", "una pera", "pear")]),
+  sheet("silabas-s", "s", "sa se si so su", ["silabas-directas", "ce-ci-y-z"], [w("so|pa", "una sopa", "soup"), w("sa|po", "un sapo", "frog"), w("si|lla", "una silla", "chair"), w("ca|sa", "una casa", "house")]),
+  sheet("silabas-l", "l", "la le li lo lu", ["silabas-directas"], [w("lu|na", "una luna", "moon"), w("lo|ro", "un loro", "parrot"), w("le|ón", "un león", "lion"), w("li|món", "un limón", "lemon")]),
+  sheet("silabas-t", "t", "ta te ti to tu", ["silabas-directas"], [w("to|ma|te", "un tomate", "tomato"), w("pa|to", "un pato", "duck"), w("ti|je|ras", "unas tijeras", "scissors"), w("ta|za", "una taza", "cup")]),
+  sheet("silabas-d", "d", "da de di do du", ["silabas-directas"], [w("da|do", "un dado", "dice"), w("de|do", "un dedo", "finger"), w("di|ne|ro", "el dinero", "money"), w("du|cha", "una ducha", "shower")]),
+  sheet("silabas-n", "n", "na ne ni no nu", ["silabas-directas"], [w("nu|be", "una nube", "cloud"), w("na|riz", "una nariz", "nose"), w("ni|do", "un nido", "nest"), w("lu|na", "una luna", "moon")]),
+  sheet("silabas-f", "f", "fa fe fi fo fu", ["silabas-directas"], [w("fo|ca", "una foca", "seal"), w("fue|go", "un fuego", "fire"), w("ca|fé", "un café", "cup"), w("fan|tas|ma", "un fantasma", "ghost")]),
+  sheet("silabas-b", "b", "ba be bi bo bu", ["silabas-directas", "b-y-v"], [w("bo|ta", "una bota", "boot"), w("bu|rro", "un burro", "donkey"), w("ba|lle|na", "una ballena", "whale"), w("be|bé", "un bebé", "baby")]),
+  sheet("silabas-v", "v", "va ve vi vo vu", ["b-y-v"], [w("va|ca", "una vaca", "cow"), w("ve|la", "una vela", "candle"), w("u|va", "una uva", "grapes"), w("vol|cán", "un volcán", "volcano")]),
+  sheet("silabas-r", "r suave", "ra re ri ro ru", ["r-y-rr"], [w("pe|ra", "una pera", "pear"), w("lo|ro", "un loro", "parrot"), w("co|ro|na", "una corona", "crown"), w("ma|ri|po|sa", "una mariposa", "butterfly")], { note: "Entre dos vocales, la r suena suave." }),
+  sheet("silabas-rr", "rr", "rra rre rri rro rru", ["r-y-rr"], [w("pe|rro", "un perro", "dog"), w("zo|rro", "un zorro", "fox"), w("bu|rro", "un burro", "donkey"), w("go|rra", "una gorra", "cap")], { note: "La rr suena fuerte, como la r al principio de ratón." }),
+  sheet("silabas-j", "j", "ja je ji jo ju", ["ge-gi-y-j"], [w("ji|ra|fa", "una jirafa", "giraffe"), w("ja|bón", "un jabón", "soap"), w("o|jo", "un ojo", "eye"), w("a|jo", "un ajo", "garlic")]),
+  sheet("silabas-enie", "ñ", "ña ñe ñi ño ñu", ["enie"], [w("ni|ño", "un niño", "child"), w("a|ra|ña", "una araña", "spider"), w("u|ña", "una uña", "nail-polish"), w("ba|ño", "un baño", "bathtub")]),
+  sheet("silabas-ll", "ll", "lla lle lli llo llu", ["ll-y-y"], [w("lla|ve", "una llave", "key"), w("llu|via", "la lluvia", "rain"), w("es|tre|lla", "una estrella", "star"), w("po|lli|to", "un pollito", "chick")]),
+  sheet("silabas-y", "y", "ya ye yi yo yu", ["ll-y-y"], [w("yo|yó", "un yoyó", "yo-yo"), w("ya|te", "un yate", "yacht"), w("pla|ya", "una playa", "beach"), w("ra|yo", "un rayo", "lightning")]),
+  sheet("silabas-ch", "ch", "cha che chi cho chu", ["ch"], [w("cho|co|la|te", "un chocolate", "chocolate"), w("le|che", "la leche", "milk"), w("cu|cha|ra", "una cuchara", "spoon"), w("mo|chi|la", "una mochila", "backpack")]),
+  sheet("silabas-h", "h", "ha he hi ho hu", ["h-muda"], [w("he|la|do", "un helado", "ice-cream"), w("hue|vo", "un huevo", "egg"), w("hor|mi|ga", "una hormiga", "ant"), w("bú|ho", "un búho", "owl")], { note: "La h no suena: ha se lee «a»." }),
+  sheet("silabas-z", "z", "za zo zu", ["ce-ci-y-z"], [w("za|pa|to", "un zapato", "shoe"), w("zo|rro", "un zorro", "fox"), w("ta|za", "una taza", "cup")]),
+  sheet("silabas-ca-co-cu", "ca, co, cu", "ca co cu", ["ca-co-cu-que-qui"], [w("ca|sa", "una casa", "house"), w("co|ne|jo", "un conejo", "rabbit"), w("cu|cha|ra", "una cuchara", "spoon"), w("fo|ca", "una foca", "seal")]),
+  sheet("silabas-que-qui", "que, qui", "que qui", ["ca-co-cu-que-qui"], [w("que|so", "un queso", "cheese"), w("mos|qui|to", "un mosquito", "mosquito"), w("ra|que|ta", "una raqueta", "tennis-racket"), w("pa|que|te", "un paquete", "box")], { note: "En que y qui, la u no suena." }),
+  sheet("silabas-ce-ci", "ce, ci", "ce ci", ["ce-ci-y-z"], [w("ce|re|za", "una cereza", "cherry"), w("ce|bra", "una cebra", "zebra"), w("ci|ne", "un cine", "clapperboard")], { note: "En Latinoamérica, ce y ci suenan como se y si." }),
+  sheet("silabas-ga-go-gu", "ga, go, gu", "ga go gu", ["ga-go-gu-gue-gui"], [w("ga|to", "un gato", "cat"), w("go|ri|la", "un gorila", "gorilla"), w("gu|sa|no", "un gusano", "caterpillar"), w("la|go", "un lago", "lake")]),
+  sheet("silabas-gue-gui", "gue, gui", "gue gui", ["ga-go-gu-gue-gui", "dieresis"], [w("gui|ta|rra", "una guitarra", "guitar"), w("ham|bur|gue|sa", "una hamburguesa", "hamburger"), w("á|gui|la", "un águila", "eagle")], { note: "En gue y gui, la u no suena." }),
+  sheet("silabas-ge-gi", "ge, gi", "ge gi", ["ge-gi-y-j"], [w("gi|ra|sol", "un girasol", "sunflower"), w("ge|ma", "una gema", "diamond"), w("ma|gia", "la magia", "magic-wand")], { note: "Ge y gi suenan como je y ji." }),
+  sheet("trabadas-bl", "bl", "bla ble bli blo blu", ["trabadas-con-l"], [w("blu|sa", "una blusa", "blouse"), w("ca|ble", "un cable", "plug"), w("pue|blo", "un pueblo", "village")], { blend: true }),
+  sheet("trabadas-cl", "cl", "cla cle cli clo clu", ["trabadas-con-l"], [w("clip", "un clip", "paper-clip"), w("bi|ci|cle|ta", "una bicicleta", "bicycle"), w("te|cla|do", "un teclado", "keyboard")], { blend: true }),
+  sheet("trabadas-fl", "fl", "fla fle fli flo flu", ["trabadas-con-l"], [w("flor", "una flor", "flower"), w("flau|ta", "una flauta", "flute"), w("fle|cha", "una flecha", "bow-and-arrow"), w("flan", "un flan", "flan")], { blend: true }),
+  sheet("trabadas-gl", "gl", "gla gle gli glo glu", ["trabadas-con-l"], [w("glo|bo", "un globo", "balloon"), w("i|gle|sia", "una iglesia", "church"), w("re|gla", "una regla", "ruler")], { blend: true }),
+  sheet("trabadas-pl", "pl", "pla ple pli plo plu", ["trabadas-con-l"], [w("pla|to", "un plato", "plate"), w("plu|ma", "una pluma", "feather"), w("pla|ya", "una playa", "beach"), w("plan|ta", "una planta", "potted-plant")], { blend: true }),
+  sheet("trabadas-br", "br", "bra bre bri bro bru", ["trabadas-con-r"], [w("bra|zo", "un brazo", "arm"), w("bru|ja", "una bruja", "witch"), w("li|bro", "un libro", "book"), w("ca|bra", "una cabra", "goat")], { blend: true }),
+  sheet("trabadas-cr", "cr", "cra cre cri cro cru", ["trabadas-con-r"], [w("mi|cró|fo|no", "un micrófono", "microphone"), w("se|cre|to", "un secreto", "secret"), w("crá|ne|o", "un cráneo", "skull")], { blend: true }),
+  sheet("trabadas-dr", "dr", "dra dre dri dro dru", ["trabadas-con-r"], [w("co|co|dri|lo", "un cocodrilo", "crocodile"), w("dra|gón", "un dragón", "dragon"), w("la|dri|llo", "un ladrillo", "brick"), w("pie|dra", "una piedra", "rock")], { blend: true }),
+  sheet("trabadas-fr", "fr", "fra fre fri fro fru", ["trabadas-con-r"], [w("fru|ta", "una fruta", "apple"), w("frí|o", "el frío", "cold"), w("fras|co", "un frasco", "jar")], { blend: true }),
+  sheet("trabadas-gr", "gr", "gra gre gri gro gru", ["trabadas-con-r"], [w("gri|llo", "un grillo", "cricket"), w("ti|gre", "un tigre", "tiger"), w("can|gre|jo", "un cangrejo", "crab")], { blend: true }),
+  sheet("trabadas-pr", "pr", "pra pre pri pro pru", ["trabadas-con-r"], [w("prín|ci|pe", "un príncipe", "king"), w("prin|ce|sa", "una princesa", "princess"), w("pre|mio", "un premio", "trophy")], { blend: true }),
+  sheet("trabadas-tr", "tr", "tra tre tri tro tru", ["trabadas-con-r"], [w("tren", "un tren", "train"), w("trom|pe|ta", "una trompeta", "trumpet"), w("es|tre|lla", "una estrella", "star")], { blend: true }),
 ];
 
 // ---------------------------------------------------------------- catalogue

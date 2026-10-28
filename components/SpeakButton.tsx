@@ -1,6 +1,7 @@
 "use client";
 
 import { speak } from "@/lib/speech";
+import { InlineIcon } from "@/components/UiIcon";
 
 export default function SpeakButton({
   text,
@@ -18,7 +19,8 @@ export default function SpeakButton({
       className={className}
       aria-label={ariaLabel}
     >
-      🔊 Listen &amp; Repeat
+      <InlineIcon name="listen" />
+      Listen &amp; Repeat
     </button>
   );
 }

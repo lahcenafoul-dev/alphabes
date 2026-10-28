@@ -8,6 +8,8 @@ import { absoluteUrl, alternatesFor } from "@/lib/i18n/routes";
 import { ficheForSound } from "@/lib/fiches-fr";
 import { buildBreadcrumbJsonLd } from "@/lib/json-ld";
 import { getFrenchSound, plainWord, soundNeighbors, type FrenchSound, type SoundWord } from "@/lib/sons-fr";
+import WordIllustration from "@/components/WordIllustration";
+import { InlineIcon } from "@/components/UiIcon";
 
 export function soundMetadataFr(slug: string): Metadata {
   const s = getFrenchSound(slug);
@@ -26,24 +28,19 @@ const primaryButton =
 
 function WordCard({ w, marks }: { w: SoundWord; marks: FrenchSound["marks"] }) {
   return (
-    <li className="rounded-block bg-paper border border-chalkboard/10 p-4 text-center shadow-block">
-      <div
-        className="mx-auto h-16 w-16 rounded-full bg-crayon-green/20 flex items-center justify-center text-4xl"
-        role="img"
-        aria-label={plainWord(w.word)}
-      >
-        {w.emoji}
-      </div>
-      <p className="mt-2 font-display font-bold text-2xl">
+    <li className="flex flex-col items-center rounded-block border border-chalkboard/10 bg-white p-3 text-center shadow-[0_2px_12px_rgba(31,42,68,0.08)] sm:p-4">
+      <WordIllustration word={w.word} picture={w.picture} title={plainWord(w.word)} className="block h-auto w-full max-w-[9rem]" />
+      <p className="mt-3 font-display font-bold text-2xl leading-tight">
         <MarkedWord word={w.word} marks={marks} />
       </p>
-      <p className="text-sm text-chalkboard/60">{w.withArticle}</p>
+      <p className="text-sm text-chalkboard/75">{w.withArticle}</p>
       <ListenButton
         text={w.withArticle}
         ariaLabel={`Écouter : ${w.withArticle}`}
-        className="mt-2 text-sm font-bold text-crayon-blue underline underline-offset-2"
+        className="mt-2 inline-flex items-center gap-1 text-sm font-bold text-[#1F6FB8] underline underline-offset-2"
       >
-        🔊 Écouter
+        <InlineIcon name="listen" />
+        Écouter
       </ListenButton>
     </li>
   );
@@ -111,7 +108,8 @@ export default function SoundFr({ slug }: { slug: string }) {
 
       <div className="mt-6">
         <ListenButton text={s.soundSpoken} rate={0.75} className={primaryButton}>
-          🔊 Écouter
+          <InlineIcon name="listen" />
+          Écouter
         </ListenButton>
       </div>
 
@@ -189,7 +187,8 @@ export default function SoundFr({ slug }: { slug: string }) {
             ariaLabel="Écouter la phrase"
             className="mt-3 text-sm font-bold text-crayon-blue underline underline-offset-2"
           >
-            🔊 Écouter la phrase
+            <InlineIcon name="listen" />
+            Écouter la phrase
           </ListenButton>
         </section>
       )}

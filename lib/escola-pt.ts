@@ -5,6 +5,7 @@
 //
 // Topics with an English twin (`en`) are also paired in TRANSLATED_PARAMS
 // (lib/i18n/routes.ts); tests check that the two agree.
+import type { UiIconName } from "@/components/UiIcon";
 import type { AppPathname } from "@/i18n/routing";
 
 export type SchoolLevelPt = "educacao-infantil" | "primeiro-ano";
@@ -19,7 +20,7 @@ export type SchoolTopicPt = {
   title: string;
   metaTitle: string;
   summary: string;
-  emoji: string;
+  icon: UiIconName;
   intro: string[];
   tips: string[];
   activity: { title: string; material: string; steps: string[] };
@@ -42,7 +43,7 @@ export const schoolTopicsPt: SchoolTopicPt[] = [
     title: "Coordenação motora na educação infantil",
     metaTitle: "Coordenação motora fina na educação infantil: preparar a mão para escrever",
     summary: "Linhas, círculos, pontes e laços: os movimentos que preparam a mão para escrever, muito antes das letras.",
-    emoji: "〰️",
+    icon: "waves",
     intro: [
       "Antes de escrever letras, a mão aprende movimentos: uma linha de cima para baixo, um círculo, uma fileira de pontes, ondas. É a coordenação motora fina, trabalhada quase todos os dias na educação infantil com traçados, desenhos, massinha e brincadeiras.",
       "Esses traçados são as peças das letras: o círculo vira o o e o a, a ponte vira o n e o m, o laço vira o l e o e da letra cursiva. Uma criança que domina os traçados aprende a escrever com muito menos esforço.",
@@ -76,7 +77,7 @@ export const schoolTopicsPt: SchoolTopicPt[] = [
     title: "Traçar as letras na educação infantil",
     metaTitle: "Traçar as letras na educação infantil: primeiro o nome, em letra bastão",
     summary: "Seguir linhas pontilhadas para aprender a forma de cada letra e a ordem dos traçados, começando pelas letras do nome, em letra bastão.",
-    emoji: "✏️",
+    icon: "pencil",
     intro: [
       "Na educação infantil, a primeira palavra que a criança quer escrever é quase sempre o próprio nome. Por isso vale começar por essas letras, em letra bastão (a letra de forma maiúscula), como fazem as escolas.",
       "Traçar sobre linhas pontilhadas ensina a forma da letra e a ordem dos traçados. O importante não é ficar perfeito, e sim começar no lugar certo e seguir na direção certa.",
@@ -110,7 +111,7 @@ export const schoolTopicsPt: SchoolTopicPt[] = [
     title: "Colorir as letras na educação infantil",
     metaTitle: "Colorir as letras na educação infantil: aprender o alfabeto pintando",
     summary: "Pintar uma letra grande e as figuras dela: a mão se exercita e a letra fica familiar.",
-    emoji: "🖍️",
+    icon: "palette",
     intro: [
       "Pintar já é trabalhar a mão: segurar o lápis de cor, ficar mais ou menos dentro da forma, trocar de cor. São os mesmos músculos usados para escrever.",
       "Quando a folha mostra uma letra grande e figuras que começam com ela, a criança olha para a letra um bom tempo e fala sobre ela: aprende sem perceber.",
@@ -144,7 +145,7 @@ export const schoolTopicsPt: SchoolTopicPt[] = [
     title: "As famílias silábicas no 1º ano",
     metaTitle: "Famílias silábicas no 1º ano: como ajudar a criança a ler em casa",
     summary: "Juntar consoante e vogal (ba, be, bi, bo, bu), ler as primeiras palavras e depois os dígrafos: o caminho da alfabetização.",
-    emoji: "🔤",
+    icon: "letters",
     intro: [
       "O 1º ano é o ano da alfabetização. A criança aprende a juntar o som de uma consoante com cada vogal e a ler as famílias silábicas: ba, be, bi, bo, bu. Com poucas famílias ela já lê palavras de verdade: bola, pato, dado, mala.",
       "Depois vêm os dígrafos (ch, lh, nh), os sons nasais (mão, canto) e as sílabas complexas (prato, flor). Cada criança vai no seu ritmo: o importante é ler um pouco todos os dias.",
@@ -178,7 +179,7 @@ export const schoolTopicsPt: SchoolTopicPt[] = [
     title: "As palavras frequentes no 1º ano",
     metaTitle: "Palavras frequentes no 1º ano: o, a, um, e, de, que, para ler com fluência",
     summary: "o, a, um, e, de, que, não: as palavras curtas que aparecem em toda frase. Reconhecê-las de relance ajuda a ler com fluência.",
-    emoji: "👀",
+    icon: "eye",
     intro: [
       "Algumas palavras aparecem em quase todas as frases: o, a, um, uma, e, é, de, do, da, em, que, não. Elas se leem pelas sílabas, como as outras, mas aparecem tanto que vale reconhecê-las de relance.",
       "Quando a criança reconhece essas palavras sem precisar decifrar, sobra atenção para entender o que lê. É um dos passos da leitura fluente, trabalhado no 1º e no 2º ano.",
@@ -212,7 +213,7 @@ export const schoolTopicsPt: SchoolTopicPt[] = [
     title: "A letra cursiva no 1º ano",
     metaTitle: "Letra cursiva no 1º ano: caligrafia passo a passo",
     summary: "Laços, pontes e letras ligadas no caderno de caligrafia: como acompanhar em casa a passagem para a letra cursiva.",
-    emoji: "✍️",
+    icon: "writing",
     intro: [
       "Depois da letra bastão e da letra de forma, muitas escolas apresentam a letra cursiva no 1º ou no 2º ano, no caderno de caligrafia. As letras são ligadas, e cada uma tem o seu ponto de partida e o seu caminho.",
       "A idade da letra cursiva muda de uma escola para outra. Em casa, o melhor é seguir o modelo da escola e praticar pouco e com calma.",

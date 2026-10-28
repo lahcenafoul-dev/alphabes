@@ -5,6 +5,7 @@ import TracingCanvas from "@/components/TracingCanvas";
 import { useSpeech } from "@/components/ListenButton";
 import { portugueseLetters } from "@/lib/letters-pt";
 import { listenClass } from "./ui";
+import { InlineIcon } from "@/components/UiIcon";
 
 type Case = "maiuscula" | "minuscula";
 
@@ -44,7 +45,8 @@ export default function TraceALetra({ cursiveFont }: { cursiveFont: string }) {
 
       <div className="mt-3 flex flex-wrap items-center gap-3">
         <button type="button" onClick={() => void say(letter.nameSpoken, 0.8)} className={listenClass}>
-          🔊 Ouvir
+          <InlineIcon name="listen" />
+          Ouvir
         </button>
         <span className="text-sm text-chalkboard/60">
           Letra {index + 1} de {portugueseLetters.length}
@@ -55,7 +57,7 @@ export default function TraceALetra({ cursiveFont }: { cursiveFont: string }) {
         text={text}
         cursive={{ text, fontFamily: cursiveFont, ruling: "caligrafia" }}
         labels={{
-          clear: "🔄 Apagar e começar de novo",
+          clear: "Apagar e começar de novo",
           styleGroup: "Tipo de letra",
           script: "Forma",
           cursive: "Cursiva",
@@ -77,7 +79,17 @@ export default function TraceALetra({ cursiveFont }: { cursiveFont: string }) {
           onClick={() => setIndex((i) => (last ? 0 : i + 1))}
           className="rounded-block bg-crayon-green text-white px-6 py-3 font-display font-bold shadow-block hover:shadow-blockHover transition"
         >
-          {last ? "🎉 Voltar ao A" : "✅ Próxima letra →"}
+          {last ? (
+            <>
+              <InlineIcon name="party" />
+              Voltar ao A
+            </>
+          ) : (
+            <>
+              <InlineIcon name="check" />
+              Próxima letra →
+            </>
+          )}
         </button>
       </div>
       {notice}

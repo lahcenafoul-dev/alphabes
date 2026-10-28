@@ -9,6 +9,7 @@
 // /alphabet/[letter]/worksheet page's behavior, so this game gets its own
 // copy instead, correctly respecting whatever exact string it's given.
 import { useCallback, useEffect, useRef } from "react";
+import { InlineIcon } from "@/components/UiIcon";
 
 export default function GameTracingCanvas({ letter }: { letter: string }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -109,7 +110,8 @@ export default function GameTracingCanvas({ letter }: { letter: string }) {
         onClick={clearCanvas}
         className="mt-3 rounded-block bg-crayon-red text-white px-4 py-2 font-bold text-sm"
       >
-        🔄 Clear & Retry
+        <InlineIcon name="retry" />
+        Clear & Retry
       </button>
     </div>
   );

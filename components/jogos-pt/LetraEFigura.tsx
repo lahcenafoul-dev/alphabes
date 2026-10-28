@@ -5,6 +5,8 @@ import { useSpeech } from "@/components/ListenButton";
 import { letterPictureRound, plain } from "@/lib/jogos-pt";
 import type { PortugueseWord } from "@/lib/letters-pt";
 import { EndScreen, FeedbackLine, ScoreBar, listenClass, type Feedback } from "./ui";
+import WordIllustration from "@/components/WordIllustration";
+import { InlineIcon } from "@/components/UiIcon";
 
 const TOTAL = 10;
 
@@ -71,7 +73,8 @@ export default function LetraEFigura() {
             onClick={() => void say(`Que figura começa com a letra ${letter.nameSpoken}?`, 0.85)}
             className={`${listenClass} mt-2`}
           >
-            🔊 Ouvir
+            <InlineIcon name="listen" />
+            Ouvir
           </button>
         </div>
       </div>
@@ -85,10 +88,10 @@ export default function LetraEFigura() {
             type="button"
             onClick={() => pick(word)}
             aria-label={word.withArticle}
-            className="rounded-block border-2 border-chalkboard/10 bg-paper p-4 text-center shadow-block hover:border-crayon-blue focus-visible:outline focus-visible:outline-2 focus-visible:outline-crayon-blue"
+            className="rounded-block border-2 border-chalkboard/10 bg-white p-4 text-center shadow-[0_2px_12px_rgba(31,42,68,0.08)] hover:border-crayon-blue focus-visible:outline focus-visible:outline-2 focus-visible:outline-crayon-blue"
           >
-            <span className="block text-6xl leading-none" aria-hidden="true">
-              {word.emoji}
+            <span className="block" aria-hidden="true">
+              <WordIllustration word={word.word} picture={word.picture} className="mx-auto h-20 w-20" />
             </span>
           </button>
         ))}

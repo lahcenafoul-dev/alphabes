@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useSpeech } from "@/components/ListenButton";
 import { ALPHABET, findLetterRound } from "@/lib/jogos-pt";
 import { EndScreen, FeedbackLine, ScoreBar, choiceClass, listenClass, type Feedback } from "./ui";
+import { InlineIcon } from "@/components/UiIcon";
 
 const TOTAL = 10;
 
@@ -87,7 +88,8 @@ export default function EncontreALetra() {
           <span className="letter-block bg-crayon-blue inline-flex h-14 w-14 text-3xl align-middle">{show(round.letter.slug)}</span>
         </p>
         <button type="button" onClick={() => ask(round.letter.nameSpoken)} className={listenClass} aria-label="Ouvir a letra que é preciso encontrar">
-          🔊 Ouvir
+          <InlineIcon name="listen" />
+          Ouvir
         </button>
       </div>
 

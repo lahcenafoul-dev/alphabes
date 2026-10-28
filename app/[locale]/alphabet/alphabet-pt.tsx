@@ -4,6 +4,7 @@ import { cursivaFont } from "@/lib/fonts/cursive-pt";
 import { absoluteUrl, alternatesFor } from "@/lib/i18n/routes";
 import { buildBreadcrumbJsonLd } from "@/lib/json-ld";
 import { ACENTOS_SLUG, CEDILHA_SLUG, letterWithWord, portugueseLetters } from "@/lib/letters-pt";
+import WordIllustration from "@/components/WordIllustration";
 
 const title = "O alfabeto para crianças: as 26 letras, os sons e as palavras";
 const description =
@@ -137,8 +138,8 @@ export default function AlphabetPt() {
                     {l.upper}{l.lower}
                   </span>
                   <span className="mt-1 block text-xs text-chalkboard/60">“{l.name}”</span>
-                  <span className="mt-2 block text-2xl" aria-hidden="true">
-                    {w1.emoji}
+                  <span className="mt-2 block" aria-hidden="true">
+                    <WordIllustration word={w1.word} picture={w1.picture} className="mx-auto h-10 w-10" />
                   </span>
                   <span className="mt-2 block font-display font-bold text-sm">{letterWithWord(l, w1)}</span>
                   {cedilha && <span className="mt-1 block text-xs text-chalkboard/60">não é uma letra nova</span>}

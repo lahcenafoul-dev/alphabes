@@ -1,19 +1,20 @@
 import type { jsPDF } from "jspdf";
 import type { WorksheetTypeId } from "../worksheet-types";
 import type { WorksheetRecord } from "../worksheets-data";
+import type { WordPhotos } from "./icons";
 
 import { drawTracingWorksheet } from "./templates/tracing";
 import { drawUppercasePractice } from "./templates/uppercase";
 import { drawLowercasePractice } from "./templates/lowercase";
 import { drawLetterRecognition } from "./templates/recognition";
-import { drawBeginningSounds } from "./templates/beginningSounds";
+import { beginningSoundItems, drawBeginningSounds } from "./templates/beginningSounds";
 import { drawLetterColoring } from "./templates/coloring";
 import { drawLetterPictureMatching } from "./templates/matching";
 import { drawMissingLetter } from "./templates/missingLetter";
 import { drawWritingPractice } from "./templates/writingPractice";
 import { drawLetterReview } from "./templates/review";
 
-export const PDF_TEMPLATES: Record<WorksheetTypeId, (doc: jsPDF, w: WorksheetRecord) => void> = {
+export const PDF_TEMPLATES: Record<WorksheetTypeId, (doc: jsPDF, w: WorksheetRecord, photos: WordPhotos) => void> = {
   tracing: (doc, w) => drawTracingWorksheet(doc, { letter: w.letter, word: w.primaryWord }),
   uppercase: drawUppercasePractice,
   lowercase: drawLowercasePractice,
@@ -26,7 +27,21 @@ export const PDF_TEMPLATES: Record<WorksheetTypeId, (doc: jsPDF, w: WorksheetRec
   review: drawLetterReview,
 };
 
-export function renderWorksheetPdf(doc: jsPDF, worksheet: WorksheetRecord): void {
+/** The words whose photo a worksheet shows (load them with lib/pdf/photos.ts first). */
+export function worksheetPictureWords(w: WorksheetRecord): string[] {
+  switch (w.worksheetType) {
+    case "beginning-sounds":
+      return beginningSoundItems(w).map((item) => item.word);
+    case "matching":
+      return w.exampleWords.slice(0, 2).map((ex) => ex.word);
+    case "review":
+      return [w.primaryWord];
+    default:
+      return [];
+  }
+}
+
+export function renderWorksheetPdf(doc: jsPDF, worksheet: WorksheetRecord, photos: WordPhotos = {}): void {
   const template = PDF_TEMPLATES[worksheet.worksheetType];
-  template(doc, worksheet);
+  template(doc, worksheet, photos);
 }

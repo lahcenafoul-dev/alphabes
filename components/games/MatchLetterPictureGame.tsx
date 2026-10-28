@@ -4,6 +4,7 @@ import { useState } from "react";
 import { getAllLetterSlugs, getLetterContent } from "@/lib/letters-data";
 import { shuffle, pickDistractors } from "@/lib/games/utils";
 import WorksheetIcon from "@/components/icons/WorksheetIcon";
+import { InlineIcon } from "@/components/UiIcon";
 
 const LETTERS = getAllLetterSlugs();
 const TOTAL_ROUNDS = 10;
@@ -56,7 +57,7 @@ export default function MatchLetterPictureGame() {
   if (finished) {
     return (
       <div className="text-center py-8">
-        <p className="text-2xl font-display font-bold">🎉 All done!</p>
+        <p className="text-2xl font-display font-bold"><InlineIcon name="party" />All done!</p>
         <p className="mt-2 text-chalkboard/70">
           You matched {score} out of {TOTAL_ROUNDS} correctly.
         </p>
@@ -91,7 +92,17 @@ export default function MatchLetterPictureGame() {
           feedback === "correct" ? "text-crayon-green" : feedback === "wrong" ? "text-crayon-red" : "text-transparent"
         }`}
       >
-        {feedback === "correct" ? "✓ Correct!" : feedback === "wrong" ? "✗ Try again" : "placeholder"}
+        {feedback === "correct" ? (
+          <>
+            <InlineIcon name="check" />
+            Correct!
+          </>
+        ) : feedback === "wrong" ? (
+          <>
+            <InlineIcon name="cross" />
+            Try again
+          </>
+        ) : "placeholder"}
       </p>
 
       <div className="mt-2 grid grid-cols-2 sm:grid-cols-4 gap-4">

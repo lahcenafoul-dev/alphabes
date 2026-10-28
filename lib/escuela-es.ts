@@ -7,6 +7,7 @@
 //
 // Topics with an English twin (`en`) are also paired in TRANSLATED_PARAMS
 // (lib/i18n/routes.ts); tests check that the two agree.
+import type { UiIconName } from "@/components/UiIcon";
 import type { AppPathname } from "@/i18n/routing";
 
 export type SchoolLevelEs = "preescolar" | "kinder";
@@ -21,7 +22,7 @@ export type SchoolTopicEs = {
   title: string;
   metaTitle: string;
   summary: string;
-  emoji: string;
+  icon: UiIconName;
   intro: string[];
   tips: string[];
   activity: { title: string; material: string; steps: string[] };
@@ -44,7 +45,7 @@ export const schoolTopicsEs: SchoolTopicEs[] = [
     title: "Los trazos en preescolar",
     metaTitle: "Trazos para preescolar: preparar la mano para escribir (grafomotricidad)",
     summary: "Líneas, círculos, puentes y bucles: los movimientos que preparan la mano para escribir, mucho antes de las letras.",
-    emoji: "〰️",
+    icon: "waves",
     intro: [
       "Antes de escribir letras, la mano aprende movimientos: una línea de arriba abajo, un círculo, una fila de puentes, unas olas. Es la grafomotricidad, y en preescolar se trabaja casi todos los días con trazos, dibujos y juegos.",
       "Estos trazos son las piezas de las letras: el círculo será la o y la a, el puente será la n y la m, el bucle será la l y la e de la letra cursiva. Un niño que domina los trazos aprende a escribir con mucho menos esfuerzo.",
@@ -78,7 +79,7 @@ export const schoolTopicsEs: SchoolTopicEs[] = [
     title: "Trazar las letras en preescolar",
     metaTitle: "Trazar las letras en preescolar: primero su nombre, sin prisas",
     summary: "Seguir líneas punteadas para aprender la forma de cada letra y el orden de los trazos, empezando por las letras de su nombre.",
-    emoji: "✏️",
+    icon: "pencil",
     intro: [
       "En preescolar, la primera palabra que un niño quiere escribir es casi siempre su nombre. Por eso conviene empezar con esas letras, en letra script (de molde), en mayúsculas o en minúsculas según lo haga su escuela.",
       "Trazar sobre líneas punteadas enseña la forma de la letra y el orden de los trazos. Lo importante no es que quede perfecta, sino empezar en el lugar correcto e ir en la dirección correcta.",
@@ -112,7 +113,7 @@ export const schoolTopicsEs: SchoolTopicEs[] = [
     title: "Colorear las letras en preescolar",
     metaTitle: "Colorear las letras en preescolar: aprender el abecedario coloreando",
     summary: "Colorear una letra grande y sus dibujos: la mano se ejercita y la letra se vuelve familiar.",
-    emoji: "🖍️",
+    icon: "palette",
     intro: [
       "Colorear ya es trabajar la mano: agarrar el crayón, quedarse más o menos dentro de la forma, cambiar de color. Son los mismos músculos que se usan para escribir.",
       "Cuando la hoja muestra una letra grande y dibujos que empiezan con ella, el niño la mira un buen rato y habla de ella: aprende sin darse cuenta.",
@@ -146,7 +147,7 @@ export const schoolTopicsEs: SchoolTopicEs[] = [
     title: "Las sílabas en kínder",
     metaTitle: "Las sílabas en kínder: aplaudir, contar y unir ma, me, mi, mo, mu",
     summary: "Separar las palabras en sílabas aplaudiendo, y después unir una consonante con una vocal: m con a, «ma».",
-    emoji: "👏",
+    icon: "clap",
     intro: [
       "En español se lee por sílabas. Antes de leer, el niño aprende a escuchar que las palabras tienen pedazos: «ma-ri-po-sa» tiene cuatro, «sol» solo una. Este trabajo de oído, aplaudiendo, es la base de la lectura.",
       "Después llega el gran paso: unir una consonante con una vocal. La m con la a hace «ma», y con las cinco vocales salen ma, me, mi, mo, mu. Con unas pocas sílabas ya se leen palabras de verdad: mamá, mano, mesa.",
@@ -181,7 +182,7 @@ export const schoolTopicsEs: SchoolTopicEs[] = [
     title: "Las palabras frecuentes en kínder",
     metaTitle: "Palabras frecuentes en kínder: el, la, y, en, un, es…",
     summary: "Las palabras cortas que aparecen en casi todas las oraciones (el, la, y, en, un, es) y que se aprenden a reconocer de un vistazo.",
-    emoji: "🧩",
+    icon: "puzzle",
     intro: [
       "Hay palabras que aparecen en casi todas las oraciones: el, la, los, un, una, y, en, es, de, con… Reconocerlas de un vistazo permite leer una oración sin detenerse en cada palabra.",
       "En español casi todas se pueden leer por sílabas, pero verlas muchas veces hace que se lean solas, sin esfuerzo. En kínder se descubren unas cuantas, en los cuentos y en las oraciones del salón; en primer grado se aprenden muchas más.",
@@ -215,7 +216,7 @@ export const schoolTopicsEs: SchoolTopicEs[] = [
     title: "La letra cursiva en kínder",
     metaTitle: "La letra cursiva en kínder: la letra ligada en doble raya",
     summary: "De la letra script a la letra ligada, en el cuaderno de doble raya, empezando por los bucles.",
-    emoji: "✍️",
+    icon: "writing",
     intro: [
       "Cada país, y a veces cada escuela, decide cuándo se empieza la letra cursiva (ligada, enlazada o manuscrita): en muchas escuelas de Chile, Colombia, Perú o España se aprende desde los 5 o 6 años; en México muchas empiezan con la letra script y pasan a la cursiva en primero o segundo grado.",
       "Se aprende en un cuaderno de doble raya, respetando la altura de cada letra. Se empieza por las letras hechas de bucles y puentes (e, l, i, u, n, m), luego el nombre y palabras cortas. Cada letra tiene un punto de partida y una dirección: eso es lo que permite unirlas.",

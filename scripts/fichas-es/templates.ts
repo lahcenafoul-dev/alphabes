@@ -37,6 +37,7 @@ import {
   shuffle,
   type FillKind,
 } from "../fiches-fr/templates";
+import { pictureEmoji, picturePrint } from "../picture-emoji";
 
 export const PAGE_CSS_ES = `${PAGE_CSS}
 .cur-es { font-family: cursive-es }
@@ -127,7 +128,7 @@ function letterOf(f: Ficha): SpanishLetter {
 }
 
 function pictureCard(word: SpanishWord, picSize: number, textSize: number): string {
-  return `<div class="card"><div class="pic" style="font-size:${picSize}mm">${word.emoji}</div><div style="font-size:${textSize}mm;margin-top:1.5mm">${esc(plain(word.word))}</div></div>`;
+  return `<div class="card"><div class="pic" style="font-size:${picSize}mm">${picturePrint(word.picture)}</div><div style="font-size:${textSize}mm;margin-top:1.5mm">${esc(plain(word.word))}</div></div>`;
 }
 
 /** The letter's words, then its first-syllable words: three at most, no repeats. */
@@ -150,7 +151,7 @@ function trazo(f: Ficha): string {
       <text x="2" y="${hasTail(l.upper) ? 36 : 44}" font-family="script" font-weight="700" font-size="${hasTail(l.upper) ? 46 : 56}" fill="#fff" paint-order="stroke" stroke="${OUTLINE}" stroke-width="1">${esc(l.upper)}</text>
       <text x="62" y="${hasTail(l.lower) ? 36 : 44}" font-family="script" font-weight="700" font-size="${hasTail(l.lower) ? 46 : 56}" fill="#fff" paint-order="stroke" stroke="${OUTLINE}" stroke-width="1">${esc(l.lower)}</text>
     </svg>
-    <div style="text-align:center"><div class="emoji" style="font-size:24mm;line-height:1.1">${word.emoji}</div><div style="font-size:6mm">${esc(word.word.toLowerCase())}</div></div>
+    <div style="text-align:center"><div class="emoji" style="font-size:24mm;line-height:1.1">${picturePrint(word.picture)}</div><div style="font-size:6mm">${esc(word.word.toLowerCase())}</div></div>
   </div>
   <div style="display:flex;gap:10mm;align-items:baseline;margin:2mm 0 3mm;font-size:4mm;color:#555">Tres formas de escribirla:
     <span style="font-size:9mm;color:#1f2a44">${esc(l.upper)}</span><span style="font-size:9mm;color:#1f2a44">${esc(l.lower)}</span><span class="cur-es" style="font-size:8mm;color:#1f2a44">${esc(l.lower)}</span></div>`;
@@ -180,7 +181,7 @@ function cursiva(f: Ficha): string {
     fill({ text, x0: 2, x1: W - 2, y: r.baseline(i), size: 2 * xh, font: "cur-es", kind, gap: 3 * xh });
   const top = `<div style="display:flex;align-items:center;gap:8mm;margin-bottom:3mm">
     <div class="cur-es" style="font-size:12mm;line-height:normal;padding:0 4mm;border:0.35mm solid #d5dbe3;border-radius:3mm">${esc(l.upper)} ${esc(l.lower)}</div>
-    <div class="emoji" style="font-size:14mm">${l.words[0].emoji}</div>
+    <div class="emoji" style="font-size:14mm">${picturePrint(l.words[0].picture)}</div>
     <div style="font-size:4mm;color:#555;max-width:70mm">La minúscula, la mayúscula y después la palabra <strong>${esc(word)}</strong>.</div></div>`;
   return (
     top +
@@ -231,13 +232,13 @@ function silabaInicial(f: Ficha): string {
   const [first] = words;
   const parts = first.word.split("|");
   const model = `<div style="display:flex;align-items:center;gap:6mm;margin-bottom:5mm;font-size:5mm">
-    <span>Ejemplo:</span><span class="emoji" style="font-size:12mm">${first.emoji}</span>
+    <span>Ejemplo:</span><span class="emoji" style="font-size:12mm">${picturePrint(first.picture)}</span>
     <span style="font-size:9mm"><span style="color:#c8323a;border-bottom:0.5mm solid #c8323a">${esc(parts[0])}</span>${esc(parts.slice(1).join(""))}</span>
     <span style="color:#555">(${esc(parts.join(" - "))})</span></div>`;
   const cards = words
     .map((x) => {
       const p = x.word.split("|");
-      return `<div class="card" style="padding:4mm 2mm"><div class="pic" style="font-size:30mm">${x.emoji}</div>
+      return `<div class="card" style="padding:4mm 2mm"><div class="pic" style="font-size:30mm">${picturePrint(x.picture)}</div>
         <div style="font-size:10mm;margin-top:3mm;white-space:nowrap"><span class="blank"></span>${esc(p.slice(1).join(""))}</div>
         <div style="font-size:3.6mm;color:#888;margin-top:2mm">${"👏 ".repeat(p.length).trim()}</div></div>`;
     })
@@ -259,7 +260,7 @@ function colorear(f: Ficha): string {
       <text x="34" y="${hasTail(l.lower) ? 72 : 96}" text-anchor="middle" font-family="script" font-weight="700" font-size="${hasTail(l.lower) ? 78 : 92}" fill="#fff" paint-order="stroke" stroke="#1f2a44" stroke-width="1">${esc(l.lower)}</text>
     </svg></div>
   <div style="display:flex;align-items:center;gap:10mm;margin-top:6mm">
-    <svg width="95mm" height="92mm" viewBox="0 0 95 95"><text x="47.5" y="80" text-anchor="middle" font-family="emoji" font-size="84" fill="none" stroke="#1f2a44" stroke-width="0.45">${word.emoji}</text></svg>
+    <svg width="95mm" height="92mm" viewBox="0 0 95 95"><text x="47.5" y="80" text-anchor="middle" font-family="emoji" font-size="84" fill="none" stroke="#1f2a44" stroke-width="0.45">${pictureEmoji(word.picture)}</text></svg>
     <div><div style="font-size:4.4mm;color:#555">${esc(word.withArticle)}</div><div style="font-size:12mm">${esc(word.word.toLowerCase())}</div><div class="cur-es" style="font-size:12mm;line-height:1.8">${esc(word.word.toLowerCase())}</div></div></div>`;
 }
 
@@ -268,7 +269,7 @@ function palabras(f: Ficha): string {
   const list = letterWords(l);
   return list
     .map(
-      (x) => `<div style="display:flex;align-items:center;gap:5mm;margin:1mm 0 0"><span class="emoji" style="font-size:12mm">${x.emoji}</span>
+      (x) => `<div style="display:flex;align-items:center;gap:5mm;margin:1mm 0 0"><span class="emoji" style="font-size:12mm">${picturePrint(x.picture)}</span>
         <span style="font-size:7mm">${esc(x.word.toLowerCase())}</span><span style="font-size:4mm;color:#777">(${esc(x.withArticle)})</span></div>${cursiveRows([x.word.toLowerCase()], 3.2)}`,
     )
     .join("");
@@ -337,7 +338,7 @@ function color(f: Ficha): string {
       <div style="width:18mm;height:18mm;border-radius:50%;background:${c.hex};border:0.35mm solid #1f2a44"></div>
       <div style="font-size:12mm;font-weight:700;color:${c.hex === "#FDD835" ? "#b89a00" : c.hex}">${esc(c.name)}${c.alt ? `<span style="font-size:6mm;font-weight:400;color:#555"> (${esc(c.alt)})</span>` : ""}</div>
       <div class="cur-es" style="font-size:12mm;line-height:1.8">${esc(c.name)}</div></div>
-    <svg width="${W}mm" height="140mm" viewBox="0 0 ${W} 140"><text x="${W / 2}" y="122" text-anchor="middle" font-family="emoji" font-size="128" fill="none" stroke="#1f2a44" stroke-width="0.5">${c.thing.emoji}</text></svg>
+    <svg width="${W}mm" height="140mm" viewBox="0 0 ${W} 140"><text x="${W / 2}" y="122" text-anchor="middle" font-family="emoji" font-size="128" fill="none" stroke="#1f2a44" stroke-width="0.5">${pictureEmoji(c.thing.picture)}</text></svg>
     <p style="font-size:4.6mm;margin:0 0 1mm">${esc(c.thing.withArticle.charAt(0).toUpperCase() + c.thing.withArticle.slice(1))} ${c.thing.withArticle.startsWith("las ") ? "son" : "es"} de color ${esc(colourLabel(c))}. Escribe la palabra:</p>
     ${cursiveRows([c.name], 3.2, 3)}`;
 }
@@ -368,7 +369,7 @@ function silabas(f: Ficha): string {
   const mixedLine = () => shuffle([...s.syllables, ...s.syllables.slice(0, Math.max(0, 5 - s.syllables.length))], rand).join("&nbsp;&nbsp;&nbsp;");
   const mixed = [mixedLine(), mixedLine()].map((line) => `<p style="font-size:9mm;margin:2.5mm 0;letter-spacing:0.3mm">${line}</p>`).join("");
   const words = `<div class="grid" style="grid-template-columns:repeat(${Math.min(s.words.length, 4)},1fr);gap:4mm;margin-top:3mm">${s.words
-    .map((x) => `<div class="card"><div class="pic" style="font-size:18mm">${x.emoji}</div><div style="font-size:7.5mm;margin-top:2mm;white-space:nowrap">${x.word.split("|").map((p) => `<span class="syl">${esc(p)}</span>`).join("")}</div></div>`)
+    .map((x) => `<div class="card"><div class="pic" style="font-size:18mm">${picturePrint(x.picture)}</div><div style="font-size:7.5mm;margin-top:2mm;white-space:nowrap">${x.word.split("|").map((p) => `<span class="syl">${esc(p)}</span>`).join("")}</div></div>`)
     .join("")}</div>`;
   const toWrite = s.syllables.length >= 3 ? [s.syllables[0], s.syllables[2]] : s.syllables.slice(0, 2);
   const xh = 3.2;

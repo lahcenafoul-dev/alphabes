@@ -3,6 +3,7 @@ import { Link } from "@/i18n/navigation";
 import { absoluteUrl, alternatesFor } from "@/lib/i18n/routes";
 import { buildBreadcrumbJsonLd } from "@/lib/json-ld";
 import { portugueseGames } from "@/lib/jogos-pt";
+import { IconTile, InlineIcon } from "@/components/UiIcon";
 
 const title = "Jogos educativos para aprender o alfabeto e as sílabas";
 const description =
@@ -58,9 +59,7 @@ export default function GamesPt() {
       <div className="mt-8 grid sm:grid-cols-2 md:grid-cols-3 gap-5">
         {portugueseGames.map((g) => (
           <div key={g.slug} className="flex flex-col rounded-block border border-chalkboard/10 p-6 shadow-block">
-            <p className="text-4xl" aria-hidden="true">
-              {g.emoji}
-            </p>
+            <IconTile name={g.icon} className="h-14 w-14" />
             <h2 className="mt-3 font-display font-bold text-lg">{g.title}</h2>
             <p className="mt-2 text-sm text-chalkboard/70">{g.description}</p>
             <div className="mt-auto pt-4 flex items-center justify-between gap-2">
@@ -76,7 +75,8 @@ export default function GamesPt() {
                 href={{ pathname: "/games/[slug]", params: { slug: g.slug } }}
                 className="shrink-0 rounded-block bg-chalkboard text-paper font-display font-bold px-4 py-2 text-sm shadow-block hover:shadow-blockHover transition"
               >
-                ▶ Jogar
+                <InlineIcon name="play" className="fill-current" />
+                Jogar
               </Link>
             </div>
           </div>
