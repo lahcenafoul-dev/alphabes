@@ -241,11 +241,11 @@ const THEME_CATEGORIES: FicheCategory[] = [
     slug: "nombres",
     group: "themes",
     name: "Les nombres",
-    description: "Les nombres de 0 à 10 : écrire le chiffre, colorier la quantité, écrire le mot en cursive.",
+    description: "Les nombres de 0 à 10 : repasser le chiffre, compter les dessins, le montrer avec ses doigts et lire le mot.",
     intro:
-      "Une fiche par nombre, de zéro à dix : le chiffre à repasser, la quantité à colorier, et le nombre écrit en lettres à recopier en cursive.",
+      "Une fiche par nombre, de zéro à dix : le grand chiffre à repasser entouré d'autant de dessins à compter, la main qui montre le nombre avec ses doigts, le nombre écrit en lettres, puis le chiffre et le mot à repasser.",
     level: "Moyenne section à CP",
-    skills: ["Écrire les chiffres", "Quantités", "Écriture cursive"],
+    skills: ["Écrire les chiffres", "Compter", "Lire les nombres"],
   },
   {
     slug: "formes",
@@ -346,7 +346,15 @@ function buildFiches(): Fiche[] {
 
   const nombres = theme("nombres");
   NUMBERS.forEach((word, n) => {
-    out.push({ ...common(nombres, `nombre-${n}`), label: `Le nombre ${n}`, tile: String(n), title: `Le nombre ${n} (${word}) : écrire et colorier`, description: `Fiche gratuite sur le nombre ${n} : le chiffre à repasser, ${n === 0 ? "rien à colorier (zéro !)" : `${n} dessin${n > 1 ? "s" : ""} à colorier`} et le mot « ${word} » à écrire en cursive.`, consigne: n === 0 ? `Repasse le chiffre 0. Zéro, c'est rien du tout : ne colorie aucun ballon !` : `Repasse le chiffre ${n}, puis colorie ${n} ballon${n > 1 ? "s" : ""}.` });
+    const s = n > 1 ? "s" : "";
+    out.push({
+      ...common(nombres, `nombre-${n}`),
+      label: `Le nombre ${n}`,
+      tile: String(n),
+      title: `Le nombre ${n} (${word}) : repasser et compter`,
+      description: `Fiche gratuite sur le nombre ${n} : le grand chiffre à repasser, ${n === 0 ? "un nid vide (zéro, c'est rien !)" : `${n} dessin${s} à compter, ${n} doigt${s} à montrer`} et le mot « ${word} » à repasser.`,
+      consigne: n === 0 ? "Repasse le 0. Zéro, c'est rien du tout : le nid est vide et la main est fermée !" : `${n === 1 ? "Regarde le dessin" : `Compte les ${n} dessins`}, montre ${n} doigt${s}, puis repasse le chiffre ${n} et le mot « ${word} ».`,
+    });
   });
   const formes = theme("formes");
   for (const s of SHAPES) {

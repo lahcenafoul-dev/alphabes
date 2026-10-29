@@ -5,7 +5,7 @@
 // emoji's outline. The website shows the same words with
 // components/WordIllustration.tsx; the data only stores the key.
 import { existsSync, readdirSync } from "fs";
-import { join } from "path";
+import { basename, join } from "path";
 import sharp from "sharp";
 
 const PICTURE_EMOJI: Record<string, string> = {
@@ -412,11 +412,15 @@ async function cartoonJpegs(file: string): Promise<{ small: string; hero: string
 /**
  * Loads every cartoon in public/words/ as a small JPEG, and as a large one
  * for pictureHero(). Await it before picturePrint() or pictureHero().
+ * Also loads the counting animals of the number sheets (public/counting/,
+ * keys "count-<n>-<animal>"), which are not word pictures.
  */
 export async function preparePictures(): Promise<void> {
-  const dir = join(process.cwd(), "public", "words");
-  const keys = existsSync(dir) ? readdirSync(dir).filter((f) => f.endsWith(".webp")).map((f) => f.slice(0, -".webp".length)) : [];
-  const all = await Promise.all(keys.map(async (k) => [k, await cartoonJpegs(join(dir, `${k}.webp`))] as const));
+  const files = ["words", "counting"].flatMap((d) => {
+    const dir = join(process.cwd(), "public", d);
+    return existsSync(dir) ? readdirSync(dir).filter((f) => f.endsWith(".webp")).map((f) => join(dir, f)) : [];
+  });
+  const all = await Promise.all(files.map(async (f) => [basename(f, ".webp"), await cartoonJpegs(f)] as const));
   photos = new Map(all.map(([k, j]) => [k, j.small]));
   heroes = new Map(all.map(([k, j]) => [k, j.hero]));
 }

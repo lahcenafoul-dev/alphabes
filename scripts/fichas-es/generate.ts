@@ -19,6 +19,7 @@ import { dirname, join } from "path";
 import { chromium, type Page } from "@playwright/test";
 import { preparePictures } from "../picture-emoji";
 import { TRACING_CSS } from "../tracing-layout";
+import { NUMBERS_CSS } from "../numbers-layout";
 import { fichaPacks, fichas, type Ficha } from "../../lib/fichas-es";
 import { layoutFills } from "../fiches-fr/templates";
 import { PAGE_CSS_ES, fichaBody, pageHtml } from "./templates";
@@ -49,6 +50,7 @@ ${fontFace("emoji", FONTS_SHARED, "NotoEmoji-Regular.ttf")}
 ${fontFace("display", FONTS_EN, "Baloo2-Variable.ttf", "400 800")}
 ${PAGE_CSS_ES}
 ${TRACING_CSS}
+${NUMBERS_CSS}
 </style>
 <script>/* tsx wraps functions in __name(); layoutFills runs here, so define it. */ var __name = (f) => f;</script>
 </head><body></body></html>`;

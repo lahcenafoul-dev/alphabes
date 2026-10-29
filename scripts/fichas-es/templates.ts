@@ -24,7 +24,6 @@ import {
 import {
   BLUE_LINE,
   LIGHT_LINE,
-  OUTLINE,
   PAGE_CSS,
   W,
   esc,
@@ -37,6 +36,7 @@ import {
 } from "../fiches-fr/templates";
 import { pictureEmoji, picturePrint } from "../picture-emoji";
 import { tracingSheet } from "../tracing-layout";
+import { COUNTED, numberSheet } from "../numbers-layout";
 
 export const PAGE_CSS_ES = `${PAGE_CSS}
 .cur-es { font-family: cursive-es }
@@ -49,7 +49,7 @@ const plain = (word: string) => word.replace(/\|/g, "");
 
 export function pageHtml(ficha: Ficha, body: string): string {
   // Tracing sheets are a whole page in the shared layout (trazo()).
-  if (ficha.category === "trazo-de-letras") return body;
+  if (ficha.category === "trazo-de-letras" || ficha.category === "numeros") return body;
   const category = getFichaCategory(ficha.category)!;
   return `<section class="page">
   <header class="band"><span class="brand">AlphaBes.com</span><span class="kind">${esc(category.name)}</span></header>
@@ -86,15 +86,6 @@ function dobleRaya(rows: number, xh: number): Ruling {
     lines.push(...rowLines(b - 2 * xh, b - xh, b, b + xh));
   }
   return { height, baseline, svg: svgBox(height, lines) };
-}
-
-/** Cuadrícula: squares of `cell` mm, `rows` cells high. */
-function cuadricula(rows: number, cell: number): { svg: (content: string) => string; height: number } {
-  const height = rows * cell;
-  const lines: string[] = [];
-  for (let y = 0; y <= height + 0.01; y += cell) lines.push(`<line x1="0" x2="${W}" y1="${y}" y2="${y}" stroke="${LIGHT_LINE}" stroke-width="0.2"/>`);
-  for (let x = 0; x <= W + 0.01; x += cell) lines.push(`<line x1="${x}" x2="${x}" y1="0" y2="${height}" stroke="${LIGHT_LINE}" stroke-width="0.2"/>`);
-  return { height, svg: svgBox(height, lines) };
 }
 
 /** Cursive rows on doble raya: each word as model + grey copies, then (optionally) model + empty row. */
@@ -266,42 +257,21 @@ function palabras(f: Ficha): string {
 function numero(f: Ficha): string {
   const n = Number(f.slug.split("-")[1]);
   const word = NUMBERS[n];
-  const cell = 6;
-  // Three rows, each three squares: digits two squares high standing on a
-  // grid line, then a free square.
-  const grid = cuadricula(9, cell);
-  const size = 16.5; // Andika digits are 0.725 em: two squares high
-  const rows = [0, 1, 2]
-    .map((i) =>
-      fill({
-        text: String(n),
-        x0: cell,
-        x1: W - cell,
-        y: (i * 3 + 2) * cell + 0.5,
-        size,
-        font: "script",
-        kind: i === 0 ? "model-outline" : i === 1 ? "outline" : "model-blank",
-        gap: cell,
-      }),
-    )
-    .join("");
-  const total = n > 10 ? 20 : 10;
-  const perRow = total / 2;
-  const step = W / perRow;
-  const balloonSize = n > 10 ? 15 : 24;
-  const balloons = Array.from({ length: total }, (_, i) => {
-    const x = step / 2 + (i % perRow) * step;
-    const y = i < perRow ? balloonSize + 2 : 2 * balloonSize + 8;
-    return `<text x="${x}" y="${y}" text-anchor="middle" font-family="emoji" font-size="${balloonSize}" fill="none" stroke="#1f2a44" stroke-width="0.35">🎈</text>`;
-  }).join("");
-  return `<div style="display:flex;align-items:center;gap:12mm">
-      <svg width="70mm" height="56mm" viewBox="0 0 70 56"><text x="35" y="50" text-anchor="middle" font-family="script" font-weight="700" font-size="${n > 9 ? 54 : 66}" fill="#fff" paint-order="stroke" stroke="${OUTLINE}" stroke-width="1">${n}</text></svg>
-      <div><div style="font-size:12mm">${esc(word)}</div><div class="cur-es" style="font-size:12mm;line-height:1.8">${esc(word)}</div></div></div>
-    <p style="font-size:4.6mm;margin:2mm 0 1mm">Repasa el número y escríbelo en la cuadrícula:</p>
-    ${grid.svg(rows)}
-    <p style="font-size:4.6mm;margin:4mm 0 1mm">Colorea <strong>${n === 0 ? "ningún globo" : `${n} ${n === 1 ? "globo" : "globos"}`}</strong>:</p>
-    <svg width="${W}mm" height="${2 * balloonSize + 12}mm" viewBox="0 0 ${W} ${2 * balloonSize + 12}">${balloons}</svg>
-    ${cursiveRows([word], 3.2, 3)}`;
+  return numberSheet({
+    page: "a4",
+    badge: String(n),
+    title: `El número ${n}`,
+    name: "Nombre:",
+    date: "Fecha:",
+    hero: { n, word: word.toUpperCase(), picture: COUNTED[n], handCaption: `${n} ${n === 1 ? "dedo" : "dedos"}`, wordCaption: "En letras" },
+    rows: [
+      { label: `Repasa el número ${n}`, text: String(n), kind: "letter" },
+      { label: "", text: String(n), kind: "letter" },
+      { label: `Repasa la palabra ${word}`, text: word, kind: "word" },
+      { label: "Ahora escribe tú solo", text: "", kind: "own" },
+    ],
+    footer: ["Ficha gratis · alphabes.com/es/fichas", getFichaCategory(f.category)!.level],
+  });
 }
 
 function figura(f: Ficha): string {

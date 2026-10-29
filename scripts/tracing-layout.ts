@@ -114,6 +114,8 @@ export type TracingSheet = {
   picture: string;
   rows: TracingRow[];
   footer: [string, string];
+  /** Replaces the hero (pair, "is for" and picture), e.g. the number sheets (scripts/numbers-layout.ts). */
+  hero?: string;
 };
 
 /** One handwriting row: capital line, dashed x-height and baseline, with room above. */
@@ -162,13 +164,13 @@ export function tracingSheet(s: TracingSheet): string {
     <span class="tp-brand">AlphaBes</span>
   </div>
   <div class="tp-who"><span>${esc(s.name)}</span><span class="tp-date">${esc(s.date)}</span></div>
-  <div class="tp-hero">
+  ${s.hero ?? `<div class="tp-hero">
     <div class="tp-display">
       <div class="tp-pair${s.pairCursive ? " tp-cursive" : ""}">${esc(s.pair)}</div>
       <div class="tp-isfor">${esc(s.isFor)}${colouredWord(s.word, s.letter, colour)}</div>
     </div>
     ${picture}
-  </div>
+  </div>`}
   <div class="tp-rows">${rows}</div>
   <footer class="tp-footer"><span>${esc(s.footer[0])}</span><span>${esc(s.footer[1])}</span></footer>
 </section>`;
