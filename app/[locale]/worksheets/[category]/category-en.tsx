@@ -18,6 +18,7 @@ import PrintButton from "@/components/worksheets/PrintButton";
 import StaticWorksheetButtons from "@/components/worksheets/StaticWorksheetButtons";
 import { getStaticPdfOverride } from "@/lib/static-pdf-overrides";
 import { THUMB_WIDTH, pdfPreview, previewThumb } from "@/lib/preview-thumb";
+import { versioned } from "@/lib/asset-versions";
 import { letterHowTo, staticHowTo } from "@/lib/worksheet-howto";
 import { staticWorksheetCategories, getStaticWorksheetCategory } from "@/lib/static-worksheet-categories";
 import { getStaticWorksheetBySlug, getStaticWorksheetsByCategory, getAllStaticWorksheetSlugs } from "@/lib/static-worksheets-data";
@@ -66,7 +67,7 @@ export function categoryMetadataEn(slug: string): Metadata {
         title: worksheet.seoTitle,
         description: worksheet.description,
         url: `${BASE_URL}/worksheets/${worksheet.slug}`,
-        ...(staticPdf && { images: [BASE_URL + pdfPreview(staticPdf)] }),
+        ...(staticPdf && { images: [BASE_URL + versioned(pdfPreview(staticPdf))] }),
       },
     };
   }
@@ -90,7 +91,7 @@ export function categoryMetadataEn(slug: string): Metadata {
         title: staticWorksheet.seoTitle,
         description: staticWorksheet.description,
         url: `${BASE_URL}/worksheets/${staticWorksheet.slug}`,
-        images: [BASE_URL + pdfPreview(staticWorksheet.pdfPath)],
+        images: [BASE_URL + versioned(pdfPreview(staticWorksheet.pdfPath))],
       },
     };
   }
@@ -294,7 +295,7 @@ function WorksheetDetailView({ slug }: { slug: string }) {
     url: `${BASE_URL}/worksheets/${worksheet.slug}`,
     skills: worksheet.skills,
     ageLevelLabel: worksheet.ageLevelLabel,
-    ...(staticPdf && { image: BASE_URL + pdfPreview(staticPdf) }),
+    ...(staticPdf && { image: BASE_URL + versioned(pdfPreview(staticPdf)) }),
   });
 
   return (
@@ -347,8 +348,8 @@ function WorksheetDetailView({ slug }: { slug: string }) {
       </section>
 
       <div className="mt-6 flex flex-wrap gap-4 print:hidden">
-        <PrintButton staticPdfUrl={staticPdf} />
-        <PdfDownloadButton worksheet={worksheet} />
+        <PrintButton staticPdfUrl={staticPdf && versioned(staticPdf)} />
+        <PdfDownloadButton worksheet={worksheet} staticPdfUrl={staticPdf && versioned(staticPdf)} />
       </div>
 
       <HowToUse text={letterHowTo(worksheet.letter)} />
@@ -455,7 +456,7 @@ function StaticWorksheetDetailView({ slug }: { slug: string }) {
     url: `${BASE_URL}/worksheets/${worksheet.slug}`,
     skills: worksheet.skills,
     ageLevelLabel: worksheet.ageLevelLabel,
-    image: BASE_URL + pdfPreview(worksheet.pdfPath),
+    image: BASE_URL + versioned(pdfPreview(worksheet.pdfPath)),
   });
 
   return (
@@ -494,7 +495,7 @@ function StaticWorksheetDetailView({ slug }: { slug: string }) {
         <WorksheetPreviewImage pdf={worksheet.pdfPath} title={worksheet.title} />
       </section>
 
-      <StaticWorksheetButtons pdfUrl={worksheet.pdfPath} slug={worksheet.slug} />
+      <StaticWorksheetButtons pdfUrl={versioned(worksheet.pdfPath)} slug={worksheet.slug} />
 
       <HowToUse text={staticHowTo(worksheet.slug)} />
 
@@ -526,8 +527,8 @@ function WorksheetPreviewImage({ pdf, title }: { pdf: string; title: string }) {
     // isn't set up on Workers, so a plain <img> with a smaller copy.
     // eslint-disable-next-line @next/next/no-img-element
     <img
-      src={src}
-      srcSet={`${previewThumb(src)} ${THUMB_WIDTH}w, ${src} 476w`}
+      src={versioned(src)}
+      srcSet={`${versioned(previewThumb(src))} ${THUMB_WIDTH}w, ${versioned(src)} 476w`}
       sizes="(min-width: 640px) 476px, 90vw"
       alt={`Preview of the worksheet: ${title}`}
       width={476}

@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "prisma generate && next build",
+    "build": "prisma generate && node scripts/asset-versions.mjs && next build",
     "start": "next start",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
@@ -22,6 +22,7 @@
     "bundles:en": "tsx scripts/bundles-en/generate.ts",
     "previews:thumbs": "node scripts/preview-thumbs.mjs",
     "previews:en": "node scripts/previews-en.mjs",
+    "assets:versions": "node scripts/asset-versions.mjs",
     "tts:histoires": "tsx scripts/tts-histoires.ts",
     "postinstall": "prisma generate",
     "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",

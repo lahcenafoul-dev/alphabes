@@ -17,6 +17,7 @@ import { SITE_URL, absoluteUrl, alternatesFor } from "@/lib/i18n/routes";
 import { buildBreadcrumbJsonLd } from "@/lib/json-ld";
 import { getSpanishLetter } from "@/lib/letters-es";
 import { getSpanishSyllablePage } from "@/lib/silabas-es";
+import { versioned } from "@/lib/asset-versions";
 
 export function categoryMetadataEs(slug: string): Metadata {
   const url = absoluteUrl("es", "/worksheets/[category]", { category: slug });
@@ -29,7 +30,7 @@ export function categoryMetadataEs(slug: string): Metadata {
   const ficha = getFicha(slug);
   if (!ficha) return {};
   const title = `${ficha.title} | Ficha PDF gratis`;
-  return { title, description: ficha.description, alternates, openGraph: { title, description: ficha.description, url, images: [SITE_URL + ficha.preview] } };
+  return { title, description: ficha.description, alternates, openGraph: { title, description: ficha.description, url, images: [SITE_URL + versioned(ficha.preview)] } };
 }
 
 export default function CategoryEs({ slug }: { slug: string }) {
@@ -152,8 +153,8 @@ function FichaView({ ficha }: { ficha: Ficha }) {
     learningResourceType: "Worksheet",
     teaches: ficha.skills.join(", "),
     isAccessibleForFree: true,
-    image: SITE_URL + ficha.preview,
-    encoding: { "@type": "MediaObject", contentUrl: SITE_URL + ficha.pdf, encodingFormat: "application/pdf" },
+    image: SITE_URL + versioned(ficha.preview),
+    encoding: { "@type": "MediaObject", contentUrl: SITE_URL + versioned(ficha.pdf), encodingFormat: "application/pdf" },
   };
 
   return (

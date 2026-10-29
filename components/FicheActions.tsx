@@ -1,5 +1,6 @@
 import ListenButton from "@/components/ListenButton";
 import { getFiche } from "@/lib/fiches-fr";
+import { versioned } from "@/lib/asset-versions";
 import { InlineIcon } from "@/components/UiIcon";
 
 const link =
@@ -17,11 +18,11 @@ export default function FicheActions({ slug, spoken }: { slug: string; spoken: s
         <InlineIcon name="listen" />
         Écouter
       </ListenButton>
-      <a href={trace.pdf} download={`fiche-lettre-${slug}.pdf`} className={`${link} bg-crayon-green`}>
+      <a href={versioned(trace.pdf)} download={`fiche-lettre-${slug}.pdf`} className={`${link} bg-crayon-green`}>
         <InlineIcon name="download" />
         Fiche de tracé (PDF)
       </a>
-      <a href={cursive.pdf} download={`fiche-cursive-lettre-${slug}.pdf`} className={`${link} bg-crayon-purple`}>
+      <a href={versioned(cursive.pdf)} download={`fiche-cursive-lettre-${slug}.pdf`} className={`${link} bg-crayon-purple`}>
         <InlineIcon name="download" />
         Fiche en cursive (PDF)
       </a>

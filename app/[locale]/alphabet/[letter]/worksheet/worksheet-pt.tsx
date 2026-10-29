@@ -9,6 +9,7 @@ import { CEDILHA_SLUG, getPortugueseLetter } from "@/lib/letters-pt";
 import { getAtividade } from "@/lib/atividades-pt";
 import WordIllustration from "@/components/WordIllustration";
 import { InlineIcon } from "@/components/UiIcon";
+import { versioned } from "@/lib/asset-versions";
 
 export function worksheetMetadataPt(param: string): Metadata {
   const l = getPortugueseLetter(param);
@@ -113,15 +114,15 @@ export default function WorksheetPt({ letter }: { letter: string }) {
           <InlineIcon name="listen" />
           Ouvir
         </ListenButton>
-        <a href={bastao.pdf} download={`atividade-letra-bastao-${l.slug}.pdf`} className="rounded-block bg-crayon-green text-white px-6 py-3 font-bold shadow-block hover:shadow-blockHover transition">
+        <a href={versioned(bastao.pdf)} download={`atividade-letra-bastao-${l.slug}.pdf`} className="rounded-block bg-crayon-green text-white px-6 py-3 font-bold shadow-block hover:shadow-blockHover transition">
           <InlineIcon name="download" />
           Letra bastão (PDF)
         </a>
-        <a href={forma.pdf} download={`atividade-letra-de-forma-${l.slug}.pdf`} className="rounded-block bg-crayon-green text-white px-6 py-3 font-bold shadow-block hover:shadow-blockHover transition">
+        <a href={versioned(forma.pdf)} download={`atividade-letra-de-forma-${l.slug}.pdf`} className="rounded-block bg-crayon-green text-white px-6 py-3 font-bold shadow-block hover:shadow-blockHover transition">
           <InlineIcon name="download" />
           Letra de forma (PDF)
         </a>
-        <a href={cursiva.pdf} download={`atividade-cursiva-${l.slug}.pdf`} className="rounded-block bg-crayon-purple text-white px-6 py-3 font-bold shadow-block hover:shadow-blockHover transition">
+        <a href={versioned(cursiva.pdf)} download={`atividade-cursiva-${l.slug}.pdf`} className="rounded-block bg-crayon-purple text-white px-6 py-3 font-bold shadow-block hover:shadow-blockHover transition">
           <InlineIcon name="download" />
           Letra cursiva (PDF)
         </a>

@@ -9,6 +9,7 @@ import { getSpanishLetter } from "@/lib/letters-es";
 import { getFicha } from "@/lib/fichas-es";
 import WordIllustration from "@/components/WordIllustration";
 import { InlineIcon } from "@/components/UiIcon";
+import { versioned } from "@/lib/asset-versions";
 
 export function worksheetMetadataEs(param: string): Metadata {
   const l = getSpanishLetter(param);
@@ -101,11 +102,11 @@ export default function WorksheetEs({ letter }: { letter: string }) {
           <InlineIcon name="listen" />
           Escuchar
         </ListenButton>
-        <a href={trazo.pdf} download={`ficha-letra-${l.slug}.pdf`} className="rounded-block bg-crayon-green text-white px-6 py-3 font-bold shadow-block hover:shadow-blockHover transition">
+        <a href={versioned(trazo.pdf)} download={`ficha-letra-${l.slug}.pdf`} className="rounded-block bg-crayon-green text-white px-6 py-3 font-bold shadow-block hover:shadow-blockHover transition">
           <InlineIcon name="download" />
           Ficha de trazo (PDF)
         </a>
-        <a href={cursiva.pdf} download={`ficha-cursiva-letra-${l.slug}.pdf`} className="rounded-block bg-crayon-purple text-white px-6 py-3 font-bold shadow-block hover:shadow-blockHover transition">
+        <a href={versioned(cursiva.pdf)} download={`ficha-cursiva-letra-${l.slug}.pdf`} className="rounded-block bg-crayon-purple text-white px-6 py-3 font-bold shadow-block hover:shadow-blockHover transition">
           <InlineIcon name="download" />
           Ficha en cursiva (PDF)
         </a>

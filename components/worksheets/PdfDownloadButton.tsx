@@ -3,12 +3,11 @@
 import { renderWorksheetPdf, worksheetPictureWords } from "@/lib/pdf";
 import { loadWordPhotos } from "@/lib/pdf/photos";
 import type { WorksheetRecord } from "@/lib/worksheets-data";
-import { getStaticPdfOverride } from "@/lib/static-pdf-overrides";
 import { InlineIcon } from "@/components/UiIcon";
 
-export default function PdfDownloadButton({ worksheet }: { worksheet: WorksheetRecord }) {
-  const staticPdfUrl = getStaticPdfOverride(worksheet.slug);
-
+// staticPdfUrl: the pre-rendered PDF (lib/static-pdf-overrides.ts) with its
+// version query, from the server; without it the PDF is made here with jsPDF.
+export default function PdfDownloadButton({ worksheet, staticPdfUrl }: { worksheet: WorksheetRecord; staticPdfUrl?: string | null }) {
   const download = async () => {
     if (staticPdfUrl) {
       window.location.href = staticPdfUrl;

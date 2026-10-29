@@ -17,6 +17,7 @@ import { SITE_URL, absoluteUrl, alternatesFor } from "@/lib/i18n/routes";
 import { buildBreadcrumbJsonLd } from "@/lib/json-ld";
 import { CEDILHA_SLUG, getPortugueseLetter } from "@/lib/letters-pt";
 import { getPortugueseSyllablePage } from "@/lib/silabas-pt";
+import { versioned } from "@/lib/asset-versions";
 
 export function categoryMetadataPt(slug: string): Metadata {
   const url = absoluteUrl("pt", "/worksheets/[category]", { category: slug });
@@ -29,7 +30,7 @@ export function categoryMetadataPt(slug: string): Metadata {
   const a = getAtividade(slug);
   if (!a) return {};
   const title = `${a.title} | Atividade em PDF grátis`;
-  return { title, description: a.description, alternates, openGraph: { title, description: a.description, url, images: [SITE_URL + a.preview] } };
+  return { title, description: a.description, alternates, openGraph: { title, description: a.description, url, images: [SITE_URL + versioned(a.preview)] } };
 }
 
 export default function CategoryPt({ slug }: { slug: string }) {
@@ -153,8 +154,8 @@ function AtividadeView({ atividade: a }: { atividade: Atividade }) {
     learningResourceType: "Worksheet",
     teaches: a.skills.join(", "),
     isAccessibleForFree: true,
-    image: SITE_URL + a.preview,
-    encoding: { "@type": "MediaObject", contentUrl: SITE_URL + a.pdf, encodingFormat: "application/pdf" },
+    image: SITE_URL + versioned(a.preview),
+    encoding: { "@type": "MediaObject", contentUrl: SITE_URL + versioned(a.pdf), encodingFormat: "application/pdf" },
   };
 
   return (

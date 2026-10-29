@@ -16,6 +16,7 @@ import { SITE_URL, absoluteUrl, alternatesFor } from "@/lib/i18n/routes";
 import { buildBreadcrumbJsonLd } from "@/lib/json-ld";
 import { getFrenchLetter } from "@/lib/letters-fr";
 import { getFrenchSound } from "@/lib/sons-fr";
+import { versioned } from "@/lib/asset-versions";
 
 export function categoryMetadataFr(slug: string): Metadata {
   const url = absoluteUrl("fr", "/worksheets/[category]", { category: slug });
@@ -28,7 +29,7 @@ export function categoryMetadataFr(slug: string): Metadata {
   const fiche = getFiche(slug);
   if (!fiche) return {};
   const title = `${fiche.title} | Fiche PDF gratuite`;
-  return { title, description: fiche.description, alternates, openGraph: { title, description: fiche.description, url, images: [SITE_URL + fiche.preview] } };
+  return { title, description: fiche.description, alternates, openGraph: { title, description: fiche.description, url, images: [SITE_URL + versioned(fiche.preview)] } };
 }
 
 export default function CategoryFr({ slug }: { slug: string }) {
@@ -152,8 +153,8 @@ function FicheView({ fiche }: { fiche: Fiche }) {
     learningResourceType: "Worksheet",
     teaches: fiche.skills.join(", "),
     isAccessibleForFree: true,
-    image: SITE_URL + fiche.preview,
-    encoding: { "@type": "MediaObject", contentUrl: SITE_URL + fiche.pdf, encodingFormat: "application/pdf" },
+    image: SITE_URL + versioned(fiche.preview),
+    encoding: { "@type": "MediaObject", contentUrl: SITE_URL + versioned(fiche.pdf), encodingFormat: "application/pdf" },
   };
 
   return (
