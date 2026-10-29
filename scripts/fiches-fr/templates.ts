@@ -23,10 +23,10 @@ import {
 } from "../../lib/fiches-fr";
 import { pictureEmoji, picturePrint } from "../picture-emoji";
 import { tracingSheet } from "../tracing-layout";
+import { COUNTED, numberSheet } from "../numbers-layout";
 
 export const W = 180; // inner width, mm
 const GREY = "#b9b9b9";
-export const OUTLINE = "#8c9bab";
 export const BLUE_LINE = "#8fb3dc";
 export const LIGHT_LINE = "#cfe0f2";
 
@@ -40,7 +40,7 @@ export const esc = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;")
 
 export function pageHtml(fiche: Fiche, body: string): string {
   // Tracing sheets are a whole page in the shared layout (trace()).
-  if (fiche.category === "trace-des-lettres") return body;
+  if (fiche.category === "trace-des-lettres" || fiche.category === "nombres") return body;
   const category = getFicheCategory(fiche.category)!;
   return `<section class="page">
   <header class="band"><span class="brand">AlphaBes.com</span><span class="kind">${esc(category.name)}</span></header>
@@ -354,25 +354,21 @@ function mots(f: Fiche): string {
 function nombre(f: Fiche): string {
   const n = Number(f.slug.split("-")[1]);
   const word = NUMBERS[n];
-  const size = 21;
-  const g = guideRows(2, size, 25);
-  const balloons = Array.from({ length: 10 }, (_, i) => {
-    const x = 9 + (i % 5) * 36;
-    const y = i < 5 ? 26 : 58;
-    return `<text x="${x}" y="${y}" text-anchor="middle" font-family="emoji" font-size="24" fill="none" stroke="#1f2a44" stroke-width="0.35">🎈</text>`;
-  }).join("");
-  return `<div style="display:flex;align-items:center;gap:12mm">
-      <svg width="60mm" height="56mm" viewBox="0 0 60 56"><text x="30" y="50" text-anchor="middle" font-family="script" font-weight="700" font-size="66" fill="#fff" paint-order="stroke" stroke="${OUTLINE}" stroke-width="1">${n}</text></svg>
-      <div><div style="font-size:12mm">${esc(word)}</div><div class="cur" style="font-size:12mm;line-height:1.6">${esc(word)}</div></div></div>
-    ${g.svg(
-      [
-        fill({ text: String(n), x0: 2, x1: W - 2, y: g.baseline(0), size, font: "script", kind: "model-outline", gap: 8 }),
-        fill({ text: String(n), x0: 2, x1: W - 2, y: g.baseline(1), size, font: "script", kind: "model-blank", gap: 0 }),
-      ].join(""),
-    )}
-    <p style="font-size:4.6mm;margin:4mm 0 1mm">Colorie <strong>${n === 0 ? "aucun ballon" : `${n} ballon${n > 1 ? "s" : ""}`}</strong> :</p>
-    <svg width="${W}mm" height="64mm" viewBox="0 0 ${W} 64">${balloons}</svg>
-    ${wordRows([word], 3, 3)}`;
+  return numberSheet({
+    page: "a4",
+    badge: String(n),
+    title: `Le nombre ${n}`,
+    name: "Prénom :",
+    date: "Date :",
+    hero: { n, word: word.toUpperCase(), picture: COUNTED[n], handCaption: `${n} doigt${n > 1 ? "s" : ""}`, wordCaption: "En lettres" },
+    rows: [
+      { label: `Repasse le nombre ${n}`, text: String(n), kind: "letter" },
+      { label: "", text: String(n), kind: "letter" },
+      { label: `Repasse le mot ${word}`, text: word, kind: "word" },
+      { label: "Maintenant, écris tout seul", text: "", kind: "own" },
+    ],
+    footer: ["Fiche gratuite · alphabes.com/fr/fiches", getFicheCategory(f.category)!.level],
+  });
 }
 
 export function shapePath(slug: string, cx: number, cy: number, r: number): string {

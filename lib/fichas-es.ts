@@ -1,7 +1,7 @@
 // Spanish printable worksheets ("fichas"), the pages under /es/fichas.
 // Written for Spanish-speaking schools (docs/spanish-plan.md, D7 option B):
 // letra script (print) and letra cursiva (Playwrite MX) on four-line "doble
-// raya" guides, numbers on cuadrícula, syllables in the order of the método
+// raya" guides, numbers to trace and count, syllables in the order of the método
 // silábico. Every slug is Spanish-only: they don't mirror the English or the
 // French worksheets.
 //
@@ -276,11 +276,11 @@ const THEME_CATEGORIES: FichaCategory[] = [
     slug: "numeros",
     group: "temas",
     name: "Los números",
-    description: "Los números del 0 al 20 en cuadrícula: repasar el número, colorear la cantidad y escribir su nombre.",
+    description: "Los números del 0 al 20: repasar el número, contar los dibujos, mostrarlo con los dedos y leer su nombre.",
     intro:
-      "Una ficha por número, del cero al veinte: el número para repasar en cuadrícula, como en el cuaderno de matemáticas, la cantidad para colorear y el nombre del número para copiar en cursiva.",
+      "Una ficha por número, del cero al veinte: el número grande para repasar rodeado de tantos dibujos como indica, la mano que lo muestra con los dedos, su nombre en letras, y el número y la palabra para repasar.",
     level: "Preescolar a primero (4 a 7 años)",
-    skills: ["Escribir números", "Cantidades", "Cuadrícula"],
+    skills: ["Escribir números", "Contar", "Leer los números"],
   },
   {
     slug: "figuras",
@@ -428,9 +428,12 @@ function buildFichas(): Ficha[] {
     out.push({
       ...common(numeros, `numero-${n}`),
       label: `El número ${n}`,
-      title: `El número ${n} (${word}): escribir y colorear`,
-      description: `Ficha gratis del número ${n}: el número para repasar en cuadrícula, ${n === 0 ? "nada que colorear (¡cero!)" : `${n} ${n === 1 ? "globo" : "globos"} para colorear`} y la palabra «${word}» para escribir en cursiva.`,
-      consigna: n === 0 ? "Repasa el número 0. Cero es nada: ¡no colorees ningún globo!" : `Repasa el número ${n} en la cuadrícula y colorea ${n} ${n === 1 ? "globo" : "globos"}.`,
+      title: `El número ${n} (${word}): repasar y contar`,
+      description: `Ficha gratis del número ${n}: el número grande para repasar, ${n === 0 ? "un nido vacío (¡cero es nada!)" : `${n} ${n === 1 ? "dibujo" : "dibujos"} para contar, ${n <= 10 ? `${n} ${n === 1 ? "dedo" : "dedos"}` : `10 dedos y ${n - 10} más`} para mostrar`} y la palabra «${word}» para repasar.`,
+      consigna:
+        n === 0
+          ? "Repasa el 0. Cero es nada: ¡el nido está vacío y la mano, cerrada!"
+          : `${n === 1 ? "Mira el dibujo" : `Cuenta los ${n} dibujos`}, ${n <= 10 ? `muestra ${n} ${n === 1 ? "dedo" : "dedos"}` : `muestra 10 dedos y suma ${n - 10} más`}, y repasa el número ${n} y la palabra «${word}».`,
     });
   });
   const figuras = theme("figuras");

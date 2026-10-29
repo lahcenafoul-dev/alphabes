@@ -1,4 +1,4 @@
-// npm run fiches:fr [-- <filter>] [--no-packs] [--no-previews]
+// npm run fiches:fr [-- <filter>] [--no-packs] [--no-previews] [--packs=<slug,slug>]
 //
 // Renders the French worksheet PDFs listed in lib/fiches-fr.ts with Chromium
 // (Playwright), which shapes the cursive font properly (jsPDF can't join the
@@ -9,13 +9,16 @@
 // Pro download uploaded to the private R2 bucket, docs/paypal-plan.md)
 //
 // <filter> renders only worksheets whose slug contains it, or one of its
-// comma-separated parts (packs are skipped then). Re-run after changing a template or the catalogue, and commit the
-// files: the site serves them as static assets.
+// comma-separated parts (packs are skipped then, unless listed with
+// --packs=, which renders only those packs). Re-run after changing a
+// template or the catalogue, and commit the files: the site serves them as
+// static assets.
 import { mkdirSync, readFileSync, statSync } from "fs";
 import { dirname, join } from "path";
 import { chromium, type Page } from "@playwright/test";
 import { preparePictures } from "../picture-emoji";
 import { TRACING_CSS } from "../tracing-layout";
+import { NUMBERS_CSS } from "../numbers-layout";
 import { fichePacks, fiches, type Fiche } from "../../lib/fiches-fr";
 import { PAGE_CSS, ficheBody, layoutFills, pageHtml } from "./templates";
 
@@ -27,7 +30,8 @@ const BALOO = join(ROOT, "scripts", "worksheets-en", "fonts", "Baloo2-Variable.t
 
 const args = process.argv.slice(2);
 const filter = args.find((a) => !a.startsWith("--"));
-const withPacks = !filter && !args.includes("--no-packs");
+const onlyPacks = args.find((a) => a.startsWith("--packs="))?.slice(8).split(",");
+const withPacks = (!filter || !!onlyPacks) && !args.includes("--no-packs");
 const withPreviews = !args.includes("--no-previews");
 
 function fontFace(family: string, file: string, weight = 400): string {
@@ -43,6 +47,7 @@ ${fontFace("emoji", "NotoEmoji-Regular.ttf")}
 @font-face { font-family: "display"; font-weight: 400 800; src: url(data:font/ttf;base64,${readFileSync(BALOO).toString("base64")}) format("truetype") }
 ${PAGE_CSS}
 ${TRACING_CSS}
+${NUMBERS_CSS}
 </style>
 <script>/* tsx wraps functions in __name(); layoutFills runs here, so define it. */ var __name = (f) => f;</script>
 </head><body></body></html>`;
@@ -97,7 +102,8 @@ async function main() {
   if (withPacks) {
     const bySlug = new Map(fiches.map((f) => [f.slug, f]));
     let packTotal = 0;
-    for (const pack of fichePacks) {
+    const packs = fichePacks.filter((p) => !onlyPacks || onlyPacks.includes(p.slug));
+    for (const pack of packs) {
       const html = pack.fiches.map((slug) => {
         const f = bySlug.get(slug)!;
         return pageHtml(f, ficheBody(f));
@@ -107,7 +113,7 @@ async function main() {
       packTotal += kb(pdf);
       console.log(`  ${pack.slug}: ${pack.fiches.length} pages, ${kb(pdf)} KB`);
     }
-    console.log(`Packs: ${fichePacks.length} PDFs, ${packTotal} KB`);
+    console.log(`Packs: ${packs.length} PDFs, ${packTotal} KB`);
   }
 
   await browser.close();

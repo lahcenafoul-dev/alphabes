@@ -25,7 +25,6 @@ import {
 import {
   BLUE_LINE,
   LIGHT_LINE,
-  OUTLINE,
   PAGE_CSS,
   W,
   esc,
@@ -38,6 +37,7 @@ import {
 } from "../fiches-fr/templates";
 import { pictureEmoji, picturePrint } from "../picture-emoji";
 import { tracingSheet } from "../tracing-layout";
+import { COUNTED, numberSheet } from "../numbers-layout";
 
 export const PAGE_CSS_PT = `${PAGE_CSS}
 .cur-pt { font-family: cursive-pt }
@@ -50,7 +50,7 @@ const plain = (word: string) => word.replace(/\|/g, "");
 
 export function pageHtml(a: Atividade, body: string): string {
   // Tracing sheets are a whole page in the shared layout (tracingPage()).
-  if (a.category === "letra-bastao" || a.category === "letra-de-forma") return body;
+  if (a.category === "letra-bastao" || a.category === "letra-de-forma" || a.category === "numeros") return body;
   const category = getAtividadeCategory(a.category)!;
   return `<section class="page">
   <header class="band"><span class="brand">AlphaBes.com</span><span class="kind">${esc(category.name)}</span></header>
@@ -88,15 +88,6 @@ function caligrafia(rows: number, xh: number): Ruling {
     lines.push(...rowLines(b - 2.3 * xh, b - xh, b, b + 1.3 * xh));
   }
   return { height, baseline, svg: svgBox(height, lines) };
-}
-
-/** Quadriculado: squares of `cell` mm, `rows` cells high. */
-function quadriculado(rows: number, cell: number): { svg: (content: string) => string; height: number } {
-  const height = rows * cell;
-  const lines: string[] = [];
-  for (let y = 0; y <= height + 0.01; y += cell) lines.push(`<line x1="0" x2="${W}" y1="${y}" y2="${y}" stroke="${LIGHT_LINE}" stroke-width="0.2"/>`);
-  for (let x = 0; x <= W + 0.01; x += cell) lines.push(`<line x1="${x}" x2="${x}" y1="0" y2="${height}" stroke="${LIGHT_LINE}" stroke-width="0.2"/>`);
-  return { height, svg: svgBox(height, lines) };
 }
 
 /** Cursive rows on caligrafia lines: each word as model + grey copies, then (optionally) model + empty row. */
@@ -274,42 +265,21 @@ function palavras(a: Atividade): string {
 function numero(a: Atividade): string {
   const n = Number(a.slug.split("-")[1]);
   const word = NUMBERS[n];
-  const cell = 6;
-  // Three rows, each three squares: digits two squares high standing on a
-  // grid line, then a free square.
-  const grid = quadriculado(9, cell);
-  const size = 16.5; // Andika digits are 0.725 em: two squares high
-  const rows = [0, 1, 2]
-    .map((i) =>
-      fill({
-        text: String(n),
-        x0: cell,
-        x1: W - cell,
-        y: (i * 3 + 2) * cell + 0.5,
-        size,
-        font: "script",
-        kind: i === 0 ? "model-outline" : i === 1 ? "outline" : "model-blank",
-        gap: cell,
-      }),
-    )
-    .join("");
-  const total = n > 10 ? 20 : 10;
-  const perRow = total / 2;
-  const step = W / perRow;
-  const balloonSize = n > 10 ? 15 : 24;
-  const balloons = Array.from({ length: total }, (_, i) => {
-    const x = step / 2 + (i % perRow) * step;
-    const y = i < perRow ? balloonSize + 2 : 2 * balloonSize + 8;
-    return `<text x="${x}" y="${y}" text-anchor="middle" font-family="emoji" font-size="${balloonSize}" fill="none" stroke="#1f2a44" stroke-width="0.35">🎈</text>`;
-  }).join("");
-  return `<div style="display:flex;align-items:center;gap:12mm">
-      <svg width="70mm" height="56mm" viewBox="0 0 70 56"><text x="35" y="50" text-anchor="middle" font-family="script" font-weight="700" font-size="${n > 9 ? 54 : 66}" fill="#fff" paint-order="stroke" stroke="${OUTLINE}" stroke-width="1">${n}</text></svg>
-      <div><div style="font-size:12mm">${esc(word)}</div><div class="cur-pt" style="font-size:12mm;line-height:1.9">${esc(word)}</div></div></div>
-    <p style="font-size:4.6mm;margin:2mm 0 1mm">Cubra o número e escreva no quadriculado:</p>
-    ${grid.svg(rows)}
-    <p style="font-size:4.6mm;margin:4mm 0 1mm">Pinte <strong>${n === 0 ? "nenhum balão" : `${n} ${n === 1 ? "balão" : "balões"}`}</strong>:</p>
-    <svg width="${W}mm" height="${2 * balloonSize + 12}mm" viewBox="0 0 ${W} ${2 * balloonSize + 12}">${balloons}</svg>
-    ${cursiveRows([word], 3, 3)}`;
+  return numberSheet({
+    page: "a4",
+    badge: String(n),
+    title: `O número ${n}`,
+    name: "Nome:",
+    date: "Data:",
+    hero: { n, word: word.toUpperCase(), picture: COUNTED[n], handCaption: `${n} ${n === 1 ? "dedo" : "dedos"}`, wordCaption: "Por extenso" },
+    rows: [
+      { label: `Cubra o número ${n}`, text: String(n), kind: "letter" },
+      { label: "", text: String(n), kind: "letter" },
+      { label: `Cubra a palavra ${word}`, text: word, kind: "word" },
+      { label: "Agora escreva sozinho", text: "", kind: "own" },
+    ],
+    footer: ["Atividade grátis · alphabes.com/pt/atividades", getAtividadeCategory(a.category)!.level],
+  });
 }
 
 function formaGeometrica(a: Atividade): string {

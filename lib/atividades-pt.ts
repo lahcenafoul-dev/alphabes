@@ -2,7 +2,7 @@
 // under /pt/atividades. Written for Brazilian schools (docs/portuguese-plan.md,
 // P4, P6): the four kinds of letter (letra bastão, letra de forma, letra
 // cursiva maiúscula and minúscula), cursive in Playwrite BR on "caligrafia"
-// guide lines, numbers on quadriculado, syllables in the order of the
+// guide lines, numbers to trace and count, syllables in the order of the
 // alfabetização (famílias silábicas, dígrafos, sons nasais, sílabas
 // complexas). Every slug is Portuguese-only: they don't mirror the English,
 // French or Spanish worksheets.
@@ -294,11 +294,11 @@ const THEME_CATEGORIES: AtividadeCategory[] = [
     slug: "numeros",
     group: "temas",
     name: "Os números",
-    description: "Os números de 0 a 20 no quadriculado: cobrir o número, colorir a quantidade e escrever o nome.",
+    description: "Os números de 0 a 20: cobrir o número, contar os desenhos, mostrar com os dedos e ler o nome.",
     intro:
-      "Uma atividade por número, do zero ao vinte: o número para cobrir no quadriculado, como no caderno de matemática, a quantidade para colorir e o nome do número para copiar em letra cursiva.",
+      "Uma atividade por número, do zero ao vinte: o número grande para cobrir, cercado de tantos desenhos quanto ele indica, a mão que mostra o número com os dedos, o nome por extenso, e o número e a palavra para cobrir.",
     level: "Educação infantil e 1º ano (4 a 7 anos)",
-    skills: ["Escrever números", "Quantidades", "Quadriculado"],
+    skills: ["Escrever números", "Contar", "Ler os números"],
   },
   {
     slug: "formas",
@@ -472,16 +472,18 @@ function buildAtividades(): Atividade[] {
   }
   const theme = (slug: string) => ATIVIDADE_CATEGORIES.find((c) => c.slug === slug)!;
   const common = (c: AtividadeCategory, slug: string) => ({ slug, category: c.slug, level: c.level, skills: c.skills, pdf: pdfPath(c.slug, slug), preview: previewPath(slug) });
-  const balloons = (n: number) => `${n} ${n === 1 ? "balão" : "balões"}`;
 
   const numeros = theme("numeros");
   NUMBERS.forEach((word, n) => {
     out.push({
       ...common(numeros, `numero-${n}`),
       label: `O número ${n}`,
-      title: `O número ${n} (${word}): escrever e colorir`,
-      description: `Atividade grátis do número ${n}: o número para cobrir no quadriculado, ${n === 0 ? "nada para colorir (zero!)" : `${balloons(n)} para colorir`} e a palavra “${word}” para escrever em letra cursiva.`,
-      instrucao: n === 0 ? "Cubra o número 0. Zero é nada: não pinte nenhum balão!" : `Cubra o número ${n} no quadriculado e pinte ${balloons(n)}.`,
+      title: `O número ${n} (${word}): cobrir e contar`,
+      description: `Atividade grátis do número ${n}: o número grande para cobrir, ${n === 0 ? "um ninho vazio (zero é nada!)" : `${n} ${n === 1 ? "desenho" : "desenhos"} para contar, ${n <= 10 ? `${n} ${n === 1 ? "dedo" : "dedos"}` : `10 dedos e mais ${n - 10}`} para mostrar`} e a palavra “${word}” para cobrir.`,
+      instrucao:
+        n === 0
+          ? "Cubra o 0. Zero é nada: o ninho está vazio e a mão, fechada!"
+          : `${n === 1 ? "Olhe o desenho" : `Conte os ${n} desenhos`}, ${n <= 10 ? `mostre ${n} ${n === 1 ? "dedo" : "dedos"}` : `mostre 10 dedos e conte mais ${n - 10}`} e cubra o número ${n} e a palavra “${word}”.`,
     });
   });
   const formas = theme("formas");
