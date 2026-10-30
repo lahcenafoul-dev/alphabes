@@ -115,7 +115,7 @@ export default async function OwlHome({ locale, copy, children }: { locale: Loca
                 </li>
               </ul>
             </nav>
-            <LanguageSwitcher />
+            <LanguageSwitcher variant="owl" />
             <MobileMenu
               items={nav}
               account={{ href: path("/register"), label: copy.nav.join }}
