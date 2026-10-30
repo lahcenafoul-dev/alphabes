@@ -13,7 +13,7 @@ import {
   sectionFallbackPath,
 } from "@/lib/i18n/routes";
 
-function rememberLocale(locale: Locale) {
+export function rememberLocale(locale: Locale) {
   document.cookie = `${LOCALE_COOKIE}=${locale}; path=/; max-age=${LOCALE_COOKIE_MAX_AGE}; samesite=lax`;
 }
 
@@ -30,7 +30,36 @@ function homeHrefs(): Record<Locale, string> {
 // From 640 px the languages are pills in the header. Four pills don't fit a
 // phone header (docs/portuguese-plan.md, P12), so below 640 px one button
 // shows the current language and opens the list.
-export default function LanguageSwitcher() {
+const STYLES = {
+  site: {
+    phoneButton: "flex h-10 items-center gap-1 rounded-full border-2 border-chalkboard/15 px-3 font-display font-bold text-sm",
+    phoneList:
+      "absolute right-0 top-full z-50 mt-2 w-44 rounded-block border border-chalkboard/10 bg-paper p-1 font-display font-bold shadow-blockHover",
+    phoneCurrent: "flex items-center gap-3 rounded-block bg-chalkboard px-3 py-2.5 text-paper",
+    phoneOther: "flex items-center gap-3 rounded-block px-3 py-2.5 hover:bg-crayon-blue/10",
+    phoneCode: "w-6 text-chalkboard/60",
+    group: "hidden items-center rounded-full border-2 border-chalkboard/15 p-0.5 font-display font-bold text-sm sm:flex",
+    current: "rounded-full bg-chalkboard px-2.5 py-1 text-paper",
+    other: "rounded-full px-2.5 py-1 text-chalkboard/70 hover:text-chalkboard",
+  },
+  // The home page's look (components/home/OwlHome.tsx), like the owl MobileMenu.
+  owl: {
+    phoneButton:
+      "flex h-10 items-center gap-1 rounded-full bg-white px-3 font-display text-sm font-extrabold text-owl-ink shadow-[0_0_0_1px_rgba(29,24,70,.12)] hover:text-owl-purple",
+    phoneList:
+      "absolute right-0 top-full z-50 mt-2 w-48 space-y-1 rounded-[24px] bg-white p-2 font-display font-extrabold text-owl-ink shadow-[0_24px_40px_-20px_rgba(29,24,70,.35),0_0_0_1px_rgba(29,24,70,.06)]",
+    phoneCurrent: "flex items-center gap-3 rounded-full bg-owl-purple px-4 py-2.5 text-white",
+    phoneOther: "flex items-center gap-3 rounded-full px-4 py-2.5 hover:bg-owl-lilac hover:text-owl-purple",
+    phoneCode: "w-6 text-owl-muted",
+    group:
+      "hidden items-center rounded-full bg-white p-1 font-display text-sm font-extrabold shadow-[0_0_0_1px_rgba(29,24,70,.12)] sm:flex",
+    current: "rounded-full bg-owl-purple px-2.5 py-1 text-white",
+    other: "rounded-full px-2.5 py-1 text-owl-muted hover:bg-owl-lilac hover:text-owl-purple",
+  },
+};
+
+export default function LanguageSwitcher({ variant = "site" }: { variant?: "site" | "owl" }) {
+  const style = STYLES[variant];
   const locale = useLocale() as Locale;
   const t = useTranslations("LanguageSwitcher");
   const pathname = usePathname();
@@ -82,7 +111,7 @@ export default function LanguageSwitcher() {
           aria-expanded={open}
           aria-controls="language-menu"
           onClick={() => setOpen((o) => !o)}
-          className="flex h-10 items-center gap-1 rounded-full border-2 border-chalkboard/15 px-3 font-display font-bold text-sm"
+          className={style.phoneButton}
         >
           <span className="sr-only">{t("label")}: </span>
           <span lang={locale}>{locale.toUpperCase()}</span>
@@ -94,7 +123,7 @@ export default function LanguageSwitcher() {
           <ul
             id="language-menu"
             aria-label={t("label")}
-            className="absolute right-0 top-full z-50 mt-2 w-44 rounded-block border border-chalkboard/10 bg-paper p-1 font-display font-bold shadow-blockHover"
+            className={style.phoneList}
           >
             {routing.locales.map((l) => (
               <li key={l}>
@@ -102,7 +131,7 @@ export default function LanguageSwitcher() {
                   <span
                     lang={l}
                     aria-current="true"
-                    className="flex items-center gap-3 rounded-block bg-chalkboard px-3 py-2.5 text-paper"
+                    className={style.phoneCurrent}
                   >
                     <span className="w-6">{l.toUpperCase()}</span>
                     {t(l)}
@@ -113,9 +142,9 @@ export default function LanguageSwitcher() {
                     hrefLang={l}
                     lang={l}
                     onClick={() => rememberLocale(l)}
-                    className="flex items-center gap-3 rounded-block px-3 py-2.5 hover:bg-crayon-blue/10"
+                    className={style.phoneOther}
                   >
-                    <span className="w-6 text-chalkboard/60">{l.toUpperCase()}</span>
+                    <span className={style.phoneCode}>{l.toUpperCase()}</span>
                     {t(l)}
                   </a>
                 )}
@@ -128,7 +157,7 @@ export default function LanguageSwitcher() {
       <div
         role="group"
         aria-label={t("label")}
-        className="hidden items-center rounded-full border-2 border-chalkboard/15 p-0.5 font-display font-bold text-sm sm:flex"
+        className={style.group}
       >
         {routing.locales.map((l) =>
           l === locale ? (
@@ -137,7 +166,7 @@ export default function LanguageSwitcher() {
               lang={l}
               title={t(l)}
               aria-current="true"
-              className="rounded-full bg-chalkboard px-2.5 py-1 text-paper"
+              className={style.current}
             >
               {l.toUpperCase()}
             </span>
@@ -149,7 +178,7 @@ export default function LanguageSwitcher() {
               lang={l}
               title={t(l)}
               onClick={() => rememberLocale(l)}
-              className="rounded-full px-2.5 py-1 text-chalkboard/70 hover:text-chalkboard"
+              className={style.other}
             >
               {l.toUpperCase()}
             </a>
