@@ -56,7 +56,7 @@ const faq = [
 // Les textes du design « Owl Quiz » (components/home/OwlHome.tsx).
 const copy: HomeCopy = {
   nav: { games: "Jeux", worksheets: "Fiches", stories: "Histoires", parents: "Parents", join: "Inscription gratuite" },
-  headline: { line1: "Petits curieux,", big: "grand", after: "." },
+  headline: { seo: "Apprendre l'alphabet : fiches et jeux gratuits", line1: "Petits curieux,", big: "grand", after: "." },
   intro:
     "Notre petit hibou accompagne les enfants de 3 à 8 ans dans les lettres, les sons et les premiers mots, une question ludique à la fois.",
   play: "Jouer gratuitement",

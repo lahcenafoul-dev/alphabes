@@ -14,8 +14,8 @@ import PathLine from "./PathLine";
 /** Every word of the home page's design in one language (app/[locale]/home-*.tsx). */
 export type HomeCopy = {
   nav: { games: string; worksheets: string; stories: string; parents: string; join: string };
-  /** "Little minds," / "big" / "s." around the coloured ABC. */
-  headline: { line1: string; big: string; after: string };
+  /** The SEO line above "Little minds," / "big" / "s." around the coloured ABC. */
+  headline: { seo: string; line1: string; big: string; after: string };
   intro: string;
   play: string;
   howItWorks: string;
@@ -122,6 +122,7 @@ export default async function OwlHome({ locale, copy, children }: { locale: Loca
               menuLabel={th("menu")}
               closeLabel={th("closeMenu")}
               navLabel={th("mainNav")}
+              variant="owl"
             />
           </div>
         </div>
@@ -132,6 +133,9 @@ export default async function OwlHome({ locale, copy, children }: { locale: Loca
         <section className="mx-auto flex max-w-[1200px] flex-wrap items-center gap-10 px-4 pb-20 pt-6 sm:px-6 sm:pb-24 sm:pt-10 lg:gap-14">
           <div className="min-w-0 flex-[1_1_440px]">
             <h1 className="owl-fade-up m-0 font-display text-[clamp(44px,6.4vw,82px)] font-extrabold leading-[0.98] tracking-[-1px]">
+              <span className="mb-4 block font-body text-base font-extrabold leading-snug tracking-normal text-owl-purple sm:text-lg">
+                {copy.headline.seo}
+              </span>
               {copy.headline.line1}
               <br />
               <span className="text-owl-purple">{copy.headline.big}</span>{" "}

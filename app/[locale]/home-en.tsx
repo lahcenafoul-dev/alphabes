@@ -28,7 +28,7 @@ const blockColors = [
 // The words of the "Owl Quiz" design (components/home/OwlHome.tsx).
 const copy: HomeCopy = {
   nav: { games: "Games", worksheets: "Worksheets", stories: "Stories", parents: "Parents", join: "Join free" },
-  headline: { line1: "Little minds,", big: "big", after: "s." },
+  headline: { seo: "Free alphabet games & worksheets for kids 3⁠–⁠8", line1: "Little minds,", big: "big", after: "s." },
   intro:
     "Our friendly owl guides children aged 3–8 through letters, sounds and first words, one playful question at a time.",
   play: "Play for free",

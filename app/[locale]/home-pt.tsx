@@ -81,7 +81,7 @@ function MaybeLink({
 // Os textos do design "Owl Quiz" (components/home/OwlHome.tsx).
 const copy: HomeCopy = {
   nav: { games: "Jogos", worksheets: "Atividades", stories: "Histórias", parents: "Família", join: "Cadastre-se grátis" },
-  headline: { line1: "Pequenos curiosos,", big: "grande", after: "." },
+  headline: { seo: "Aprender o alfabeto: atividades e jogos grátis", line1: "Pequenos curiosos,", big: "grande", after: "." },
   intro:
     "Nossa coruja amiga acompanha crianças de 3 a 8 anos pelas letras, pelos sons e pelas primeiras palavras, brincando, uma pergunta de cada vez.",
   play: "Jogar grátis",

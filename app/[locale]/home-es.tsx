@@ -81,7 +81,7 @@ function MaybeLink({
 // Los textos del diseño «Owl Quiz» (components/home/OwlHome.tsx).
 const copy: HomeCopy = {
   nav: { games: "Juegos", worksheets: "Fichas", stories: "Cuentos", parents: "Familias", join: "Regístrate gratis" },
-  headline: { line1: "Pequeños curiosos,", big: "gran", after: "." },
+  headline: { seo: "Aprender el abecedario: fichas y juegos gratis", line1: "Pequeños curiosos,", big: "gran", after: "." },
   intro:
     "Nuestro búho amigo acompaña a niñas y niños de 3 a 8 años por las letras, los sonidos y las primeras palabras, jugando pregunta a pregunta.",
   play: "Jugar gratis",
