@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { SheetTypesSection } from "@/components/sheets/SheetPages";
 import Link from "next/link";
 import { worksheetCategories } from "@/lib/worksheet-categories";
 import { WORKSHEET_TYPES } from "@/lib/worksheet-types";
@@ -76,6 +77,8 @@ export default function WorksheetsEn() {
           </Link>
         ))}
       </nav>
+
+      <SheetTypesSection locale="en" />
 
       <WorksheetLibrary items={items} />
     </main>

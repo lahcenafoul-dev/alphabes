@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { SheetTypesSection } from "@/components/sheets/SheetPages";
 import { Link } from "@/i18n/navigation";
 import { FichePreview } from "@/components/fiches/FicheParts";
 import { FICHA_CATEGORIES, fichas, fichasInCategory, getFicha, type FichaCategoryGroup } from "@/lib/fichas-es";
@@ -166,6 +167,8 @@ export default function WorksheetsEs() {
           ))}
         </ul>
       </section>
+
+      <SheetTypesSection locale="es" />
 
       <section className="mt-16" aria-labelledby="themes-heading">
         <h2 id="themes-heading" className="text-3xl font-bold">
