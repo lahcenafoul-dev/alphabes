@@ -50,7 +50,7 @@ export default async function Footer({ locale }: { locale: Locale }) {
   const t = await getTranslations({ locale, namespace: "Footer" });
 
   return (
-    <footer className="bg-chalkboard text-paper mt-16 print:hidden">
+    <footer data-site-footer className="bg-chalkboard text-paper mt-16 print:hidden">
       <div className="mx-auto max-w-6xl px-6 py-12 grid grid-cols-2 md:grid-cols-4 gap-8">
         {columns
           .map((col) => ({ ...col, links: col.links.filter((link) => isAvailable(locale, link.href)) }))

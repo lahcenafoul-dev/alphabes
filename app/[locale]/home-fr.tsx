@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import OwlHome, { type HomeCopy } from "@/components/home/OwlHome";
 import { Link } from "@/i18n/navigation";
 import { getAllLetterSlugs } from "@/lib/letters-data";
 import { alternatesFor } from "@/lib/i18n/routes";
@@ -22,11 +23,11 @@ export const homeMetadataFr: Metadata = {
 const letters = getAllLetterSlugs();
 
 const blockColors = [
-  "bg-crayon-red",
-  "bg-crayon-blue",
-  "bg-crayon-yellow",
-  "bg-crayon-green",
-  "bg-crayon-purple",
+  "text-owl-purple",
+  "text-[#C2185B]",
+  "text-owl-green-dark",
+  "text-[#B9520E]",
+  "text-owl-ink",
 ];
 
 const faq = [
@@ -52,6 +53,55 @@ const faq = [
   },
 ];
 
+// Les textes du design « Owl Quiz » (components/home/OwlHome.tsx).
+const copy: HomeCopy = {
+  nav: { games: "Jeux", worksheets: "Fiches", stories: "Histoires", parents: "Parents", join: "Inscription gratuite" },
+  headline: { line1: "Petits curieux,", big: "grand", after: "." },
+  intro:
+    "Notre petit hibou accompagne les enfants de 3 à 8 ans dans les lettres, les sons et les premiers mots, une question ludique à la fois.",
+  play: "Jouer gratuitement",
+  howItWorks: "Voir comment ça marche",
+  speaks: "Parle",
+  quiz: {
+    label: "Le quiz du hibou",
+    question: "Quelle image commence par",
+    roundLabel: "Question {n} sur {total}",
+    allDone: "Terminé",
+    stars: "Étoiles : {score}",
+    hearLetter: "Écouter la lettre {letter}",
+    hint: "Touche la lettre pour l'entendre, puis choisis une image.",
+    right: "Oui ! {word} commence par {letter}.",
+    next: "Suivant",
+    wrong: "Presque ! Écoute encore et essaie une autre image.",
+    tryAgainSpoken: "Essaie encore",
+    finalTitle: "Hou hou ! Tu es une star des lettres.",
+    playAgain: "Rejouer",
+  },
+  features: {
+    title: "Tout ce qu'il faut aux petits lecteurs",
+    intro: "Des jeux sur l'écran, des fiches sur papier, des histoires le soir.",
+    letters: ["Lettres et sons", "Le nom et le son de chaque lettre, dits bien clairement."],
+    tracing: ["Le tracé", "Tracer chaque lettre du bout du doigt, trait après trait."],
+    worksheets: ["Les fiches", "Des fiches de tracé, de coloriage et de chiffres à imprimer."],
+    stories: ["Les histoires", "De courtes histoires illustrées à lire ensemble."],
+  },
+  path: {
+    title: "Un chemin clair, de A à Z",
+    steps: [
+      ["Découvrir la lettre", "Son nom, son son et un mot en image."],
+      ["Jouer à un petit jeu", "Des questions pour vérifier que c'est acquis."],
+      ["Tracer et imprimer", "S'entraîner à écrire, à l'écran et sur papier."],
+      ["Lire une histoire", "Utiliser les lettres qu'on vient d'apprendre."],
+    ],
+  },
+  parents: {
+    title: "Pensé aussi pour les parents",
+    text: "Un profil pour chaque enfant, des progrès visibles d'un coup d'œil et la prochaine fiche prête à imprimer.",
+    cta: "Créer un compte gratuit",
+  },
+  footer: { ages: "© AlphaBes · De 3 à 8 ans", languages: "Langues", legal: "À propos d'AlphaBes" },
+};
+
 export default function HomeFr() {
   const faqJsonLd = {
     "@context": "https://schema.org",
@@ -65,53 +115,23 @@ export default function HomeFr() {
   };
 
   return (
-    <main id="main-content">
-      {/* Hero */}
-      <section className="bg-chalkboard text-paper">
-        <div className="mx-auto max-w-6xl px-6 py-16 md:py-24 grid md:grid-cols-2 gap-10 items-center">
-          <div>
-            <h1 className="text-4xl md:text-6xl font-extrabold leading-tight">
-              Apprendre l&apos;alphabet en s&apos;amusant
-            </h1>
-            <p className="mt-5 text-lg md:text-xl text-paper/80 max-w-md">
-              Les lettres de A à Z, leurs sons et leur tracé, avec des fiches gratuites à
-              imprimer, des syllabes à lire et des jeux interactifs, de la maternelle au CP.
-            </p>
-            <div className="mt-8 flex flex-wrap gap-4">
-              <Link
-                href="/register"
-                className="rounded-block bg-crayon-yellow text-chalkboard font-display font-bold px-6 py-3 shadow-block hover:shadow-blockHover transition"
-              >
-                Commencer gratuitement
-              </Link>
-              <Link
-                href="/worksheets"
-                className="rounded-block border-2 border-paper/40 px-6 py-3 font-display font-bold hover:border-paper transition"
-              >
-                Voir les fiches
-              </Link>
-            </div>
-          </div>
-
-          {/* Signature element: shelf of wooden alphabet blocks */}
-          <div
-            className="grid grid-cols-6 gap-2 md:gap-3"
-            role="img"
-            aria-label="Étagère de cubes en bois, de A à Z"
-          >
-            {letters.map((l) => (
-              <div key={l} className="letter-block aspect-square text-xl md:text-2xl">
-                {l.toUpperCase()}
-              </div>
-            ))}
-          </div>
-        </div>
+    <OwlHome locale="fr" copy={copy}>
+      {/* Intro: the text of the former hero */}
+      <section className="mx-auto max-w-[1200px] px-4 sm:px-6 py-16">
+        <h2 className="text-3xl md:text-4xl font-extrabold leading-tight">Apprendre l&apos;alphabet en s&apos;amusant</h2>
+        <p className="mt-3 text-lg leading-relaxed text-owl-muted max-w-2xl">
+          Les lettres de A à Z, leurs sons et leur tracé, avec des fiches gratuites à
+          imprimer, des syllabes à lire et des jeux interactifs, de la maternelle au CP.
+        </p>
+        <Link href="/worksheets" className="mt-6 owl-btn owl-btn-purple">
+          Voir les fiches
+        </Link>
       </section>
 
       {/* 1. L'alphabet */}
-      <section className="mx-auto max-w-6xl px-6 py-16">
-        <h2 className="text-3xl font-bold">Découvrir l&apos;alphabet</h2>
-        <p className="mt-2 text-chalkboard/70 max-w-2xl">
+      <section className="mx-auto max-w-[1200px] px-4 sm:px-6 py-16">
+        <h2 className="text-3xl md:text-4xl font-extrabold leading-tight">Découvrir l&apos;alphabet</h2>
+        <p className="mt-3 text-lg leading-relaxed text-owl-muted max-w-2xl">
           Chaque lettre a sa propre leçon : la majuscule et la minuscule, son nom et le son
           qu&apos;elle fait, à écouter, et des mots d&apos;exemple choisis pour les petits.
         </p>
@@ -120,20 +140,20 @@ export default function HomeFr() {
             <Link
               key={l}
               href={{ pathname: "/alphabet/[letter]", params: { letter: l } }}
-              className={`letter-block aspect-square text-lg ${blockColors[i % blockColors.length]}`}
+              className={`owl-letter aspect-square text-3xl md:text-4xl ${blockColors[i % blockColors.length]}`}
               aria-label={`Leçon sur la lettre ${l.toUpperCase()}`}
             >
               {l.toUpperCase()}
             </Link>
           ))}
         </div>
-        <p className="mt-6 text-chalkboard/70">Et les lettres avec un accent, qui changent le son :</p>
+        <p className="mt-6 text-owl-muted">Et les lettres avec un accent, qui changent le son :</p>
         <div className="mt-3 flex flex-wrap gap-3">
           {frenchLetters.filter(isAccentLetter).map((l) => (
             <Link
               key={l.slug}
               href={{ pathname: "/alphabet/[letter]", params: { letter: l.slug } }}
-              className="letter-block bg-crayon-purple h-14 w-14 text-2xl"
+              className="owl-letter text-owl-purple h-14 w-14 text-2xl"
               aria-label={`Leçon sur la lettre ${l.upper}`}
             >
               {l.upper}
@@ -141,7 +161,7 @@ export default function HomeFr() {
           ))}
           <Link
             href={{ pathname: "/alphabet/[letter]", params: { letter: "accents" } }}
-            className="self-center font-display font-bold text-crayon-blue hover:underline"
+            className="self-center font-display font-bold text-owl-purple hover:underline"
           >
             Tous les accents →
           </Link>
@@ -149,10 +169,10 @@ export default function HomeFr() {
       </section>
 
       {/* 2. Les sons */}
-      <section className="bg-crayon-blue/10">
-        <div className="mx-auto max-w-6xl px-6 py-16">
-          <h2 className="text-3xl font-bold">Apprendre les sons</h2>
-          <p className="mt-2 text-chalkboard/70 max-w-2xl">
+      <section className="bg-white">
+        <div className="mx-auto max-w-[1200px] px-4 sm:px-6 py-16">
+          <h2 className="text-3xl md:text-4xl font-extrabold leading-tight">Apprendre les sons</h2>
+          <p className="mt-3 text-lg leading-relaxed text-owl-muted max-w-2xl">
             Pas à pas vers la lecture : les voyelles, les syllabes, puis les sons qui
             s&apos;écrivent avec plusieurs lettres, comme ou, on, an ou ch.
           </p>
@@ -166,7 +186,7 @@ export default function HomeFr() {
               <Link
                 key={item.skill}
                 href={{ pathname: "/phonics/[skill]", params: { skill: item.skill } }}
-                className="rounded-block bg-paper p-5 shadow-block hover:shadow-blockHover transition font-display font-bold"
+                className="owl-card"
               >
                 {item.label}
               </Link>
@@ -176,9 +196,9 @@ export default function HomeFr() {
       </section>
 
       {/* 3. Fiches gratuites */}
-      <section className="mx-auto max-w-6xl px-6 py-16">
-        <h2 className="text-3xl font-bold">Des fiches alphabet gratuites</h2>
-        <p className="mt-2 text-chalkboard/70 max-w-2xl">
+      <section className="mx-auto max-w-[1200px] px-4 sm:px-6 py-16">
+        <h2 className="text-3xl md:text-4xl font-extrabold leading-tight">Des fiches alphabet gratuites</h2>
+        <p className="mt-3 text-lg leading-relaxed text-owl-muted max-w-2xl">
           AlphaBes propose plus de 230 fiches gratuites à imprimer pour toutes les lettres de
           l&apos;alphabet, accents compris : tracé, cursive, coloriage, reconnaissance des
           lettres, sons et syllabes. Elles sont pensées pour les parents, l&apos;instruction en
@@ -194,21 +214,21 @@ export default function HomeFr() {
         <div className="mt-6 flex flex-wrap items-center gap-4">
           <Link
             href="/worksheets"
-            className="inline-block rounded-block bg-crayon-green text-paper font-display font-bold px-6 py-3 shadow-block hover:shadow-blockHover transition"
+            className="owl-btn owl-btn-purple"
           >
             Parcourir les fiches
           </Link>
-          <Link href="/worksheets/bundles" className="font-display font-bold text-crayon-purple hover:underline">
+          <Link href="/worksheets/bundles" className="font-display font-bold text-owl-purple hover:underline">
             Les packs PDF →
           </Link>
         </div>
       </section>
 
       {/* 3b. Tracé et cursive */}
-      <section className="bg-crayon-green/10">
-        <div className="mx-auto max-w-6xl px-6 py-16">
-          <h2 className="text-3xl font-bold">Le tracé des lettres</h2>
-          <p className="mt-2 text-chalkboard/70 max-w-2xl">
+      <section className="bg-owl-mint">
+        <div className="mx-auto max-w-[1200px] px-4 sm:px-6 py-16">
+          <h2 className="text-3xl md:text-4xl font-extrabold leading-tight">Le tracé des lettres</h2>
+          <p className="mt-3 text-lg leading-relaxed text-owl-muted max-w-2xl">
             Pour chaque lettre, une fiche de tracé en script, en majuscule et en minuscule,
             avec des pointillés à suivre avant d&apos;écrire seul. Et pour aller plus loin, des
             fiches d&apos;écriture cursive sur lignes Seyès, comme dans le cahier de
@@ -217,13 +237,13 @@ export default function HomeFr() {
           <div className="mt-6 flex flex-wrap gap-4">
             <Link
               href={{ pathname: "/worksheets/[category]", params: { category: "trace-des-lettres" } }}
-              className="inline-block rounded-block bg-chalkboard text-paper font-display font-bold px-6 py-3 shadow-block hover:shadow-blockHover transition"
+              className="owl-btn owl-btn-ink"
             >
               Fiches de tracé
             </Link>
             <Link
               href={{ pathname: "/worksheets/[category]", params: { category: "ecriture-cursive" } }}
-              className="inline-block rounded-block border-2 border-chalkboard/20 font-display font-bold px-6 py-3 hover:border-crayon-blue transition"
+              className="owl-btn owl-btn-outline"
             >
               Fiches d&apos;écriture cursive
             </Link>
@@ -232,15 +252,15 @@ export default function HomeFr() {
       </section>
 
       {/* 4. Jeux */}
-      <section className="bg-crayon-yellow/15">
-        <div className="mx-auto max-w-6xl px-6 py-16">
-          <h2 className="text-3xl font-bold">Des jeux pour apprendre</h2>
+      <section className="bg-owl-cream">
+        <div className="mx-auto max-w-[1200px] px-4 sm:px-6 py-16">
+          <h2 className="text-3xl md:text-4xl font-extrabold leading-tight">Des jeux pour apprendre</h2>
           <div className="mt-8 grid sm:grid-cols-2 md:grid-cols-5 gap-4">
             {frenchGames.map((g) => (
               <Link
                 key={g.slug}
                 href={{ pathname: "/games/[slug]", params: { slug: g.slug } }}
-                className="rounded-block bg-paper p-5 shadow-block hover:shadow-blockHover transition font-display font-bold text-center"
+                className="owl-card text-center"
               >
                 <IconTile name={g.icon} className="mx-auto mb-2 h-12 w-12" />
                 {g.title}
@@ -249,7 +269,7 @@ export default function HomeFr() {
           </div>
           <Link
             href="/games"
-            className="mt-6 inline-block rounded-block bg-chalkboard text-paper font-display font-bold px-6 py-3 shadow-block hover:shadow-blockHover transition"
+            className="mt-6 owl-btn owl-btn-ink"
           >
             Jouer
           </Link>
@@ -257,9 +277,9 @@ export default function HomeFr() {
       </section>
 
       {/* 4b. PDF */}
-      <section className="mx-auto max-w-6xl px-6 py-16">
-        <h2 className="text-3xl font-bold">Des fiches PDF prêtes à imprimer</h2>
-        <p className="mt-2 text-chalkboard/70 max-w-2xl">
+      <section className="mx-auto max-w-[1200px] px-4 sm:px-6 py-16">
+        <h2 className="text-3xl md:text-4xl font-extrabold leading-tight">Des fiches PDF prêtes à imprimer</h2>
+        <p className="mt-3 text-lg leading-relaxed text-owl-muted max-w-2xl">
           Chaque fiche est un PDF prêt à imprimer : on la regarde à l&apos;écran, puis on
           l&apos;imprime ou on la télécharge en un clic. Pas besoin de compte pour les fiches
           gratuites : l&apos;enseignant prépare les photocopies de la classe la veille au soir,
@@ -268,27 +288,27 @@ export default function HomeFr() {
       </section>
 
       {/* 4c. Maternelle */}
-      <section className="bg-crayon-purple/10">
-        <div className="mx-auto max-w-6xl px-6 py-16">
-          <h2 className="text-3xl font-bold">Activités pour la maternelle</h2>
-          <p className="mt-2 text-chalkboard/70 max-w-2xl">
+      <section className="bg-white">
+        <div className="mx-auto max-w-[1200px] px-4 sm:px-6 py-16">
+          <h2 className="text-3xl md:text-4xl font-extrabold leading-tight">Activités pour la maternelle</h2>
+          <p className="mt-3 text-lg leading-relaxed text-owl-muted max-w-2xl">
             En plus des fiches, AlphaBes propose des activités, un imagier et des jeux adaptés
             à l&apos;attention des petits, de la petite à la grande section.
           </p>
           <div className="mt-6 grid sm:grid-cols-3 md:grid-cols-5 gap-4">
-            <Link href="/preschool" className="rounded-block bg-paper p-5 shadow-block hover:shadow-blockHover transition font-display font-bold">
+            <Link href="/preschool" className="owl-card">
               Petite et moyenne section
             </Link>
-            <Link href="/kindergarten" className="rounded-block bg-paper p-5 shadow-block hover:shadow-blockHover transition font-display font-bold">
+            <Link href="/kindergarten" className="owl-card">
               Grande section
             </Link>
-            <Link href="/activities" className="rounded-block bg-paper p-5 shadow-block hover:shadow-blockHover transition font-display font-bold">
+            <Link href="/activities" className="owl-card">
               Activités
             </Link>
-            <Link href="/flashcards" className="rounded-block bg-paper p-5 shadow-block hover:shadow-blockHover transition font-display font-bold">
+            <Link href="/flashcards" className="owl-card">
               Imagier
             </Link>
-            <Link href="/worksheets" className="rounded-block bg-paper p-5 shadow-block hover:shadow-blockHover transition font-display font-bold">
+            <Link href="/worksheets" className="owl-card">
               Fiches de coloriage
             </Link>
           </div>
@@ -296,23 +316,23 @@ export default function HomeFr() {
       </section>
 
       {/* 5. Espace parents */}
-      <section className="mx-auto max-w-6xl px-6 py-16 grid md:grid-cols-2 gap-8 items-center">
+      <section className="mx-auto max-w-[1200px] px-4 sm:px-6 py-16 grid md:grid-cols-2 gap-8 items-center">
         <div>
-          <h2 className="text-3xl font-bold">Espace parents</h2>
-          <p className="mt-2 text-chalkboard/70">
+          <h2 className="text-3xl md:text-4xl font-extrabold leading-tight">Espace parents</h2>
+          <p className="mt-3 text-lg leading-relaxed text-owl-muted">
             Suivez les progrès de votre enfant sur l&apos;alphabet, les sons et le vocabulaire,
             voyez les leçons terminées et découvrez l&apos;étape suivante conseillée.
           </p>
           <Link
             href="/dashboard"
-            className="mt-6 inline-block rounded-block bg-crayon-blue text-paper font-display font-bold px-6 py-3 shadow-block hover:shadow-blockHover transition"
+            className="mt-6 owl-btn owl-btn-purple"
           >
             Voir le tableau de bord
           </Link>
         </div>
-        <div className="rounded-block bg-chalkboard text-paper p-6 shadow-block">
+        <div className="rounded-3xl bg-owl-ink text-white p-6">
           <p className="font-display font-bold text-lg">Cette semaine</p>
-          <ul className="mt-3 space-y-2 text-paper/80 text-sm">
+          <ul className="mt-3 space-y-2 text-[#C9C3EE] text-sm">
             <li>12 leçons terminées</li>
             <li>Alphabet : 18 lettres sur 26</li>
             <li>À suivre : la lettre S et son premier son</li>
@@ -321,26 +341,26 @@ export default function HomeFr() {
       </section>
 
       {/* 6. Pro */}
-      <section className="bg-chalkboard text-paper">
-        <div className="mx-auto max-w-6xl px-6 py-16 text-center">
-          <h2 className="text-3xl font-bold">AlphaBes Pro</h2>
-          <p className="mt-2 text-paper/70 max-w-xl mx-auto">
+      <section className="bg-owl-ink text-white">
+        <div className="mx-auto max-w-[1200px] px-4 sm:px-6 py-16 text-center">
+          <h2 className="text-3xl md:text-4xl font-extrabold leading-tight">AlphaBes Pro</h2>
+          <p className="mt-3 text-lg text-[#C9C3EE] max-w-xl mx-auto">
             Débloquez toutes les fiches, tous les jeux et toutes les leçons de sons, avec le
             suivi des progrès et des packs de fiches à imprimer.
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-6">
-            <div className="rounded-block bg-paper text-chalkboard p-6 w-64 shadow-block">
+            <div className="rounded-3xl bg-white text-owl-ink p-6 w-64">
               <p className="font-display font-bold text-xl">Mensuel</p>
               <p className="mt-2 text-3xl font-extrabold">7,99 $<span className="text-base font-normal">/mois</span></p>
             </div>
-            <div className="rounded-block bg-crayon-yellow text-chalkboard p-6 w-64 shadow-block">
+            <div className="rounded-3xl bg-owl-sun text-owl-ink p-6 w-64">
               <p className="font-display font-bold text-xl">Annuel</p>
               <p className="mt-2 text-3xl font-extrabold">59 $<span className="text-base font-normal">/an</span></p>
             </div>
           </div>
           <Link
             href="/pricing"
-            className="mt-8 inline-block rounded-block bg-crayon-green px-6 py-3 font-display font-bold shadow-block hover:shadow-blockHover transition"
+            className="mt-8 owl-btn owl-btn-sun"
           >
             Voir tous les tarifs
           </Link>
@@ -348,13 +368,13 @@ export default function HomeFr() {
       </section>
 
       {/* 7. FAQ */}
-      <section className="mx-auto max-w-3xl px-6 py-16">
-        <h2 className="text-3xl font-bold">Questions fréquentes</h2>
+      <section className="mx-auto max-w-3xl px-4 sm:px-6 py-16">
+        <h2 className="text-3xl md:text-4xl font-extrabold leading-tight">Questions fréquentes</h2>
         <dl className="mt-8 space-y-6">
           {faq.map((item) => (
             <div key={item.question}>
               <dt className="font-display font-bold text-lg">{item.question}</dt>
-              <dd className="mt-1 text-chalkboard/70">{item.answer}</dd>
+              <dd className="mt-1 leading-relaxed text-owl-muted">{item.answer}</dd>
             </div>
           ))}
         </dl>
@@ -364,6 +384,6 @@ export default function HomeFr() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
       />
-    </main>
+    </OwlHome>
   );
 }

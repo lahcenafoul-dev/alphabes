@@ -19,6 +19,22 @@ const config: Config = {
           blue: "#3EA6FF",
           purple: "#8B5CF6",
         },
+        // Home page ("Owl Quiz" design, components/home/).
+        owl: {
+          ink: "#1D1846",
+          purple: "#6A4CFF",
+          "purple-dark": "#4428C9",
+          lilac: "#EEEAFF",
+          pink: "#FF5C93",
+          yellow: "#FFB020",
+          sun: "#FFC94D",
+          green: "#18A97F",
+          "green-dark": "#0E7A5A",
+          mint: "#DDF7EE",
+          cream: "#FFF3D6",
+          bg: "#F7F5FF",
+          muted: "#565177",
+        },
         wood: {
           light: "#F1D9A8",
           DEFAULT: "#D9A86C",

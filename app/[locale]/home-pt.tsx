@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import OwlHome, { type HomeCopy } from "@/components/home/OwlHome";
 import type { ReactNode } from "react";
 import { Link } from "@/i18n/navigation";
 import type { AppPathname } from "@/i18n/routing";
@@ -24,11 +25,11 @@ const letters = [..."abc", "ç", ..."defghijklmnopqrstuvwxyz"];
 const letterSlug = (l: string) => (l === "ç" ? "c-cedilha" : l);
 
 const blockColors = [
-  "bg-crayon-red",
-  "bg-crayon-blue",
-  "bg-crayon-yellow",
-  "bg-crayon-green",
-  "bg-crayon-purple",
+  "text-owl-purple",
+  "text-[#C2185B]",
+  "text-owl-green-dark",
+  "text-[#B9520E]",
+  "text-owl-ink",
 ];
 
 const faq = [
@@ -77,6 +78,55 @@ function MaybeLink({
   );
 }
 
+// Os textos do design "Owl Quiz" (components/home/OwlHome.tsx).
+const copy: HomeCopy = {
+  nav: { games: "Jogos", worksheets: "Atividades", stories: "Histórias", parents: "Família", join: "Cadastre-se grátis" },
+  headline: { line1: "Pequenos curiosos,", big: "grande", after: "." },
+  intro:
+    "Nossa coruja amiga acompanha crianças de 3 a 8 anos pelas letras, pelos sons e pelas primeiras palavras, brincando, uma pergunta de cada vez.",
+  play: "Jogar grátis",
+  howItWorks: "Veja como funciona",
+  speaks: "Fala",
+  quiz: {
+    label: "O quiz da coruja",
+    question: "Qual figura começa com esta letra?",
+    roundLabel: "Pergunta {n} de {total}",
+    allDone: "Fim!",
+    stars: "Estrelas: {score}",
+    hearLetter: "Ouvir a letra {letter}",
+    hint: "Toque na letra para ouvir e escolha uma figura.",
+    right: "Isso! {word} começa com {letter}.",
+    next: "Próxima",
+    wrong: "Quase! Ouça de novo e tente outra.",
+    tryAgainSpoken: "Tente de novo",
+    finalTitle: "Uh-uh! Você é uma estrela das letras.",
+    playAgain: "Jogar de novo",
+  },
+  features: {
+    title: "Tudo o que um pequeno leitor precisa",
+    intro: "Jogos na tela, atividades no papel e histórias na hora de dormir.",
+    letters: ["Letras e sons", "O nome e o som de cada letra, bem clarinhos."],
+    tracing: ["Traçado", "Trace cada letra com o dedo, traço a traço."],
+    worksheets: ["Atividades", "Atividades de traçado, de colorir e de números para imprimir."],
+    stories: ["Histórias", "Histórias curtas e ilustradas para ler juntos."],
+  },
+  path: {
+    title: "Um caminho claro de A a Z",
+    steps: [
+      ["Conhecer a letra", "O nome, o som e uma palavra com figura."],
+      ["Jogar um joguinho", "Perguntas para ver se ficou na memória."],
+      ["Traçar e imprimir", "Treinar a escrita na tela e no papel."],
+      ["Ler uma história", "Usar as letras novas."],
+    ],
+  },
+  parents: {
+    title: "Feito para a família também",
+    text: "Um perfil para cada criança, o progresso num relance e a próxima atividade pronta para imprimir.",
+    cta: "Criar uma conta grátis",
+  },
+  footer: { ages: "© AlphaBes · De 3 a 8 anos", languages: "Idiomas", legal: "Sobre o AlphaBes" },
+};
+
 export default function HomePt() {
   const faqJsonLd = {
     "@context": "https://schema.org",
@@ -91,56 +141,26 @@ export default function HomePt() {
   const has = (pathname: AppPathname) => isAvailable("pt", pathname);
 
   return (
-    <main id="main-content">
-      {/* Hero */}
-      <section className="bg-chalkboard text-paper">
-        <div className="mx-auto max-w-6xl px-6 py-16 md:py-24 grid md:grid-cols-2 gap-10 items-center">
-          <div>
-            <h1 className="text-4xl md:text-6xl font-extrabold leading-tight">
-              Aprender o alfabeto brincando
-            </h1>
-            <p className="mt-5 text-lg md:text-xl text-paper/80 max-w-md">
-              As 26 letras, de A a Z, e o Ç, com as famílias silábicas e o traçado, atividades
-              grátis para imprimir, sílabas para ler e jogos interativos, da educação infantil ao
-              1º ano.
-            </p>
-            <div className="mt-8 flex flex-wrap gap-4">
-              <Link
-                href="/register"
-                className="rounded-block bg-crayon-yellow text-chalkboard font-display font-bold px-6 py-3 shadow-block hover:shadow-blockHover transition"
-              >
-                Começar grátis
-              </Link>
-              {has("/worksheets") && (
-                <Link
-                  href="/worksheets"
-                  className="rounded-block border-2 border-paper/40 px-6 py-3 font-display font-bold hover:border-paper transition"
-                >
-                  Ver as atividades
-                </Link>
-              )}
-            </div>
-          </div>
-
-          {/* Signature element: shelf of wooden alphabet blocks */}
-          <div
-            className="grid grid-cols-7 gap-2 md:gap-3"
-            role="img"
-            aria-label="Prateleira de cubos de madeira, de A a Z"
-          >
-            {letters.map((l) => (
-              <div key={l} className="letter-block aspect-square text-xl md:text-2xl">
-                {l.toUpperCase()}
-              </div>
-            ))}
-          </div>
-        </div>
+    <OwlHome locale="pt" copy={copy}>
+      {/* Intro: the text of the former hero */}
+      <section className="mx-auto max-w-[1200px] px-4 sm:px-6 py-16">
+        <h2 className="text-3xl md:text-4xl font-extrabold leading-tight">Aprender o alfabeto brincando</h2>
+        <p className="mt-3 text-lg leading-relaxed text-owl-muted max-w-2xl">
+          As 26 letras, de A a Z, e o Ç, com as famílias silábicas e o traçado, atividades
+          grátis para imprimir, sílabas para ler e jogos interativos, da educação infantil ao
+          1º ano.
+        </p>
+        {has("/worksheets") && (
+          <Link href="/worksheets" className="mt-6 owl-btn owl-btn-purple">
+            Ver as atividades
+          </Link>
+        )}
       </section>
 
       {/* 1. O alfabeto */}
-      <section className="mx-auto max-w-6xl px-6 py-16">
-        <h2 className="text-3xl font-bold">Conheça o alfabeto</h2>
-        <p className="mt-2 text-chalkboard/70 max-w-2xl">
+      <section className="mx-auto max-w-[1200px] px-4 sm:px-6 py-16">
+        <h2 className="text-3xl md:text-4xl font-extrabold leading-tight">Conheça o alfabeto</h2>
+        <p className="mt-3 text-lg leading-relaxed text-owl-muted max-w-2xl">
           Cada letra tem a sua lição: a letra bastão, a letra de forma e a letra cursiva, o nome e
           o som para ouvir, e palavras de exemplo pensadas para os pequenos.
         </p>
@@ -150,7 +170,7 @@ export default function HomePt() {
               key={l}
               pathname="/alphabet/[letter]"
               params={{ letter: letterSlug(l) }}
-              className={`letter-block aspect-square text-lg ${blockColors[i % blockColors.length]}`}
+              className={`owl-letter aspect-square text-3xl md:text-4xl ${blockColors[i % blockColors.length]}`}
               label={`Lição da letra ${l.toUpperCase()}`}
             >
               {l.toUpperCase()}
@@ -160,10 +180,10 @@ export default function HomePt() {
       </section>
 
       {/* 2. As sílabas */}
-      <section className="bg-crayon-blue/10">
-        <div className="mx-auto max-w-6xl px-6 py-16">
-          <h2 className="text-3xl font-bold">Aprenda as sílabas</h2>
-          <p className="mt-2 text-chalkboard/70 max-w-2xl">
+      <section className="bg-white">
+        <div className="mx-auto max-w-[1200px] px-4 sm:px-6 py-16">
+          <h2 className="text-3xl md:text-4xl font-extrabold leading-tight">Aprenda as sílabas</h2>
+          <p className="mt-3 text-lg leading-relaxed text-owl-muted max-w-2xl">
             Passo a passo até a leitura: as vogais, as famílias silábicas (ba, be, bi, bo, bu),
             depois os dígrafos como ch, lh e nh, os sons nasais como ão e an, e as sílabas
             complexas como bra e pla.
@@ -179,7 +199,7 @@ export default function HomePt() {
                 key={item.skill}
                 pathname="/phonics/[skill]"
                 params={{ skill: item.skill }}
-                className="rounded-block bg-paper p-5 shadow-block hover:shadow-blockHover transition font-display font-bold"
+                className="owl-card"
               >
                 {item.label}
               </MaybeLink>
@@ -189,9 +209,9 @@ export default function HomePt() {
       </section>
 
       {/* 3. Atividades grátis */}
-      <section className="mx-auto max-w-6xl px-6 py-16">
-        <h2 className="text-3xl font-bold">Atividades do alfabeto grátis</h2>
-        <p className="mt-2 text-chalkboard/70 max-w-2xl">
+      <section className="mx-auto max-w-[1200px] px-4 sm:px-6 py-16">
+        <h2 className="text-3xl md:text-4xl font-extrabold leading-tight">Atividades do alfabeto grátis</h2>
+        <p className="mt-3 text-lg leading-relaxed text-owl-muted max-w-2xl">
           Atividades grátis para imprimir de todas as letras do alfabeto: traçado em letra bastão
           e em letra de forma, letra cursiva, colorir, reconhecer letras, famílias silábicas e
           primeiras palavras. Pensadas para mães e pais, para quem ensina em casa e para
@@ -212,12 +232,12 @@ export default function HomePt() {
           <div className="mt-6 flex flex-wrap items-center gap-4">
             <Link
               href="/worksheets"
-              className="inline-block rounded-block bg-crayon-green text-paper font-display font-bold px-6 py-3 shadow-block hover:shadow-blockHover transition"
+              className="owl-btn owl-btn-purple"
             >
               Ver todas as atividades
             </Link>
             {has("/worksheets/bundles") && (
-              <Link href="/worksheets/bundles" className="font-display font-bold text-crayon-purple hover:underline">
+              <Link href="/worksheets/bundles" className="font-display font-bold text-owl-purple hover:underline">
                 Os pacotes em PDF →
               </Link>
             )}
@@ -226,10 +246,10 @@ export default function HomePt() {
       </section>
 
       {/* 3b. Traçado e caligrafia */}
-      <section className="bg-crayon-green/10">
-        <div className="mx-auto max-w-6xl px-6 py-16">
-          <h2 className="text-3xl font-bold">O traçado das letras</h2>
-          <p className="mt-2 text-chalkboard/70 max-w-2xl">
+      <section className="bg-owl-mint">
+        <div className="mx-auto max-w-[1200px] px-4 sm:px-6 py-16">
+          <h2 className="text-3xl md:text-4xl font-extrabold leading-tight">O traçado das letras</h2>
+          <p className="mt-3 text-lg leading-relaxed text-owl-muted max-w-2xl">
             Os quatro tipos de letra que a criança vê na escola: a letra bastão, que vem primeiro,
             a letra de forma minúscula e a letra cursiva, maiúscula e minúscula. Para cada letra,
             uma atividade de traçado com linhas pontilhadas para seguir antes de escrever sozinho,
@@ -238,7 +258,7 @@ export default function HomePt() {
           {has("/alphabet/[letter]/worksheet") && (
             <Link
               href={{ pathname: "/alphabet/[letter]/worksheet", params: { letter: "a" } }}
-              className="mt-6 inline-block rounded-block bg-chalkboard text-paper font-display font-bold px-6 py-3 shadow-block hover:shadow-blockHover transition"
+              className="mt-6 owl-btn owl-btn-ink"
             >
               Traçar a letra A
             </Link>
@@ -247,10 +267,10 @@ export default function HomePt() {
       </section>
 
       {/* 4. Jogos */}
-      <section className="bg-crayon-yellow/15">
-        <div className="mx-auto max-w-6xl px-6 py-16">
-          <h2 className="text-3xl font-bold">Jogos para aprender</h2>
-          <p className="mt-2 text-chalkboard/70 max-w-2xl">
+      <section className="bg-owl-cream">
+        <div className="mx-auto max-w-[1200px] px-4 sm:px-6 py-16">
+          <h2 className="text-3xl md:text-4xl font-extrabold leading-tight">Jogos para aprender</h2>
+          <p className="mt-3 text-lg leading-relaxed text-owl-muted max-w-2xl">
             Encontrar a letra, ligar a letra à figura, descobrir com que sílaba começa uma palavra,
             traçar letras e bater palmas para contar as sílabas: jogos curtos, com instruções que a
             criança pode ouvir.
@@ -260,7 +280,7 @@ export default function HomePt() {
               <Link
                 key={g.slug}
                 href={{ pathname: "/games/[slug]", params: { slug: g.slug } }}
-                className="rounded-block bg-paper p-5 shadow-block hover:shadow-blockHover transition font-display font-bold text-center"
+                className="owl-card text-center"
               >
                 <IconTile name={g.icon} className="mx-auto mb-2 h-12 w-12" />
                 {g.title}
@@ -270,7 +290,7 @@ export default function HomePt() {
           {has("/games") && (
             <Link
               href="/games"
-              className="mt-6 inline-block rounded-block bg-chalkboard text-paper font-display font-bold px-6 py-3 shadow-block hover:shadow-blockHover transition"
+              className="mt-6 owl-btn owl-btn-ink"
             >
               Jogar
             </Link>
@@ -279,9 +299,9 @@ export default function HomePt() {
       </section>
 
       {/* 4b. PDF */}
-      <section className="mx-auto max-w-6xl px-6 py-16">
-        <h2 className="text-3xl font-bold">Atividades em PDF prontas para imprimir</h2>
-        <p className="mt-2 text-chalkboard/70 max-w-2xl">
+      <section className="mx-auto max-w-[1200px] px-4 sm:px-6 py-16">
+        <h2 className="text-3xl md:text-4xl font-extrabold leading-tight">Atividades em PDF prontas para imprimir</h2>
+        <p className="mt-3 text-lg leading-relaxed text-owl-muted max-w-2xl">
           Cada atividade é um PDF pronto para imprimir: você vê na tela e imprime ou baixa com um
           clique. Não precisa de conta para as atividades grátis: a professora prepara as cópias da
           turma na noite anterior e, em casa, você imprime uma logo antes de sair.
@@ -289,10 +309,10 @@ export default function HomePt() {
       </section>
 
       {/* 4c. Educação infantil */}
-      <section className="bg-crayon-purple/10">
-        <div className="mx-auto max-w-6xl px-6 py-16">
-          <h2 className="text-3xl font-bold">Para a educação infantil e o 1º ano</h2>
-          <p className="mt-2 text-chalkboard/70 max-w-2xl">
+      <section className="bg-white">
+        <div className="mx-auto max-w-[1200px] px-4 sm:px-6 py-16">
+          <h2 className="text-3xl md:text-4xl font-extrabold leading-tight">Para a educação infantil e o 1º ano</h2>
+          <p className="mt-3 text-lg leading-relaxed text-owl-muted max-w-2xl">
             Além das atividades para imprimir, o AlphaBes tem brincadeiras, cartões com figuras e
             jogos pensados para a atenção dos pequenos, dos 3 aos 6 anos.
           </p>
@@ -308,7 +328,7 @@ export default function HomePt() {
               <MaybeLink
                 key={item.pathname}
                 pathname={item.pathname}
-                className="rounded-block bg-paper p-5 shadow-block hover:shadow-blockHover transition font-display font-bold"
+                className="owl-card"
               >
                 {item.label}
               </MaybeLink>
@@ -318,23 +338,23 @@ export default function HomePt() {
       </section>
 
       {/* 5. Espaço da família */}
-      <section className="mx-auto max-w-6xl px-6 py-16 grid md:grid-cols-2 gap-8 items-center">
+      <section className="mx-auto max-w-[1200px] px-4 sm:px-6 py-16 grid md:grid-cols-2 gap-8 items-center">
         <div>
-          <h2 className="text-3xl font-bold">Espaço da família</h2>
-          <p className="mt-2 text-chalkboard/70">
+          <h2 className="text-3xl md:text-4xl font-extrabold leading-tight">Espaço da família</h2>
+          <p className="mt-3 text-lg leading-relaxed text-owl-muted">
             Acompanhe o progresso do seu filho ou da sua filha com o alfabeto e as sílabas, veja as
             lições concluídas e descubra o próximo passo recomendado.
           </p>
           <Link
             href="/dashboard"
-            className="mt-6 inline-block rounded-block bg-crayon-blue text-paper font-display font-bold px-6 py-3 shadow-block hover:shadow-blockHover transition"
+            className="mt-6 owl-btn owl-btn-purple"
           >
             Ir para minha conta
           </Link>
         </div>
-        <div className="rounded-block bg-chalkboard text-paper p-6 shadow-block">
+        <div className="rounded-3xl bg-owl-ink text-white p-6">
           <p className="font-display font-bold text-lg">Nesta semana</p>
-          <ul className="mt-3 space-y-2 text-paper/80 text-sm">
+          <ul className="mt-3 space-y-2 text-[#C9C3EE] text-sm">
             <li>12 lições concluídas</li>
             <li>Alfabeto: 18 de 26 letras</li>
             <li>Próximo passo: a família do S, sa, se, si, so, su</li>
@@ -343,26 +363,26 @@ export default function HomePt() {
       </section>
 
       {/* 6. Pro */}
-      <section className="bg-chalkboard text-paper">
-        <div className="mx-auto max-w-6xl px-6 py-16 text-center">
-          <h2 className="text-3xl font-bold">AlphaBes Pro</h2>
-          <p className="mt-2 text-paper/70 max-w-xl mx-auto">
+      <section className="bg-owl-ink text-white">
+        <div className="mx-auto max-w-[1200px] px-4 sm:px-6 py-16 text-center">
+          <h2 className="text-3xl md:text-4xl font-extrabold leading-tight">AlphaBes Pro</h2>
+          <p className="mt-3 text-lg text-[#C9C3EE] max-w-xl mx-auto">
             Desbloqueie todas as atividades, todos os jogos e todas as lições de sílabas, com o
             acompanhamento do progresso e pacotes de atividades para imprimir.
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-6">
-            <div className="rounded-block bg-paper text-chalkboard p-6 w-64 shadow-block">
+            <div className="rounded-3xl bg-white text-owl-ink p-6 w-64">
               <p className="font-display font-bold text-xl">Mensal</p>
               <p className="mt-2 text-3xl font-extrabold">US$ 7,99<span className="text-base font-normal">/mês</span></p>
             </div>
-            <div className="rounded-block bg-crayon-yellow text-chalkboard p-6 w-64 shadow-block">
+            <div className="rounded-3xl bg-owl-sun text-owl-ink p-6 w-64">
               <p className="font-display font-bold text-xl">Anual</p>
               <p className="mt-2 text-3xl font-extrabold">US$ 59<span className="text-base font-normal">/ano</span></p>
             </div>
           </div>
           <Link
             href="/pricing"
-            className="mt-8 inline-block rounded-block bg-crayon-green px-6 py-3 font-display font-bold shadow-block hover:shadow-blockHover transition"
+            className="mt-8 owl-btn owl-btn-sun"
           >
             Ver todos os preços
           </Link>
@@ -370,13 +390,13 @@ export default function HomePt() {
       </section>
 
       {/* 7. Perguntas frequentes */}
-      <section className="mx-auto max-w-3xl px-6 py-16">
-        <h2 className="text-3xl font-bold">Perguntas frequentes</h2>
+      <section className="mx-auto max-w-3xl px-4 sm:px-6 py-16">
+        <h2 className="text-3xl md:text-4xl font-extrabold leading-tight">Perguntas frequentes</h2>
         <dl className="mt-8 space-y-6">
           {faq.map((item) => (
             <div key={item.question}>
               <dt className="font-display font-bold text-lg">{item.question}</dt>
-              <dd className="mt-1 text-chalkboard/70">{item.answer}</dd>
+              <dd className="mt-1 leading-relaxed text-owl-muted">{item.answer}</dd>
             </div>
           ))}
         </dl>
@@ -386,6 +406,6 @@ export default function HomePt() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
       />
-    </main>
+    </OwlHome>
   );
 }

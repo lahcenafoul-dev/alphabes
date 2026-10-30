@@ -51,3 +51,140 @@
     break-inside: avoid;
   }
 }
+
+/* Home page ("Owl Quiz" design, components/home/). The site-wide header and
+   footer give way to the home page's own on the page that carries
+   data-owl-home; on every other page they show as usual. */
+body:has([data-owl-home]) [data-site-header],
+body:has([data-owl-home]) [data-site-footer] {
+  display: none;
+}
+
+@layer components {
+  .owl-btn {
+    @apply inline-flex items-center justify-center rounded-full px-6 py-3 font-display text-lg font-bold no-underline transition-transform duration-150;
+  }
+  .owl-btn:hover {
+    @apply -translate-y-0.5;
+  }
+  .owl-btn:active {
+    @apply translate-y-0.5;
+  }
+  .owl-btn-purple {
+    @apply bg-owl-purple text-white shadow-[0_5px_0_#4428C9];
+  }
+  .owl-btn-ink {
+    @apply bg-owl-ink text-white;
+  }
+  .owl-btn-green {
+    @apply bg-owl-green-dark text-white shadow-[0_5px_0_#0A5A42];
+  }
+  .owl-btn-sun {
+    @apply bg-owl-sun text-owl-ink;
+  }
+  .owl-btn-outline {
+    @apply bg-white text-owl-ink ring-2 ring-owl-ink/15 hover:ring-owl-purple;
+  }
+  .owl-card {
+    @apply block rounded-3xl bg-white p-5 font-display font-bold text-owl-ink ring-1 ring-owl-ink/5 transition duration-200;
+  }
+  a.owl-card:hover {
+    @apply -translate-y-1 shadow-[0_18px_30px_-18px_rgba(29,24,70,.35)] ring-owl-purple/30;
+  }
+  .owl-letter {
+    @apply flex items-center justify-center rounded-2xl bg-white font-display font-extrabold ring-1 ring-owl-ink/10 transition-transform duration-150;
+  }
+  .owl-letter:hover {
+    @apply -translate-y-0.5 ring-owl-purple/40;
+  }
+}
+
+/* Resting state, also what visitors who ask for less motion see. */
+.owl-lid {
+  transform: scaleY(0);
+  transform-origin: center top;
+  transform-box: fill-box;
+}
+.owl-wing-l {
+  transform-origin: right top;
+  transform-box: fill-box;
+}
+.owl-wing-r {
+  transform-origin: left top;
+  transform-box: fill-box;
+}
+.owl-piece {
+  display: none;
+}
+.owl-fan-1 {
+  transform: rotate(-4deg);
+  transform-origin: bottom center;
+}
+.owl-fan-2 {
+  transform: rotate(3deg);
+  transform-origin: bottom center;
+}
+.owl-flip {
+  transform-origin: left center;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes owl-fade-up { from { opacity: 0; transform: translateY(28px); } to { opacity: 1; transform: none; } }
+  @keyframes owl-blink { 0%, 92%, 100% { transform: scaleY(0); } 95% { transform: scaleY(1); } }
+  @keyframes owl-flap-l { 0%, 100% { transform: rotate(0); } 50% { transform: rotate(-10deg); } }
+  @keyframes owl-flap-r { 0%, 100% { transform: rotate(0); } 50% { transform: rotate(10deg); } }
+  @keyframes owl-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+  @keyframes owl-hop {
+    0%, 100% { transform: translateY(0) rotate(0); }
+    30% { transform: translateY(-34px) rotate(-8deg); }
+    60% { transform: translateY(0) rotate(6deg); }
+    80% { transform: translateY(-10px); }
+  }
+  @keyframes owl-tilt { 0%, 100% { transform: rotate(0); } 25% { transform: rotate(-10deg); } 75% { transform: rotate(10deg); } }
+  @keyframes owl-shake {
+    0%, 100% { transform: translateX(0); }
+    20% { transform: translateX(-10px); }
+    40% { transform: translateX(10px); }
+    60% { transform: translateX(-7px); }
+    80% { transform: translateX(7px); }
+  }
+  @keyframes owl-win { 0% { transform: scale(1); } 40% { transform: scale(1.1); } 100% { transform: scale(1.04); } }
+  @keyframes owl-pop { 0% { transform: scale(0); opacity: 0; } 70% { transform: scale(1.15); opacity: 1; } 100% { transform: scale(1); opacity: 1; } }
+  @keyframes owl-piece { 0% { transform: translateY(0) scale(1); opacity: 1; } 100% { transform: translateY(-150px) scale(0.3); opacity: 0; } }
+  @keyframes owl-slide-in { from { opacity: 0; transform: translateX(30px); } to { opacity: 1; transform: none; } }
+  @keyframes owl-eq { 0%, 100% { height: 18px; } 50% { height: 64px; } }
+  @keyframes owl-draw { 0% { stroke-dashoffset: 100; } 50%, 85% { stroke-dashoffset: 0; opacity: 1; } 100% { stroke-dashoffset: 0; opacity: 0; } }
+  @keyframes owl-fan-1 { 0%, 100% { transform: rotate(-4deg); } 50% { transform: rotate(-14deg) translateX(-12px); } }
+  @keyframes owl-fan-2 { 0%, 100% { transform: rotate(3deg); } 50% { transform: rotate(13deg) translateX(12px); } }
+  @keyframes owl-flip { 0%, 30% { transform: rotateY(0); } 60%, 100% { transform: rotateY(-180deg); } }
+  @keyframes owl-words {
+    0%, 20% { transform: translateY(0); }
+    25%, 45% { transform: translateY(-25%); }
+    50%, 70% { transform: translateY(-50%); }
+    75%, 95% { transform: translateY(-75%); }
+    100% { transform: translateY(0); }
+  }
+  @keyframes owl-grow { from { width: 0; } }
+
+  .owl-fade-up { animation: owl-fade-up 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+  .owl-lid { animation: owl-blink 4s infinite; }
+  .owl-flap .owl-wing-l { animation: owl-flap-l 2.4s ease-in-out infinite; }
+  .owl-flap .owl-wing-r { animation: owl-flap-r 2.4s ease-in-out infinite; }
+  .owl-bob { animation: owl-bob 3s ease-in-out infinite; }
+  .owl-hop { animation: owl-hop 0.9s cubic-bezier(0.3, 1.4, 0.5, 1) 2; }
+  .owl-tilt { animation: owl-tilt 0.6s ease-in-out; }
+  .owl-shake { animation: owl-shake 0.5s ease-in-out; }
+  .owl-win { animation: owl-win 0.45s cubic-bezier(0.3, 1.5, 0.5, 1) forwards; }
+  .owl-pop { animation: owl-pop 0.5s cubic-bezier(0.3, 1.4, 0.5, 1) both; }
+  .owl-piece { display: block; animation: owl-piece 1s ease-out forwards; }
+  .owl-slide-in { animation: owl-slide-in 0.45s cubic-bezier(0.2, 1, 0.3, 1) both; }
+  .owl-eq { animation: owl-eq 1s ease-in-out infinite; }
+  .owl-draw { stroke-dasharray: 100; stroke-dashoffset: 100; animation: owl-draw 3.6s ease-in-out infinite; }
+  .owl-fan-1 { animation: owl-fan-1 3s ease-in-out infinite; }
+  .owl-fan-2 { animation: owl-fan-2 3s ease-in-out infinite; }
+  .owl-flip { animation: owl-flip 2.6s ease-in-out infinite alternate; }
+  .owl-words { animation: owl-words 8s cubic-bezier(0.6, 0, 0.3, 1) infinite; }
+  /* The path line fills when the section scrolls into view (PathLine.tsx). */
+  [data-in-view="false"] .owl-grow { width: 0; }
+  [data-in-view="true"] .owl-grow { animation: owl-grow 2.4s cubic-bezier(0.2, 0.8, 0.2, 1) both 0.3s; }
+}

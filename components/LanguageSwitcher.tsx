@@ -13,7 +13,7 @@ import {
   sectionFallbackPath,
 } from "@/lib/i18n/routes";
 
-function rememberLocale(locale: Locale) {
+export function rememberLocale(locale: Locale) {
   document.cookie = `${LOCALE_COOKIE}=${locale}; path=/; max-age=${LOCALE_COOKIE_MAX_AGE}; samesite=lax`;
 }
 
