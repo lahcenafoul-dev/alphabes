@@ -4,6 +4,7 @@ import { getTranslations } from "next-intl/server";
 import type { Locale } from "@/i18n/routing";
 import { localizedPath } from "@/lib/i18n/routes";
 import { homeQuizRounds } from "@/lib/home-quiz";
+import { SHEET_KINDS } from "@/lib/sheets/catalog";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import MobileMenu from "@/components/MobileMenu";
 import LanguageLinks from "./LanguageLinks";
@@ -72,6 +73,11 @@ export default async function OwlHome({ locale, copy, children }: { locale: Loca
     { href: path("/stories"), label: copy.nav.stories },
     { href: path("/dashboard"), label: copy.nav.parents },
   ];
+  // The "Worksheets" dropdown, as in components/SiteHeader.tsx: the hub, then the worksheet types.
+  const worksheetLinks = [
+    { href: path("/worksheets"), label: th("allWorksheets") },
+    ...SHEET_KINDS.map((k) => ({ href: path("/worksheets/[category]", { category: k.slug[locale] }), label: k.name[locale] })),
+  ];
   // The page's own language first: it is the one shown when the words don't rotate.
   const languages = [locale, ...LOCALES.filter((l) => l !== locale)];
   const { features } = copy;
@@ -97,17 +103,41 @@ export default async function OwlHome({ locale, copy, children }: { locale: Loca
           <div className="flex items-center gap-2 sm:gap-3">
             <nav aria-label={th("mainNav")} className="hidden lg:block">
               <ul className="flex items-center gap-1 text-[17px] font-extrabold">
-                {nav.map((item) => (
-                  <li key={item.href}>
-                    <Link
-                      href={item.href}
-                      rel={item.href === path("/dashboard") ? "nofollow" : undefined}
-                      className="rounded-full px-3.5 py-2.5 text-owl-ink hover:text-owl-purple"
-                    >
-                      {item.label}
-                    </Link>
-                  </li>
-                ))}
+                {nav.map((item) =>
+                  item.href === path("/worksheets") ? (
+                    // Opens on hover and while any of its links has focus, so it
+                    // works from the keyboard without JavaScript.
+                    <li key={item.href} className="group relative">
+                      <Link href={item.href} className="inline-flex items-center gap-1 rounded-full px-3.5 py-2.5 text-owl-ink hover:text-owl-purple">
+                        {item.label}
+                        <svg aria-hidden="true" viewBox="0 0 12 12" className="h-3 w-3 transition-transform group-hover:rotate-180 group-focus-within:rotate-180">
+                          <path d="M2.5 4.5L6 8l3.5-3.5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+                        </svg>
+                      </Link>
+                      <div className="invisible absolute left-1/2 top-full z-40 -translate-x-1/2 pt-2 opacity-0 transition group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100">
+                        <ul className="w-64 rounded-[24px] bg-white p-2 font-display text-base shadow-[0_24px_40px_-20px_rgba(29,24,70,.35),0_0_0_1px_rgba(29,24,70,.06)]">
+                          {worksheetLinks.map((link) => (
+                            <li key={link.href}>
+                              <Link href={link.href} className="block rounded-full px-4 py-2.5 hover:bg-owl-lilac hover:text-owl-purple focus-visible:bg-owl-lilac">
+                                {link.label}
+                              </Link>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    </li>
+                  ) : (
+                    <li key={item.href}>
+                      <Link
+                        href={item.href}
+                        rel={item.href === path("/dashboard") ? "nofollow" : undefined}
+                        className="rounded-full px-3.5 py-2.5 text-owl-ink hover:text-owl-purple"
+                      >
+                        {item.label}
+                      </Link>
+                    </li>
+                  ),
+                )}
                 <li>
                   <Link href={path("/register")} className="owl-btn owl-btn-purple ml-1.5 px-[22px] text-[17px] font-extrabold shadow-none">
                     {copy.nav.join}
@@ -117,7 +147,7 @@ export default async function OwlHome({ locale, copy, children }: { locale: Loca
             </nav>
             <LanguageSwitcher variant="owl" />
             <MobileMenu
-              items={nav}
+              items={nav.map((item) => (item.href === path("/worksheets") ? { ...item, children: worksheetLinks.slice(1) } : item))}
               account={{ href: path("/register"), label: copy.nav.join }}
               menuLabel={th("menu")}
               closeLabel={th("closeMenu")}

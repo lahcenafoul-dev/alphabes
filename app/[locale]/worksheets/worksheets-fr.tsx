@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { SheetTypesSection } from "@/components/sheets/SheetPages";
 import { Link } from "@/i18n/navigation";
 import { FichePreview } from "@/components/fiches/FicheParts";
 import { FICHE_CATEGORIES, fiches, fichesInCategory, getFiche } from "@/lib/fiches-fr";
@@ -141,6 +142,8 @@ export default function WorksheetsFr() {
           ))}
         </ul>
       </section>
+
+      <SheetTypesSection locale="fr" />
 
       <section className="mt-16" aria-labelledby="themes-heading">
         <h2 id="themes-heading" className="text-3xl font-bold">

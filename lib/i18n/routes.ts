@@ -4,6 +4,7 @@
 // components, the sitemap and tests all share one source of truth.
 import type { Metadata } from "next";
 import { routing, type AppPathname, type Locale } from "@/i18n/routing";
+import { sheetParamGroups } from "@/lib/sheets/catalog";
 
 export const SITE_URL = "https://alphabes.com";
 
@@ -157,7 +158,8 @@ export const NOINDEX_PATHNAMES: ReadonlySet<AppPathname> = new Set<AppPathname>(
 // Pages whose params differ between languages (a French story has its own
 // slug; the French sounds and worksheets aren't the English phonics skills
 // and worksheets), so an English URL can't be mapped to its French twin by
-// path alone.
+// path alone. A pathname that is also in TRANSLATED_PARAMS has twins for the
+// slugs listed there, and none for the others.
 const PARAMS_DIFFER: ReadonlySet<AppPathname> = new Set<AppPathname>([
   "/stories/[slug]",
   "/phonics/[skill]",
@@ -196,6 +198,10 @@ export const TRANSLATED_PARAMS: Partial<Record<AppPathname, { key: string; group
       { en: "coloring", fr: "coloriage", es: "colorear", pt: "colorir" },
     ],
   },
+  // The worksheet types of lib/sheets/catalog.ts (missing numbers, patterns,
+  // sticker sheets): their pages exist in every language. The other
+  // worksheet slugs are in no group, so they still have no twin.
+  "/worksheets/[category]": { key: "category", groups: sheetParamGroups() },
   "/kindergarten/[topic]": {
     key: "topic",
     groups: [
@@ -325,7 +331,7 @@ export function alternatesFor(
     const p =
       l === locale
         ? params
-        : otherParams?.[l] ?? (PARAMS_DIFFER.has(pathname) ? null : translateParams(pathname, params, locale, l));
+        : otherParams?.[l] ?? (PARAMS_DIFFER.has(pathname) && !TRANSLATED_PARAMS[pathname] ? null : translateParams(pathname, params, locale, l));
     if (p) languages[l] = absoluteUrl(l, pathname, p);
   }
   if (Object.keys(languages).length < 2) return { canonical };
@@ -386,7 +392,7 @@ export function matchPath(path: string): MatchedPath | null {
 export function counterpartPath(match: MatchedPath, target: Locale): string | null {
   if (match.locale === target) return null;
   if (!isAvailable(target, match.pathname) || !isAvailable(match.locale, match.pathname)) return null;
-  if (PARAMS_DIFFER.has(match.pathname)) return null;
+  if (PARAMS_DIFFER.has(match.pathname) && !TRANSLATED_PARAMS[match.pathname]) return null;
   if (isLocaleOnly(match.locale, match.pathname, match.params)) return null;
   const params = translateParams(match.pathname, match.params, match.locale, target);
   return params && localizedPath(target, match.pathname, params);

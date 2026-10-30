@@ -7,7 +7,8 @@ import { usePathname } from "next/navigation";
 type Item = { href: string; label: string };
 
 type Props = {
-  items: Item[];
+  /** `children` are listed under their item, indented (the worksheet types under "Worksheets"). */
+  items: (Item & { children?: Item[] })[];
   account: Item;
   menuLabel: string;
   closeLabel: string;
@@ -69,6 +70,17 @@ export default function MobileMenu({ items, account, menuLabel, closeLabel, navL
                 <Link href={item.href} className={style.item}>
                   {item.label}
                 </Link>
+                {item.children && (
+                  <ul className="ml-4 border-l-2 border-current/10 pl-2 text-base">
+                    {item.children.map((child) => (
+                      <li key={child.href}>
+                        <Link href={child.href} className={style.item}>
+                          {child.label}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </li>
             ))}
             <li className="pt-2">

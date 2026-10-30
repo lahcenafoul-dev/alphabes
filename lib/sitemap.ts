@@ -17,6 +17,7 @@ import { FICHE_CATEGORIES, fichePacks, fiches } from "@/lib/fiches-fr";
 import { frenchGames } from "@/lib/games-fr";
 import { schoolTopics } from "@/lib/ecole-fr";
 import { spanishGames } from "@/lib/juegos-es";
+import { SHEETS, SHEET_KINDS } from "@/lib/sheets/catalog";
 import { schoolTopicsEs } from "@/lib/escuela-es";
 import { worksheetCategories } from "@/lib/worksheet-categories";
 import { WORKSHEET_TYPES } from "@/lib/worksheet-types";
@@ -170,6 +171,18 @@ export async function sitemapEntries(): Promise<MetadataRoute.Sitemap> {
     priority: 0.6,
   }));
 
+  // The worksheet types of lib/sheets/catalog.ts; withTwins adds the French,
+  // Spanish and Portuguese pages.
+  const sheetRoutes = [
+    ...SHEET_KINDS.map((k) => ({ slug: k.slug.en, priority: 0.7 })),
+    ...SHEETS.map((s) => ({ slug: s.slug.en, priority: 0.6 })),
+  ].map(({ slug, priority }) => ({
+    url: `${baseUrl}/worksheets/${slug}`,
+    lastModified: RELEASE_DATE,
+    changeFrequency: "monthly" as const,
+    priority,
+  }));
+
   const bundleRoutes = [
     { url: `${baseUrl}/worksheets/bundles`, lastModified: RELEASE_DATE, changeFrequency: "weekly" as const, priority: 0.6 },
     ...bundles.map((b) => ({
@@ -224,6 +237,7 @@ export async function sitemapEntries(): Promise<MetadataRoute.Sitemap> {
     ...worksheetCategoryRoutes,
     ...worksheetTypeCategoryRoutes,
     ...worksheetDetailRoutes,
+    ...sheetRoutes,
     ...bundleRoutes,
     ...blogRoutes,
     ...staticWorksheetCategoryRoutes,

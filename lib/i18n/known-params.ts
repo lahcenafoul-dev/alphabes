@@ -27,6 +27,7 @@ import { getPortugueseGame } from "@/lib/jogos-pt";
 import { getSchoolTopicPt } from "@/lib/escola-pt";
 import { getFicha as getSpanishFicha, getFichaCategory, getFichaPack } from "@/lib/fichas-es";
 import { getPhonicsSkill } from "@/lib/phonics-data";
+import { getSheet, getSheetKindBySlug } from "@/lib/sheets/catalog";
 import { isPremiumGame } from "@/lib/billing/premium";
 import { getPreschoolTopic } from "@/lib/preschool-data";
 import { getFrenchSound } from "@/lib/sons-fr";
@@ -37,6 +38,9 @@ import { getWorksheetCategory } from "@/lib/worksheet-categories";
 import { getWorksheetTypeByCategorySlug } from "@/lib/worksheet-types";
 import { getWorksheetBySlug } from "@/lib/worksheets-data";
 import type { RouteParams } from "./routes";
+
+/** A listing page or sheet of the worksheet types in lib/sheets/catalog.ts. */
+const isSheetParam = (slug: string, locale: "en" | "fr" | "es" | "pt") => !!(getSheetKindBySlug(locale, slug) || getSheet(locale, slug));
 
 type Validator = (params: RouteParams, locale: Locale) => boolean;
 
@@ -58,7 +62,8 @@ const VALIDATORS: Partial<Record<AppPathname, Validator>> = {
   "/preschool/[topic]": ({ topic }, locale) =>
     locale === "fr" ? !!getSchoolTopic("maternelle", topic) : !!getPreschoolTopic(topic),
   "/worksheets/[category]": ({ category }, locale) =>
-    locale === "fr"
+    isSheetParam(category, locale === "fr" ? "fr" : "en") ||
+    (locale === "fr"
       ? !!(getFicheCategory(category) || getFiche(category))
       : !!(
           getWorksheetCategory(category) ||
@@ -66,7 +71,7 @@ const VALIDATORS: Partial<Record<AppPathname, Validator>> = {
           getWorksheetBySlug(category) ||
           getStaticWorksheetCategory(category) ||
           getStaticWorksheetBySlug(category)
-        ),
+        )),
   "/worksheets/bundles/[bundleSlug]": ({ bundleSlug }, locale) =>
     locale === "fr" ? !!getFichePack(bundleSlug) : !!getBundleBySlug(bundleSlug),
 };
@@ -84,7 +89,8 @@ const SPANISH_VALIDATORS: Partial<Record<AppPathname, (params: RouteParams) => b
   "/kindergarten/[topic]": ({ topic }) => !!getSchoolTopicEs("kinder", topic),
   "/phonics/[skill]": ({ skill }) => !!getSpanishSyllablePage(skill),
   "/preschool/[topic]": ({ topic }) => !!getSchoolTopicEs("preescolar", topic),
-  "/worksheets/[category]": ({ category }) => !!(getFichaCategory(category) || getSpanishFicha(category)),
+  "/worksheets/[category]": ({ category }) =>
+    isSheetParam(category, "es") || !!(getFichaCategory(category) || getSpanishFicha(category)),
   "/worksheets/bundles/[bundleSlug]": ({ bundleSlug }) => !!getFichaPack(bundleSlug),
 };
 
@@ -99,7 +105,8 @@ const PORTUGUESE_VALIDATORS: Partial<Record<AppPathname, (params: RouteParams) =
   "/kindergarten/[topic]": ({ topic }) => !!getSchoolTopicPt("primeiro-ano", topic),
   "/phonics/[skill]": ({ skill }) => !!getPortugueseSyllablePage(skill),
   "/preschool/[topic]": ({ topic }) => !!getSchoolTopicPt("educacao-infantil", topic),
-  "/worksheets/[category]": ({ category }) => !!(getAtividadeCategory(category) || getAtividade(category)),
+  "/worksheets/[category]": ({ category }) =>
+    isSheetParam(category, "pt") || !!(getAtividadeCategory(category) || getAtividade(category)),
   "/worksheets/bundles/[bundleSlug]": ({ bundleSlug }) => !!getAtividadePack(bundleSlug),
 };
 

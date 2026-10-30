@@ -20,6 +20,7 @@
     "worksheets:en": "tsx scripts/worksheets-en/generate.ts",
     "numbers:en": "tsx scripts/numbers/generate.ts",
     "bundles:en": "tsx scripts/bundles-en/generate.ts",
+    "sheets": "tsx scripts/sheets/generate.ts",
     "previews:thumbs": "node scripts/preview-thumbs.mjs",
     "previews:en": "node scripts/previews-en.mjs",
     "tts:histoires": "tsx scripts/tts-histoires.ts",

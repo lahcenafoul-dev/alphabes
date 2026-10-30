@@ -431,6 +431,12 @@ export function pictureHero(picture: string): string | null {
   return heroes.get(picture) ?? null;
 }
 
+/** The word's cartoon as a small JPEG data URL (for SVG <image>), or null if there is none. */
+export function pictureSrc(picture: string): string | null {
+  if (!photos) throw new Error("Call preparePictures() before pictureSrc() (scripts/picture-emoji.ts)");
+  return photos.get(picture) ?? null;
+}
+
 /**
  * The word's cartoon as an <img> sized 1em (so it takes the place and size of
  * the emoji it replaces), else its emoji. The PDF scripts wait for images to
