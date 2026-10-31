@@ -2,9 +2,9 @@
 //
 // Renders the worksheets of the new types (lib/sheets/catalog.ts: missing
 // numbers, patterns, sticker sheets, dot to dot, colouring, how to draw,
-// body parts) with Chromium (Playwright), like
+// body parts, flash cards, telling time, mazes) with Chromium (Playwright), like
 // scripts/fiches-fr. For every sheet and language it writes:
-//   the PDF            public/<language folder>/<type>/<slug>.pdf
+//   the PDF            public/<language folder>/<type>/<slug>.pdf (one or more pages)
 //   the preview        <language preview folder>/<slug>.jpg (476 px) and .320.jpg
 // (paths from lib/sheets/catalog.ts). English pages are US Letter, the others A4.
 //
@@ -33,18 +33,12 @@ import { DRAWING_CSS, DRAWING_PROBLEMS, colouringBody, dotToDotBody } from "./dr
 import type { HowToDrawSheet } from "../../data/worksheets/how-to-draw";
 import type { BodyPartsSheet } from "../../data/worksheets/body-parts";
 import { ART_CSS, ART_PROBLEMS, bodyPartsBody, howToDrawBody } from "./art-layout";
-import { mazesKind, mazesSheets, type MazesSheet } from "../../data/worksheets/mazes";
+import type { MazesSheet } from "../../data/worksheets/mazes";
 import { MAZE_CSS, mazesBody } from "./maze-layout";
-import { tellingTimeKind, tellingTimeSheets, type TellingTimeSheet } from "../../data/worksheets/telling-time";
+import type { TellingTimeSheet } from "../../data/worksheets/telling-time";
 import { CLOCK_CSS, tellingTimeBody } from "./clock-layout";
-import { flashCardsKind, flashCardsSheets, type FlashCardsSheet } from "../../data/worksheets/flash-cards";
+import type { FlashCardsSheet } from "../../data/worksheets/flash-cards";
 import { FLASH_CSS, flashCardsBody } from "./flash-cards-layout";
-import type { SheetKind } from "../../lib/sheets/types";
-
-// Phase 4, step A: types not in the catalogue yet, rendered for samples only (--out).
-const DRAFT_KINDS: SheetKind[] = [flashCardsKind, tellingTimeKind, mazesKind];
-const DRAFT_SHEETS: Sheet[] = [...flashCardsSheets, ...tellingTimeSheets, ...mazesSheets];
-const kindOf = (sheet: Sheet) => DRAFT_KINDS.find((k) => k.id === sheet.kind) ?? getSheetKind(sheet.kind);
 
 const ROOT = process.cwd();
 const FONTS_EN = join(ROOT, "scripts", "worksheets-en", "fonts");
@@ -116,10 +110,11 @@ function pageHtml(sheet: Sheet, locale: SheetLocale): string {
       sheetPage({
         locale,
         page: SHEET_PAGE[locale],
-        kindName: kindOf(sheet).name[locale],
+        kindName: getSheetKind(sheet.kind).name[locale],
         title: p.title ?? sheet.title[locale],
         instruction: p.instruction ?? sheet.instruction[locale],
         body: p.body,
+        noNameLine: p.noNameLine,
       }),
     )
     .join("");
@@ -172,7 +167,7 @@ async function render(page: Page, sheet: Sheet, locale: SheetLocale, pdfFile: st
 
 async function main() {
   const parts = filter?.split(",") ?? [];
-  const list = [...SHEETS, ...(out ? DRAFT_SHEETS : [])].filter((s) => (!kind || s.kind === kind) && (!filter || parts.some((p) => s.id.includes(p) || Object.values(s.slug).some((x) => x.includes(p)))));
+  const list = SHEETS.filter((s) => (!kind || s.kind === kind) && (!filter || parts.some((p) => s.id.includes(p) || Object.values(s.slug).some((x) => x.includes(p)))));
   if (!list.length) throw new Error(`No sheet matches "${filter ?? kind}"`);
 
   await preparePictures();

@@ -87,7 +87,7 @@ html, body { margin: 0; padding: 0; background: #fff }
  * One page of a sheet with several (flash card sets, answer keys): its
  * exercise, and a title or instruction when they differ from the sheet's.
  */
-export type SheetPart = { body: string; title?: string; instruction?: string };
+export type SheetPart = { body: string; title?: string; instruction?: string; noNameLine?: boolean };
 
 export type SheetPage = {
   locale: SheetLocale;
@@ -96,6 +96,8 @@ export type SheetPage = {
   title: string;
   instruction: string;
   body: string;
+  /** Leave out the Name/Date line (flash cards: nothing to write). */
+  noNameLine?: boolean;
 };
 
 export function sheetPage(s: SheetPage): string {
@@ -106,7 +108,7 @@ export function sheetPage(s: SheetPage): string {
   return `<section class="sh page" style="width:${p.width}mm;height:${p.height}mm">
   <header class="sh-top"><span class="sh-logo">${OWL}AlphaBes</span><span class="sh-kind">${esc(s.kindName)}</span></header>
   <h1 class="sh-title" style="font-size:${titleSize}mm">${esc(typo(s.title, s.locale))}</h1>
-  <div class="sh-who"><span>${esc(typo(t.name, s.locale))}</span><span class="sh-date">${esc(typo(t.date, s.locale))}</span></div>
+  ${s.noNameLine ? "" : `<div class="sh-who"><span>${esc(typo(t.name, s.locale))}</span><span class="sh-date">${esc(typo(t.date, s.locale))}</span></div>`}
   <p class="sh-instr">${PENCIL}<span>${esc(typo(s.instruction, s.locale))}</span></p>
   <div class="sh-body"><div class="sh-inner">${s.body}</div></div>
   <footer class="sh-foot"><span>${esc(t.site)}</span><span>${esc(s.kindName)}</span></footer>

@@ -3,6 +3,7 @@ import Link from "next/link";
 import { alphabetData } from "@/lib/alphabet-data";
 import SpeakButton from "@/components/SpeakButton";
 import { alternatesFor } from "@/lib/i18n/routes";
+import { getSheetKind } from "@/lib/sheets/catalog";
 import WordIllustration from "@/components/WordIllustration";
 
 export const flashcardsMetadataEn: Metadata = {
@@ -17,6 +18,12 @@ export default function FlashcardsEn() {
       <h1 className="text-4xl font-extrabold">Alphabet Flashcards</h1>
       <p className="mt-2 text-chalkboard/70 max-w-2xl">
         Flip through letter flashcards to practice recognition, or print a set for offline use.
+      </p>
+      <p className="mt-3 text-sm">
+        Want cards to print?{" "}
+        <Link href={`/worksheets/${getSheetKind("flash-cards").slug.en}`} className="font-display font-bold text-crayon-blue hover:underline">
+          See the printable flash cards by theme →
+        </Link>
       </p>
       <div className="mt-8 grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-4">
         {alphabetData.map(({ letter, word }) => (

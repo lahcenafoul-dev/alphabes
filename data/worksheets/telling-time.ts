@@ -215,6 +215,8 @@ function activitySheet(activity: Exclude<ClockActivity, "routine">, level: Clock
   const id = `time-${activity}-${level}-${set}`;
   // "What Time Is It? Half Past", "Draw the Hands: Half Past".
   const sep = (l: SheetLocale) => (a.name[l].endsWith("?") ? " " : l === "fr" ? " : " : ": ");
+  // A capital after a question mark: "Quelle heure est-il ? Les heures pile".
+  const after = (l: SheetLocale) => (a.name[l].endsWith("?") ? lv[l].charAt(0).toUpperCase() + lv[l].slice(1) : lv[l]);
   return {
     kind: "telling-time",
     id,
@@ -226,9 +228,9 @@ function activitySheet(activity: Exclude<ClockActivity, "routine">, level: Clock
     },
     title: {
       en: `${a.name.en}${sep("en")}${lv.en}, Sheet ${set}`,
-      fr: `${a.name.fr}${sep("fr")}${lv.fr}, ${SHEET_WORD.fr} ${set}`,
-      es: `${a.name.es}${sep("es")}${lv.es}, ${SHEET_WORD.es} ${set}`,
-      pt: `${a.name.pt}${sep("pt")}${lv.pt}, ${SHEET_WORD.pt} ${set}`,
+      fr: `${a.name.fr}${sep("fr")}${after("fr")}, ${SHEET_WORD.fr} ${set}`,
+      es: `${a.name.es}${sep("es")}${after("es")}, ${SHEET_WORD.es} ${set}`,
+      pt: `${a.name.pt}${sep("pt")}${after("pt")}, ${SHEET_WORD.pt} ${set}`,
     },
     label: {
       en: `${lv.en}, sheet ${set}`,
@@ -244,6 +246,7 @@ function activitySheet(activity: Exclude<ClockActivity, "routine">, level: Clock
     },
     instruction: a.instruction,
     filters: { level, activity },
+    pages: 2,
     params: { activity, level, times: times(level, a.count, id) },
   };
 }
@@ -278,6 +281,7 @@ function routineSheet(r: (typeof ROUTINES)[number]): TellingTimeSheet {
       pt: "Leia cada frase e desenhe os ponteiros no relógio.",
     },
     filters: { level: "routine", activity: "routine" },
+    pages: 2,
     params: { activity: "routine", level: null, times: r.steps.map((s) => s.time), routine: r.id },
   };
 }

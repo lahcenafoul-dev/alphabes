@@ -34,6 +34,8 @@ export type Sheet<P = unknown> = {
   instruction: L10n;
   /** Filter key → option value, as listed in the type's filters. */
   filters: Record<string, string>;
+  /** Pages in the PDF, when more than one (card sets, answer keys). */
+  pages?: number;
   /** What the layout script draws. */
   params: P;
 };

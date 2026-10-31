@@ -45,14 +45,14 @@ const LEVELS: Record<MazeLevel, L10n> = {
   hard: { en: "hard", fr: "difficile", es: "difícil", pt: "difícil" },
 };
 
-const SHAPES: Record<MazeShape, { name: L10n; colour: string }> = {
+const SHAPES: Record<MazeShape, { name: L10n; colour: string; filter?: L10n }> = {
   square: { name: { en: "square", fr: "carré", es: "cuadrado", pt: "quadrado" }, colour: "#6A4CFF" },
   circle: { name: { en: "round", fr: "rond", es: "redondo", pt: "redondo" }, colour: "#3EA6FF" },
-  heart: { name: { en: "heart", fr: "en cœur", es: "de corazón", pt: "de coração" }, colour: "#FF5C93" },
-  star: { name: { en: "star", fr: "en étoile", es: "de estrella", pt: "de estrela" }, colour: "#FFB020" },
-  apple: { name: { en: "apple", fr: "en pomme", es: "de manzana", pt: "de maçã" }, colour: "#E53935" },
-  fish: { name: { en: "fish", fr: "en poisson", es: "de pez", pt: "de peixe" }, colour: "#18A97F" },
-  house: { name: { en: "house", fr: "en maison", es: "de casa", pt: "de casa" }, colour: "#FB8C00" },
+  heart: { name: { en: "heart", fr: "en cœur", es: "de corazón", pt: "de coração" }, colour: "#FF5C93", filter: { en: "Heart", fr: "Cœur", es: "Corazón", pt: "Coração" } },
+  star: { name: { en: "star", fr: "en étoile", es: "de estrella", pt: "de estrela" }, colour: "#FFB020", filter: { en: "Star", fr: "Étoile", es: "Estrella", pt: "Estrela" } },
+  apple: { name: { en: "apple", fr: "en pomme", es: "de manzana", pt: "de maçã" }, colour: "#E53935", filter: { en: "Apple", fr: "Pomme", es: "Manzana", pt: "Maçã" } },
+  fish: { name: { en: "fish", fr: "en poisson", es: "de pez", pt: "de peixe" }, colour: "#18A97F", filter: { en: "Fish", fr: "Poisson", es: "Pez", pt: "Peixe" } },
+  house: { name: { en: "house", fr: "en maison", es: "de casa", pt: "de casa" }, colour: "#FB8C00", filter: { en: "House", fr: "Maison", es: "Casa", pt: "Casa" } },
 };
 
 /** The shape's outline in a 0–100 box (none for a square maze). */
@@ -118,10 +118,10 @@ function sheet(shape: MazeShape, level: MazeLevel, cols: number, story: Story): 
       pt: `Labirinto ${s.pt} ${lv.pt}: ${from.the.pt} e ${to.the.pt}`,
     },
     label: {
-      en: `${cap(from.name.en)} and ${to.name.en}`,
-      fr: `${cap(from.the.fr)} et ${to.the.fr}`,
-      es: `${cap(from.the.es)} y ${to.the.es}`,
-      pt: `${cap(from.the.pt)} e ${to.the.pt}`,
+      en: `${cap(lv.en)} ${s.en}: ${from.name.en} and ${to.name.en}`,
+      fr: `${cap(lv.fr)}, ${s.fr} : ${from.the.fr} et ${to.the.fr}`,
+      es: `${cap(lv.es)}, ${s.es}: ${from.the.es} y ${to.the.es}`,
+      pt: `${cap(lv.pt)}, ${s.pt}: ${from.the.pt} e ${to.the.pt}`,
     },
     description: {
       en: `Free printable ${lv.en} ${s.en} maze for kids: help ${from.the.en} find ${to.the.en}. One path only, with the solution on page 2.`,
@@ -136,6 +136,7 @@ function sheet(shape: MazeShape, level: MazeLevel, cols: number, story: Story): 
       pt: `Ajude ${from.the.pt} a encontrar ${to.the.pt}: trace o caminho com o lápis.`,
     },
     filters: { level, shape },
+    pages: 2,
     params: { shape, level, cols, from: from.picture, to: to.picture },
   };
 }
@@ -214,7 +215,7 @@ export const mazesKind: SheetKind = {
       label: { en: "Shape", fr: "Forme", es: "Forma", pt: "Forma" },
       options: (Object.keys(SHAPES) as MazeShape[]).map((v) => ({
         value: v,
-        label: { en: cap(SHAPES[v].name.en), fr: cap(SHAPES[v].name.fr), es: cap(SHAPES[v].name.es), pt: cap(SHAPES[v].name.pt) },
+        label: SHAPES[v].filter ?? { en: cap(SHAPES[v].name.en), fr: cap(SHAPES[v].name.fr), es: cap(SHAPES[v].name.es), pt: cap(SHAPES[v].name.pt) },
       })),
     },
   ],

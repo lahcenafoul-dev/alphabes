@@ -53,9 +53,10 @@ export function clockSvg(size: number, time?: Time | null): string {
     const [h, m] = time;
     const ha = (((h % 12) + m / 60) * 30 * Math.PI) / 180;
     const ma = (m * 6 * Math.PI) / 180;
+    // The minute hand first, so the short hour hand stays visible on top (12:00).
     hands =
-      `<path d="M50 50L${r2(50 + 18 * Math.sin(ha))} ${r2(50 - 18 * Math.cos(ha))}" stroke="${HOUR_HAND}" stroke-width="5.2" stroke-linecap="round"/>` +
-      `<path d="M50 50L${r2(50 + 28 * Math.sin(ma))} ${r2(50 - 28 * Math.cos(ma))}" stroke="${MINUTE_HAND}" stroke-width="3.2" stroke-linecap="round"/>`;
+      `<path d="M50 50L${r2(50 + 28 * Math.sin(ma))} ${r2(50 - 28 * Math.cos(ma))}" stroke="${MINUTE_HAND}" stroke-width="3.2" stroke-linecap="round"/>` +
+      `<path d="M50 50L${r2(50 + 18 * Math.sin(ha))} ${r2(50 - 18 * Math.cos(ha))}" stroke="${HOUR_HAND}" stroke-width="5.2" stroke-linecap="round"/>`;
   }
   return `<svg width="${r1(size)}mm" height="${r1(size)}mm" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="46.5" fill="#fff" stroke="${PURPLE}" stroke-width="4"/><path d="${ticks.join("")}" stroke="${INK}" stroke-width="0.9" stroke-linecap="round"/><path d="${ticks.filter((_, i) => i % 5 === 0).join("")}" stroke="${INK}" stroke-width="1.8" stroke-linecap="round"/>${nums}${hands}<circle cx="50" cy="50" r="3.4" fill="${INK}"/></svg>`;
 }
@@ -134,6 +135,9 @@ function beforeAfterBody(times: Time[], locale: SheetLocale, box: Box, key: bool
   return `<div style="width:${box.w}mm">${rows}</div>`;
 }
 
+/** French "à 8 h 30" never breaks inside the time. */
+const keepTime = (text: string) => text.replace(/\d+ h( \d+)?/g, (t) => t.replace(/ /g, "\u00a0"));
+
 function routineBody(sheet: TellingTimeSheet, locale: SheetLocale, box: Box, key: boolean): string {
   const steps = getRoutine(sheet.params.routine!).steps;
   const rows = Math.ceil(steps.length / 2);
@@ -144,7 +148,7 @@ function routineBody(sheet: TellingTimeSheet, locale: SheetLocale, box: Box, key
   const cards = steps
     .map(
       (s) =>
-        `<div class="ck-card" style="width:${r1(cardW)}mm;height:${r1(cardH)}mm"><div class="ck-say"><div style="font-size:20mm;line-height:0">${picturePrint(s.picture)}</div><div>${esc(typo(s.text[locale], locale))}</div></div>${clockSvg(size, key ? s.time : null)}</div>`,
+        `<div class="ck-card" style="width:${r1(cardW)}mm;height:${r1(cardH)}mm"><div class="ck-say"><div style="font-size:20mm;line-height:0">${picturePrint(s.picture)}</div><div>${esc(typo(keepTime(s.text[locale]), locale))}</div></div>${clockSvg(size, key ? s.time : null)}</div>`,
     )
     .join("");
   return `<div style="display:grid;grid-template-columns:repeat(2,${r1(cardW)}mm);gap:${gap}mm">${cards}</div>`;
