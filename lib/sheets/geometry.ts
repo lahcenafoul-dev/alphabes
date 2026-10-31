@@ -179,6 +179,12 @@ export function rectSegDist(r: Rect, a: Pt, b: Pt): number {
   return Math.min(rectPointDist(r, a), rectPointDist(r, b), ...corners.map((c) => segDist(c, a, b)));
 }
 
+/** Shortest distance between two segments (0 if they cross). */
+export function segSegDist(a: Pt, b: Pt, c: Pt, d: Pt): number {
+  if (segsCross(a, b, c, d)) return 0;
+  return Math.min(segDist(a, c, d), segDist(b, c, d), segDist(c, a, b), segDist(d, a, b));
+}
+
 function segsCross(p1: Pt, p2: Pt, p3: Pt, p4: Pt): boolean {
   const d = (a: Pt, b: Pt, c: Pt) => (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x);
   const d1 = d(p3, p4, p1);
@@ -216,14 +222,15 @@ const triArea = (a: Pt, b: Pt, c: Pt) => Math.abs((b.x - a.x) * (c.y - a.y) - (c
  * (ear tips, fin tips) and spreads the rest along the curves. Then, while two
  * neighbouring dots are closer than `minGap` (both sides of a sharp corner),
  * the less important one goes and a dot is added back in the middle of the
- * longest stretch without dots.
+ * longest stretch without dots. With `even`, the dots between the corners
+ * are then spread evenly (evenOut), for the sheets with many dots.
  *
  * Points where `allowed` says no (too close to the drawing's other lines)
  * are never dots.
  *
  * Returns the dots clockwise (on screen), dot 1 the one nearest `start`.
  */
-export function pickDots(outline: Poly, n: number, start: Pt, minGap: number, allowed: (q: Pt) => boolean = () => true): Pt[] {
+export function pickDots(outline: Poly, n: number, start: Pt, minGap: number, allowed: (q: Pt) => boolean = () => true, even = false): Pt[] {
   let pts = resample(outline.pts, Math.max(400, n * 8)).filter(allowed);
   // Clockwise on screen (y down) = positive shoelace sum.
   const area = pts.reduce((s, p, i) => {
@@ -280,12 +287,74 @@ export function pickDots(outline: Poly, n: number, start: Pt, minGap: number, al
     }
     alive[(from + Math.floor(len / 2)) % m] = true;
   }
+  if (even) evenOut(pts, alive);
   const dots = pts.filter((_, i) => alive[i]);
   let first = 0;
   dots.forEach((d, i) => {
     if (dist(d, start) < dist(dots[first], start)) first = i;
   });
   return [...dots.slice(first), ...dots.slice(0, first)];
+}
+
+/** Turning angle (radians) of a closed polyline at point i, looking k points away on each side. */
+function turn(pts: Pt[], i: number, k: number): number {
+  const m = pts.length;
+  const a = pts[(i - k + m) % m];
+  const b = pts[i];
+  const c = pts[(i + k) % m];
+  const a1 = Math.atan2(b.y - a.y, b.x - a.x);
+  const a2 = Math.atan2(c.y - b.y, c.x - b.x);
+  let d = Math.abs(a2 - a1);
+  if (d > Math.PI) d = 2 * Math.PI - d;
+  return d;
+}
+
+/**
+ * Spreads the dots evenly along the outline between its corners: each dot
+ * that isn't on a corner (a turn of more than 35°) moves to halfway, along
+ * the outline, between its two neighbours; repeated until it settles. Works
+ * on the `alive` flags of the finely resampled points.
+ */
+function evenOut(pts: Pt[], alive: boolean[]): void {
+  const m = pts.length;
+  // Distance along the outline to each point (gaps left by `allowed` count as straight lines).
+  const at = [0];
+  for (let i = 1; i < m; i++) at.push(at[i - 1] + dist(pts[i - 1], pts[i]));
+  const total = at[m - 1] + dist(pts[m - 1], pts[0]);
+  const corner = pts.map((_, i) => turn(pts, i, 3) > (35 * Math.PI) / 180);
+  let idx = pts.map((_, i) => i).filter((i) => alive[i]);
+  const fixed = idx.map((i) => corner[i] || corner[(i + 1) % m] || corner[(i - 1 + m) % m]);
+  const nearest = (len: number, lo: number, hi: number) => {
+    // The point closest to `len` along the outline, strictly between lo and hi (cyclic indices).
+    let best = -1;
+    let bestD = Infinity;
+    for (let j = (lo + 1) % m; j !== hi; j = (j + 1) % m) {
+      const d = Math.abs(((at[j] - len + total * 1.5) % total) - total / 2);
+      if (d < bestD) {
+        bestD = d;
+        best = j;
+      }
+    }
+    return best;
+  };
+  for (let round = 0; round < 40; round++) {
+    let moved = false;
+    for (let k = 0; k < idx.length; k++) {
+      if (fixed[k]) continue;
+      const lo = idx[(k - 1 + idx.length) % idx.length];
+      const hi = idx[(k + 1) % idx.length];
+      const span = (at[hi] - at[lo] + total) % total;
+      const j = nearest((at[lo] + span / 2) % total, lo, hi);
+      if (j >= 0 && j !== idx[k]) {
+        idx[k] = j;
+        moved = true;
+      }
+    }
+    if (!moved) break;
+  }
+  idx = [...idx];
+  alive.fill(false);
+  for (const i of idx) alive[i] = true;
 }
 
 /** Where a dot's label goes, in the same units as the dots. */
@@ -518,6 +587,15 @@ export function regionSpots(regions: RegionShape[], blocked: { polys: Poly[]; fi
         const y = gy + dy;
         if (x < 0 || y < 0 || x >= W || y >= H) continue;
         const j = y * W + x;
+        // A diagonal step squeezed between two other regions isn't a way
+        // through: the kite's two yellow quarters meet only at a corner, and
+        // each needs its number. (Between two cells of one other region, it's
+        // the thin tip of a shape, which stays one piece.)
+        if (dx && dy) {
+          const a = grid[gy * W + x];
+          const b = grid[y * W + gx];
+          if (a >= 0 && a !== id && b >= 0 && b !== id && a !== b) continue;
+        }
         if (!seen[j] && grid[j] === id) {
           seen[j] = 1;
           stack.push(j);

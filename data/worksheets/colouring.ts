@@ -20,6 +20,8 @@ export const PAINTS: Record<Paint, { hex: string; name: L10n }> = {
 
 const each = <T>(f: (l: keyof L10n) => T): L10n<T> => ({ en: f("en"), fr: f("fr"), es: f("es"), pt: f("pt") });
 const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
+/** "ice cream" → "Ice Cream", for English titles. */
+const words = (s: string) => s.split(" ").map(cap).join(" ");
 
 const VERSION: Record<ColouringVersion, { prefix: L10n; filter: L10n }> = {
   number: {
@@ -35,13 +37,13 @@ const VERSION: Record<ColouringVersion, { prefix: L10n; filter: L10n }> = {
 function titleOf(d: Drawing, version: ColouringVersion): L10n {
   if (version === "number")
     return {
-      en: `Color by Number: ${cap(d.name.en)}`,
+      en: `Color by Number: ${words(d.name.en)}`,
       fr: `Coloriage magique : ${d.the.fr}`,
       es: `Colorea por números: ${d.the.es}`,
       pt: `Pinte por números: ${d.the.pt}`,
     };
   return {
-    en: `${cap(d.name.en)} Coloring Page`,
+    en: `${words(d.name.en)} Coloring Page`,
     fr: `Coloriage : ${d.the.fr}`,
     es: `Dibujo para colorear: ${d.the.es}`,
     pt: `Desenho para colorir: ${d.the.pt}`,
@@ -98,8 +100,9 @@ export const colouringSheets: ColouringSheet[] = DRAWINGS.flatMap((d) => (["numb
 
 export const colouringKind: SheetKind = {
   id: "colouring",
-  slug: { en: "coloring", fr: "coloriages", es: "colorear", pt: "colorir" },
-  name: { en: "Coloring", fr: "Coloriages", es: "Colorear", pt: "Colorir" },
+  // Not "coloring" in English: that's the letter colouring worksheets' category.
+  slug: { en: "coloring-pages", fr: "coloriages", es: "colorear", pt: "colorir" },
+  name: { en: "Coloring Pages", fr: "Coloriages", es: "Colorear", pt: "Colorir" },
   heading: {
     en: "Coloring Pages and Color by Number",
     fr: "Coloriages et coloriages magiques à imprimer",

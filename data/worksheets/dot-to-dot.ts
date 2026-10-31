@@ -43,7 +43,7 @@ const PREFIX: L10n = { en: "dot-to-dot", fr: "points-a-relier", es: "une-los-pun
 function titleOf(d: Drawing, level: DotLevel): L10n {
   const r = RANGE[level];
   return {
-    en: `${cap(d.name.en)} Dot to Dot (${r.en})`,
+    en: `${words(d.name.en)} Dot to Dot (${r.en})`,
     fr: `Points à relier : ${d.the.fr} (${r.fr})`,
     es: `Une los puntos: ${d.the.es} (${r.es})`,
     pt: `Ligue os pontos: ${d.the.pt} (${r.pt})`,
@@ -85,6 +85,8 @@ function descriptionOf(d: Drawing, level: DotLevel): L10n {
 }
 
 const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
+/** "ice cream" → "Ice Cream", for English titles. */
+const words = (s: string) => s.split(" ").map(cap).join(" ");
 
 function sheet(d: Drawing, level: DotLevel): DotToDotSheet {
   return {
@@ -102,7 +104,8 @@ function sheet(d: Drawing, level: DotLevel): DotToDotSheet {
 
 const LEVELS: DotLevel[] = ["easy", "medium", "hard", "letters"];
 
-export const dotToDotSheets: DotToDotSheet[] = DRAWINGS.flatMap((d) => LEVELS.map((level) => sheet(d, level)));
+// Easy sheets first, then by level, so the listing starts with the simplest.
+export const dotToDotSheets: DotToDotSheet[] = LEVELS.flatMap((level) => DRAWINGS.filter((d) => d.levels.includes(level)).map((d) => sheet(d, level)));
 
 export const dotToDotKind: SheetKind = {
   id: "dot-to-dot",

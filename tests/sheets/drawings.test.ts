@@ -1,12 +1,11 @@
 // The line-drawing sheets (data/worksheets/drawings.ts → dot to dot and
-// colouring, still drafts in lib/sheets/catalog.ts): every shape is closed;
+// colouring): every shape is closed; the hand-placed 1–10 dots are ten;
 // on every dot-to-dot sheet the dots and labels touch nothing and the
 // finished picture has its corner; on every colour-by-number sheet each part
 // has a readable number and no unnumbered sliver. Checked on Letter (English)
 // and A4 (French, Spanish, Portuguese).
 import { describe, expect, it } from "vitest";
-import { DRAFT_KINDS, DRAFT_SHEETS, SHEETS, SHEET_KINDS } from "@/lib/sheets/catalog";
-import { SHEET_LOCALES } from "@/lib/sheets/types";
+import { sheetsOfKind } from "@/lib/sheets/catalog";
 import { DRAWINGS } from "@/data/worksheets/drawings";
 import { DOT_COUNT, type DotToDotSheet } from "@/data/worksheets/dot-to-dot";
 import type { ColouringSheet } from "@/data/worksheets/colouring";
@@ -15,8 +14,8 @@ import { bodyBox } from "@/scripts/sheets/chrome";
 import { colourPlan, dotPlan } from "@/scripts/sheets/drawing-layout";
 
 const PAGES = ["letter", "a4"] as const;
-const dotSheets = DRAFT_SHEETS.filter((s) => s.kind === "dot-to-dot") as DotToDotSheet[];
-const colourSheets = DRAFT_SHEETS.filter((s) => s.kind === "colouring") as ColouringSheet[];
+const dotSheets = sheetsOfKind("dot-to-dot") as DotToDotSheet[];
+const colourSheets = sheetsOfKind("colouring") as ColouringSheet[];
 
 describe("line drawings", () => {
   it("are made of closed shapes", () => {
@@ -26,18 +25,24 @@ describe("line drawings", () => {
     }
   });
 
-  it("are drafts: no pages, routes or sitemap entries yet", () => {
-    expect(SHEET_KINDS.some((k) => DRAFT_KINDS.includes(k))).toBe(false);
-    expect(SHEETS.some((s) => DRAFT_SHEETS.includes(s))).toBe(false);
+  it("have unique ids", () => {
+    expect(new Set(DRAWINGS.map((d) => d.id)).size).toBe(DRAWINGS.length);
   });
 
-  it("have unique ids, slugs and titles in every language", () => {
-    const all = [...SHEETS, ...DRAFT_SHEETS];
-    expect(new Set(all.map((s) => `${s.kind}:${s.id}`)).size).toBe(all.length);
-    for (const l of SHEET_LOCALES) {
-      expect(new Set(all.map((s) => s.slug[l])).size, l).toBe(all.length);
-      expect(new Set(all.map((s) => s.title[l])).size, l).toBe(all.length);
+  it("only make the dot-to-dot levels they read well at, with ten hand-placed dots for 1–10", () => {
+    for (const d of DRAWINGS) {
+      expect(d.levels.length, d.id).toBeGreaterThan(0);
+      // Ten automatic dots don't make a recognisable picture (the owner's review).
+      if (d.levels.includes("easy")) expect(d.dots?.easy, d.id).toHaveLength(10);
+      for (const [level, dots] of Object.entries(d.dots ?? {})) {
+        expect(d.levels, d.id).toContain(level);
+        expect(dots, `${d.id} ${level}`).toHaveLength(DOT_COUNT[level as keyof typeof DOT_COUNT]);
+      }
     }
+  });
+
+  it("make a colouring page and a colour-by-number sheet each", () => {
+    expect(colourSheets).toHaveLength(2 * DRAWINGS.length);
   });
 });
 
@@ -73,4 +78,10 @@ describe("colouring", () => {
         for (const s of plan.spots) expect(s.fs, sheet.id).toBeGreaterThanOrEqual(3.8);
       }
     }, 120_000);
+
+  it("numbers every piece, even pieces of one region that meet only at a corner", () => {
+    // The kite's yellow quarters (top left, bottom right) and red ones touch at its centre.
+    const kite = colourSheets.find((s) => s.id === "kite-number")!;
+    expect(colourPlan(kite, bodyBox("letter")).spots.map((s) => s.n).sort()).toEqual([1, 1, 2, 2]);
+  });
 });

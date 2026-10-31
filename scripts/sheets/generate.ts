@@ -1,7 +1,7 @@
-// npm run sheets [-- <filter>] [--kind=<id>] [--locale=<en,fr…>] [--out=<dir>] [--png] [--draft]
+// npm run sheets [-- <filter>] [--kind=<id>] [--locale=<en,fr…>] [--out=<dir>] [--png]
 //
 // Renders the worksheets of the new types (lib/sheets/catalog.ts: missing
-// numbers, patterns, sticker sheets) with Chromium (Playwright), like
+// numbers, patterns, sticker sheets, dot to dot, colouring) with Chromium (Playwright), like
 // scripts/fiches-fr. For every sheet and language it writes:
 //   the PDF            public/<language folder>/<type>/<slug>.pdf
 //   the preview        <language preview folder>/<slug>.jpg (476 px) and .320.jpg
@@ -12,15 +12,12 @@
 // page) there instead of public/, for a sample. Re-run after changing a
 // layout or a catalogue, and commit the files: the site serves them as
 // static assets.
-//
-// --draft renders the types still being made (DRAFT_SHEETS) instead; use it
-// with --out, since they have no pages yet.
 import { mkdirSync, readFileSync, statSync } from "fs";
 import { dirname, join } from "path";
 import { chromium, type Page } from "@playwright/test";
 import sharp from "sharp";
 import { preparePictures } from "../picture-emoji";
-import { DRAFT_SHEETS, PREVIEW_SIZE, SHEETS, SHEET_PAGE, getSheetKind, sheetPdf, sheetPreview, type Sheet, type SheetLocale } from "../../lib/sheets/catalog";
+import { PREVIEW_SIZE, SHEETS, SHEET_PAGE, getSheetKind, sheetPdf, sheetPreview, type Sheet, type SheetLocale } from "../../lib/sheets/catalog";
 import { SHEET_LOCALES } from "../../lib/sheets/types";
 import type { MissingNumbersSheet } from "../../data/worksheets/missing-numbers";
 import type { PatternsSheet } from "../../data/worksheets/patterns";
@@ -31,7 +28,7 @@ import { PAGES, SHEET_CSS, bodyBox, fitBodies, sheetPage } from "./chrome";
 import { missingNumbersBody } from "./missing-numbers-layout";
 import { PATTERNS_CSS, patternsBody } from "./patterns-layout";
 import { STICKERS_CSS, stickersBody } from "./stickers-layout";
-import { DRAWING_CSS, colouringBody, dotToDotBody } from "./drawing-layout";
+import { DRAWING_CSS, DRAWING_PROBLEMS, colouringBody, dotToDotBody } from "./drawing-layout";
 
 const ROOT = process.cwd();
 const FONTS_EN = join(ROOT, "scripts", "worksheets-en", "fonts");
@@ -43,7 +40,6 @@ const kind = args.find((a) => a.startsWith("--kind="))?.slice(7);
 const locales = (args.find((a) => a.startsWith("--locale="))?.slice(9).split(",") ?? SHEET_LOCALES) as SheetLocale[];
 const out = args.find((a) => a.startsWith("--out="))?.slice(6);
 const withPng = args.includes("--png");
-const draft = args.includes("--draft");
 // Prints the body box and the exercise's size, in mm, for each page.
 const debug = args.includes("--debug");
 
@@ -131,8 +127,7 @@ async function render(page: Page, sheet: Sheet, locale: SheetLocale, pdfFile: st
 
 async function main() {
   const parts = filter?.split(",") ?? [];
-  if (draft && !out) throw new Error("--draft needs --out=<dir>: draft types have no pages yet");
-  const list = (draft ? DRAFT_SHEETS : SHEETS).filter((s) => (!kind || s.kind === kind) && (!filter || parts.some((p) => s.id.includes(p) || Object.values(s.slug).some((x) => x.includes(p)))));
+  const list = SHEETS.filter((s) => (!kind || s.kind === kind) && (!filter || parts.some((p) => s.id.includes(p) || Object.values(s.slug).some((x) => x.includes(p)))));
   if (!list.length) throw new Error(`No sheet matches "${filter ?? kind}"`);
 
   await preparePictures();
@@ -160,6 +155,10 @@ async function main() {
   }
   await browser.close();
   console.log(`${files} PDFs, ${Math.round(total / 1024)} KB (${Math.round(total / 1024 / files)} KB each)`);
+  if (DRAWING_PROBLEMS.length) {
+    console.warn(`Drawing problems (fix the drawing):\n  ${DRAWING_PROBLEMS.join("\n  ")}`);
+    process.exitCode = 1;
+  }
   if (shrunk.length) {
     console.warn(`Shrunk to fit (fix the layout): ${shrunk.join(", ")}`);
     process.exitCode = 1;

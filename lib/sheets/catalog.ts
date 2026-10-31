@@ -13,17 +13,9 @@ import { SHEET_LOCALES, type Sheet, type SheetKind, type SheetKindId, type Sheet
 export type { Sheet, SheetKind, SheetKindId, SheetLocale } from "./types";
 
 /** In the order they're linked: each type links to its neighbours. */
-export const SHEET_KINDS: SheetKind[] = [missingNumbersKind, patternsKind, stickersKind];
+export const SHEET_KINDS: SheetKind[] = [missingNumbersKind, patternsKind, stickersKind, dotToDotKind, colouringKind];
 
-export const SHEETS: Sheet[] = [...missingNumbersSheets, ...patternsSheets, ...stickersSheets];
-
-/**
- * Types still being made (phase 2: dot to dot, colouring): the PDF script
- * renders them with --draft, but they have no pages, routes or sitemap
- * entries until they move up into SHEET_KINDS and SHEETS.
- */
-export const DRAFT_KINDS: SheetKind[] = [dotToDotKind, colouringKind];
-export const DRAFT_SHEETS: Sheet[] = [...dotToDotSheets, ...colouringSheets];
+export const SHEETS: Sheet[] = [...missingNumbersSheets, ...patternsSheets, ...stickersSheets, ...dotToDotSheets, ...colouringSheets];
 
 // Each language's existing worksheet folders (scripts/fiches-fr, fichas-es,
 // atividades-pt, worksheets-en): the PDFs go in a folder named after the
@@ -50,7 +42,7 @@ export const PREVIEW_SIZE: Record<"letter" | "a4", { width: number; height: numb
   a4: { width: 476, height: 673 },
 };
 
-const kindById = new Map([...SHEET_KINDS, ...DRAFT_KINDS].map((k) => [k.id, k]));
+const kindById = new Map(SHEET_KINDS.map((k) => [k.id, k]));
 const bySlug: Record<SheetLocale, Map<string, Sheet>> = Object.fromEntries(
   SHEET_LOCALES.map((l) => [l, new Map(SHEETS.map((s) => [s.slug[l], s]))]),
 ) as Record<SheetLocale, Map<string, Sheet>>;

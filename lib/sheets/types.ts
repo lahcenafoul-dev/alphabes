@@ -62,6 +62,8 @@ export type SheetKind = {
 /** "Pommes" → "pommes", "maçãs grandes" → "macas-grandes". */
 export function slugify(s: string): string {
   return s
+    .replace(/œ/g, "oe")
+    .replace(/Œ/g, "Oe")
     .normalize("NFD")
     .replace(/[̀-ͯ]/g, "")
     .toLowerCase()

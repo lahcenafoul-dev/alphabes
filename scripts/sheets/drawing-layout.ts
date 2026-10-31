@@ -20,6 +20,7 @@ import {
   rectSegDist,
   regionSpots,
   segDist,
+  segSegDist,
   segments,
   type Label,
   type LabelOptions,
@@ -38,6 +39,9 @@ const r2 = (n: number) => Math.round(n * 100) / 100;
 const OUTLINE_W = 0.9;
 const REGION_W = 0.7;
 const DETAIL_W = 0.9;
+
+/** Problems found while drawing the sheets (the generator prints them). */
+export const DRAWING_PROBLEMS: string[] = [];
 
 export const DRAWING_CSS = `
 .dw-key { display: flex; flex-wrap: wrap; justify-content: center; gap: 2.5mm 4mm; margin-top: 4mm; font-size: 4.6mm; line-height: 1 }
@@ -79,17 +83,19 @@ function dotParts(p: Parsed, level: DotLevel) {
   return {
     // Under the outline (a stem, a flame): only the part outside it shows.
     under: p.regions.filter((r) => r.region.under),
-    // Inside shapes; left out of the easy sheets, where the few straight
-    // lines would cut through them.
-    shapes: level === "easy" ? [] : p.regions.filter((r) => !r.region.under && !r.region.clip),
+    // Inside shapes; left out when few automatic dots would cut through
+    // them (hand-placed dots are checked not to).
+    shapes: DOT_COUNT[level] <= 10 && !p.drawing.dots?.[level] ? [] : p.regions.filter((r) => !r.region.under && !r.region.clip),
   };
 }
 
 /** Segments (in units) of what's printed on a dot-to-dot sheet besides the dots: visible parts only. */
-function dotAvoid(p: Parsed, level: DotLevel): { segs: [Pt, Pt][]; filled: Poly[][] } {
+function dotAvoid(p: Parsed, level: DotLevel): { segs: [Pt, Pt][]; attached: number } {
   const { under, shapes } = dotParts(p, level);
   const segs: [Pt, Pt][] = [];
   for (const u of under) for (const [a, b] of segments(u.polys)) if (!inside(p.outline, { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 })) segs.push([a, b]);
+  // The parts hanging off the outline (stem, nozzle) come first: `attached` of them.
+  const attached = segs.length;
   for (const r of shapes) segs.push(...segments(r.polys));
   for (const d of p.details) segs.push(...segments(d.polys));
   // A shape's edge drawn along the outline (the butterfly's body ends) is the outline itself: dots go there.
@@ -98,7 +104,8 @@ function dotAvoid(p: Parsed, level: DotLevel): { segs: [Pt, Pt][]; filled: Poly[
     const m = { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 };
     return outlineSegs.some(([c, e]) => segDist(m, c, e) < 0.3);
   };
-  return { segs: segs.filter((s) => !onOutline(s)), filled: p.details.filter((d) => d.fill).map((d) => d.polys) };
+  const kept = segs.map((x, i) => ({ x, i })).filter(({ x }) => !onOutline(x));
+  return { segs: kept.map(({ x }) => x), attached: kept.filter(({ i }) => i < attached).length };
 }
 
 function bboxOfAll(p: Parsed, includeRegions: boolean): Rect {
@@ -142,7 +149,7 @@ export function dotPlan(sheet: DotToDotSheet, box: Box): DotPlan {
   const startR = st.dotR * 2.2;
   const texts = dotLabels(level);
   const avoidUnits = dotAvoid(p, level);
-  const bb = bboxOfAll(p, level !== "easy");
+  const bb = bboxOfAll(p, true);
   const bw = bb.x1 - bb.x0;
   const bh = bb.y1 - bb.y0;
   // Room for the labels around the drawing.
@@ -166,9 +173,18 @@ export function dotPlan(sheet: DotToDotSheet, box: Box): DotPlan {
     };
     // Dots never sit on, or right next to, the drawing's other lines.
     const keepClear = startR + PAD;
-    const dots = pickDots(outline, DOT_COUNT[level], { x: p.drawing.start.x * s, y: p.drawing.start.y * s }, 2 * st.dotR + PAD + 1.5, (q) =>
-      avoid.every(([a, b]) => segDist(q, a, b) > keepClear),
-    );
+    const hand = p.drawing.dots?.[level];
+    const dots = hand
+      ? hand.map(([x, y]) => ({ x: x * s, y: y * s }))
+      : pickDots(
+          outline,
+          DOT_COUNT[level],
+          { x: p.drawing.start.x * s, y: p.drawing.start.y * s },
+          2 * st.dotR + PAD + 1.5,
+          (q) => avoid.every(([a, b]) => segDist(q, a, b) > keepClear),
+          // Many dots: spread evenly between the corners, no big gaps next to tight groups.
+          DOT_COUNT[level] >= 20,
+        );
     let labels: Label[];
     try {
       labels = placeLabels(dots, texts, opts);
@@ -182,6 +198,27 @@ export function dotPlan(sheet: DotToDotSheet, box: Box): DotPlan {
       continue;
     }
     const problems = checkDots(dots, labels, opts);
+    if (hand) {
+      if (hand.length !== DOT_COUNT[level]) problems.push(`${hand.length} hand-placed dots, not ${DOT_COUNT[level]}`);
+      // The few long lines of a hand-placed set must not cut through the printed parts.
+      // Parts hanging off the outline (a stem) may meet the lines: that's where they
+      // join. Nor do the bits inside the band along the outline count, which the
+      // sheet leaves out (a door's sides end where the child's line runs).
+      const band = st.dotR + PAD;
+      const outlineSegs = segments([outline]);
+      const printed = avoid.slice(avoidUnits.attached).flatMap(([a, b]): [Pt, Pt][] => {
+        const n = Math.max(1, Math.ceil(Math.hypot(b.x - a.x, b.y - a.y) / 0.5));
+        const at = (t: number) => ({ x: a.x + (b.x - a.x) * t, y: a.y + (b.y - a.y) * t });
+        return Array.from({ length: n }, (_, k): [Pt, Pt] => [at(k / n), at((k + 1) / n)]).filter(([q, r]) => {
+          const m = { x: (q.x + r.x) / 2, y: (q.y + r.y) / 2 };
+          return outlineSegs.every(([c, e]) => segDist(m, c, e) > band);
+        });
+      });
+      dots.forEach((d, i) => {
+        const e = dots[(i + 1) % dots.length];
+        if (printed.some(([a, b]) => segSegDist(d, e, a, b) < 0.8)) problems.push(`line ${i + 1}→${((i + 1) % dots.length) + 1} cuts through the drawing`);
+      });
+    }
     return { s, tx: placed.tx, ty: placed.ty, dots, labels, fs: st.fs, dotR: st.dotR, startR, corner: placed.corner, problems };
   }
   throw new Error(`${sheet.id}: ${lastError}`);
@@ -231,8 +268,9 @@ function star(cx: number, cy: number, r: number): string {
   return `<polygon points="${pts.join(" ")}" fill="#FFC94D" stroke="${INK}" stroke-width="0.45" stroke-linejoin="round"/>`;
 }
 
-export function dotToDotBody(sheet: DotToDotSheet, _locale: SheetLocale, box: Box): string {
+export function dotToDotBody(sheet: DotToDotSheet, locale: SheetLocale, box: Box): string {
   const plan = dotPlan(sheet, box);
+  DRAWING_PROBLEMS.push(...plan.problems.map((x) => `${locale} ${sheet.id}: ${x}`));
   const p = parse(sheet.params.drawing);
   const { s, tx, ty } = plan;
   const uid = `d-${sheet.id}`;
@@ -357,6 +395,7 @@ export function colourPlan(sheet: ColouringSheet, box: Box): ColourPlan {
 
 export function colouringBody(sheet: ColouringSheet, locale: SheetLocale, box: Box): string {
   const plan = colourPlan(sheet, box);
+  DRAWING_PROBLEMS.push(...plan.problems.map((x) => `${locale} ${x}`));
   const p = parse(sheet.params.drawing);
   const uid = `c-${sheet.id}`;
   const bb = bbox([...p.outline, ...p.regions.flatMap((r) => (r.region.clip ? [] : r.polys)), ...p.details.flatMap((d) => d.polys)]);
