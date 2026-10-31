@@ -24,7 +24,7 @@ export const dynamicParams = false;
 // (lib/fichas-es.ts) and the Portuguese ones (lib/atividades-pt.ts) have their
 // own slugs, unrelated to the English ones. The worksheet types of
 // lib/sheets/catalog.ts (missing numbers, patterns, sticker sheets, dot to
-// dot, colouring) exist in every language and use
+// dot, colouring, how to draw, body parts) exist in every language and use
 // components/sheets/SheetPages.tsx.
 // Keep in sync with lib/i18n/known-params.ts.
 export function generateStaticParams({ params }: { params: { locale: string } }) {

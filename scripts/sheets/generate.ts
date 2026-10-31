@@ -1,7 +1,8 @@
 // npm run sheets [-- <filter>] [--kind=<id>] [--locale=<en,fr…>] [--out=<dir>] [--png]
 //
 // Renders the worksheets of the new types (lib/sheets/catalog.ts: missing
-// numbers, patterns, sticker sheets, dot to dot, colouring) with Chromium (Playwright), like
+// numbers, patterns, sticker sheets, dot to dot, colouring, how to draw,
+// body parts) with Chromium (Playwright), like
 // scripts/fiches-fr. For every sheet and language it writes:
 //   the PDF            public/<language folder>/<type>/<slug>.pdf
 //   the preview        <language preview folder>/<slug>.jpg (476 px) and .320.jpg
@@ -29,14 +30,9 @@ import { missingNumbersBody } from "./missing-numbers-layout";
 import { PATTERNS_CSS, patternsBody } from "./patterns-layout";
 import { STICKERS_CSS, stickersBody } from "./stickers-layout";
 import { DRAWING_CSS, DRAWING_PROBLEMS, colouringBody, dotToDotBody } from "./drawing-layout";
-import { howToDrawKind, howToDrawSheets, type HowToDrawSheet } from "../../data/worksheets/how-to-draw";
-import { bodyPartsKind, bodyPartsSheets, type BodyPartsSheet } from "../../data/worksheets/body-parts";
+import type { HowToDrawSheet } from "../../data/worksheets/how-to-draw";
+import type { BodyPartsSheet } from "../../data/worksheets/body-parts";
 import { ART_CSS, ART_PROBLEMS, bodyPartsBody, howToDrawBody } from "./art-layout";
-
-// Phase 3 step A: the new types' samples, not on the site yet (rendered only with --out).
-const DRAFT_KINDS = [howToDrawKind, bodyPartsKind];
-const DRAFT_SHEETS: Sheet[] = [...howToDrawSheets, ...bodyPartsSheets];
-const kindOf = (sheet: Sheet) => DRAFT_KINDS.find((k) => k.id === sheet.kind) ?? getSheetKind(sheet.kind);
 
 const ROOT = process.cwd();
 const FONTS_EN = join(ROOT, "scripts", "worksheets-en", "fonts");
@@ -93,7 +89,7 @@ function pageHtml(sheet: Sheet, locale: SheetLocale): string {
   return sheetPage({
     locale,
     page: SHEET_PAGE[locale],
-    kindName: kindOf(sheet).name[locale],
+    kindName: getSheetKind(sheet.kind).name[locale],
     title: sheet.title[locale],
     instruction: sheet.instruction[locale],
     body: body(sheet, locale),
@@ -140,7 +136,7 @@ async function render(page: Page, sheet: Sheet, locale: SheetLocale, pdfFile: st
 
 async function main() {
   const parts = filter?.split(",") ?? [];
-  const list = [...SHEETS, ...(out ? DRAFT_SHEETS : [])].filter((s) => (!kind || s.kind === kind) && (!filter || parts.some((p) => s.id.includes(p) || Object.values(s.slug).some((x) => x.includes(p)))));
+  const list = SHEETS.filter((s) => (!kind || s.kind === kind) && (!filter || parts.some((p) => s.id.includes(p) || Object.values(s.slug).some((x) => x.includes(p)))));
   if (!list.length) throw new Error(`No sheet matches "${filter ?? kind}"`);
 
   await preparePictures();

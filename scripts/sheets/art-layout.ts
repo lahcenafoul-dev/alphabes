@@ -5,8 +5,8 @@
 // How to draw: the step pictures in a grid (3 per row, or 4 in one row), the
 // lines added at each step in pink, the last picture coloured, and a big
 // practice box below.
-// Body parts: the drawing between columns of boxes (or rows, for a wide one). Each box sits as
-// close as it can to the height of its part; the checks make sure no line
+// Body parts: the drawing between columns of boxes (or rows, for a wide one). Each box in a
+// column sits as close as it can to the height of its part, the boxes of a row are evenly spaced; the checks make sure no line
 // crosses another line, another box, or a part of the drawing other than the
 // one it starts in.
 import { getHowToDraw, stepCount, type ArtShape, type DrawShape, type HowToDrawSheet } from "../../data/worksheets/how-to-draw";
@@ -189,7 +189,8 @@ export function bodyPlan(sheet: BodyPartsSheet, box: Box): BodyPlan {
     const idx = b.labels.map((_, i) => i).filter((i) => b.labels[i].side === side).sort((i, j) => along(anchors[i]) - along(anchors[j]));
     const pitch = column ? PITCH : BOX_W + 4;
     const size = column ? height : box.w;
-    const centres = spread(idx.map((i) => along(anchors[i])), size, pitch, (column ? BOX_H : BOX_W) / 2);
+    // Columns: each box near its part. Rows: evenly spaced across the page.
+    const centres = column ? spread(idx.map((i) => along(anchors[i])), size, pitch, BOX_H / 2) : idx.map((_, k) => (size * (k + 0.5)) / idx.length);
     if (idx.length * pitch - 4 > size) problems.push(`${sheet.id}: too many boxes on the ${side}`);
     idx.forEach((i, k) => {
       const c = centres[k];
@@ -250,7 +251,10 @@ export function bodyPartsBody(sheet: BodyPartsSheet, locale: SheetLocale, box: B
       if (!word) return `${frame}<path d="M${r2(r.x0 + 3)} ${r2(r.y1 - 2.6)} H${r2(r.x1 - 3)}" stroke="#CFC6FF" stroke-width="0.35" stroke-dasharray="1.2 1"/>`;
       // Match: the word, and a dot on the box's inner edge to start the line from.
       const inner = plan.lines[i][1];
-      return `${frame}<text x="${r2((r.x0 + r.x1) / 2)}" y="${r2(r.y0 + BOX_H / 2 + 1.9)}" font-size="5.4" text-anchor="middle" font-family="display" font-weight="700" fill="${INK}">${esc(word.word[locale])}</text>
+      // Long words ("les moustaches") get a smaller font, to keep clear of the box's edges.
+      const text = word.word[locale];
+      const size = r2(Math.min(5.4, (5.4 * 11.5) / text.length));
+      return `${frame}<text x="${r2((r.x0 + r.x1) / 2)}" y="${r2(r.y0 + BOX_H / 2 + size * 0.35)}" font-size="${size}" text-anchor="middle" font-family="display" font-weight="700" fill="${INK}">${esc(text)}</text>
         <circle cx="${r2(inner.x)}" cy="${r2(inner.y)}" r="1.3" fill="${PURPLE}" stroke="#fff" stroke-width="0.4"/>`;
     })
     .join("");
