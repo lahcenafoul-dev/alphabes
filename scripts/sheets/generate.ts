@@ -1,7 +1,8 @@
 // npm run sheets [-- <filter>] [--kind=<id>] [--locale=<en,fr…>] [--out=<dir>] [--png]
 //
 // Renders the worksheets of the new types (lib/sheets/catalog.ts: missing
-// numbers, patterns, sticker sheets, dot to dot, colouring) with Chromium (Playwright), like
+// numbers, patterns, sticker sheets, dot to dot, colouring, how to draw,
+// body parts) with Chromium (Playwright), like
 // scripts/fiches-fr. For every sheet and language it writes:
 //   the PDF            public/<language folder>/<type>/<slug>.pdf
 //   the preview        <language preview folder>/<slug>.jpg (476 px) and .320.jpg
@@ -29,6 +30,9 @@ import { missingNumbersBody } from "./missing-numbers-layout";
 import { PATTERNS_CSS, patternsBody } from "./patterns-layout";
 import { STICKERS_CSS, stickersBody } from "./stickers-layout";
 import { DRAWING_CSS, DRAWING_PROBLEMS, colouringBody, dotToDotBody } from "./drawing-layout";
+import type { HowToDrawSheet } from "../../data/worksheets/how-to-draw";
+import type { BodyPartsSheet } from "../../data/worksheets/body-parts";
+import { ART_CSS, ART_PROBLEMS, bodyPartsBody, howToDrawBody } from "./art-layout";
 
 const ROOT = process.cwd();
 const FONTS_EN = join(ROOT, "scripts", "worksheets-en", "fonts");
@@ -56,6 +60,7 @@ ${SHEET_CSS}
 ${PATTERNS_CSS}
 ${STICKERS_CSS}
 ${DRAWING_CSS}
+${ART_CSS}
 </style>
 <script>/* tsx wraps functions in __name(); fitBodies runs here, so define it. */ var __name = (f) => f;</script>
 </head><body></body></html>`;
@@ -73,6 +78,10 @@ function body(sheet: Sheet, locale: SheetLocale): string {
       return dotToDotBody(sheet as DotToDotSheet, locale, box);
     case "colouring":
       return colouringBody(sheet as ColouringSheet, locale, box);
+    case "how-to-draw":
+      return howToDrawBody(sheet as HowToDrawSheet, locale, box);
+    case "body-parts":
+      return bodyPartsBody(sheet as BodyPartsSheet, locale, box);
   }
 }
 
@@ -155,8 +164,8 @@ async function main() {
   }
   await browser.close();
   console.log(`${files} PDFs, ${Math.round(total / 1024)} KB (${Math.round(total / 1024 / files)} KB each)`);
-  if (DRAWING_PROBLEMS.length) {
-    console.warn(`Drawing problems (fix the drawing):\n  ${DRAWING_PROBLEMS.join("\n  ")}`);
+  if (DRAWING_PROBLEMS.length || ART_PROBLEMS.length) {
+    console.warn(`Drawing problems (fix the drawing):\n  ${[...DRAWING_PROBLEMS, ...ART_PROBLEMS].join("\n  ")}`);
     process.exitCode = 1;
   }
   if (shrunk.length) {

@@ -43,7 +43,7 @@ export type Drawing = {
 const r2 = (n: number) => Math.round(n * 100) / 100;
 
 /** n points on a circle, the first at `deg` (0° points right; angles go clockwise, y being down). */
-function ring(cx: number, cy: number, r: number, n: number, deg: number): [number, number][] {
+export function ring(cx: number, cy: number, r: number, n: number, deg: number): [number, number][] {
   return Array.from({ length: n }, (_, i) => {
     const a = ((deg + (360 * i) / n) * Math.PI) / 180;
     return [r2(cx + r * Math.cos(a)), r2(cy + r * Math.sin(a))];
@@ -51,16 +51,16 @@ function ring(cx: number, cy: number, r: number, n: number, deg: number): [numbe
 }
 
 /** A closed polygon through the points. */
-function polygon(pts: [number, number][]): string {
+export function polygon(pts: [number, number][]): string {
   return `M${pts.map(([x, y]) => `${x} ${y}`).join(" L")} Z`;
 }
 
 /** A five-pointed star's ten corners, the top point first. */
 const STAR_INNER = ring(50, 53, 19, 5, -54);
-const STAR = ring(50, 53, 46, 5, -90).flatMap((p, i) => [p, STAR_INNER[i]]);
+export const STAR = ring(50, 53, 46, 5, -90).flatMap((p, i) => [p, STAR_INNER[i]]);
 
 /** A sun's ray from radius r0 (hidden under the sun) out to r1, with a blunt tip (a sharp one would leave a sliver). */
-function ray(cx: number, cy: number, r0: number, r1: number, deg: number, half: number): string {
+export function ray(cx: number, cy: number, r0: number, r1: number, deg: number, half: number): string {
   const [a] = ring(cx, cy, r0, 1, deg - half);
   const [b] = ring(cx, cy, r1, 1, deg - half / 4);
   const [c] = ring(cx, cy, r1, 1, deg + half / 4);
@@ -69,7 +69,7 @@ function ray(cx: number, cy: number, r0: number, r1: number, deg: number, half: 
 }
 
 /** A flower's outline: n round petals of radius r, their centres R from the middle (top petal first). */
-function petals(cx: number, cy: number, n: number, R: number, r: number): string {
+export function petals(cx: number, cy: number, n: number, R: number, r: number): string {
   const step = (2 * Math.PI) / n;
   // Where two neighbouring petals meet, on the side of the middle.
   const valley = R * Math.cos(step / 2) - Math.sqrt(r * r - (R * Math.sin(step / 2)) ** 2);

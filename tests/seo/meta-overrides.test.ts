@@ -24,6 +24,10 @@ describe("fitTitle (R1, R2)", () => {
     expect(fitTitle("Reconhecer a letra Z nos quatro tipos de letra | Atividade em PDF grátis")).toBe(
       "Reconhecer a letra Z nos quatro tipos de letra (PDF grátis)",
     );
+    // A Portuguese title ending in a bracket never gets a second one.
+    expect(fitTitle("A letra A em letra cursiva (caligrafia) | Atividade em PDF grátis")).toBe(
+      "A letra A em letra cursiva (caligrafia) – PDF grátis",
+    );
     expect(fitTitle("Le c et le g : son dur, son doux : fiche à imprimer | Fiche PDF gratuite")).toBe(
       "Le c et le g : son dur, son doux : fiche à imprimer",
     );

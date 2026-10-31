@@ -22,7 +22,6 @@ import {
   type SheetLocale,
 } from "@/lib/sheets/catalog";
 import { SHEET_UI } from "@/lib/sheets/ui";
-import { MAX_TITLE } from "@/lib/social-metadata";
 import { HTML_LANG, SITE_URL, absoluteUrl, alternatesFor } from "@/lib/i18n/routes";
 import { buildBreadcrumbJsonLd } from "@/lib/json-ld";
 import SheetGallery, { type GalleryItem } from "./SheetGallery";
@@ -32,20 +31,6 @@ const PATH = "/worksheets/[category]" as const;
 /** True when the slug is a listing page or a sheet of these types. */
 export function isSheetSlug(locale: SheetLocale, slug: string): boolean {
   return !!(getSheetKindBySlug(locale, slug) || getSheet(locale, slug));
-}
-
-/**
- * A sheet's <title>: its name and the "free PDF" suffix, which fitTitle
- * (lib/social-metadata.ts) shortens to "(PDF grátis)" when it doesn't fit. In
- * Portuguese a name ending in a bracket ("… (1 a 10)") would then end in two
- * brackets in a row, so it takes "– PDF grátis" instead (dropped too if it
- * still doesn't fit). The other languages keep the shared rule.
- */
-function sheetTitle(locale: SheetLocale, name: string): string {
-  const full = `${name} | ${SHEET_UI[locale].metaSuffix}`;
-  if (locale !== "pt" || !name.endsWith(")") || full.length <= MAX_TITLE) return full;
-  const dash = `${name} – PDF grátis`;
-  return dash.length <= MAX_TITLE ? dash : name;
 }
 
 export function sheetMetadata(locale: SheetLocale, slug: string): Metadata {
@@ -59,7 +44,7 @@ export function sheetMetadata(locale: SheetLocale, slug: string): Metadata {
     return { title, description, alternates, openGraph: { title, description, url, images: [SITE_URL + sheetPreview(locale, first)] } };
   }
   const sheet = getSheet(locale, slug)!;
-  const title = sheetTitle(locale, sheet.title[locale]);
+  const title = `${sheet.title[locale]} | ${SHEET_UI[locale].metaSuffix}`;
   const description = sheet.description[locale];
   return { title, description, alternates, openGraph: { title, description, url, images: [SITE_URL + sheetPreview(locale, sheet)] } };
 }

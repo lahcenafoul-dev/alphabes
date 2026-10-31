@@ -199,7 +199,7 @@ export const TRANSLATED_PARAMS: Partial<Record<AppPathname, { key: string; group
     ],
   },
   // The worksheet types of lib/sheets/catalog.ts (missing numbers, patterns,
-  // sticker sheets, dot to dot, colouring): their pages exist in every language. The other
+  // sticker sheets, dot to dot, colouring, how to draw, body parts): their pages exist in every language. The other
   // worksheet slugs are in no group, so they still have no twin.
   "/worksheets/[category]": { key: "category", groups: sheetParamGroups() },
   "/kindergarten/[topic]": {

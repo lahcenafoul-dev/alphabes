@@ -34,6 +34,9 @@ const SUFFIX_FALLBACKS: [string, string[]][] = [
   [" | Atividade em PDF grátis", [" (PDF grátis)", ""]],
   [" | PDF grátis para imprimir", [" (PDF grátis)", ""]],
 ];
+// In Portuguese, a title that already ends in a bracket ("… (caligrafia)",
+// "… (1 a 10)") takes this instead of " (PDF grátis)": never two brackets in a row.
+const PT_AFTER_BRACKET: [string, string] = [" (PDF grátis)", " – PDF grátis"];
 
 /**
  * The <title> as shown: a worksheet suffix shortened or dropped when the
@@ -45,7 +48,8 @@ export function fitTitle(title: string): string {
   for (const [suffix, fallbacks] of SUFFIX_FALLBACKS) {
     if (!t.endsWith(suffix)) continue;
     const base = t.slice(0, -suffix.length);
-    t = [suffix, ...fallbacks].map((s) => base + s).find((c) => c.length <= MAX_TITLE) ?? base;
+    const shorter = base.endsWith(")") ? fallbacks.map((f) => (f === PT_AFTER_BRACKET[0] ? PT_AFTER_BRACKET[1] : f)) : fallbacks;
+    t = [suffix, ...shorter].map((s) => base + s).find((c) => c.length <= MAX_TITLE) ?? base;
     break;
   }
   return (t + BRAND).length <= MAX_TITLE ? t + BRAND : t;
