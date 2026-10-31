@@ -25,7 +25,7 @@ import type { PatternsSheet } from "../../data/worksheets/patterns";
 import type { StickersSheet } from "../../data/worksheets/stickers";
 import type { DotToDotSheet } from "../../data/worksheets/dot-to-dot";
 import type { ColouringSheet } from "../../data/worksheets/colouring";
-import { PAGES, SHEET_CSS, bodyBox, fitBodies, sheetPage } from "./chrome";
+import { PAGES, SHEET_CSS, bodyBox, fitBodies, sheetPage, type SheetPart } from "./chrome";
 import { missingNumbersBody } from "./missing-numbers-layout";
 import { PATTERNS_CSS, patternsBody } from "./patterns-layout";
 import { STICKERS_CSS, stickersBody } from "./stickers-layout";
@@ -33,6 +33,18 @@ import { DRAWING_CSS, DRAWING_PROBLEMS, colouringBody, dotToDotBody } from "./dr
 import type { HowToDrawSheet } from "../../data/worksheets/how-to-draw";
 import type { BodyPartsSheet } from "../../data/worksheets/body-parts";
 import { ART_CSS, ART_PROBLEMS, bodyPartsBody, howToDrawBody } from "./art-layout";
+import { mazesKind, mazesSheets, type MazesSheet } from "../../data/worksheets/mazes";
+import { MAZE_CSS, mazesBody } from "./maze-layout";
+import { tellingTimeKind, tellingTimeSheets, type TellingTimeSheet } from "../../data/worksheets/telling-time";
+import { CLOCK_CSS, tellingTimeBody } from "./clock-layout";
+import { flashCardsKind, flashCardsSheets, type FlashCardsSheet } from "../../data/worksheets/flash-cards";
+import { FLASH_CSS, flashCardsBody } from "./flash-cards-layout";
+import type { SheetKind } from "../../lib/sheets/types";
+
+// Phase 4, step A: types not in the catalogue yet, rendered for samples only (--out).
+const DRAFT_KINDS: SheetKind[] = [flashCardsKind, tellingTimeKind, mazesKind];
+const DRAFT_SHEETS: Sheet[] = [...flashCardsSheets, ...tellingTimeSheets, ...mazesSheets];
+const kindOf = (sheet: Sheet) => DRAFT_KINDS.find((k) => k.id === sheet.kind) ?? getSheetKind(sheet.kind);
 
 const ROOT = process.cwd();
 const FONTS_EN = join(ROOT, "scripts", "worksheets-en", "fonts");
@@ -61,11 +73,14 @@ ${PATTERNS_CSS}
 ${STICKERS_CSS}
 ${DRAWING_CSS}
 ${ART_CSS}
+${MAZE_CSS}
+${CLOCK_CSS}
+${FLASH_CSS}
 </style>
 <script>/* tsx wraps functions in __name(); fitBodies runs here, so define it. */ var __name = (f) => f;</script>
 </head><body></body></html>`;
 
-function body(sheet: Sheet, locale: SheetLocale): string {
+function body(sheet: Sheet, locale: SheetLocale): string | SheetPart[] {
   const box = bodyBox(SHEET_PAGE[locale]);
   switch (sheet.kind) {
     case "missing-numbers":
@@ -82,18 +97,32 @@ function body(sheet: Sheet, locale: SheetLocale): string {
       return howToDrawBody(sheet as HowToDrawSheet, locale, box);
     case "body-parts":
       return bodyPartsBody(sheet as BodyPartsSheet, locale, box);
+    case "flash-cards":
+      return flashCardsBody(sheet as FlashCardsSheet, locale, box);
+    case "telling-time":
+      return tellingTimeBody(sheet as TellingTimeSheet, locale, box);
+    case "mazes":
+      return mazesBody(sheet as MazesSheet, locale, box);
+    default:
+      throw new Error(`No layout for ${sheet.kind}`);
   }
 }
 
 function pageHtml(sheet: Sheet, locale: SheetLocale): string {
-  return sheetPage({
-    locale,
-    page: SHEET_PAGE[locale],
-    kindName: getSheetKind(sheet.kind).name[locale],
-    title: sheet.title[locale],
-    instruction: sheet.instruction[locale],
-    body: body(sheet, locale),
-  });
+  const b = body(sheet, locale);
+  const parts = typeof b === "string" ? [{ body: b }] : b;
+  return parts
+    .map((p) =>
+      sheetPage({
+        locale,
+        page: SHEET_PAGE[locale],
+        kindName: kindOf(sheet).name[locale],
+        title: p.title ?? sheet.title[locale],
+        instruction: p.instruction ?? sheet.instruction[locale],
+        body: p.body,
+      }),
+    )
+    .join("");
 }
 
 /** Renders one page; returns true if its exercise had to be shrunk to fit. */
@@ -124,7 +153,14 @@ async function render(page: Page, sheet: Sheet, locale: SheetLocale, pdfFile: st
   mkdirSync(dirname(pdfFile), { recursive: true });
   await page.pdf({ path: pdfFile, width: `${size.width}mm`, height: `${size.height}mm`, printBackground: true });
   const shot = previewFile || withPng ? await page.locator(".sh").first().screenshot({ type: "png" }) : null;
-  if (withPng && shot) await sharp(shot).toFile(pdfFile.replace(/\.pdf$/, ".png"));
+  if (withPng && shot) {
+    // One PNG per page: name.png, then name-2.png…
+    const pages = page.locator(".sh");
+    for (let i = 0; i < (await pages.count()); i++) {
+      const png = i ? await pages.nth(i).screenshot({ type: "png" }) : shot;
+      await sharp(png).toFile(pdfFile.replace(/\.pdf$/, i ? `-${i + 1}.png` : ".png"));
+    }
+  }
   if (previewFile && shot) {
     mkdirSync(dirname(previewFile), { recursive: true });
     const { width, height } = PREVIEW_SIZE[SHEET_PAGE[locale]];
@@ -136,7 +172,7 @@ async function render(page: Page, sheet: Sheet, locale: SheetLocale, pdfFile: st
 
 async function main() {
   const parts = filter?.split(",") ?? [];
-  const list = SHEETS.filter((s) => (!kind || s.kind === kind) && (!filter || parts.some((p) => s.id.includes(p) || Object.values(s.slug).some((x) => x.includes(p)))));
+  const list = [...SHEETS, ...(out ? DRAFT_SHEETS : [])].filter((s) => (!kind || s.kind === kind) && (!filter || parts.some((p) => s.id.includes(p) || Object.values(s.slug).some((x) => x.includes(p)))));
   if (!list.length) throw new Error(`No sheet matches "${filter ?? kind}"`);
 
   await preparePictures();

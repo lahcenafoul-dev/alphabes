@@ -83,6 +83,12 @@ html, body { margin: 0; padding: 0; background: #fff }
 .nb.blank { background: #fff; border: 0.7mm solid ${PURPLE} }
 `;
 
+/**
+ * One page of a sheet with several (flash card sets, answer keys): its
+ * exercise, and a title or instruction when they differ from the sheet's.
+ */
+export type SheetPart = { body: string; title?: string; instruction?: string };
+
 export type SheetPage = {
   locale: SheetLocale;
   page: "letter" | "a4";

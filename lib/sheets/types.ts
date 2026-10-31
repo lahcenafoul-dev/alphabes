@@ -12,7 +12,7 @@ export const SHEET_LOCALES: readonly SheetLocale[] = ["en", "fr", "es", "pt"];
 /** A text in each language. */
 export type L10n<T = string> = Record<SheetLocale, T>;
 
-export type SheetKindId = "missing-numbers" | "patterns" | "stickers" | "dot-to-dot" | "colouring" | "how-to-draw" | "body-parts";
+export type SheetKindId = "missing-numbers" | "patterns" | "stickers" | "dot-to-dot" | "colouring" | "how-to-draw" | "body-parts" | "flash-cards" | "telling-time" | "mazes";
 
 export type SheetFilterOption = { value: string; label: L10n };
 
