@@ -1,4 +1,4 @@
-// npm run sheets [-- <filter>] [--kind=<id>] [--locale=<en,fr…>] [--out=<dir>] [--png]
+// npm run sheets [-- <filter>] [--kind=<id>] [--locale=<en,fr…>] [--out=<dir>] [--png] [--draft]
 //
 // Renders the worksheets of the new types (lib/sheets/catalog.ts: missing
 // numbers, patterns, sticker sheets) with Chromium (Playwright), like
@@ -12,20 +12,26 @@
 // page) there instead of public/, for a sample. Re-run after changing a
 // layout or a catalogue, and commit the files: the site serves them as
 // static assets.
+//
+// --draft renders the types still being made (DRAFT_SHEETS) instead; use it
+// with --out, since they have no pages yet.
 import { mkdirSync, readFileSync, statSync } from "fs";
 import { dirname, join } from "path";
 import { chromium, type Page } from "@playwright/test";
 import sharp from "sharp";
 import { preparePictures } from "../picture-emoji";
-import { PREVIEW_SIZE, SHEETS, SHEET_PAGE, getSheetKind, sheetPdf, sheetPreview, type Sheet, type SheetLocale } from "../../lib/sheets/catalog";
+import { DRAFT_SHEETS, PREVIEW_SIZE, SHEETS, SHEET_PAGE, getSheetKind, sheetPdf, sheetPreview, type Sheet, type SheetLocale } from "../../lib/sheets/catalog";
 import { SHEET_LOCALES } from "../../lib/sheets/types";
 import type { MissingNumbersSheet } from "../../data/worksheets/missing-numbers";
 import type { PatternsSheet } from "../../data/worksheets/patterns";
 import type { StickersSheet } from "../../data/worksheets/stickers";
+import type { DotToDotSheet } from "../../data/worksheets/dot-to-dot";
+import type { ColouringSheet } from "../../data/worksheets/colouring";
 import { PAGES, SHEET_CSS, bodyBox, fitBodies, sheetPage } from "./chrome";
 import { missingNumbersBody } from "./missing-numbers-layout";
 import { PATTERNS_CSS, patternsBody } from "./patterns-layout";
 import { STICKERS_CSS, stickersBody } from "./stickers-layout";
+import { DRAWING_CSS, colouringBody, dotToDotBody } from "./drawing-layout";
 
 const ROOT = process.cwd();
 const FONTS_EN = join(ROOT, "scripts", "worksheets-en", "fonts");
@@ -37,6 +43,7 @@ const kind = args.find((a) => a.startsWith("--kind="))?.slice(7);
 const locales = (args.find((a) => a.startsWith("--locale="))?.slice(9).split(",") ?? SHEET_LOCALES) as SheetLocale[];
 const out = args.find((a) => a.startsWith("--out="))?.slice(6);
 const withPng = args.includes("--png");
+const draft = args.includes("--draft");
 // Prints the body box and the exercise's size, in mm, for each page.
 const debug = args.includes("--debug");
 
@@ -52,6 +59,7 @@ ${fontFace("emoji", join(FONTS, "NotoEmoji-Regular.ttf"))}
 ${SHEET_CSS}
 ${PATTERNS_CSS}
 ${STICKERS_CSS}
+${DRAWING_CSS}
 </style>
 <script>/* tsx wraps functions in __name(); fitBodies runs here, so define it. */ var __name = (f) => f;</script>
 </head><body></body></html>`;
@@ -65,6 +73,10 @@ function body(sheet: Sheet, locale: SheetLocale): string {
       return patternsBody(sheet as PatternsSheet, locale, box);
     case "stickers":
       return stickersBody(sheet as StickersSheet, locale, box);
+    case "dot-to-dot":
+      return dotToDotBody(sheet as DotToDotSheet, locale, box);
+    case "colouring":
+      return colouringBody(sheet as ColouringSheet, locale, box);
   }
 }
 
@@ -119,7 +131,8 @@ async function render(page: Page, sheet: Sheet, locale: SheetLocale, pdfFile: st
 
 async function main() {
   const parts = filter?.split(",") ?? [];
-  const list = SHEETS.filter((s) => (!kind || s.kind === kind) && (!filter || parts.some((p) => s.id.includes(p) || Object.values(s.slug).some((x) => x.includes(p)))));
+  if (draft && !out) throw new Error("--draft needs --out=<dir>: draft types have no pages yet");
+  const list = (draft ? DRAFT_SHEETS : SHEETS).filter((s) => (!kind || s.kind === kind) && (!filter || parts.some((p) => s.id.includes(p) || Object.values(s.slug).some((x) => x.includes(p)))));
   if (!list.length) throw new Error(`No sheet matches "${filter ?? kind}"`);
 
   await preparePictures();

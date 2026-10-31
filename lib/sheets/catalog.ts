@@ -6,6 +6,8 @@
 import { missingNumbersKind, missingNumbersSheets } from "@/data/worksheets/missing-numbers";
 import { patternsKind, patternsSheets } from "@/data/worksheets/patterns";
 import { stickersKind, stickersSheets } from "@/data/worksheets/stickers";
+import { dotToDotKind, dotToDotSheets } from "@/data/worksheets/dot-to-dot";
+import { colouringKind, colouringSheets } from "@/data/worksheets/colouring";
 import { SHEET_LOCALES, type Sheet, type SheetKind, type SheetKindId, type SheetLocale } from "./types";
 
 export type { Sheet, SheetKind, SheetKindId, SheetLocale } from "./types";
@@ -14,6 +16,14 @@ export type { Sheet, SheetKind, SheetKindId, SheetLocale } from "./types";
 export const SHEET_KINDS: SheetKind[] = [missingNumbersKind, patternsKind, stickersKind];
 
 export const SHEETS: Sheet[] = [...missingNumbersSheets, ...patternsSheets, ...stickersSheets];
+
+/**
+ * Types still being made (phase 2: dot to dot, colouring): the PDF script
+ * renders them with --draft, but they have no pages, routes or sitemap
+ * entries until they move up into SHEET_KINDS and SHEETS.
+ */
+export const DRAFT_KINDS: SheetKind[] = [dotToDotKind, colouringKind];
+export const DRAFT_SHEETS: Sheet[] = [...dotToDotSheets, ...colouringSheets];
 
 // Each language's existing worksheet folders (scripts/fiches-fr, fichas-es,
 // atividades-pt, worksheets-en): the PDFs go in a folder named after the
@@ -40,7 +50,7 @@ export const PREVIEW_SIZE: Record<"letter" | "a4", { width: number; height: numb
   a4: { width: 476, height: 673 },
 };
 
-const kindById = new Map(SHEET_KINDS.map((k) => [k.id, k]));
+const kindById = new Map([...SHEET_KINDS, ...DRAFT_KINDS].map((k) => [k.id, k]));
 const bySlug: Record<SheetLocale, Map<string, Sheet>> = Object.fromEntries(
   SHEET_LOCALES.map((l) => [l, new Map(SHEETS.map((s) => [s.slug[l], s]))]),
 ) as Record<SheetLocale, Map<string, Sheet>>;
