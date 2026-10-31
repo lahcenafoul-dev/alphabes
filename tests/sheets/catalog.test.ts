@@ -1,10 +1,10 @@
 // The worksheet types of lib/sheets/catalog.ts (missing numbers, patterns,
-// sticker sheets): unique slugs and titles in every language, every cartoon
+// sticker sheets, dot to dot, colouring): unique slugs and titles in every language, every cartoon
 // exists, every PDF and preview is generated, and the routes know every page.
 import { existsSync, statSync } from "fs";
 import path from "path";
 import { describe, expect, it } from "vitest";
-import { SHEETS, SHEET_KINDS, sheetCategoryParams, sheetPdf, sheetPreview, sheetsOfKind } from "@/lib/sheets/catalog";
+import { SHEETS, SHEET_KINDS, getSheetKind, sheetCategoryParams, sheetPdf, sheetPreview, sheetsOfKind } from "@/lib/sheets/catalog";
 import { SHEET_LOCALES } from "@/lib/sheets/types";
 import { alternatesFor, counterpartPath, localizedPath, matchPath } from "@/lib/i18n/routes";
 import { paramsExist } from "@/lib/i18n/known-params";
@@ -12,6 +12,12 @@ import { ficheCategoryParams } from "@/lib/fiches-fr";
 import { fichaCategoryParams } from "@/lib/fichas-es";
 import { atividadeCategoryParams } from "@/lib/atividades-pt";
 import { englishCategoryParams } from "@/app/[locale]/worksheets/[category]/category-en";
+import { sheetMetadata } from "@/components/sheets/SheetPages";
+import { fitTitle } from "@/lib/social-metadata";
+import { getPreschoolTopic } from "@/lib/preschool-data";
+import { topicsOf } from "@/lib/ecole-fr";
+import { topicsOfEs } from "@/lib/escuela-es";
+import { topicsOfPt } from "@/lib/escola-pt";
 
 const PUBLIC = path.resolve(__dirname, "../../public");
 
@@ -32,6 +38,11 @@ describe("worksheet types catalogue", () => {
     expect(sheetsOfKind("missing-numbers")).toHaveLength(80);
     expect(sheetsOfKind("patterns")).toHaveLength(80);
     expect(sheetsOfKind("stickers")).toHaveLength(25);
+  });
+
+  it("has the phase 2 sheets", () => {
+    expect(sheetsOfKind("dot-to-dot")).toHaveLength(56);
+    expect(sheetsOfKind("colouring")).toHaveLength(60);
   });
 
   it("has unique ids, slugs and titles in every language", () => {
@@ -109,5 +120,32 @@ describe("worksheet types routes", () => {
   it("still gives the other worksheet pages no twin", () => {
     const slug = ficheCategoryParams()[0];
     expect(alternatesFor("fr", "/worksheets/[category]", { category: slug }).languages).toBeUndefined();
+  });
+});
+
+describe("worksheet types titles", () => {
+  it("never end in two brackets in a row in Portuguese", () => {
+    for (const sheet of SHEETS) {
+      const title = fitTitle(String(sheetMetadata("pt", sheet.slug.pt).title));
+      expect(title, sheet.id).not.toMatch(/\)\s*\(/);
+    }
+    expect(fitTitle(String(sheetMetadata("pt", "ligue-os-pontos-foguete-1-10").title))).toBe("Ligue os pontos: o foguete (1 a 10) – PDF grátis | AlphaBes");
+  });
+});
+
+describe("preschool colouring topic", () => {
+  it("links to the colouring and dot-to-dot listings in every language", () => {
+    const kinds = [getSheetKind("colouring"), getSheetKind("dot-to-dot")];
+    const en = getPreschoolTopic("coloring")!.moreLinks!.map((l) => l.href);
+    expect(en).toEqual(kinds.map((k) => localizedPath("en", "/worksheets/[category]", { category: k.slug.en })));
+    const others = {
+      fr: topicsOf("maternelle").find((t) => t.slug === "coloriage")!,
+      es: topicsOfEs("preescolar").find((t) => t.en === "coloring")!,
+      pt: topicsOfPt("educacao-infantil").find((t) => t.en === "coloring")!,
+    };
+    for (const [l, topic] of Object.entries(others) as [keyof typeof others, (typeof others)["fr"]][]) {
+      const linked = topic.links.filter((x) => x.pathname === "/worksheets/[category]").map((x) => x.params?.category);
+      for (const k of kinds) expect(linked, l).toContain(k.slug[l]);
+    }
   });
 });

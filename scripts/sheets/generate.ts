@@ -1,7 +1,7 @@
 // npm run sheets [-- <filter>] [--kind=<id>] [--locale=<en,fr…>] [--out=<dir>] [--png]
 //
 // Renders the worksheets of the new types (lib/sheets/catalog.ts: missing
-// numbers, patterns, sticker sheets) with Chromium (Playwright), like
+// numbers, patterns, sticker sheets, dot to dot, colouring) with Chromium (Playwright), like
 // scripts/fiches-fr. For every sheet and language it writes:
 //   the PDF            public/<language folder>/<type>/<slug>.pdf
 //   the preview        <language preview folder>/<slug>.jpg (476 px) and .320.jpg
@@ -22,10 +22,13 @@ import { SHEET_LOCALES } from "../../lib/sheets/types";
 import type { MissingNumbersSheet } from "../../data/worksheets/missing-numbers";
 import type { PatternsSheet } from "../../data/worksheets/patterns";
 import type { StickersSheet } from "../../data/worksheets/stickers";
+import type { DotToDotSheet } from "../../data/worksheets/dot-to-dot";
+import type { ColouringSheet } from "../../data/worksheets/colouring";
 import { PAGES, SHEET_CSS, bodyBox, fitBodies, sheetPage } from "./chrome";
 import { missingNumbersBody } from "./missing-numbers-layout";
 import { PATTERNS_CSS, patternsBody } from "./patterns-layout";
 import { STICKERS_CSS, stickersBody } from "./stickers-layout";
+import { DRAWING_CSS, DRAWING_PROBLEMS, colouringBody, dotToDotBody } from "./drawing-layout";
 
 const ROOT = process.cwd();
 const FONTS_EN = join(ROOT, "scripts", "worksheets-en", "fonts");
@@ -52,6 +55,7 @@ ${fontFace("emoji", join(FONTS, "NotoEmoji-Regular.ttf"))}
 ${SHEET_CSS}
 ${PATTERNS_CSS}
 ${STICKERS_CSS}
+${DRAWING_CSS}
 </style>
 <script>/* tsx wraps functions in __name(); fitBodies runs here, so define it. */ var __name = (f) => f;</script>
 </head><body></body></html>`;
@@ -65,6 +69,10 @@ function body(sheet: Sheet, locale: SheetLocale): string {
       return patternsBody(sheet as PatternsSheet, locale, box);
     case "stickers":
       return stickersBody(sheet as StickersSheet, locale, box);
+    case "dot-to-dot":
+      return dotToDotBody(sheet as DotToDotSheet, locale, box);
+    case "colouring":
+      return colouringBody(sheet as ColouringSheet, locale, box);
   }
 }
 
@@ -147,6 +155,10 @@ async function main() {
   }
   await browser.close();
   console.log(`${files} PDFs, ${Math.round(total / 1024)} KB (${Math.round(total / 1024 / files)} KB each)`);
+  if (DRAWING_PROBLEMS.length) {
+    console.warn(`Drawing problems (fix the drawing):\n  ${DRAWING_PROBLEMS.join("\n  ")}`);
+    process.exitCode = 1;
+  }
   if (shrunk.length) {
     console.warn(`Shrunk to fit (fix the layout): ${shrunk.join(", ")}`);
     process.exitCode = 1;

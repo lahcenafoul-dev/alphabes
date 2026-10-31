@@ -68,6 +68,18 @@ export default function PreschoolTopicEn({ slug }: { slug: string }) {
         {topic.relatedLabel}
       </Link>
 
+      {topic.moreLinks && (
+        <ul className="mt-4 space-y-2">
+          {topic.moreLinks.map((l) => (
+            <li key={l.href}>
+              <Link href={l.href} className="font-bold underline">
+                {l.label}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      )}
+
       <p className="mt-6">
         <Link href="/preschool" className="font-bold underline">
           Back to the Preschool Learning Hub

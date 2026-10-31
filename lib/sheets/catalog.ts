@@ -6,14 +6,16 @@
 import { missingNumbersKind, missingNumbersSheets } from "@/data/worksheets/missing-numbers";
 import { patternsKind, patternsSheets } from "@/data/worksheets/patterns";
 import { stickersKind, stickersSheets } from "@/data/worksheets/stickers";
+import { dotToDotKind, dotToDotSheets } from "@/data/worksheets/dot-to-dot";
+import { colouringKind, colouringSheets } from "@/data/worksheets/colouring";
 import { SHEET_LOCALES, type Sheet, type SheetKind, type SheetKindId, type SheetLocale } from "./types";
 
 export type { Sheet, SheetKind, SheetKindId, SheetLocale } from "./types";
 
 /** In the order they're linked: each type links to its neighbours. */
-export const SHEET_KINDS: SheetKind[] = [missingNumbersKind, patternsKind, stickersKind];
+export const SHEET_KINDS: SheetKind[] = [missingNumbersKind, patternsKind, stickersKind, dotToDotKind, colouringKind];
 
-export const SHEETS: Sheet[] = [...missingNumbersSheets, ...patternsSheets, ...stickersSheets];
+export const SHEETS: Sheet[] = [...missingNumbersSheets, ...patternsSheets, ...stickersSheets, ...dotToDotSheets, ...colouringSheets];
 
 // Each language's existing worksheet folders (scripts/fiches-fr, fichas-es,
 // atividades-pt, worksheets-en): the PDFs go in a folder named after the

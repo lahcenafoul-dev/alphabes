@@ -12,7 +12,7 @@ export const SHEET_LOCALES: readonly SheetLocale[] = ["en", "fr", "es", "pt"];
 /** A text in each language. */
 export type L10n<T = string> = Record<SheetLocale, T>;
 
-export type SheetKindId = "missing-numbers" | "patterns" | "stickers";
+export type SheetKindId = "missing-numbers" | "patterns" | "stickers" | "dot-to-dot" | "colouring";
 
 export type SheetFilterOption = { value: string; label: L10n };
 
@@ -62,6 +62,8 @@ export type SheetKind = {
 /** "Pommes" → "pommes", "maçãs grandes" → "macas-grandes". */
 export function slugify(s: string): string {
   return s
+    .replace(/œ/g, "oe")
+    .replace(/Œ/g, "Oe")
     .normalize("NFD")
     .replace(/[̀-ͯ]/g, "")
     .toLowerCase()

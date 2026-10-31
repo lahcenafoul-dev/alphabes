@@ -137,6 +137,8 @@ export const schoolTopicsEs: SchoolTopicEs[] = [
     links: [
       fichas("colorear-letras", "Fichas para colorear letras"),
       fichas("colores", "Fichas de colores"),
+      fichas("colorear", "Dibujos para colorear y colorear por números"),
+      fichas("une-los-puntos", "Une los puntos"),
       { label: "Las tarjetas con dibujos", pathname: "/flashcards" },
     ],
   },

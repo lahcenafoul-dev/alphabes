@@ -6,6 +6,8 @@ export type PreschoolTopicContent = {
   tips: string[];
   relatedHref: string;
   relatedLabel: string;
+  /** Other worksheet listings worth a link, after the main one. */
+  moreLinks?: { href: string; label: string }[];
 };
 
 export const preschoolTopics: PreschoolTopicContent[] = [
@@ -36,6 +38,10 @@ export const preschoolTopics: PreschoolTopicContent[] = [
     ],
     relatedHref: "/worksheets/letter-coloring",
     relatedLabel: "Letter Coloring Worksheets",
+    moreLinks: [
+      { href: "/worksheets/coloring-pages", label: "Coloring Pages and Color by Number" },
+      { href: "/worksheets/dot-to-dot", label: "Dot to Dot Worksheets" },
+    ],
   },
 ];
 
