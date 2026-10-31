@@ -135,6 +135,8 @@ export const schoolTopicsPt: SchoolTopicPt[] = [
     links: [
       atividades("colorir-letras", "Atividades de colorir letras"),
       atividades("cores", "Atividades das cores"),
+      atividades("colorir", "Desenhos para colorir e pinte por números"),
+      atividades("ligue-os-pontos", "Ligue os pontos"),
       { label: "Os cartões com figuras", pathname: "/flashcards" },
     ],
   },

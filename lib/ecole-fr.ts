@@ -134,6 +134,8 @@ export const schoolTopics: SchoolTopic[] = [
     links: [
       fiches("coloriage-des-lettres", "Fiches de coloriage des lettres"),
       fiches("couleurs", "Fiches des couleurs"),
+      fiches("coloriages", "Coloriages et coloriages magiques"),
+      fiches("points-a-relier", "Points à relier"),
       { label: "L'imagier", pathname: "/flashcards" },
     ],
   },
