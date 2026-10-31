@@ -12,7 +12,7 @@ export const SHEET_LOCALES: readonly SheetLocale[] = ["en", "fr", "es", "pt"];
 /** A text in each language. */
 export type L10n<T = string> = Record<SheetLocale, T>;
 
-export type SheetKindId = "missing-numbers" | "patterns" | "stickers" | "dot-to-dot" | "colouring" | "how-to-draw" | "body-parts";
+export type SheetKindId = "missing-numbers" | "patterns" | "stickers" | "dot-to-dot" | "colouring" | "how-to-draw" | "body-parts" | "flash-cards" | "telling-time" | "mazes";
 
 export type SheetFilterOption = { value: string; label: L10n };
 
@@ -34,6 +34,8 @@ export type Sheet<P = unknown> = {
   instruction: L10n;
   /** Filter key → option value, as listed in the type's filters. */
   filters: Record<string, string>;
+  /** Pages in the PDF, when more than one (card sets, answer keys). */
+  pages?: number;
   /** What the layout script draws. */
   params: P;
 };

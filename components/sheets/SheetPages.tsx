@@ -260,7 +260,7 @@ function SheetView({ locale, sheet }: { locale: SheetLocale; sheet: Sheet }) {
                 <dt className="font-bold">{t.skills}</dt>
                 <dd className="text-owl-muted">{kind.skills[locale].join(", ")}</dd>
                 <dt className="font-bold">{t.paper}</dt>
-                <dd className="text-owl-muted">{t.paperSize}</dd>
+                <dd className="text-owl-muted">{t.paperSize(sheet.pages ?? 1)}</dd>
                 <dt className="font-bold">{t.price}</dt>
                 <dd className="text-owl-muted">{t.freeLong}</dd>
               </dl>

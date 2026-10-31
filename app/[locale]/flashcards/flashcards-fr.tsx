@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Link } from "@/i18n/navigation";
 import ListenButton from "@/components/ListenButton";
 import { absoluteUrl, alternatesFor } from "@/lib/i18n/routes";
+import { getSheetKind } from "@/lib/sheets/catalog";
 import { frenchLetters } from "@/lib/letters-fr";
 import WordIllustration from "@/components/WordIllustration";
 import { InlineIcon } from "@/components/UiIcon";
@@ -27,6 +28,15 @@ export default function FlashcardsFr() {
         Un mot, une image, une lettre. Touchez une carte pour entendre le mot, puis cherchez
         ensemble le son de la lettre au début du mot. Les mots vont par deux pour chaque lettre,
         accents compris.
+      </p>
+      <p className="mt-3 text-sm">
+        Envie de cartes à imprimer&nbsp;?{" "}
+        <Link
+          href={{ pathname: "/worksheets/[category]", params: { category: getSheetKind("flash-cards").slug.fr } }}
+          className="font-display font-bold text-crayon-blue hover:underline"
+        >
+          Voir les cartes images par thème →
+        </Link>
       </p>
 
       <nav aria-label="Aller à une lettre" className="mt-6 flex flex-wrap gap-1.5">

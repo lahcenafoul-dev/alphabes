@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Link } from "@/i18n/navigation";
 import ListenButton from "@/components/ListenButton";
 import { absoluteUrl, alternatesFor } from "@/lib/i18n/routes";
+import { getSheetKind } from "@/lib/sheets/catalog";
 import { spanishLetters } from "@/lib/letters-es";
 import WordIllustration from "@/components/WordIllustration";
 import { InlineIcon } from "@/components/UiIcon";
@@ -26,6 +27,15 @@ export default function FlashcardsEs() {
       <p className="mt-2 text-chalkboard/70 max-w-2xl">
         Una palabra, un dibujo, una letra. Toca una tarjeta para escuchar la palabra y busquen juntos
         la sílaba con la que empieza. Hay por lo menos dos palabras para cada una de las 27 letras.
+      </p>
+      <p className="mt-3 text-sm">
+        ¿Quiere tarjetas para imprimir?{" "}
+        <Link
+          href={{ pathname: "/worksheets/[category]", params: { category: getSheetKind("flash-cards").slug.es } }}
+          className="font-display font-bold text-crayon-blue hover:underline"
+        >
+          Vea las tarjetas ilustradas por tema →
+        </Link>
       </p>
 
       <nav aria-label="Ir a una letra" className="mt-6 flex flex-wrap gap-1.5">

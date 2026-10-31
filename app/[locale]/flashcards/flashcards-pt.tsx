@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Link } from "@/i18n/navigation";
 import ListenButton from "@/components/ListenButton";
 import { absoluteUrl, alternatesFor } from "@/lib/i18n/routes";
+import { getSheetKind } from "@/lib/sheets/catalog";
 import { CEDILHA_SLUG, portugueseLetters } from "@/lib/letters-pt";
 import WordIllustration from "@/components/WordIllustration";
 import { InlineIcon } from "@/components/UiIcon";
@@ -27,6 +28,15 @@ export default function FlashcardsPt() {
         Uma palavra, uma figura, uma letra. Toque num cartão para ouvir a palavra e procurem juntos
         a sílaba com que ela começa. Há pelo menos duas palavras para cada uma das 26 letras e para o
         Ç.
+      </p>
+      <p className="mt-3 text-sm">
+        Quer cartões para imprimir?{" "}
+        <Link
+          href={{ pathname: "/worksheets/[category]", params: { category: getSheetKind("flash-cards").slug.pt } }}
+          className="font-display font-bold text-crayon-blue hover:underline"
+        >
+          Veja os cartões ilustrados por tema →
+        </Link>
       </p>
 
       <nav aria-label="Ir para uma letra" className="mt-6 flex flex-wrap gap-1.5">

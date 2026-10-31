@@ -27,7 +27,8 @@ export type SheetUi = {
   level: string;
   skills: string;
   paper: string;
-  paperSize: string;
+  /** "US Letter, 2 pages…": the PDF's paper and number of pages. */
+  paperSize: (pages: number) => string;
   price: string;
   freeLong: string;
   related: string;
@@ -63,7 +64,7 @@ export const SHEET_UI: Record<SheetLocale, SheetUi> = {
     level: "Ages",
     skills: "Skills",
     paper: "Paper",
-    paperSize: "US Letter, 1 page, black-and-white friendly",
+    paperSize: (n) => `US Letter, ${n} ${n > 1 ? "pages" : "page"}, black-and-white friendly`,
     price: "Price",
     freeLong: "Free, no sign-up",
     related: "More worksheets like this",
@@ -97,7 +98,7 @@ export const SHEET_UI: Record<SheetLocale, SheetUi> = {
     level: "Âge",
     skills: "Compétences",
     paper: "Format",
-    paperSize: "A4, 1 page, s'imprime bien en noir et blanc",
+    paperSize: (n) => `A4, ${n} ${n > 1 ? "pages" : "page"}, s'imprime bien en noir et blanc`,
     price: "Prix",
     freeLong: "Gratuit, sans inscription",
     related: "Fiches du même genre",
@@ -131,7 +132,7 @@ export const SHEET_UI: Record<SheetLocale, SheetUi> = {
     level: "Edad",
     skills: "Habilidades",
     paper: "Formato",
-    paperSize: "A4, 1 página, se imprime bien en blanco y negro",
+    paperSize: (n) => `A4, ${n} ${n > 1 ? "páginas" : "página"}, se imprime bien en blanco y negro`,
     price: "Precio",
     freeLong: "Gratis, sin registro",
     related: "Más fichas como esta",
@@ -165,7 +166,7 @@ export const SHEET_UI: Record<SheetLocale, SheetUi> = {
     level: "Idade",
     skills: "Habilidades",
     paper: "Formato",
-    paperSize: "A4, 1 página, imprime bem em preto e branco",
+    paperSize: (n) => `A4, ${n} ${n > 1 ? "páginas" : "página"}, imprime bem em preto e branco`,
     price: "Preço",
     freeLong: "Grátis, sem cadastro",
     related: "Mais atividades como esta",

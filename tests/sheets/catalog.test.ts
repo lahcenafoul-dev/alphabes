@@ -1,5 +1,6 @@
 // The worksheet types of lib/sheets/catalog.ts (missing numbers, patterns,
-// sticker sheets, dot to dot, colouring, how to draw, body parts): unique slugs and titles in every language, every cartoon
+// sticker sheets, dot to dot, colouring, how to draw, body parts, flash
+// cards, telling time, mazes): unique slugs and titles in every language, every cartoon
 // exists, every PDF and preview is generated, and the routes know every page.
 import { existsSync, statSync } from "fs";
 import path from "path";
@@ -48,6 +49,12 @@ describe("worksheet types catalogue", () => {
   it("has the phase 3 sheets", () => {
     expect(sheetsOfKind("how-to-draw")).toHaveLength(40);
     expect(sheetsOfKind("body-parts")).toHaveLength(26);
+  });
+
+  it("has the phase 4 sheets", () => {
+    expect(sheetsOfKind("flash-cards")).toHaveLength(35);
+    expect(sheetsOfKind("telling-time")).toHaveLength(42);
+    expect(sheetsOfKind("mazes")).toHaveLength(50);
   });
 
   it("has unique ids, slugs and titles in every language", () => {
