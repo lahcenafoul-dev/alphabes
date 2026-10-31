@@ -55,7 +55,7 @@ const W = {
   stinger: { en: "stinger", fr: "le dard", es: "el aguijón", pt: "o ferrão" },
   tongue: { en: "tongue", fr: "la langue", es: "la lengua", pt: "a língua" },
   whiskers: { en: "whiskers", fr: "les moustaches", es: "los bigotes", pt: "os bigodes" },
-  claw: { en: "claw", fr: "la pince", es: "la pinza", pt: "a garra" },
+  claw: { en: "claw", fr: "la pince", es: "la pinza", pt: "a pinça" },
   shell: { en: "shell", fr: "la carapace", es: "el caparazón", pt: "a carapaça" },
   mane: { en: "mane", fr: "la crinière", es: "la crin", pt: "a crina" },
   hoof: { en: "hoof", fr: "le sabot", es: "el casco", pt: "o casco" },
