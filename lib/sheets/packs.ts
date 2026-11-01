@@ -1,4 +1,4 @@
-// The Pro packs (docs/pro-packs, claude-notes.md): one PDF per worksheet
+// The Pro packs (docs/pro-packs.md): one PDF per worksheet
 // type with every sheet, smaller packs by level or theme, and a Mega pack
 // with every type in five parts (each file under about 15 MB). Each pack exists in the four languages
 // and on two paper sizes; scripts/sheets/packs.ts builds the PDFs into
@@ -275,6 +275,22 @@ export function packFiles(pack: Pack): { part?: number }[] {
 /** The file's key in pro-files/ and in the bucket. */
 export function packKey(locale: SheetLocale, pack: Pack, paper: PackPaper, part?: number): string {
   return `${locale}/packs/${pack.slug[locale]}${part ? `-part-${part}` : ""}-${paper}.pdf`;
+}
+
+/** The types in a pack: one, or all of them for the Mega pack. */
+export function packKinds(pack: Pack): PackKind[] {
+  return pack.parts ? pack.parts.flatMap((p) => p.kinds) : [pack.kind as PackKind];
+}
+
+/** The youngest and oldest ages of a pack's types, read from their levels ("… (ages 4–8)"). */
+export function packAges(pack: Pack): [number, number] {
+  const spans = packKinds(pack).map((k) => packKindLevel(k).en.match(/(\d+)\D+(\d+)\)?$/)!.slice(1).map(Number));
+  return [Math.min(...spans.map((s) => s[0])), Math.max(...spans.map((s) => s[1]))];
+}
+
+/** A picture of the pack for its page, under public/ (npm run packs -- --previews). */
+export function packPreview(locale: SheetLocale, pack: Pack, name: string): string {
+  return `/pro-packs/${locale}/${pack.slug[locale]}/${name}.webp`;
 }
 
 /** Items (sheets or scenes) in a pack, or in a part of the Mega pack. */

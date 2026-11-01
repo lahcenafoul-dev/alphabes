@@ -1,6 +1,8 @@
-// Uploads pro-files/<lang>/<slug>.pdf to the private R2 bucket
-// alphabes-pro-files with the same keys (<lang>/<slug>.pdf), which is where
-// /api/bundles/... reads them (lib/billing/bundles.ts, docs/paypal-plan.md).
+// Uploads pro-files/<lang>/<slug>.pdf, and the Pro packs in
+// pro-files/<lang>/packs/ (npm run packs), to the private R2 bucket
+// alphabes-pro-files with the same keys (<lang>/<slug>.pdf,
+// <lang>/packs/<file>.pdf), which is where /api/bundles/... reads them
+// (lib/billing/bundles.ts, docs/paypal-plan.md).
 //
 //   node scripts/upload-pro-files.mjs [--dry-run] [--lang=fr] [--force] [--no-verify]
 //
@@ -70,12 +72,17 @@ async function withRetries(label, fn) {
   return false;
 }
 
-const files = (onlyLang ? [onlyLang] : LANGS).flatMap((lang) =>
-  readdirSync(join(DIR, lang))
-    .filter((f) => f.endsWith(".pdf"))
-    .sort()
-    .map((f) => ({ key: `${lang}/${f}`, path: join(DIR, lang, f) })),
-);
+const pdfsIn = (dir, prefix) =>
+  existsSync(dir)
+    ? readdirSync(dir)
+        .filter((f) => f.endsWith(".pdf"))
+        .sort()
+        .map((f) => ({ key: `${prefix}/${f}`, path: join(dir, f) }))
+    : [];
+const files = (onlyLang ? [onlyLang] : LANGS).flatMap((lang) => [
+  ...pdfsIn(join(DIR, lang), lang),
+  ...pdfsIn(join(DIR, lang, "packs"), `${lang}/packs`),
+]);
 const done = existsSync(LOG) ? JSON.parse(readFileSync(LOG, "utf8")) : {};
 const todo = files
   .map((f) => ({ ...f, hash: sha256(readFileSync(f.path)) }))

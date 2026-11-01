@@ -19,6 +19,7 @@
     "phonics": "Les sons",
     "worksheets": "Fiches",
     "allWorksheets": "Toutes les fiches",
+    "proPacks": "Les packs Pro",
     "games": "Jeux",
     "stories": "Histoires",
     "pricing": "Tarifs",
@@ -94,6 +95,8 @@
     "intro": "Bon retour parmi nous ! Connectez-vous pour suivre les progrès de votre enfant.",
     "newHere": "Nouveau sur AlphaBes ?",
     "createAccount": "Créer un compte",
+    "notPro": "Pas encore Pro ?",
+    "seePlans": "Voir les formules",
     "email": "Adresse e-mail",
     "password": "Mot de passe",
     "invalidCredentials": "Adresse e-mail ou mot de passe incorrect.",
@@ -134,6 +137,7 @@
     "intro": "La formule gratuite comprend toutes les fiches à imprimer, les leçons sur l'alphabet et les sons, les jeux gratuits et le suivi des progrès de chaque enfant. Pro ajoute les jeux premium et le téléchargement des packs de fiches en un seul PDF, pour les parents et les enseignants qui veulent tout.",
     "currencyNote": "Prix en dollars américains (USD).",
     "billingNote": "Paiement sécurisé par PayPal. Pro se renouvelle automatiquement ; vous pouvez résilier à tout moment depuis votre tableau de bord et garder Pro jusqu'à la fin de la période payée.",
+    "packsLink": "Voir les packs Pro",
     "refundLink": "Politique de remboursement",
     "choose": "Choisir {plan}",
     "startFree": "Commencer gratuitement",
@@ -155,7 +159,8 @@
       "features": [
         "Tout le contenu gratuit",
         "3 jeux premium : Le premier son, Trace la lettre, Le quiz de l'alphabet",
-        "Les packs de fiches en un seul PDF"
+        "Les packs de fiches en un seul PDF",
+        "39 packs Pro avec corrigés et diplômes, en A4 et US Letter"
       ]
     },
     "annual": {

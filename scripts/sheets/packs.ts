@@ -13,6 +13,9 @@
 // and sha256. Never into public/. --out=<dir> writes them there instead (a
 // sample), and --samples=<dir> also saves PNGs of the cover, contents,
 // how-to page, two sheet pages, an answer key page and the certificate.
+// --part=<n,…> builds only those parts of the Mega pack. --previews writes no PDF, only the pack pages' pictures (WebP, 480 px wide)
+// into public/pro-packs/<lang>/<slug>/ (packPreview): the cover of each file,
+// and a sheet and an answer key (or the contents) of the first.
 //
 // Build one language, one type and one paper size at a time (memory), and
 // never with the dev server running.
@@ -31,6 +34,7 @@ import {
   packKey,
   packKindLevel,
   packKindName,
+  packPreview,
   type Pack,
   type PackKind,
   type PackPaper,
@@ -61,6 +65,9 @@ const locales = (arg("locale")?.split(",") ?? ["en"]) as SheetLocale[];
 const papers = (arg("paper")?.split(",") ?? ["letter", "a4"]) as PackPaper[];
 const out = arg("out");
 const samples = arg("samples");
+const previews = args.includes("--previews");
+/** Only these parts of the Mega pack (one per process keeps memory low). */
+const onlyParts = arg("part")?.split(",").map(Number);
 
 const OWL = (size: number) =>
   `<svg viewBox="0 0 44 44" style="width:${size}mm;height:${size}mm" aria-hidden="true"><circle cx="22" cy="24" r="19" fill="${PURPLE}"/><path d="M8 10l7 6M36 10l-7 6" stroke="${PURPLE}" stroke-width="5" stroke-linecap="round"/><circle cx="15" cy="22" r="7" fill="#fff"/><circle cx="29" cy="22" r="7" fill="#fff"/><circle cx="16" cy="23" r="3.4" fill="${INK}"/><circle cx="28" cy="23" r="3.4" fill="${INK}"/><path d="M19 30l3 4 3-4z" fill="#FFC94D"/></svg>`;
@@ -78,7 +85,8 @@ ${PUZZLE_CSS}
 .pk-cover h2 { margin: 3mm 0 0; font-size: 8mm; font-weight: 700; color: ${PURPLE} }
 .pk-facts { margin-top: 7mm; display: flex; flex-wrap: wrap; gap: 3mm; justify-content: center; font-family: display; font-weight: 700; font-size: 4.4mm }
 .pk-facts span { background: #fff; border: 0.5mm solid #CFC6FF; border-radius: 99mm; padding: 1.6mm 5mm 1.1mm }
-.pk-thumbs { margin-top: auto; display: grid; gap: 5mm; justify-content: center }
+/* Centred in the room between the badges and the footer, whatever their number. */
+.pk-thumbs { margin: auto 0; padding-top: 6mm; display: grid; gap: 5mm; justify-content: center }
 .pk-thumbs img { width: 100%; border-radius: 2mm; border: 0.4mm solid #DCD5FA; box-shadow: 0 1mm 2.5mm rgba(29,24,70,0.12); background: #fff }
 .pk-foot { margin-top: 6mm; height: 4mm; display: flex; justify-content: space-between; font-size: 3.3mm; color: ${MUTED} }
 .pk-head { display: flex; align-items: center; gap: 3mm; font-family: display; font-weight: 800; font-size: 6mm }
@@ -292,8 +300,12 @@ function cover(t: PackText, locale: SheetLocale, size: Size, pack: Pack, title: 
   const facts = [t.count(items, kind), pack.parts ? groups.map((g) => packKindName(g.kind)[locale]).join(" · ") : ages];
   if (pack.keys && groups.some((g) => KEY_KINDS.includes(g.kind))) facts.push(t.keys);
   facts.push(t.certificate);
-  const cols = thumbs.length <= 4 ? thumbs.length : 3;
-  const w = cols === 3 ? 46 : cols === 4 ? 40 : 56;
+  // Six in two rows of three; up to four in one row, as big as the page allows.
+  // Fewer thumbnails are drawn bigger, so no cover has a large empty area:
+  // four make a 2×2 grid about as tall as the usual 3×2 one.
+  const cols = thumbs.length === 4 ? 2 : Math.min(thumbs.length, 3);
+  const w =
+    thumbs.length === 4 ? 48 : thumbs.length > 4 ? 46 : Math.min([90, 80, 58][cols - 1], Math.floor((size.width - 32 - (cols - 1) * 5) / cols));
   return frame(
     size,
     "pk-cover",
@@ -304,7 +316,7 @@ function cover(t: PackText, locale: SheetLocale, size: Size, pack: Pack, title: 
     <h2>${esc(typo(title, locale))}</h2>
     <div class="pk-facts">${facts.map((f) => `<span>${esc(typo(f, locale))}</span>`).join("")}</div>
     <div class="pk-thumbs" style="grid-template-columns:repeat(${cols},${w}mm)">${thumbs.map((src) => `<img src="${src}" alt="">`).join("")}</div>
-    <footer class="pk-foot" style="width:100%"><span>${esc(t.site)}</span><span>${esc(ages)}</span></footer>`,
+    <footer class="pk-foot" style="width:100%;margin-top:0"><span>${esc(t.site)}</span><span>${esc(ages)}</span></footer>`,
   );
 }
 
@@ -324,7 +336,7 @@ function contents(t: PackText, locale: SheetLocale, size: Size, title: string, t
 function howTo(t: PackText, locale: SheetLocale, size: Size, pack: Pack, groups: Group[], keyPage: number): string {
   const tip = (s: string, i: number) => `<li style="--dot:${BRIGHT[i % BRIGHT.length]}"><span>${esc(typo(s, locale))}</span></li>`;
   const kindTips = pack.parts ? groups.map((g) => t.howKind[g.kind].line) : t.howKind[pack.kind as PackKind].tips;
-  const general = keyPage ? t.howGeneral : t.howGeneral.filter((s) => !/answer|réponse|respuesta|resposta/i.test(s));
+  const general = keyPage ? t.howGeneral : t.howGeneral.filter((_, i) => i !== 2);
   const kindTitle = pack.parts ? pack.name[locale] : packKindName(pack.kind as PackKind)[locale];
   return frame(
     size,
@@ -370,7 +382,7 @@ async function main() {
       const size = PAGES[paper];
       const context = await browser.newContext({ viewport: { width: Math.round((size.width / 25.4) * 96), height: Math.round((size.height / 25.4) * 96) }, deviceScaleFactor: samples ? 2 : 1 });
       for (const pack of list) {
-        for (const { part } of packFiles(pack)) {
+        for (const { part } of packFiles(pack).filter(({ part }) => !onlyParts || !part || onlyParts.includes(part))) {
           const key = packKey(locale, pack, paper, part);
           const file = join(out ?? join(ROOT, "pro-files"), key);
           const book = await buildFile(pack, locale, paper, part);
@@ -381,11 +393,26 @@ async function main() {
           await page.evaluate(() => document.fonts.ready);
           const shrunk = await page.evaluate(fitBodies);
           if (shrunk) problems.push(`${key}: ${shrunk} page(s) shrunk to fit`);
+          if (previews) {
+            const shots: [string, number][] = [[part ? `cover-part-${part}` : "cover", book.marks.cover]];
+            if ((part ?? 1) === 1) shots.push(["sheet", book.marks.sheet + Math.min(2, book.items - 1)], ["key", book.marks.key || book.marks.contents]);
+            for (const [name, n] of shots) {
+              const png = await page.locator(".page").nth(n - 1).screenshot();
+              const target = join(ROOT, "public", packPreview(locale, pack, name));
+              mkdirSync(dirname(target), { recursive: true });
+              await sharp(png).resize({ width: 480 }).webp({ quality: 78 }).toFile(target);
+            }
+            console.log(`  ${key}: previews`);
+            await page.close();
+            continue;
+          }
           mkdirSync(dirname(file), { recursive: true });
           const pdf = await page.pdf({ path: file, width: `${size.width}mm`, height: `${size.height}mm`, printBackground: true });
           const count = await page.locator(".page").count();
           if (count !== book.pages.length) problems.push(`${key}: ${count} pages printed, ${book.pages.length} built`);
           manifest[key] = { pages: count, bytes: pdf.length, sha256: createHash("sha256").update(pdf).digest("hex") };
+          // After each file, so a stopped run keeps what it built.
+          if (!out) writeFileSync(MANIFEST, JSON.stringify(Object.fromEntries(Object.entries(manifest).sort()), null, 2) + "\n");
           console.log(`  ${key}: ${count} pages, ${(pdf.length / 1024 / 1024).toFixed(2)} MB`);
           if (pdf.length > MAX_BYTES) problems.push(`${key}: ${(pdf.length / 1024 / 1024).toFixed(1)} MB, over the 15 MB target (split the pack)`);
           if (samples) {
@@ -409,7 +436,6 @@ async function main() {
     }
   }
   await browser.close();
-  if (!out) writeFileSync(MANIFEST, JSON.stringify(Object.fromEntries(Object.entries(manifest).sort()), null, 2) + "\n");
   problems.push(...DRAWING_PROBLEMS, ...ART_PROBLEMS);
   if (problems.length) {
     console.warn(`Problems:\n  ${[...new Set(problems)].join("\n  ")}`);

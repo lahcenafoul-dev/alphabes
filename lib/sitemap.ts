@@ -32,6 +32,7 @@ import { preschoolTopics } from "@/lib/preschool-data";
 import { kindergartenTopics } from "@/lib/kindergarten-data";
 import { getPrisma } from "@/lib/prisma";
 import { RELEASE_DATE } from "@/lib/release-date";
+import { PACKS } from "@/lib/sheets/packs";
 import { routing } from "@/i18n/routing";
 import { fromDbLocale } from "@/lib/i18n/db-locale";
 import {
@@ -408,6 +409,16 @@ export async function sitemapEntries(): Promise<MetadataRoute.Sitemap> {
       })),
   ];
 
+  // The Pro packs' pages, in every language (their slugs differ by language).
+  const packEntries = routing.locales.flatMap((locale) =>
+    PACKS.map((p) => ({
+      url: absoluteUrl(locale, "/worksheets/bundles/[bundleSlug]", { bundleSlug: p.slug[locale] }),
+      lastModified: RELEASE_DATE,
+      changeFrequency: "monthly" as const,
+      priority: 0.6,
+    })),
+  );
+
   return [
     ...withTwins(englishEntries),
     ...frenchGameEntries,
@@ -416,6 +427,7 @@ export async function sitemapEntries(): Promise<MetadataRoute.Sitemap> {
     ...frenchOnlyEntries,
     ...spanishOnlyEntries,
     ...portugueseOnlyEntries,
+    ...packEntries,
     ...(await getStoryRoutes()),
   ];
 }

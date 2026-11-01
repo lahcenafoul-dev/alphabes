@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { ProPacksSection } from "@/components/sheets/ProPacks";
 import { Link } from "@/i18n/navigation";
 import { FICHA_CATEGORIES, fichaPacks, type FichaCategoryGroup, type FichaPack } from "@/lib/fichas-es";
 import { absoluteUrl, alternatesFor } from "@/lib/i18n/routes";
@@ -59,6 +60,8 @@ export default function BundlesEs() {
         Varias fichas juntas en un solo PDF, para imprimir de una vez: práctico para preparar la semana o las copias del
         grupo.
       </p>
+
+      <ProPacksSection locale="es" />
 
       <PackList heading="El abecedario completo" packs={fichaPacks.filter((p) => p.slug === "paquete-abecedario-completo")} />
       <PackList heading="Un tipo de ficha, de la A a la Z" packs={byGroup("letras")} />

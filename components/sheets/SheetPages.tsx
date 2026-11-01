@@ -25,6 +25,7 @@ import { SHEET_UI } from "@/lib/sheets/ui";
 import { HTML_LANG, SITE_URL, absoluteUrl, alternatesFor } from "@/lib/i18n/routes";
 import { buildBreadcrumbJsonLd } from "@/lib/json-ld";
 import SheetGallery, { type GalleryItem } from "./SheetGallery";
+import { PackUpsell, ProPacksPromo } from "./ProPacks";
 
 const PATH = "/worksheets/[category]" as const;
 
@@ -151,6 +152,8 @@ function KindView({ locale, kind }: { locale: SheetLocale; kind: SheetKind }) {
           <SheetGallery locale={locale} items={items} filters={kind.filters} previewHeight={PREVIEW_SIZE[SHEET_PAGE[locale]].height} />
         </section>
 
+        <PackUpsell locale={locale} kind={kind.id} />
+
         <section className="mt-14 rounded-3xl bg-white p-6 ring-1 ring-owl-ink/5 sm:p-8">
           <h2 className="font-display text-2xl font-extrabold">{t.howTo}</h2>
           <p className="mt-3 max-w-3xl text-owl-muted">{kind.howTo[locale]}</p>
@@ -241,6 +244,8 @@ function SheetView({ locale, sheet }: { locale: SheetLocale; sheet: Sheet }) {
                 {t.print}
               </a>
             </div>
+
+            <PackUpsell locale={locale} kind={kind.id} />
 
             <section className="mt-8 rounded-3xl bg-owl-cream p-5">
               <h2 className="font-display text-lg font-extrabold">{t.onTheSheet}</h2>
@@ -358,6 +363,7 @@ export function SheetTypesSection({ locale }: { locale: SheetLocale }) {
           );
         })}
       </ul>
+      <ProPacksPromo locale={locale} />
     </section>
   );
 }

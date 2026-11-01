@@ -35,6 +35,7 @@ import { getFrenchSound } from "@/lib/sons-fr";
 import { getStaticWorksheetCategory } from "@/lib/static-worksheet-categories";
 import { getStaticWorksheetBySlug } from "@/lib/static-worksheets-data";
 import { getBundleBySlug } from "@/lib/worksheet-bundles";
+import { getPack } from "@/lib/sheets/packs";
 import { getWorksheetCategory } from "@/lib/worksheet-categories";
 import { getWorksheetTypeByCategorySlug } from "@/lib/worksheet-types";
 import { getWorksheetBySlug } from "@/lib/worksheets-data";
@@ -76,7 +77,7 @@ const VALIDATORS: Partial<Record<AppPathname, Validator>> = {
           getStaticWorksheetBySlug(category)
         )),
   "/worksheets/bundles/[bundleSlug]": ({ bundleSlug }, locale) =>
-    locale === "fr" ? !!getFichePack(bundleSlug) : !!getBundleBySlug(bundleSlug),
+    !!getPack(locale === "fr" ? "fr" : "en", bundleSlug) || (locale === "fr" ? !!getFichePack(bundleSlug) : !!getBundleBySlug(bundleSlug)),
 };
 
 // Spanish params, added phase by phase with the Spanish pages
@@ -95,7 +96,7 @@ const SPANISH_VALIDATORS: Partial<Record<AppPathname, (params: RouteParams) => b
   "/preschool/[topic]": ({ topic }) => !!getSchoolTopicEs("preescolar", topic),
   "/worksheets/[category]": ({ category }) =>
     isSheetParam(category, "es") || !!(getFichaCategory(category) || getSpanishFicha(category)),
-  "/worksheets/bundles/[bundleSlug]": ({ bundleSlug }) => !!getFichaPack(bundleSlug),
+  "/worksheets/bundles/[bundleSlug]": ({ bundleSlug }) => !!getPack("es", bundleSlug) || !!getFichaPack(bundleSlug),
 };
 
 // Portuguese params, added phase by phase with the Portuguese pages
@@ -112,7 +113,7 @@ const PORTUGUESE_VALIDATORS: Partial<Record<AppPathname, (params: RouteParams) =
   "/preschool/[topic]": ({ topic }) => !!getSchoolTopicPt("educacao-infantil", topic),
   "/worksheets/[category]": ({ category }) =>
     isSheetParam(category, "pt") || !!(getAtividadeCategory(category) || getAtividade(category)),
-  "/worksheets/bundles/[bundleSlug]": ({ bundleSlug }) => !!getAtividadePack(bundleSlug),
+  "/worksheets/bundles/[bundleSlug]": ({ bundleSlug }) => !!getPack("pt", bundleSlug) || !!getAtividadePack(bundleSlug),
 };
 
 /** False only when we know the params don't exist; true for routes we can't check. */

@@ -11,7 +11,7 @@ The site (alphabes.com) is hosted on **Cloudflare Workers**, built with OpenNext
   - Build-time `NEXT_PUBLIC_APP_URL`: Workers & Pages → alphabes → Settings → Build → Variables and secrets.
   - Runtime secrets and vars (`DATABASE_URL`, `NEXTAUTH_SECRET`, `NEXTAUTH_URL`, the `PAYPAL_*` secrets): Workers & Pages → alphabes → Settings → Variables and Secrets. Saving there only creates a new version; it must also be **deployed**. `keep_vars` in `wrangler.jsonc` stops deploys from wiping them.
 - **Caching:** prerendered pages use the R2 bucket `alphabes-inc-cache` (see `wrangler.jsonc` and `open-next.config.ts`). The build never touches the database.
-- **Pro files:** whole-bundle PDFs live in `pro-files/` and in the private R2 bucket `alphabes-pro-files` (binding `PRO_FILES`), served only by `/api/bundles/...` after a Pro check. Never put them in `public/`.
+- **Pro files:** whole-bundle PDFs live in `pro-files/` and in the private R2 bucket `alphabes-pro-files` (binding `PRO_FILES`), served only by `/api/bundles/...` after a Pro check. Never put them in `public/`. The Pro worksheet packs (39 per language, Letter and A4, in `pro-files/<lang>/packs/`, git-ignored, tracked by `lib/sheets/pack-manifest.json`) are described in [docs/pro-packs.md](docs/pro-packs.md).
 - **Billing** is PayPal Subscriptions (Stripe is not available in Morocco and was removed). Plan, decisions and launch steps: [docs/paypal-plan.md](docs/paypal-plan.md). Never print the `PAYPAL_*` values.
 - **DNS** for alphabes.com is on Cloudflare. `www` and plain HTTP redirect to `https://alphabes.com`.
 

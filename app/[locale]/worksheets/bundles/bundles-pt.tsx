@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { ProPacksSection } from "@/components/sheets/ProPacks";
 import { Link } from "@/i18n/navigation";
 import { ATIVIDADE_CATEGORIES, atividadePacks, type AtividadeCategoryGroup, type AtividadePack } from "@/lib/atividades-pt";
 import { absoluteUrl, alternatesFor } from "@/lib/i18n/routes";
@@ -58,6 +59,8 @@ export default function BundlesPt() {
       <p className="mt-2 text-chalkboard/70 max-w-2xl">
         Várias atividades juntas num só PDF, para imprimir de uma vez: prático para preparar a semana ou as cópias da turma.
       </p>
+
+      <ProPacksSection locale="pt" />
 
       <PackList heading="O alfabeto completo" packs={atividadePacks.filter((p) => p.slug === "pacote-alfabeto-completo")} />
       <PackList heading="Um tipo de atividade, de A a Z" packs={byGroup("letras")} />
