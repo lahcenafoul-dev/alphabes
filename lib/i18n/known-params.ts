@@ -12,6 +12,7 @@ import { getBlogCategory, getBlogPost } from "@/lib/blog-data";
 import { getSchoolTopic } from "@/lib/ecole-fr";
 import { getFiche, getFicheCategory, getFichePack } from "@/lib/fiches-fr";
 import { getGame } from "@/lib/games-data";
+import { getPuzzle } from "@/lib/puzzles";
 import { getFrenchGame } from "@/lib/games-fr";
 import { getSpanishGame } from "@/lib/juegos-es";
 import { getSchoolTopicEs } from "@/lib/escuela-es";
@@ -56,6 +57,8 @@ const VALIDATORS: Partial<Record<AppPathname, Validator>> = {
   "/games/[slug]": ({ slug }, locale) => (locale === "fr" ? !!getFrenchGame(slug) : !!getGame(slug)),
   // Only premium games have a play page.
   "/games/[slug]/play": ({ slug }, locale) => isPremiumGame(locale, slug),
+  // English only for now (phase 5, step A): the other languages aren't in their page lists yet.
+  "/games/sliding-puzzle/[puzzle]": ({ puzzle }, locale) => !!getPuzzle(puzzle, locale),
   "/kindergarten/[topic]": ({ topic }, locale) =>
     locale === "fr" ? !!getSchoolTopic("grande-section", topic) : !!getKindergartenTopic(topic),
   "/phonics/[skill]": ({ skill }, locale) => (locale === "fr" ? !!getFrenchSound(skill) : !!getPhonicsSkill(skill)),
@@ -86,6 +89,7 @@ const SPANISH_VALIDATORS: Partial<Record<AppPathname, (params: RouteParams) => b
   "/alphabet/[letter]/worksheet": ({ letter }) => SPANISH_LETTERS.has(letter),
   "/games/[slug]": ({ slug }) => !!getSpanishGame(slug),
   "/games/[slug]/play": ({ slug }) => isPremiumGame("es", slug),
+  "/games/sliding-puzzle/[puzzle]": ({ puzzle }) => !!getPuzzle(puzzle, "es"),
   "/kindergarten/[topic]": ({ topic }) => !!getSchoolTopicEs("kinder", topic),
   "/phonics/[skill]": ({ skill }) => !!getSpanishSyllablePage(skill),
   "/preschool/[topic]": ({ topic }) => !!getSchoolTopicEs("preescolar", topic),
@@ -102,6 +106,7 @@ const PORTUGUESE_VALIDATORS: Partial<Record<AppPathname, (params: RouteParams) =
   "/alphabet/[letter]/worksheet": ({ letter }) => PORTUGUESE_LETTERS.has(letter),
   "/games/[slug]": ({ slug }) => !!getPortugueseGame(slug),
   "/games/[slug]/play": ({ slug }) => isPremiumGame("pt", slug),
+  "/games/sliding-puzzle/[puzzle]": ({ puzzle }) => !!getPuzzle(puzzle, "pt"),
   "/kindergarten/[topic]": ({ topic }) => !!getSchoolTopicPt("primeiro-ano", topic),
   "/phonics/[skill]": ({ skill }) => !!getPortugueseSyllablePage(skill),
   "/preschool/[topic]": ({ topic }) => !!getSchoolTopicPt("educacao-infantil", topic),

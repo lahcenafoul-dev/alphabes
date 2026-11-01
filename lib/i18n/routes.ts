@@ -5,6 +5,7 @@
 import type { Metadata } from "next";
 import { routing, type AppPathname, type Locale } from "@/i18n/routing";
 import { sheetParamGroups } from "@/lib/sheets/catalog";
+import { PUZZLES } from "@/lib/puzzles";
 
 export const SITE_URL = "https://alphabes.com";
 
@@ -37,6 +38,8 @@ export const FRENCH_PATHNAMES: ReadonlySet<AppPathname> = new Set<AppPathname>([
   "/games",
   "/games/[slug]",
   "/games/[slug]/play",
+  "/games/sliding-puzzle",
+  "/games/sliding-puzzle/[puzzle]",
   "/kindergarten",
   "/kindergarten/[topic]",
   "/login",
@@ -73,6 +76,8 @@ export const SPANISH_PATHNAMES: ReadonlySet<AppPathname> = new Set<AppPathname>(
   "/games",
   "/games/[slug]",
   "/games/[slug]/play",
+  "/games/sliding-puzzle",
+  "/games/sliding-puzzle/[puzzle]",
   "/kindergarten",
   "/kindergarten/[topic]",
   "/login",
@@ -109,6 +114,8 @@ export const PORTUGUESE_PATHNAMES: ReadonlySet<AppPathname> = new Set<AppPathnam
   "/games",
   "/games/[slug]",
   "/games/[slug]/play",
+  "/games/sliding-puzzle",
+  "/games/sliding-puzzle/[puzzle]",
   "/kindergarten",
   "/kindergarten/[topic]",
   "/login",
@@ -191,6 +198,8 @@ export const TRANSLATED_PARAMS: Partial<Record<AppPathname, { key: string; group
   "/games/[slug]": GAME_PARAMS,
   // The play page of a game has the same slugs as the game.
   "/games/[slug]/play": GAME_PARAMS,
+  // The sliding puzzles: every puzzle exists in every language.
+  "/games/sliding-puzzle/[puzzle]": { key: "puzzle", groups: PUZZLES.map((p) => p.slug) },
   "/preschool/[topic]": {
     key: "topic",
     groups: [
@@ -268,6 +277,7 @@ const SECTION_INDEX: Partial<Record<AppPathname, AppPathname>> = {
   "/alphabet/[letter]/worksheet": "/alphabet",
   "/games/[slug]": "/games",
   "/games/[slug]/play": "/games",
+  "/games/sliding-puzzle/[puzzle]": "/games/sliding-puzzle",
   "/kindergarten/[topic]": "/kindergarten",
   "/phonics/[skill]": "/phonics",
   "/preschool/[topic]": "/preschool",

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import SlidingPuzzleTeaser from "@/components/games/SlidingPuzzleTeaser";
 import { Link } from "@/i18n/navigation";
 import { absoluteUrl, alternatesFor } from "@/lib/i18n/routes";
 import { buildBreadcrumbJsonLd } from "@/lib/json-ld";
@@ -83,6 +84,8 @@ export default function GamesFr() {
           </div>
         ))}
       </div>
+
+      <SlidingPuzzleTeaser locale="fr" />
 
       <section className="mt-16 bg-crayon-yellow/15 rounded-block p-8" aria-labelledby="tips-heading">
         <h2 id="tips-heading" className="text-3xl font-bold">

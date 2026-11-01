@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import SlidingPuzzleTeaser from "@/components/games/SlidingPuzzleTeaser";
 import Link from "next/link";
 import { games } from "@/lib/games-data";
 import { alternatesFor } from "@/lib/i18n/routes";
@@ -37,6 +38,8 @@ export default function GamesEn() {
           </div>
         ))}
       </div>
+
+      <SlidingPuzzleTeaser locale="en" />
     </main>
   );
 }

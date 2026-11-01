@@ -2,7 +2,8 @@
 //
 // Renders the worksheets of the new types (lib/sheets/catalog.ts: missing
 // numbers, patterns, sticker sheets, dot to dot, colouring, how to draw,
-// body parts, flash cards, telling time, mazes) with Chromium (Playwright), like
+// body parts, flash cards, telling time, mazes, tracing lines,
+// origami) with Chromium (Playwright), like
 // scripts/fiches-fr. For every sheet and language it writes:
 //   the PDF            public/<language folder>/<type>/<slug>.pdf (one or more pages)
 //   the preview        <language preview folder>/<slug>.jpg (476 px) and .320.jpg
@@ -39,6 +40,10 @@ import type { TellingTimeSheet } from "../../data/worksheets/telling-time";
 import { CLOCK_CSS, tellingTimeBody } from "./clock-layout";
 import type { FlashCardsSheet } from "../../data/worksheets/flash-cards";
 import { FLASH_CSS, flashCardsBody } from "./flash-cards-layout";
+import type { OrigamiSheet } from "../../data/worksheets/origami";
+import { ORIGAMI_CSS, origamiBody } from "./origami-layout";
+import type { TracingSheet } from "../../data/worksheets/tracing-lines";
+import { TRACING_CSS, tracingBody } from "./tracing-layout";
 
 const ROOT = process.cwd();
 const FONTS_EN = join(ROOT, "scripts", "worksheets-en", "fonts");
@@ -70,6 +75,8 @@ ${ART_CSS}
 ${MAZE_CSS}
 ${CLOCK_CSS}
 ${FLASH_CSS}
+${ORIGAMI_CSS}
+${TRACING_CSS}
 </style>
 <script>/* tsx wraps functions in __name(); fitBodies runs here, so define it. */ var __name = (f) => f;</script>
 </head><body></body></html>`;
@@ -97,6 +104,10 @@ function body(sheet: Sheet, locale: SheetLocale): string | SheetPart[] {
       return tellingTimeBody(sheet as TellingTimeSheet, locale, box);
     case "mazes":
       return mazesBody(sheet as MazesSheet, locale, box);
+    case "tracing-lines":
+      return tracingBody(sheet as TracingSheet, locale, box);
+    case "origami":
+      return origamiBody(sheet as OrigamiSheet, locale, box);
     default:
       throw new Error(`No layout for ${sheet.kind}`);
   }
@@ -167,6 +178,7 @@ async function render(page: Page, sheet: Sheet, locale: SheetLocale, pdfFile: st
 
 async function main() {
   const parts = filter?.split(",") ?? [];
+  // Draft sheets only go to --out, never to public/.
   const list = SHEETS.filter((s) => (!kind || s.kind === kind) && (!filter || parts.some((p) => s.id.includes(p) || Object.values(s.slug).some((x) => x.includes(p)))));
   if (!list.length) throw new Error(`No sheet matches "${filter ?? kind}"`);
 
