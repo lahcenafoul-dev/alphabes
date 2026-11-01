@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { ProPacksSection } from "@/components/sheets/ProPacks";
 import { Link } from "@/i18n/navigation";
 import { FICHE_CATEGORIES, fichePacks, type FichePack } from "@/lib/fiches-fr";
 import { absoluteUrl, alternatesFor } from "@/lib/i18n/routes";
@@ -59,6 +60,8 @@ export default function BundlesFr() {
         Plusieurs fiches réunies dans un seul PDF, à imprimer d&apos;un coup : pratique pour préparer une semaine de
         travail ou les photocopies de la classe.
       </p>
+
+      <ProPacksSection locale="fr" />
 
       <PackList heading="L'alphabet complet" packs={fichePacks.filter((p) => p.slug === "pack-alphabet-complet")} />
       <PackList heading="Un type de fiche, de A à Z" packs={byType("lettres")} />

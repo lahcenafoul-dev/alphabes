@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ProPacksSection } from "@/components/sheets/ProPacks";
 import type { Metadata } from "next";
 import { bundles, type BundleRecord } from "@/lib/worksheet-bundles";
 import { alternatesFor } from "@/lib/i18n/routes";
@@ -28,6 +29,8 @@ export default function BundlesEn() {
       <p className="mt-2 text-chalkboard/70 max-w-2xl">
         Download several worksheets at once as a single, real, multi-page PDF.
       </p>
+
+      <ProPacksSection locale="en" />
 
       <BundleSection title="Complete Bundle" bundles={complete} />
       <BundleSection title="Letter Bundles (A-Z)" bundles={letterBundles} />

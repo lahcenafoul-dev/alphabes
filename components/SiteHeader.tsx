@@ -34,6 +34,7 @@ export default async function SiteHeader({ locale }: { locale: Locale }) {
       href: localizedPath(locale, "/worksheets/[category]", { category: k.slug[locale] }),
       label: k.name[locale],
     })),
+    { href: localizedPath(locale, "/worksheets/bundles"), label: t("proPacks") },
   ];
 
   return (

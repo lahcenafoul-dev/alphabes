@@ -9,6 +9,8 @@ import PackFr, { packMetadataFr } from "./pack-fr";
 import PackEs, { packMetadataEs } from "./pack-es";
 import PackPt, { packMetadataPt } from "./pack-pt";
 import { withSocialMetadata } from "@/lib/social-metadata";
+import ProPackPage, { isPackSlug, packMetadata, packParams } from "@/components/sheets/ProPacks";
+import type { SheetLocale } from "@/lib/sheets/types";
 
 type Props = { params: Promise<{ locale: string; bundleSlug: string }> };
 
@@ -18,7 +20,8 @@ type Props = { params: Promise<{ locale: string; bundleSlug: string }> };
 export const dynamicParams = false;
 
 // French, Spanish and Portuguese packs have their own slugs. Keep in sync with
-// lib/i18n/known-params.ts.
+// lib/i18n/known-params.ts. The Pro packs (components/sheets/ProPacks.tsx)
+// share the route, with slugs of their own in each language.
 export function generateStaticParams({ params }: { params: { locale: string } }) {
   const slugs =
     params.locale === "fr"
@@ -28,18 +31,20 @@ export function generateStaticParams({ params }: { params: { locale: string } })
         : params.locale === "pt"
           ? atividadePacks.map((p) => p.slug)
           : englishBundleParams();
-  return slugs.map((bundleSlug) => ({ bundleSlug }));
+  return [...slugs, ...packParams(params.locale as SheetLocale)].map((bundleSlug) => ({ bundleSlug }));
 }
 
 async function pageMetadata(props: Props): Promise<Metadata> {
   const { locale: param, bundleSlug } = await props.params;
   const locale = initLocale(param);
+  if (isPackSlug(locale, bundleSlug)) return packMetadata(locale, bundleSlug);
   return byLocale(locale, { en: bundleMetadataEn, fr: packMetadataFr, es: packMetadataEs, pt: packMetadataPt })(bundleSlug);
 }
 
 export default async function BundleDetailPage(props: Props) {
   const { locale: param, bundleSlug } = await props.params;
   const locale = initLocale(param);
+  if (isPackSlug(locale, bundleSlug)) return <ProPackPage locale={locale} slug={bundleSlug} />;
   const Page = byLocale(locale, { en: BundleEn, fr: PackFr, es: PackEs, pt: PackPt });
   return <Page slug={bundleSlug} />;
 }

@@ -1,0 +1,1722 @@
+{
+  "en/packs/body-parts-animals-and-plant-pack-a4.pdf": {
+    "pages": 29,
+    "bytes": 925731,
+    "sha256": "faf53752ad8e153747db8e7328327558bfccacc6f2ced99e8aa289e4cdacfbc1"
+  },
+  "en/packs/body-parts-animals-and-plant-pack-letter.pdf": {
+    "pages": 29,
+    "bytes": 925292,
+    "sha256": "557381fc199d9df4325a41d40943093724bf873469ef41dd7f3bcec09306454a"
+  },
+  "en/packs/body-parts-complete-pack-a4.pdf": {
+    "pages": 37,
+    "bytes": 1136753,
+    "sha256": "22cac8ffa57fe882a1310caea701249f5af056ea3bd37dec86a572eb4e4cc20f"
+  },
+  "en/packs/body-parts-complete-pack-letter.pdf": {
+    "pages": 37,
+    "bytes": 1133872,
+    "sha256": "234bb74964eefe02cd32caa1d6cfdfbd240553f5a23d8a2b56598d63a481de10"
+  },
+  "en/packs/body-parts-human-body-pack-a4.pdf": {
+    "pages": 12,
+    "bytes": 599343,
+    "sha256": "dda3ae5f8b2db6f84661b6fe7538f8f6e4b7c150e83d6b9e7108c861ba8c6bdb"
+  },
+  "en/packs/body-parts-human-body-pack-letter.pdf": {
+    "pages": 12,
+    "bytes": 598136,
+    "sha256": "fd5336ea889b97224999cdf9391c1e015278ec9667003f426334e8277b01d810"
+  },
+  "en/packs/coloring-pages-color-by-number-pack-a4.pdf": {
+    "pages": 42,
+    "bytes": 820221,
+    "sha256": "ce4484c37f176fe3935f4f9d5787cc9b539dc345cf0682a1eca7bbb3adb62345"
+  },
+  "en/packs/coloring-pages-color-by-number-pack-letter.pdf": {
+    "pages": 42,
+    "bytes": 817226,
+    "sha256": "51ce61a9e06644b363427046eb6eb26ee8bac77501c7a217459a3595f79d3c10"
+  },
+  "en/packs/coloring-pages-complete-pack-a4.pdf": {
+    "pages": 72,
+    "bytes": 1007136,
+    "sha256": "446e4c7ff73d8ff29992c20f5b911b9df1ff1682bfb3b219a2626f94b241ab3e"
+  },
+  "en/packs/coloring-pages-complete-pack-letter.pdf": {
+    "pages": 72,
+    "bytes": 1003702,
+    "sha256": "7faf22698e34d815f2504e52c6914802202b6cebeb7c6b5659620baf8385ce8c"
+  },
+  "en/packs/coloring-pages-free-coloring-pack-a4.pdf": {
+    "pages": 34,
+    "bytes": 495661,
+    "sha256": "a35963f3f0aaad732ba127d6b9853b74bcdd1bc961ca4157663767a7381e7ee9"
+  },
+  "en/packs/coloring-pages-free-coloring-pack-letter.pdf": {
+    "pages": 34,
+    "bytes": 495372,
+    "sha256": "acc4d14cdaff5134086d183ce604bc1a8e45e9f1ff1baea0e8d8cbc835e25c0d"
+  },
+  "en/packs/dot-to-dot-complete-pack-a4.pdf": {
+    "pages": 74,
+    "bytes": 9457836,
+    "sha256": "72a995ce904c64d5d9707b390880133164d6689d86139bf1ab5808b3c4c5b455"
+  },
+  "en/packs/dot-to-dot-complete-pack-letter.pdf": {
+    "pages": 74,
+    "bytes": 9255903,
+    "sha256": "f5ec5fd0654edb95468d9af1a42a71f7c36f9c0bc4de489cbda68ef5529cc3ef"
+  },
+  "en/packs/dot-to-dot-easy-pack-a4.pdf": {
+    "pages": 22,
+    "bytes": 2495058,
+    "sha256": "677c1e7b8d82deaaef161659e11fe0e88bb8b835982e8f2df5b178e4ab10b6b6"
+  },
+  "en/packs/dot-to-dot-easy-pack-letter.pdf": {
+    "pages": 22,
+    "bytes": 2457883,
+    "sha256": "088bcf0105722374c33c6c78c6df863e72791f51afeeb4aeff754a516272a5ad"
+  },
+  "en/packs/dot-to-dot-hard-and-letters-pack-a4.pdf": {
+    "pages": 24,
+    "bytes": 3176379,
+    "sha256": "14b8c5675431f1f6c60bdd0fadb538b365b15c5657033406a1355a9fea350628"
+  },
+  "en/packs/dot-to-dot-hard-and-letters-pack-letter.pdf": {
+    "pages": 24,
+    "bytes": 3126861,
+    "sha256": "7e95972823c5162f943fba3bab58936a94ca747095792d560580345e2cdfd9c7"
+  },
+  "en/packs/dot-to-dot-medium-pack-a4.pdf": {
+    "pages": 37,
+    "bytes": 4416417,
+    "sha256": "41cc754c28b2baf4a30082cdfdba550ff44a13642dfee36691cc82e372d1fb44"
+  },
+  "en/packs/dot-to-dot-medium-pack-letter.pdf": {
+    "pages": 37,
+    "bytes": 4301056,
+    "sha256": "158f9543c3bd2db914768d36bad4ccb54d6a90367a6a106f8109bdf570600b63"
+  },
+  "en/packs/flash-cards-animals-and-nature-pack-a4.pdf": {
+    "pages": 33,
+    "bytes": 1464463,
+    "sha256": "5d8a767f2fcc22120c9c4c7d8fdc3eade3662ae18ee62ccb6203f871baae13d2"
+  },
+  "en/packs/flash-cards-animals-and-nature-pack-letter.pdf": {
+    "pages": 33,
+    "bytes": 1463596,
+    "sha256": "19c947cc0587faacc68a27ff43c9ded647428b7e721d60c8bd8eda16b9173cdc"
+  },
+  "en/packs/flash-cards-complete-pack-a4.pdf": {
+    "pages": 101,
+    "bytes": 3798317,
+    "sha256": "b3ef486b3c2cef46244323dc123e69465e0d06337725d684fb1a75a0f77cfd0b"
+  },
+  "en/packs/flash-cards-complete-pack-letter.pdf": {
+    "pages": 101,
+    "bytes": 3791680,
+    "sha256": "e2054660fee90c6af8dee539c76d5d3fc55ce79df6ffbf2d48cf31f523baeb8f"
+  },
+  "en/packs/flash-cards-food-and-everyday-pack-a4.pdf": {
+    "pages": 51,
+    "bytes": 2058737,
+    "sha256": "ff4b676e78c9f3421fa9f08b6215f20c95b5b2bc6ff056b11279e628bd496ecc"
+  },
+  "en/packs/flash-cards-food-and-everyday-pack-letter.pdf": {
+    "pages": 51,
+    "bytes": 2057966,
+    "sha256": "23c6204d26b88a4f781cd26a78e2a41aafff4e6f3f9b810295958fc6cb9b6f42"
+  },
+  "en/packs/flash-cards-letters-numbers-colors-shapes-pack-a4.pdf": {
+    "pages": 25,
+    "bytes": 1187308,
+    "sha256": "eaa99c8655e10d5cae08b1e0aa16e850d3a6faabe2f5b6a25842bd6922a47692"
+  },
+  "en/packs/flash-cards-letters-numbers-colors-shapes-pack-letter.pdf": {
+    "pages": 25,
+    "bytes": 1182723,
+    "sha256": "7f7f82b962e66a558a0f5451129e1700249f0b011afa428357b471d41502cfbd"
+  },
+  "en/packs/how-to-draw-animals-pack-a4.pdf": {
+    "pages": 21,
+    "bytes": 645241,
+    "sha256": "41ed1e58f1d7d1cab279e7611fd67f81e0419ddeb2988509d723ae55174bb637"
+  },
+  "en/packs/how-to-draw-animals-pack-letter.pdf": {
+    "pages": 21,
+    "bytes": 639213,
+    "sha256": "6e4022063576cb64e5291068e17eae46a135fade2ed30404b41f9c0e3517e3d6"
+  },
+  "en/packs/how-to-draw-complete-pack-a4.pdf": {
+    "pages": 44,
+    "bytes": 1028408,
+    "sha256": "da2886116525b4b14e72e762ee8ba4cb171a6d4922e4826de002bd5c230bc2a9"
+  },
+  "en/packs/how-to-draw-complete-pack-letter.pdf": {
+    "pages": 44,
+    "bytes": 1015325,
+    "sha256": "c64814dd8d8fb3bded56926643bd4f7752d05c6008dec4bba512776d7afb3f7e"
+  },
+  "en/packs/how-to-draw-food-and-nature-pack-a4.pdf": {
+    "pages": 16,
+    "bytes": 540255,
+    "sha256": "07fbc1b1191ed44d06695ab5796049dab6288ba7883732518ac188f2669d23a5"
+  },
+  "en/packs/how-to-draw-food-and-nature-pack-letter.pdf": {
+    "pages": 16,
+    "bytes": 536174,
+    "sha256": "74beadf2a42eb088a77f3718a8161dfbd626248cf289590c2498fee7c791a1d6"
+  },
+  "en/packs/how-to-draw-vehicles-and-things-pack-a4.pdf": {
+    "pages": 15,
+    "bytes": 516432,
+    "sha256": "453111fe86464f5cfd4d8b26a51acfd6ec55911e017a08873309e7a819b5d2d6"
+  },
+  "en/packs/how-to-draw-vehicles-and-things-pack-letter.pdf": {
+    "pages": 15,
+    "bytes": 514032,
+    "sha256": "6136863829fb51873c97892dcf94b7486fb97483bd1e2129de346262eeb0be4e"
+  },
+  "en/packs/mazes-complete-pack-a4.pdf": {
+    "pages": 67,
+    "bytes": 1636090,
+    "sha256": "e4e9fcca1529c2aa27444fd70a5602c9f6e2362f2a75fddbaa961d8510751fdb"
+  },
+  "en/packs/mazes-complete-pack-letter.pdf": {
+    "pages": 67,
+    "bytes": 1627001,
+    "sha256": "b0f7491bed42b63e7d5d4062b507caf413d3a1683c6d354c61425ae12887e82e"
+  },
+  "en/packs/mazes-easy-pack-a4.pdf": {
+    "pages": 24,
+    "bytes": 772207,
+    "sha256": "0b08f1b07640a703468070bbccb22cfb5090022c2be05e36460e956106faa998"
+  },
+  "en/packs/mazes-easy-pack-letter.pdf": {
+    "pages": 24,
+    "bytes": 772905,
+    "sha256": "02c98b85c22dd16a73bd90ac81552bc7437a38bdc9d46e8d51c03a35bc213392"
+  },
+  "en/packs/mazes-hard-pack-a4.pdf": {
+    "pages": 22,
+    "bytes": 844403,
+    "sha256": "e4c89f7af19cf1935bb3f228e99ee9cf05e83ebe1495d3cf7381231db386fe65"
+  },
+  "en/packs/mazes-hard-pack-letter.pdf": {
+    "pages": 22,
+    "bytes": 834349,
+    "sha256": "ab640b2f8b91cfb1c90afc3ad698c3a50f30358b62d844f25315a4609039bd50"
+  },
+  "en/packs/mazes-medium-pack-a4.pdf": {
+    "pages": 29,
+    "bytes": 924240,
+    "sha256": "f7f6d9af8c6d2d477d1c5c3453467527212eb2168bfc3dcffc88fceaecfc6b51"
+  },
+  "en/packs/mazes-medium-pack-letter.pdf": {
+    "pages": 29,
+    "bytes": 925384,
+    "sha256": "bf6bc3f4d042d1b2bb421b1e295fa47a0a297ccd09f4827feecefcd13b0149d2"
+  },
+  "en/packs/mega-pack-part-1-a4.pdf": {
+    "pages": 157,
+    "bytes": 6159745,
+    "sha256": "3da82c644762e9a3149f49999ac2cfc61ec2d59ee1310245556dcdc2d954c7f4"
+  },
+  "en/packs/mega-pack-part-1-letter.pdf": {
+    "pages": 157,
+    "bytes": 6134828,
+    "sha256": "6a4cb2869d97cda447068051bae10d77769ac27270bca905d8a1967ee8254e72"
+  },
+  "en/packs/mega-pack-part-2-a4.pdf": {
+    "pages": 167,
+    "bytes": 15275362,
+    "sha256": "12eaa0c400d986646fcc6aa286b26dcf3d878233855d6e85fe330f35a2480364"
+  },
+  "en/packs/mega-pack-part-2-letter.pdf": {
+    "pages": 167,
+    "bytes": 15292931,
+    "sha256": "80f4e6ab6fedc04b54278df14fe65e6b8f73889b98bcb5157011700a173a5146"
+  },
+  "en/packs/mega-pack-part-3-a4.pdf": {
+    "pages": 142,
+    "bytes": 10114715,
+    "sha256": "784134f0139aaa4a74909c339ae1bcc1ca868ceb28f8b028e05974a5a86ec897"
+  },
+  "en/packs/mega-pack-part-3-letter.pdf": {
+    "pages": 142,
+    "bytes": 9912590,
+    "sha256": "8031e19a74cfcf7106575e26f94387c41737e27b12f6742843f5519737a50512"
+  },
+  "en/packs/mega-pack-part-4-a4.pdf": {
+    "pages": 101,
+    "bytes": 13871771,
+    "sha256": "469634c928ba5b59660a1b87b91093fcc73a9b9ef5e9162ce28640ac3aaec017"
+  },
+  "en/packs/mega-pack-part-4-letter.pdf": {
+    "pages": 101,
+    "bytes": 13617120,
+    "sha256": "cf19dfebb66b06fe0ac95eddfe41a7bdf96308b3e8268542c512e0b4b73a9f8e"
+  },
+  "en/packs/mega-pack-part-5-a4.pdf": {
+    "pages": 231,
+    "bytes": 10414623,
+    "sha256": "1e54511104756347c746a06520d2bb303d88244f2718f8de62b47c355f6206db"
+  },
+  "en/packs/mega-pack-part-5-letter.pdf": {
+    "pages": 231,
+    "bytes": 10387488,
+    "sha256": "52426081f3f9a36c4b48cbb194b35ee4b99e635b779ee9a0d77cd4ad6ee05b4f"
+  },
+  "en/packs/missing-numbers-1-to-100-and-skip-counting-pack-a4.pdf": {
+    "pages": 53,
+    "bytes": 2966319,
+    "sha256": "1dd173c6b30b31657cbe0885283eb143cc9af7bfdf7600e4974d1bad2d40d704"
+  },
+  "en/packs/missing-numbers-1-to-100-and-skip-counting-pack-letter.pdf": {
+    "pages": 53,
+    "bytes": 2959299,
+    "sha256": "b551df0837d053f718ba68d432ce2a3a092901ca60a31d0a3e7dc9903dab5373"
+  },
+  "en/packs/missing-numbers-1-to-20-pack-a4.pdf": {
+    "pages": 34,
+    "bytes": 1906180,
+    "sha256": "57b3877a6b22e5529d69b8e322cc1252580d5c6e6befbdfb4f1f335e4aa5578e"
+  },
+  "en/packs/missing-numbers-1-to-20-pack-letter.pdf": {
+    "pages": 34,
+    "bytes": 1907469,
+    "sha256": "656976c98194d2a093bc6834617ae53f2021d0c6a3d1647997e18e30b0475974"
+  },
+  "en/packs/missing-numbers-1-to-50-pack-a4.pdf": {
+    "pages": 26,
+    "bytes": 1649651,
+    "sha256": "6c00dd23477e1d055833931bef66669059f57a8eaad2dfd490e64ba5ede25554"
+  },
+  "en/packs/missing-numbers-1-to-50-pack-letter.pdf": {
+    "pages": 26,
+    "bytes": 1649277,
+    "sha256": "286bdd34d809f90faa30c1ea79f8951e44753c1c61eef46dc62e2ab9679ee46f"
+  },
+  "en/packs/missing-numbers-complete-pack-a4.pdf": {
+    "pages": 104,
+    "bytes": 5231327,
+    "sha256": "4e7c8ebb6d4428e70fa2047ad693eb0a439ff44e72a6ab53639ee1ac3e3a7935"
+  },
+  "en/packs/missing-numbers-complete-pack-letter.pdf": {
+    "pages": 104,
+    "bytes": 5227833,
+    "sha256": "886dc0773639363e726f655f965f951b50d602da9b11a18c983d923d7544bf61"
+  },
+  "en/packs/origami-complete-pack-a4.pdf": {
+    "pages": 18,
+    "bytes": 616625,
+    "sha256": "13950a2cf3fa5fb9337ac773fb8ebd489c6d1262f4b2ee5d87ab01cad1ef1392"
+  },
+  "en/packs/origami-complete-pack-letter.pdf": {
+    "pages": 18,
+    "bytes": 620929,
+    "sha256": "85baeed98591962f279cbb221d904c832d26340fe58b663269d093b12a70f5cf"
+  },
+  "en/packs/patterns-ab-aab-abb-aabb-pack-a4.pdf": {
+    "pages": 74,
+    "bytes": 10015886,
+    "sha256": "236105e6de3ad2c4a028d69a7a42e7a6c8cac36f8c69956a8a4cf8c821b31a1a"
+  },
+  "en/packs/patterns-ab-aab-abb-aabb-pack-letter.pdf": {
+    "pages": 74,
+    "bytes": 10003545,
+    "sha256": "ad06547ce8a09d1c5cef84acf3979d5d97ce7827471add151c8500662ecfde3b"
+  },
+  "en/packs/patterns-abc-and-growing-pack-a4.pdf": {
+    "pages": 34,
+    "bytes": 5009969,
+    "sha256": "6a2bec7b0732c1e82477fda3884554419d515bcddc4d30f24bc4b67b332299bf"
+  },
+  "en/packs/patterns-abc-and-growing-pack-letter.pdf": {
+    "pages": 34,
+    "bytes": 5007261,
+    "sha256": "5a29aa26484233afdc9c3541885004e6bc08226e98a18531cd971ef3a2f14006"
+  },
+  "en/packs/patterns-complete-pack-a4.pdf": {
+    "pages": 104,
+    "bytes": 14104036,
+    "sha256": "a49af4de3bdfabffd2c35a5d3f0d7835d472d1926930880b49355cd75704dd63"
+  },
+  "en/packs/patterns-complete-pack-letter.pdf": {
+    "pages": 104,
+    "bytes": 14090010,
+    "sha256": "80beeea9c841155db26cff74d1e38442df2cb8b0ac2bbea17e687c09bc903cf3"
+  },
+  "en/packs/sliding-puzzles-complete-pack-a4.pdf": {
+    "pages": 76,
+    "bytes": 3088226,
+    "sha256": "2e816e0c9d62058c00c9788fcf24e1a564aa33b4bfe11da6679419cbd144ac82"
+  },
+  "en/packs/sliding-puzzles-complete-pack-letter.pdf": {
+    "pages": 76,
+    "bytes": 3090010,
+    "sha256": "31f326ec5f05b3c12ab6bb67bcbff0770a6060c241cbbfc7195210d8ef8621e1"
+  },
+  "en/packs/sticker-sheets-complete-pack-a4.pdf": {
+    "pages": 29,
+    "bytes": 4530061,
+    "sha256": "eb4ad22bb97558500a9c7f9b8f2391f9b5238abd8c7194af796da964b79c3f06"
+  },
+  "en/packs/sticker-sheets-complete-pack-letter.pdf": {
+    "pages": 29,
+    "bytes": 4538855,
+    "sha256": "751ebf3906ab0db6e454594cabc8cf5109d1a14c0b08c4aee78c760c70e9fe58"
+  },
+  "en/packs/telling-time-complete-pack-a4.pdf": {
+    "pages": 57,
+    "bytes": 1540465,
+    "sha256": "204d719d3f8b8385e6f988a2c9886e45b720e90ff5e5bcbfc0cab8256013a092"
+  },
+  "en/packs/telling-time-complete-pack-letter.pdf": {
+    "pages": 57,
+    "bytes": 1533561,
+    "sha256": "c835310dad8b73e7e0e28e6f37b9f10480eca250c1104bfa8b35afe09031c71c"
+  },
+  "en/packs/telling-time-oclock-and-half-past-pack-a4.pdf": {
+    "pages": 24,
+    "bytes": 773912,
+    "sha256": "724d17400e7397e6e385fb1f5322131a984078e75510e1fc17ea49957ea3a95b"
+  },
+  "en/packs/telling-time-oclock-and-half-past-pack-letter.pdf": {
+    "pages": 24,
+    "bytes": 769466,
+    "sha256": "bbb779705def68691c4bfd4a9aef4fb519b97e797fe967eaa025ff0fce5d514d"
+  },
+  "en/packs/telling-time-quarters-and-minutes-pack-a4.pdf": {
+    "pages": 37,
+    "bytes": 1186882,
+    "sha256": "eeba4d4158e86770d71d917370c6406c9900050130bc3d3cd4d3249d5fd28094"
+  },
+  "en/packs/telling-time-quarters-and-minutes-pack-letter.pdf": {
+    "pages": 37,
+    "bytes": 1180209,
+    "sha256": "ce217821085641109c8061af00a17fa0e3908aed02217492eb5d165451074c3c"
+  },
+  "en/packs/tracing-lines-complete-pack-a4.pdf": {
+    "pages": 47,
+    "bytes": 12910817,
+    "sha256": "98e71b22e63907d12216ff982716c0472828ee83864efa1eacebc9cb51e8d1db"
+  },
+  "en/packs/tracing-lines-complete-pack-letter.pdf": {
+    "pages": 47,
+    "bytes": 12665073,
+    "sha256": "4107077f0dfabe565178c9346944afaaa71b2ac859ad00ee849c58fdb3fd6197"
+  },
+  "en/packs/tracing-lines-lines-and-shapes-pack-a4.pdf": {
+    "pages": 17,
+    "bytes": 2708238,
+    "sha256": "b3d73f9c74add0b702b0b259dae862e22282925ce6749e2389c3b402b788ad52"
+  },
+  "en/packs/tracing-lines-lines-and-shapes-pack-letter.pdf": {
+    "pages": 17,
+    "bytes": 2656639,
+    "sha256": "00353cc3f4e994e219363808447d6473a238cd93c8f54948f5eacdd1369d481f"
+  },
+  "en/packs/tracing-lines-pictures-pack-a4.pdf": {
+    "pages": 34,
+    "bytes": 10512424,
+    "sha256": "e37b1bd8c03384f7b4740465eeba7756d05cc9e16a251ca9247f2f95d9ed6f3c"
+  },
+  "en/packs/tracing-lines-pictures-pack-letter.pdf": {
+    "pages": 34,
+    "bytes": 10318186,
+    "sha256": "919a0bca8ef0f29949e63e57ed59668a4412dcd66ee75fe5bfec031ec83c214e"
+  },
+  "es/packs/paquete-aprender-la-hora-completo-a4.pdf": {
+    "pages": 57,
+    "bytes": 1538181,
+    "sha256": "811a8af1155a530e139396bbc3b4102e2beff549debf5eb9e5e711d3b0d060e9"
+  },
+  "es/packs/paquete-aprender-la-hora-completo-letter.pdf": {
+    "pages": 57,
+    "bytes": 1530876,
+    "sha256": "6a40525e9189fe13bb28a3b9819dcc65d494a580ec9c4d0fb14b1261d03dd16b"
+  },
+  "es/packs/paquete-aprender-la-hora-cuartos-y-minutos-a4.pdf": {
+    "pages": 37,
+    "bytes": 1183782,
+    "sha256": "b8ea71554801c45bfcb0d66493b1eb6bdbc2649e657afb7efb6cf8dae9472f88"
+  },
+  "es/packs/paquete-aprender-la-hora-cuartos-y-minutos-letter.pdf": {
+    "pages": 37,
+    "bytes": 1177687,
+    "sha256": "a25a0c3a8728533b11035162b1e41d1e16715d4971eb9d70e6f9443da905252d"
+  },
+  "es/packs/paquete-aprender-la-hora-en-punto-y-media-a4.pdf": {
+    "pages": 24,
+    "bytes": 797394,
+    "sha256": "be81b28559c6ba2a1272287c3ab44633faa8bff4e70db4dcae8bf5297b145025"
+  },
+  "es/packs/paquete-aprender-la-hora-en-punto-y-media-letter.pdf": {
+    "pages": 24,
+    "bytes": 793303,
+    "sha256": "1fc54a6e7641fe0952ee15849df143f76489756eda6d17edb1a0a8e9a377049b"
+  },
+  "es/packs/paquete-colorear-completo-a4.pdf": {
+    "pages": 72,
+    "bytes": 998226,
+    "sha256": "ed898deb16317681785cb79e62c40fef3ff339267b078be7f9b12c8de50358f7"
+  },
+  "es/packs/paquete-colorear-completo-letter.pdf": {
+    "pages": 72,
+    "bytes": 995506,
+    "sha256": "34067e6836cf206a6b295ed627177db070afc26f183042c90c36d7cc54a1b4b3"
+  },
+  "es/packs/paquete-colorear-libres-a4.pdf": {
+    "pages": 34,
+    "bytes": 489297,
+    "sha256": "69c69350adbbc16654969ad5b53104feffd94c9f3244ed38c90021f369a02e9d"
+  },
+  "es/packs/paquete-colorear-libres-letter.pdf": {
+    "pages": 34,
+    "bytes": 489540,
+    "sha256": "57c2789b24dd683bcc5a96e177dcfd5038023b8f0ded8a1b75f2d64b6e15c943"
+  },
+  "es/packs/paquete-colorear-por-numeros-a4.pdf": {
+    "pages": 42,
+    "bytes": 810457,
+    "sha256": "d62aee2ae47d33fd00e24fb18ca91ea888181c3d020d0362697cd53ff7ab4fc0"
+  },
+  "es/packs/paquete-colorear-por-numeros-letter.pdf": {
+    "pages": 42,
+    "bytes": 807311,
+    "sha256": "3f8bc0e432090dd22a41e6a7219ef46ab2c4cf43739c1fc301675e4fa6454c32"
+  },
+  "es/packs/paquete-como-dibujar-animales-a4.pdf": {
+    "pages": 21,
+    "bytes": 658596,
+    "sha256": "4ac2afcfab9075da9b892c62235461e8c8da24b9ec96271034dc6d5748019057"
+  },
+  "es/packs/paquete-como-dibujar-animales-letter.pdf": {
+    "pages": 21,
+    "bytes": 653536,
+    "sha256": "f04409728435fdee6b876a8532c18ce34db355b3b5f7371b465dc2f4a4e367d3"
+  },
+  "es/packs/paquete-como-dibujar-comida-y-naturaleza-a4.pdf": {
+    "pages": 16,
+    "bytes": 557007,
+    "sha256": "8ce410b21f6b5ca05a672f30271d17b8ac4dc9dbf06d0471c4d823ebd60fda67"
+  },
+  "es/packs/paquete-como-dibujar-comida-y-naturaleza-letter.pdf": {
+    "pages": 16,
+    "bytes": 553383,
+    "sha256": "e55827ecda6e489bda9eb1d749e20ca57e028bbb2339ad3803a1b5367e4f8ee8"
+  },
+  "es/packs/paquete-como-dibujar-completo-a4.pdf": {
+    "pages": 44,
+    "bytes": 1043267,
+    "sha256": "dbf96984e4921f180ba3ff484ac536e6b6239c387dd5506b5cf9fd0c0943fc8a"
+  },
+  "es/packs/paquete-como-dibujar-completo-letter.pdf": {
+    "pages": 44,
+    "bytes": 1029777,
+    "sha256": "821b60eec66e7adfb19940cb832e4c038772b7cb2f61ce68d1bd16e921db9cac"
+  },
+  "es/packs/paquete-como-dibujar-vehiculos-y-cosas-a4.pdf": {
+    "pages": 15,
+    "bytes": 531473,
+    "sha256": "4a7b76f6c4869d468d549b956d4dfcb3bf6d4716e6f750698256c0bac2cb5717"
+  },
+  "es/packs/paquete-como-dibujar-vehiculos-y-cosas-letter.pdf": {
+    "pages": 15,
+    "bytes": 528835,
+    "sha256": "73d2fe05d054c90e167c5bd2e2c409e003481d1f19ba83930ce97ac406d91f5e"
+  },
+  "es/packs/paquete-laberintos-completo-a4.pdf": {
+    "pages": 67,
+    "bytes": 1669282,
+    "sha256": "3c54fa03d488fa474ff1da5e71cc5f7007d1a6e1ccfb1006e370b526e1c6421b"
+  },
+  "es/packs/paquete-laberintos-completo-letter.pdf": {
+    "pages": 67,
+    "bytes": 1660679,
+    "sha256": "fbc8155a0365ba87888ee9958b75e66f50c90cff69d0d72dae121899629baad6"
+  },
+  "es/packs/paquete-laberintos-dificiles-a4.pdf": {
+    "pages": 22,
+    "bytes": 871269,
+    "sha256": "777d902d6196f137ded7a3653e4e4f92b03d46f60bcb9e86fcf90849d0d2a89d"
+  },
+  "es/packs/paquete-laberintos-dificiles-letter.pdf": {
+    "pages": 22,
+    "bytes": 860807,
+    "sha256": "5ff750743c4a11c49339c602ce7e052061468fdffc66f651cc394022a93819e6"
+  },
+  "es/packs/paquete-laberintos-faciles-a4.pdf": {
+    "pages": 24,
+    "bytes": 798509,
+    "sha256": "7ec3196aa4236d9e76c444fba3bb8ea8b136fd42b6f149d643486ae5e69caa33"
+  },
+  "es/packs/paquete-laberintos-faciles-letter.pdf": {
+    "pages": 24,
+    "bytes": 799393,
+    "sha256": "266bf6ed69d58e9ab7c4b32e2561773c5c3c7d46ecadcddb81e6c3a6da7eed83"
+  },
+  "es/packs/paquete-laberintos-medios-a4.pdf": {
+    "pages": 29,
+    "bytes": 948041,
+    "sha256": "fb62e7940f18659ec67b1b1e92aec76b250900026f7697af6457b1a22b1d8251"
+  },
+  "es/packs/paquete-laberintos-medios-letter.pdf": {
+    "pages": 29,
+    "bytes": 949384,
+    "sha256": "4ee8d85dcdff78abd14d54df05e9e721b64f1a992b207182f397a06568d0d778"
+  },
+  "es/packs/paquete-mega-part-1-a4.pdf": {
+    "pages": 157,
+    "bytes": 6166943,
+    "sha256": "22ac9b743c5472c54fa74c01c59bef84ce91cdd76e71c02328a201e99b09ab30"
+  },
+  "es/packs/paquete-mega-part-1-letter.pdf": {
+    "pages": 157,
+    "bytes": 6143004,
+    "sha256": "fff0b67b837f5ad5a29a39b7c8a125ef4374292be51e8f12f112e5cffc404a90"
+  },
+  "es/packs/paquete-mega-part-2-a4.pdf": {
+    "pages": 167,
+    "bytes": 15295271,
+    "sha256": "d16e3a8c5fab1c0dd8adb27a020057a2828e9a520a633c70a50f6f308f0f9bf0"
+  },
+  "es/packs/paquete-mega-part-2-letter.pdf": {
+    "pages": 167,
+    "bytes": 15312976,
+    "sha256": "8da6af8e22c7b62619b25039a935700a531f84b524cb726b4fb4ed21671926d0"
+  },
+  "es/packs/paquete-mega-part-3-a4.pdf": {
+    "pages": 142,
+    "bytes": 10117068,
+    "sha256": "c038fd71271e63c44e721b81068feb3a75aa15aca5edd16ec5df016c209ba744"
+  },
+  "es/packs/paquete-mega-part-3-letter.pdf": {
+    "pages": 142,
+    "bytes": 9915009,
+    "sha256": "2811e08fafa56052f2f67067a519d493648198a6cbac234d4c60e96a73065bec"
+  },
+  "es/packs/paquete-mega-part-4-a4.pdf": {
+    "pages": 101,
+    "bytes": 13880104,
+    "sha256": "78d3165b74164c0798b9af23373f932a19b60e9d618ed3455d3da0253b935c9b"
+  },
+  "es/packs/paquete-mega-part-4-letter.pdf": {
+    "pages": 101,
+    "bytes": 13624715,
+    "sha256": "69b9ca29aafebb0bffb44c471c0308073e77028f056d884714fc902c3e0e0447"
+  },
+  "es/packs/paquete-mega-part-5-a4.pdf": {
+    "pages": 231,
+    "bytes": 10498529,
+    "sha256": "ae0f52d3ff3a0c4d9d8b56749e5582e2212028861cf6ab9e000e97ac6390b265"
+  },
+  "es/packs/paquete-mega-part-5-letter.pdf": {
+    "pages": 231,
+    "bytes": 10474901,
+    "sha256": "83ad0a8de9992fb02fdcacfb6daad2a70dd0f41a17416a8bfcab6cc0c1970ab2"
+  },
+  "es/packs/paquete-numeros-faltantes-1-al-100-y-saltos-a4.pdf": {
+    "pages": 53,
+    "bytes": 2972361,
+    "sha256": "5d503c83a23d38cb76d7df54062b3ab1faa839546121d049fe6dd7d766115bfa"
+  },
+  "es/packs/paquete-numeros-faltantes-1-al-100-y-saltos-letter.pdf": {
+    "pages": 53,
+    "bytes": 2966351,
+    "sha256": "3bca2c777644f9adbce847b326b0c9f20b4f750858252b0451487774dc5e1291"
+  },
+  "es/packs/paquete-numeros-faltantes-1-al-20-a4.pdf": {
+    "pages": 34,
+    "bytes": 1913580,
+    "sha256": "941b821ff21e655ba1e34ad5739cfc60bd0ebb5b8c6b1f2b7f5237ae48c7c44d"
+  },
+  "es/packs/paquete-numeros-faltantes-1-al-20-letter.pdf": {
+    "pages": 34,
+    "bytes": 1915166,
+    "sha256": "5570978188c83f657913ffabaadf1936d56c9f6e2503a91506175b9386864940"
+  },
+  "es/packs/paquete-numeros-faltantes-1-al-50-a4.pdf": {
+    "pages": 26,
+    "bytes": 1659321,
+    "sha256": "a877cad6148610dd774cf6d445cc3dc7335310cae9b0458eae1d752e75b3579f"
+  },
+  "es/packs/paquete-numeros-faltantes-1-al-50-letter.pdf": {
+    "pages": 26,
+    "bytes": 1659401,
+    "sha256": "e17c04915c65636141e4571da722b8eb951ee67c56dd7ec81c9401c6f55be73c"
+  },
+  "es/packs/paquete-numeros-faltantes-completo-a4.pdf": {
+    "pages": 104,
+    "bytes": 5246829,
+    "sha256": "240a0ca1118d2c0f41b7d1d30d9b794e60b8800182b2683b77fe350f8af2a819"
+  },
+  "es/packs/paquete-numeros-faltantes-completo-letter.pdf": {
+    "pages": 104,
+    "bytes": 5243793,
+    "sha256": "2e252726239887ab1b760856a791f17d24d7b960e0f4fea93dc0a33555c1acd8"
+  },
+  "es/packs/paquete-origami-completo-a4.pdf": {
+    "pages": 18,
+    "bytes": 621583,
+    "sha256": "0a988b475e04a4a6bc3c4c81af7045c576cfef45c7ad0984998be5ff7bd2fa4c"
+  },
+  "es/packs/paquete-origami-completo-letter.pdf": {
+    "pages": 18,
+    "bytes": 626245,
+    "sha256": "573d169085e9acc81697d452dea4c6e33ebbc17e9500e74bbb95786e6a9d2373"
+  },
+  "es/packs/paquete-partes-del-cuerpo-animales-y-planta-a4.pdf": {
+    "pages": 29,
+    "bytes": 963371,
+    "sha256": "e7d16bee5a34eb8ce3fdd9de3325b580e884b0dc38c82be22306c29aad349160"
+  },
+  "es/packs/paquete-partes-del-cuerpo-animales-y-planta-letter.pdf": {
+    "pages": 29,
+    "bytes": 962560,
+    "sha256": "7d642394c9da1139fc39d192847b64ce2b7700c77547555578e641660bb9e017"
+  },
+  "es/packs/paquete-partes-del-cuerpo-completo-a4.pdf": {
+    "pages": 37,
+    "bytes": 1165417,
+    "sha256": "692b0e51d08f73921ba2c39d4125b3f1a062731da3e2f26e28df727515f86ec2"
+  },
+  "es/packs/paquete-partes-del-cuerpo-completo-letter.pdf": {
+    "pages": 37,
+    "bytes": 1163541,
+    "sha256": "567240dfacf4a9127be224a5c020e598f56f69b78c22bcb3ebfe1d420ea08ccc"
+  },
+  "es/packs/paquete-partes-del-cuerpo-cuerpo-humano-a4.pdf": {
+    "pages": 12,
+    "bytes": 583570,
+    "sha256": "f3e7c170467738d9d09a14e23bc1270dd29b9eac43734c7cffb59ad51ae7c313"
+  },
+  "es/packs/paquete-partes-del-cuerpo-cuerpo-humano-letter.pdf": {
+    "pages": 12,
+    "bytes": 583031,
+    "sha256": "c502de4a086112049783d832f3031137a3f5dfe7ef3c2e676a21cabadd3d429f"
+  },
+  "es/packs/paquete-rompecabezas-deslizantes-completo-a4.pdf": {
+    "pages": 76,
+    "bytes": 3090934,
+    "sha256": "6f13514441ffc6bbba66a94a2ad0e89a8d58907ace5ef63c8d4dc7aee86512b8"
+  },
+  "es/packs/paquete-rompecabezas-deslizantes-completo-letter.pdf": {
+    "pages": 76,
+    "bytes": 3093170,
+    "sha256": "9d212f147a56c5103584189024e0f444caf9da37066a25867dea10aab87c9290"
+  },
+  "es/packs/paquete-series-y-patrones-ab-aab-abb-aabb-a4.pdf": {
+    "pages": 74,
+    "bytes": 10021650,
+    "sha256": "a6e4d4facce851a24b3f6bc5893c64f3db4207581488019c52d66e8e82dbaaef"
+  },
+  "es/packs/paquete-series-y-patrones-ab-aab-abb-aabb-letter.pdf": {
+    "pages": 74,
+    "bytes": 10011413,
+    "sha256": "ac3cfde0ede7b369099a9b7d9df31a0b4fe498e00d196dc1948354f93bd4a58d"
+  },
+  "es/packs/paquete-series-y-patrones-abc-y-crecientes-a4.pdf": {
+    "pages": 34,
+    "bytes": 5010687,
+    "sha256": "3a7b60e25711a5be56da005b89f6ef8cf00dac45e4f691ca9d0effaeba21a9e8"
+  },
+  "es/packs/paquete-series-y-patrones-abc-y-crecientes-letter.pdf": {
+    "pages": 34,
+    "bytes": 5006638,
+    "sha256": "6e4b26981411dc16d4ac2c48e6dfc8725e9d80acaf4e51b208bb1639ff6e818f"
+  },
+  "es/packs/paquete-series-y-patrones-completo-a4.pdf": {
+    "pages": 104,
+    "bytes": 14109200,
+    "sha256": "0ca440a662a302120f7fa75c073336afe38cf00ca4eafbcbe0c121c0e729de25"
+  },
+  "es/packs/paquete-series-y-patrones-completo-letter.pdf": {
+    "pages": 104,
+    "bytes": 14094752,
+    "sha256": "0f47660b47bb022419806937342a41b383ebc2f49523ce0802dbdbaec1cfe065"
+  },
+  "es/packs/paquete-stickers-completo-a4.pdf": {
+    "pages": 29,
+    "bytes": 4539139,
+    "sha256": "9aad4ac81be2d9f77fc404d99493887f5d0d99f8bc62d79d40974abd460132e0"
+  },
+  "es/packs/paquete-stickers-completo-letter.pdf": {
+    "pages": 29,
+    "bytes": 4552278,
+    "sha256": "3a0efde64d5d977c478abd4408726fa533ba1f44a4efc1a8a5b962e8127200a0"
+  },
+  "es/packs/paquete-tarjetas-ilustradas-animales-y-naturaleza-a4.pdf": {
+    "pages": 33,
+    "bytes": 1493724,
+    "sha256": "3701bf469435c33f9c2089dadd7ea7ab341641534275d1a72c8195b49856ca63"
+  },
+  "es/packs/paquete-tarjetas-ilustradas-animales-y-naturaleza-letter.pdf": {
+    "pages": 33,
+    "bytes": 1493309,
+    "sha256": "f45d224f480ad6352ee894966f2e4404d1c05a8b1d1392fda644059c17614d6b"
+  },
+  "es/packs/paquete-tarjetas-ilustradas-comida-y-vida-diaria-a4.pdf": {
+    "pages": 51,
+    "bytes": 2118540,
+    "sha256": "1d1d89150e491a356b8b82a9a345f1f5935cb4ddfeee737e50aed0c5237b2b6a"
+  },
+  "es/packs/paquete-tarjetas-ilustradas-comida-y-vida-diaria-letter.pdf": {
+    "pages": 51,
+    "bytes": 2117045,
+    "sha256": "ac89fbc7af513d6b1d2fb3dcbe22aa6cdd0a926937d74755b43b6c95a0ef5374"
+  },
+  "es/packs/paquete-tarjetas-ilustradas-completo-a4.pdf": {
+    "pages": 101,
+    "bytes": 3852412,
+    "sha256": "8d6c2433c4c5ea38f1a1e94822bed4386768174133397bccf0d1b7fe5ac700d2"
+  },
+  "es/packs/paquete-tarjetas-ilustradas-completo-letter.pdf": {
+    "pages": 101,
+    "bytes": 3849832,
+    "sha256": "9f2afe84c9379dd156cbc45c4bd7f778ba30701cd06c6c8fc98d007a294526d1"
+  },
+  "es/packs/paquete-tarjetas-ilustradas-letras-numeros-colores-figuras-a4.pdf": {
+    "pages": 25,
+    "bytes": 1204508,
+    "sha256": "848b40f4ed3d764e330852fb66e0b5df2ffe3f30d0eb5c8da3a2e6697d8e567e"
+  },
+  "es/packs/paquete-tarjetas-ilustradas-letras-numeros-colores-figuras-letter.pdf": {
+    "pages": 25,
+    "bytes": 1205722,
+    "sha256": "0df1af1aa479cf51421f9a80c8b453001a5f3c8b9c9347238ebcd6ade8f1afad"
+  },
+  "es/packs/paquete-trazos-completo-a4.pdf": {
+    "pages": 47,
+    "bytes": 12902061,
+    "sha256": "4c2abe38980f1dadbed32ffb5ebeb9579924d5bcb2c95d22f519ab09f7095a99"
+  },
+  "es/packs/paquete-trazos-completo-letter.pdf": {
+    "pages": 47,
+    "bytes": 12656039,
+    "sha256": "e251d59c3f6ee660053c8336ac58e285050ac53b4314e315de70ff1924edab00"
+  },
+  "es/packs/paquete-trazos-dibujos-a4.pdf": {
+    "pages": 34,
+    "bytes": 10505571,
+    "sha256": "29819a4d13b1ebc2a367f2b9738f2ad0f694bcd5435c0cd6105e08e00cf19dac"
+  },
+  "es/packs/paquete-trazos-dibujos-letter.pdf": {
+    "pages": 34,
+    "bytes": 10311845,
+    "sha256": "60f37aa0f0df44b89bb5699706cd647f3d5b779f25e078d5e73ad31e9aaf8e48"
+  },
+  "es/packs/paquete-trazos-lineas-y-figuras-a4.pdf": {
+    "pages": 17,
+    "bytes": 2710792,
+    "sha256": "ae4eae738531d325e5157702306d2db78df7e3275e6d0e2b4291989c076276a3"
+  },
+  "es/packs/paquete-trazos-lineas-y-figuras-letter.pdf": {
+    "pages": 17,
+    "bytes": 2658449,
+    "sha256": "3efcdf318581f987bba132e68a727a829babd2d5b38e85e98b712a28812b8787"
+  },
+  "es/packs/paquete-une-los-puntos-completo-a4.pdf": {
+    "pages": 74,
+    "bytes": 9473339,
+    "sha256": "74a67916736094e9a8d4786893f01593d0591b397c698a0199a76a3a58842a1a"
+  },
+  "es/packs/paquete-une-los-puntos-completo-letter.pdf": {
+    "pages": 74,
+    "bytes": 9272400,
+    "sha256": "4f1a7dc089540c6c0ef5c7480789482856650149ea4e2df7bb800d76a8c79a12"
+  },
+  "es/packs/paquete-une-los-puntos-dificiles-y-letras-a4.pdf": {
+    "pages": 24,
+    "bytes": 3194276,
+    "sha256": "d894f33ae2eb7d40c011b1217f424dd38138b7cb21d37311620238f8901dfcde"
+  },
+  "es/packs/paquete-une-los-puntos-dificiles-y-letras-letter.pdf": {
+    "pages": 24,
+    "bytes": 3145001,
+    "sha256": "f0ef3f79ecc0e9e0df9a916bd386bc163b8aef28dbdebd2836a8623a7980662c"
+  },
+  "es/packs/paquete-une-los-puntos-faciles-a4.pdf": {
+    "pages": 22,
+    "bytes": 2507526,
+    "sha256": "c843cd510b0a018382522975f5088afc47ecbe5175c5cdbb09d55873358e1b62"
+  },
+  "es/packs/paquete-une-los-puntos-faciles-letter.pdf": {
+    "pages": 22,
+    "bytes": 2470250,
+    "sha256": "bd496d260f2735ae5b1e022095d0269082fa38c40fda4ff5f78b63622ef60989"
+  },
+  "es/packs/paquete-une-los-puntos-medios-a4.pdf": {
+    "pages": 37,
+    "bytes": 4426556,
+    "sha256": "f56dab2a154e677ec45897a3820eaff3c10c9716199a87584f1b5730575b8f54"
+  },
+  "es/packs/paquete-une-los-puntos-medios-letter.pdf": {
+    "pages": 37,
+    "bytes": 4311895,
+    "sha256": "23b62f806bcd422852f088d0a190305c7f61b6f2579bb265441e809076d8de2f"
+  },
+  "fr/packs/pack-apprendre-a-dessiner-aliments-et-nature-a4.pdf": {
+    "pages": 16,
+    "bytes": 549493,
+    "sha256": "c2c5a95708951c851b250ef4f01292288fea1d48725cdb969c0adb459afebc78"
+  },
+  "fr/packs/pack-apprendre-a-dessiner-aliments-et-nature-letter.pdf": {
+    "pages": 16,
+    "bytes": 545135,
+    "sha256": "27d640480cd0c7571683a80d363226c4c53dcddebb843391a45d8f96b4035ad6"
+  },
+  "fr/packs/pack-apprendre-a-dessiner-animaux-a4.pdf": {
+    "pages": 21,
+    "bytes": 652201,
+    "sha256": "4f42ed949976fc4bd67f12d1db4405f1a7dd42b5d46f5cb283f0a757dcee3f79"
+  },
+  "fr/packs/pack-apprendre-a-dessiner-animaux-letter.pdf": {
+    "pages": 21,
+    "bytes": 646473,
+    "sha256": "0b9047141f5e9b91fb931d94bc1b666817c63e589b217c8f5d75364ea4432e09"
+  },
+  "fr/packs/pack-apprendre-a-dessiner-complet-a4.pdf": {
+    "pages": 44,
+    "bytes": 1038428,
+    "sha256": "a496fb8ce22e45db7df53e2fa34c20f066f7b7e4d744e2a331511f5f13c411c5"
+  },
+  "fr/packs/pack-apprendre-a-dessiner-complet-letter.pdf": {
+    "pages": 44,
+    "bytes": 1024520,
+    "sha256": "85106dc3c6b32edd41a85d1d94282f8f7518c3f1dd4a4738bf8486c1513b4f5e"
+  },
+  "fr/packs/pack-apprendre-a-dessiner-vehicules-et-objets-a4.pdf": {
+    "pages": 15,
+    "bytes": 529164,
+    "sha256": "839af56c0582d5809dcc76c554bccaecfc347ee3806487c90cc288045854243d"
+  },
+  "fr/packs/pack-apprendre-a-dessiner-vehicules-et-objets-letter.pdf": {
+    "pages": 15,
+    "bytes": 526907,
+    "sha256": "4e8d3743bee8de2303ea94bdb767dced5a3352f54ddaf11e238fe4c2ce9d039d"
+  },
+  "fr/packs/pack-cartes-images-aliments-et-quotidien-a4.pdf": {
+    "pages": 51,
+    "bytes": 2115024,
+    "sha256": "d984c45ee956e7216df947c60f7e59f1bfeab71dcc470e0a6aacb52ff6e69bb4"
+  },
+  "fr/packs/pack-cartes-images-aliments-et-quotidien-letter.pdf": {
+    "pages": 51,
+    "bytes": 2114592,
+    "sha256": "efb0a0153bc1779f44fa4415f68256833acc3a4c5cf660bc4eaf373784100ddc"
+  },
+  "fr/packs/pack-cartes-images-animaux-et-nature-a4.pdf": {
+    "pages": 33,
+    "bytes": 1517517,
+    "sha256": "a8daf347e941fdf45f1bf17e1edb369bfa5cc8eb9f78edeadbbd78a84695b57f"
+  },
+  "fr/packs/pack-cartes-images-animaux-et-nature-letter.pdf": {
+    "pages": 33,
+    "bytes": 1517173,
+    "sha256": "90635cbef5a2afd3f0471b4760f0320d96a9cd37f5c0bd49745dbba7bcbd143f"
+  },
+  "fr/packs/pack-cartes-images-complet-a4.pdf": {
+    "pages": 101,
+    "bytes": 3880261,
+    "sha256": "61da9cc7f48d39a52f6bd505648f0aee2073e921beeeb54da2f2fcd62cca9147"
+  },
+  "fr/packs/pack-cartes-images-complet-letter.pdf": {
+    "pages": 101,
+    "bytes": 3873846,
+    "sha256": "a8429f6afa99a140e3f6cd3c0a66619d5a9682e393d93818ba13ddd4e3f05fa9"
+  },
+  "fr/packs/pack-cartes-images-lettres-chiffres-couleurs-formes-a4.pdf": {
+    "pages": 25,
+    "bytes": 1198697,
+    "sha256": "a3d1fbcd80402a74907d211c79f5c4a9e6a39653f6dc022fa4a4a546d42fcb2d"
+  },
+  "fr/packs/pack-cartes-images-lettres-chiffres-couleurs-formes-letter.pdf": {
+    "pages": 25,
+    "bytes": 1194024,
+    "sha256": "6b9f4cdda6092158c2420de044faf6e8669a3f4bd74e6d78671ef1cdc9dbfba7"
+  },
+  "fr/packs/pack-coloriages-complet-a4.pdf": {
+    "pages": 72,
+    "bytes": 1001435,
+    "sha256": "77f2fc16a73b12da068f3e74e4180abef8cc8c05221a0c410fd838c1aea51c30"
+  },
+  "fr/packs/pack-coloriages-complet-letter.pdf": {
+    "pages": 72,
+    "bytes": 1007630,
+    "sha256": "feadd0b0b037361ad321d17d505ac4d39a6d7c722fde83a437dac2951182f9a9"
+  },
+  "fr/packs/pack-coloriages-libres-a4.pdf": {
+    "pages": 34,
+    "bytes": 492686,
+    "sha256": "3ac86d5876337255fbf9d6d7abb38c872efa33e6619f699644e347ab6f6ce824"
+  },
+  "fr/packs/pack-coloriages-libres-letter.pdf": {
+    "pages": 34,
+    "bytes": 492343,
+    "sha256": "428265a80e1d7ce5c99ba2df782860ceab3dad9133a3c5fe62ef590e187acf16"
+  },
+  "fr/packs/pack-coloriages-magiques-a4.pdf": {
+    "pages": 42,
+    "bytes": 815245,
+    "sha256": "3c4f84a81571bc6a5922fd71b0b7ca8180931be70ab4b586a4165011140224a5"
+  },
+  "fr/packs/pack-coloriages-magiques-letter.pdf": {
+    "pages": 42,
+    "bytes": 821795,
+    "sha256": "144d4e773a852709117640aca81ebd8f988f1f0d9368ce7a960c9e535337a49e"
+  },
+  "fr/packs/pack-gommettes-complet-a4.pdf": {
+    "pages": 29,
+    "bytes": 4545300,
+    "sha256": "7e7edff7c9d33eb07b35df9d409d2a219bd688db1298c44c39eba289c6277a68"
+  },
+  "fr/packs/pack-gommettes-complet-letter.pdf": {
+    "pages": 29,
+    "bytes": 4557635,
+    "sha256": "9b84e9adb5bb358549a75a9f42ee5e96c4cb9df3f20ad1f642c976bda9d17331"
+  },
+  "fr/packs/pack-graphisme-complet-a4.pdf": {
+    "pages": 47,
+    "bytes": 12911655,
+    "sha256": "fabd5ba31603a7bf89eb9e8c26f8ed51c968b0ffd13c71c82deae8ddbcbb8c9a"
+  },
+  "fr/packs/pack-graphisme-complet-letter.pdf": {
+    "pages": 47,
+    "bytes": 12665739,
+    "sha256": "898702e08d1cab090ca60968fc2896b1ee7243828ce2bbc85ed06be43e584ce0"
+  },
+  "fr/packs/pack-graphisme-dessins-a4.pdf": {
+    "pages": 34,
+    "bytes": 10512812,
+    "sha256": "287625992bbc5c50d96768e718e625c6b1e4c5ce1e944b01d033d1d012a649a3"
+  },
+  "fr/packs/pack-graphisme-dessins-letter.pdf": {
+    "pages": 34,
+    "bytes": 10319406,
+    "sha256": "f6566ea7c76e20123f7b32fbca16d76486a08076732c52bc2885085be3349205"
+  },
+  "fr/packs/pack-graphisme-lignes-et-formes-a4.pdf": {
+    "pages": 17,
+    "bytes": 2716528,
+    "sha256": "eca3e7cfdc93fe38e10a9a848aa38b25a4a995e8cc82f258c39b86e5cabbeb61"
+  },
+  "fr/packs/pack-graphisme-lignes-et-formes-letter.pdf": {
+    "pages": 17,
+    "bytes": 2664370,
+    "sha256": "838cb633ecd60f4a51ae9cdb7977a7e2012905e8e82d2ea213ee7b44b76a11a9"
+  },
+  "fr/packs/pack-labyrinthes-complet-a4.pdf": {
+    "pages": 67,
+    "bytes": 1675942,
+    "sha256": "9b889d868dc76cb27bd9673f32637c8389e870df10c995e6b5dae0b8ea451769"
+  },
+  "fr/packs/pack-labyrinthes-complet-letter.pdf": {
+    "pages": 67,
+    "bytes": 1666395,
+    "sha256": "192108c4db213039d9a1d90c59ab55ffdd430d8963ec5a3185798c833d8001e7"
+  },
+  "fr/packs/pack-labyrinthes-difficiles-a4.pdf": {
+    "pages": 22,
+    "bytes": 880235,
+    "sha256": "0bb190d115ec3fa5d92dab96a7f453c877392cd4cb736dfdfbab05fa13f730a5"
+  },
+  "fr/packs/pack-labyrinthes-difficiles-letter.pdf": {
+    "pages": 22,
+    "bytes": 869112,
+    "sha256": "0f4b59f1e7778acb208da81b07441d1af2cf8fab020afe25aa9c4bac6c20a837"
+  },
+  "fr/packs/pack-labyrinthes-faciles-a4.pdf": {
+    "pages": 24,
+    "bytes": 798941,
+    "sha256": "cac200cf91f6c11e79606c002ad7b4c5dc42c9874c088d051947452c886ebf15"
+  },
+  "fr/packs/pack-labyrinthes-faciles-letter.pdf": {
+    "pages": 24,
+    "bytes": 799114,
+    "sha256": "a19f51d0b14cb0d7a38ea9b898feb0c5cf9c672aff67a2d9b5e6a3fccd3c2c64"
+  },
+  "fr/packs/pack-labyrinthes-moyens-a4.pdf": {
+    "pages": 29,
+    "bytes": 956357,
+    "sha256": "9c016b6e6a72b671f25449ee08b701577933af019c08a8d9ef462e74fe5d2877"
+  },
+  "fr/packs/pack-labyrinthes-moyens-letter.pdf": {
+    "pages": 29,
+    "bytes": 957070,
+    "sha256": "a35f8757d184e755ffd96ec6bf94426e1d2d91ab0796f222d77568957e702dd2"
+  },
+  "fr/packs/pack-lire-l-heure-complet-a4.pdf": {
+    "pages": 57,
+    "bytes": 1560886,
+    "sha256": "ededc160256c07aac96b1f26213c441efe9ffce02fdd113759c31b0f6750a762"
+  },
+  "fr/packs/pack-lire-l-heure-complet-letter.pdf": {
+    "pages": 57,
+    "bytes": 1551859,
+    "sha256": "ba06cae979278a8bbecd9044ebb863b19ced3560a6986f20ea832c98f71a455b"
+  },
+  "fr/packs/pack-lire-l-heure-heures-et-demies-a4.pdf": {
+    "pages": 24,
+    "bytes": 808513,
+    "sha256": "e0131d32cdd441c015fbf81ba8758b42849963b7576c0af498ef74bad198c59e"
+  },
+  "fr/packs/pack-lire-l-heure-heures-et-demies-letter.pdf": {
+    "pages": 24,
+    "bytes": 804302,
+    "sha256": "73a6d3d7fa12549c398e33436ea0c5dc395fde305ae87822070edf7f29c6f5dc"
+  },
+  "fr/packs/pack-lire-l-heure-quarts-et-minutes-a4.pdf": {
+    "pages": 37,
+    "bytes": 1204519,
+    "sha256": "af952c97ebcd07336d01f3a3056278a9b5e96d00a1eefeb040dd5ee373f8a7a0"
+  },
+  "fr/packs/pack-lire-l-heure-quarts-et-minutes-letter.pdf": {
+    "pages": 37,
+    "bytes": 1198742,
+    "sha256": "9e6e6f8df0d9f7fdf1dc176a6830b858e743ab9a498d62f6544300686cd5a804"
+  },
+  "fr/packs/pack-mega-part-1-a4.pdf": {
+    "pages": 157,
+    "bytes": 6174306,
+    "sha256": "d81e14dc6c03af4a5e57758c472630d2d74020fd3946705784c3258755e251bc"
+  },
+  "fr/packs/pack-mega-part-1-letter.pdf": {
+    "pages": 157,
+    "bytes": 6149993,
+    "sha256": "bb9ad899accff45f11d71dbb158a8f91ac722e2455a09193aa449a39059f0050"
+  },
+  "fr/packs/pack-mega-part-2-a4.pdf": {
+    "pages": 167,
+    "bytes": 15345934,
+    "sha256": "1c3b89093427eff97639129cb66977e52a5c52040f66178aadf0a5a77159f204"
+  },
+  "fr/packs/pack-mega-part-2-letter.pdf": {
+    "pages": 167,
+    "bytes": 15368142,
+    "sha256": "dbb81b3555f9c0dfa134e05e94a426ac64ece7d6eb9b057cd7e5e1e028b21e58"
+  },
+  "fr/packs/pack-mega-part-3-a4.pdf": {
+    "pages": 142,
+    "bytes": 10126123,
+    "sha256": "798052eb866bfd762a846e80ec5c7a8ef92855f8c31e7613b924b76868341490"
+  },
+  "fr/packs/pack-mega-part-3-letter.pdf": {
+    "pages": 142,
+    "bytes": 9931811,
+    "sha256": "5809aa3ed587f7e1b969f225376c28ebb3b744c78e9f3be7ff4fda8fa0eeaa11"
+  },
+  "fr/packs/pack-mega-part-4-a4.pdf": {
+    "pages": 101,
+    "bytes": 13884001,
+    "sha256": "ceb3075dbb47c2eb33d7e058c7016f65e82c95545df04cfb64ecaa454f9676ab"
+  },
+  "fr/packs/pack-mega-part-4-letter.pdf": {
+    "pages": 101,
+    "bytes": 13629987,
+    "sha256": "2eb1abfe487d588e54ffe7395db09ba653d191975db50f5de0a5848899702735"
+  },
+  "fr/packs/pack-mega-part-5-a4.pdf": {
+    "pages": 231,
+    "bytes": 10538886,
+    "sha256": "246b144d4cd82d63fe2cb84d4c01dae77056270ea9faf58206fbe8042a41a699"
+  },
+  "fr/packs/pack-mega-part-5-letter.pdf": {
+    "pages": 231,
+    "bytes": 10513442,
+    "sha256": "7cece5f3da1bb9426fc9c6cf0b45b920a831e8caa06709baa5ecb4469fdfbb30"
+  },
+  "fr/packs/pack-nombres-manquants-1-a-100-et-bonds-a4.pdf": {
+    "pages": 53,
+    "bytes": 2983492,
+    "sha256": "8cf394f5c74d7c4943970c564cdc64d41ccf6f950381dd6b5515510ae2d9af50"
+  },
+  "fr/packs/pack-nombres-manquants-1-a-100-et-bonds-letter.pdf": {
+    "pages": 53,
+    "bytes": 2976918,
+    "sha256": "92356062fed88d6a2dda9254b095ff8430446c289d3e615f46150928fc1f54ed"
+  },
+  "fr/packs/pack-nombres-manquants-1-a-20-a4.pdf": {
+    "pages": 34,
+    "bytes": 1915632,
+    "sha256": "57e1764902acc7c1ad11029ac6982027026ced52b31652a1c9bb147c4b8b7e45"
+  },
+  "fr/packs/pack-nombres-manquants-1-a-20-letter.pdf": {
+    "pages": 34,
+    "bytes": 1917311,
+    "sha256": "f5307a22bf3d09f932a462d32b55c99c6725bbe5f39140fd2b38b3ec6bb52e7d"
+  },
+  "fr/packs/pack-nombres-manquants-1-a-50-a4.pdf": {
+    "pages": 26,
+    "bytes": 1662788,
+    "sha256": "edca8770e8d4a6e1579a4e3dd1025a6290d918a5163187fa843c38f2f8babd43"
+  },
+  "fr/packs/pack-nombres-manquants-1-a-50-letter.pdf": {
+    "pages": 26,
+    "bytes": 1663728,
+    "sha256": "d204fd421b2ca22a0916ca1d876165a429a47ecd32ff99600c688d84d7f48945"
+  },
+  "fr/packs/pack-nombres-manquants-complet-a4.pdf": {
+    "pages": 104,
+    "bytes": 5251794,
+    "sha256": "e0809757e191b780b01f7e03f8c2b0ab46a16a6474d52faa8f46acaeaf877192"
+  },
+  "fr/packs/pack-nombres-manquants-complet-letter.pdf": {
+    "pages": 104,
+    "bytes": 5247770,
+    "sha256": "07d521c5bc579aa1d466b1683b80a77db50080ccf0b6c9573b62b3f6f412726f"
+  },
+  "fr/packs/pack-origami-complet-a4.pdf": {
+    "pages": 18,
+    "bytes": 629367,
+    "sha256": "72809dcf9250d3421f2dc906f5e1bdfc632d363d61bc39e75fd181aaec9147fe"
+  },
+  "fr/packs/pack-origami-complet-letter.pdf": {
+    "pages": 18,
+    "bytes": 633364,
+    "sha256": "59a6ac99525a7a5cc7a76cd0ee8bcd5ccf5c4874b49b85734d7334de46e7e054"
+  },
+  "fr/packs/pack-parties-du-corps-animaux-et-plante-a4.pdf": {
+    "pages": 29,
+    "bytes": 987799,
+    "sha256": "a23036efb811e4afae637c69497efe75711d192046c5830f2c91265ce22c50ab"
+  },
+  "fr/packs/pack-parties-du-corps-animaux-et-plante-letter.pdf": {
+    "pages": 29,
+    "bytes": 986765,
+    "sha256": "4479c6e574266a7295a90201618b894ca443d69131032ac7ca4718640796a58a"
+  },
+  "fr/packs/pack-parties-du-corps-complet-a4.pdf": {
+    "pages": 37,
+    "bytes": 1197605,
+    "sha256": "b1904867da164931e339f17863c96dc7272b3d1544760c828a7327e59876edb9"
+  },
+  "fr/packs/pack-parties-du-corps-complet-letter.pdf": {
+    "pages": 37,
+    "bytes": 1195073,
+    "sha256": "ad3075348a74861b8582471a4276de1474026723dcc7313ab30ee69aed7f0f65"
+  },
+  "fr/packs/pack-parties-du-corps-corps-humain-a4.pdf": {
+    "pages": 12,
+    "bytes": 605265,
+    "sha256": "812d521928919bfae58213df3d9e18f01b0424a1950dc8afa1cebb8a76baf31a"
+  },
+  "fr/packs/pack-parties-du-corps-corps-humain-letter.pdf": {
+    "pages": 12,
+    "bytes": 604228,
+    "sha256": "87ae301a255b0b78460d4fb0b3a7351269b985d8ffc8b28e9e1c8c5ac005dd08"
+  },
+  "fr/packs/pack-points-a-relier-complet-a4.pdf": {
+    "pages": 74,
+    "bytes": 9481002,
+    "sha256": "7e019243f389bf175ea8029141cb24ef2b1259a458ffce8b0787465aaf873141"
+  },
+  "fr/packs/pack-points-a-relier-complet-letter.pdf": {
+    "pages": 74,
+    "bytes": 9278599,
+    "sha256": "09e4ed91a89538a65741b4b5c383acc2f7420ea1d9e20154afda54c4f63ca277"
+  },
+  "fr/packs/pack-points-a-relier-difficiles-et-lettres-a4.pdf": {
+    "pages": 24,
+    "bytes": 3199336,
+    "sha256": "db56e487396df90cc16e046838c95efddd38fd577595cf9ce4a02ed1160ab4de"
+  },
+  "fr/packs/pack-points-a-relier-difficiles-et-lettres-letter.pdf": {
+    "pages": 24,
+    "bytes": 3149140,
+    "sha256": "bcb02a277e820101d265e17adfd47524712c4d26b1324d48f22c221c7de4802a"
+  },
+  "fr/packs/pack-points-a-relier-faciles-a4.pdf": {
+    "pages": 22,
+    "bytes": 2513690,
+    "sha256": "42c26d68f45dfada25deed5cba7c26ca69d2cdc47c2fbcec038f293859bfd841"
+  },
+  "fr/packs/pack-points-a-relier-faciles-letter.pdf": {
+    "pages": 22,
+    "bytes": 2477184,
+    "sha256": "165a1c768ede05647e1fd4f7ad8bed6c0af9f4c66f952fe810a1611e22852fac"
+  },
+  "fr/packs/pack-points-a-relier-moyens-a4.pdf": {
+    "pages": 37,
+    "bytes": 4434392,
+    "sha256": "706f6dbd67376b656a5a8ba6c8b6e2faa95e50027a1b06e9b71535d715e13f23"
+  },
+  "fr/packs/pack-points-a-relier-moyens-letter.pdf": {
+    "pages": 37,
+    "bytes": 4319341,
+    "sha256": "88ca2abce0a94949fe6dff3370833593b09a1c42e0b0f055e84e1fb05711843b"
+  },
+  "fr/packs/pack-suites-logiques-ab-aab-abb-aabb-a4.pdf": {
+    "pages": 74,
+    "bytes": 10050840,
+    "sha256": "0690472ba8e913473e6125488886eebd29c81b866ff4cea3f474c955ead6ba08"
+  },
+  "fr/packs/pack-suites-logiques-ab-aab-abb-aabb-letter.pdf": {
+    "pages": 74,
+    "bytes": 10053220,
+    "sha256": "459ab86e4e3692cdb360a1430e3fa36bf8fe56b0649e6efceea152dd86dbdc4c"
+  },
+  "fr/packs/pack-suites-logiques-abc-et-qui-grandissent-a4.pdf": {
+    "pages": 34,
+    "bytes": 5030441,
+    "sha256": "41de27394bc33a7186544af6f8fd59bb66e9337a423fa33ea1d366c7a149bde6"
+  },
+  "fr/packs/pack-suites-logiques-abc-et-qui-grandissent-letter.pdf": {
+    "pages": 34,
+    "bytes": 5033180,
+    "sha256": "c9abb89cff3d23a7fe23458aaa51b0597a452b0c16ab8c36fbd8a55e3dc96322"
+  },
+  "fr/packs/pack-suites-logiques-complet-a4.pdf": {
+    "pages": 104,
+    "bytes": 14141218,
+    "sha256": "f6a6e5423ebc1ec8e7161b2b1619e3f139a6821e084c64efdda37b6e9b59ccba"
+  },
+  "fr/packs/pack-suites-logiques-complet-letter.pdf": {
+    "pages": 104,
+    "bytes": 14144796,
+    "sha256": "fccdb881b245abd0aae28538f8faafa6c600273d97c0784a0a26f9ff7ef8ee31"
+  },
+  "fr/packs/pack-taquins-complet-a4.pdf": {
+    "pages": 76,
+    "bytes": 3078694,
+    "sha256": "1c6a1e35ec68a9a2d1b4a006b52aadf7bdb7fd4f8a30c1ee6513d6584c0c2198"
+  },
+  "fr/packs/pack-taquins-complet-letter.pdf": {
+    "pages": 76,
+    "bytes": 3080846,
+    "sha256": "e37f0e060dccb720119457ae5169bea0c1c1004df7bcdb05bb1548bff9e3e0ba"
+  },
+  "pt/packs/pacote-adesivos-completo-a4.pdf": {
+    "pages": 29,
+    "bytes": 4546085,
+    "sha256": "fb23d8e8cf10e9b73056a74e852f09bf83d86479c197123d9445b0f6d94dd64a"
+  },
+  "pt/packs/pacote-adesivos-completo-letter.pdf": {
+    "pages": 29,
+    "bytes": 4559179,
+    "sha256": "c8c050d50ef38e29b8ecc6822a42cb48b664f73c36d2a72154cbed600f87650e"
+  },
+  "pt/packs/pacote-aprender-as-horas-completo-a4.pdf": {
+    "pages": 57,
+    "bytes": 1540758,
+    "sha256": "70e7741ded1227bfd0e14056e5357476c6dca4c934a41708a8e259d758806e1e"
+  },
+  "pt/packs/pacote-aprender-as-horas-completo-letter.pdf": {
+    "pages": 57,
+    "bytes": 1532388,
+    "sha256": "c9e1330921626bb06130422b52733b33914a7169320df59ea6bea1105758d6ba"
+  },
+  "pt/packs/pacote-aprender-as-horas-horas-e-meias-a4.pdf": {
+    "pages": 24,
+    "bytes": 796106,
+    "sha256": "90eccd8dc34f9d88e292cf436e514acd3d4420d474a26d462f1022321d9fc36c"
+  },
+  "pt/packs/pacote-aprender-as-horas-horas-e-meias-letter.pdf": {
+    "pages": 24,
+    "bytes": 791442,
+    "sha256": "b3b8b9dec396cc8f90385674113e2a62269ae0173b24a2cf22c3a5a8ed5fdf24"
+  },
+  "pt/packs/pacote-aprender-as-horas-quartos-e-minutos-a4.pdf": {
+    "pages": 37,
+    "bytes": 1185324,
+    "sha256": "39df3be5d6a6ba059271c07117c28d51eb5cfc3ffd9743a89597254c608768ba"
+  },
+  "pt/packs/pacote-aprender-as-horas-quartos-e-minutos-letter.pdf": {
+    "pages": 37,
+    "bytes": 1178666,
+    "sha256": "1e81ede4438a8ce04aeef8ca61abd969ef8ee729256537c618702681a2dde5d8"
+  },
+  "pt/packs/pacote-cartoes-ilustrados-animais-e-natureza-a4.pdf": {
+    "pages": 33,
+    "bytes": 1508114,
+    "sha256": "cd647097bbc8ef573e406d126069509cb0c33edc6a9dd214ec00b29cb086cad2"
+  },
+  "pt/packs/pacote-cartoes-ilustrados-animais-e-natureza-letter.pdf": {
+    "pages": 33,
+    "bytes": 1508154,
+    "sha256": "d0906f69e303b69c1e7fc181097ebbcfb523897ae3c6e269ce1b38a5e4514ebc"
+  },
+  "pt/packs/pacote-cartoes-ilustrados-comidas-e-dia-a-dia-a4.pdf": {
+    "pages": 51,
+    "bytes": 2115256,
+    "sha256": "272bf3e4babcf04077007dc9defa67a3f27dca36dce058150d5a5ac44279ec9d"
+  },
+  "pt/packs/pacote-cartoes-ilustrados-comidas-e-dia-a-dia-letter.pdf": {
+    "pages": 51,
+    "bytes": 2115022,
+    "sha256": "63ddb51314cb97415dc4bdf8d160574e10d5dd9b67540ff451c3cdd445f0f7b2"
+  },
+  "pt/packs/pacote-cartoes-ilustrados-completo-a4.pdf": {
+    "pages": 101,
+    "bytes": 3849990,
+    "sha256": "0bbfb6609ef4f325e4cd20dfa81e331a6ea39872303dd8ca9fa9e37792bb1efe"
+  },
+  "pt/packs/pacote-cartoes-ilustrados-completo-letter.pdf": {
+    "pages": 101,
+    "bytes": 3844091,
+    "sha256": "55fc8f95a836b5e9b8fc033c06f2ad79c16840d56b9aa12255e415919c3ebdac"
+  },
+  "pt/packs/pacote-cartoes-ilustrados-letras-numeros-cores-formas-a4.pdf": {
+    "pages": 25,
+    "bytes": 1203683,
+    "sha256": "3025329d9d32f16fc4cd4326073a2392c007e8261631634ad8de2cb5f586aae3"
+  },
+  "pt/packs/pacote-cartoes-ilustrados-letras-numeros-cores-formas-letter.pdf": {
+    "pages": 25,
+    "bytes": 1198969,
+    "sha256": "d91993ca47023244d704aa87479540e87c0362bd5b7db209c642ac4cbc7945b6"
+  },
+  "pt/packs/pacote-colorir-completo-a4.pdf": {
+    "pages": 72,
+    "bytes": 1000707,
+    "sha256": "de9620e329595705e65b8567064fadfbfb01aed97722770cf969a44dfac47dcb"
+  },
+  "pt/packs/pacote-colorir-completo-letter.pdf": {
+    "pages": 72,
+    "bytes": 998702,
+    "sha256": "845f7529a6d0f8227bb33571db17ca08e89cf3db9e60842d74f647c53e4aa5bf"
+  },
+  "pt/packs/pacote-colorir-livres-a4.pdf": {
+    "pages": 34,
+    "bytes": 491126,
+    "sha256": "66e373642e8db2835bcb7a6c178d7b60fd1d52bb172fe4e3e4237512ab13673b"
+  },
+  "pt/packs/pacote-colorir-livres-letter.pdf": {
+    "pages": 34,
+    "bytes": 492278,
+    "sha256": "029f95ed86344d7821d73c5bb15ea8182727c6355818ab5aab81dab0165119b6"
+  },
+  "pt/packs/pacote-colorir-por-numeros-a4.pdf": {
+    "pages": 42,
+    "bytes": 814569,
+    "sha256": "beacbfca03ecce133bf222efb9aa22d1c09a989534b5daf323155e0409beccce"
+  },
+  "pt/packs/pacote-colorir-por-numeros-letter.pdf": {
+    "pages": 42,
+    "bytes": 811903,
+    "sha256": "d5bc42982073e481618fe353c680a02fc2a2b31054ddcffc4882f6c37ccb6c4d"
+  },
+  "pt/packs/pacote-como-desenhar-animais-a4.pdf": {
+    "pages": 21,
+    "bytes": 650777,
+    "sha256": "e5093d9e7258f2299964e8216a1fc951be4c31ad1537af07619cc91f9d3a6240"
+  },
+  "pt/packs/pacote-como-desenhar-animais-letter.pdf": {
+    "pages": 21,
+    "bytes": 645008,
+    "sha256": "c414b4da5849fafd05f1e8048a08dff19dd499b3d349aef2088e9824a407181d"
+  },
+  "pt/packs/pacote-como-desenhar-comidas-e-natureza-a4.pdf": {
+    "pages": 16,
+    "bytes": 552700,
+    "sha256": "51bb3782375f01337427d24b0f861a3d95c368c8d65fd2480dedab11b6d060fb"
+  },
+  "pt/packs/pacote-como-desenhar-comidas-e-natureza-letter.pdf": {
+    "pages": 16,
+    "bytes": 549075,
+    "sha256": "5e46cc3f063eed5e344fd104ef563ef3e8c353915650005037be01b7f57398b4"
+  },
+  "pt/packs/pacote-como-desenhar-completo-a4.pdf": {
+    "pages": 44,
+    "bytes": 1036957,
+    "sha256": "c50faaab95336a6d1d4d0fe9569f0cacee19821704017973fa69f228c2329cea"
+  },
+  "pt/packs/pacote-como-desenhar-completo-letter.pdf": {
+    "pages": 44,
+    "bytes": 1024357,
+    "sha256": "fa3aaf1b63e37ebd6262f54401864a3cb49f2e4bd6e74c576c600bece21b9f13"
+  },
+  "pt/packs/pacote-como-desenhar-veiculos-e-objetos-a4.pdf": {
+    "pages": 15,
+    "bytes": 527968,
+    "sha256": "eb97b1b40f46ff512dbcc9228d29ab5dc7d6f86244ef9fd6376bd715bf7f6335"
+  },
+  "pt/packs/pacote-como-desenhar-veiculos-e-objetos-letter.pdf": {
+    "pages": 15,
+    "bytes": 525063,
+    "sha256": "15d28a155a5f4be77f11e59703e57f5a4725c805feeae260b945b85deb0182c0"
+  },
+  "pt/packs/pacote-labirintos-completo-a4.pdf": {
+    "pages": 67,
+    "bytes": 1670797,
+    "sha256": "55dd71d8582bf615ccabee30ea2645b58f67730eed54dc2d50f7ca6305b66ace"
+  },
+  "pt/packs/pacote-labirintos-completo-letter.pdf": {
+    "pages": 67,
+    "bytes": 1661371,
+    "sha256": "86895540ad67a06b8b361e69b3e58afed770c154e92a3983af5455151366aefe"
+  },
+  "pt/packs/pacote-labirintos-dificeis-a4.pdf": {
+    "pages": 22,
+    "bytes": 872480,
+    "sha256": "ee93f8a5ef5fdafcef5f14cc8964c93d67aec5958c0d4d41a0ee9400e96c760a"
+  },
+  "pt/packs/pacote-labirintos-dificeis-letter.pdf": {
+    "pages": 22,
+    "bytes": 862779,
+    "sha256": "fb5ae64520226f482ff931c90e666c2ef2c9762a3c36eb15147bf9b2470fc43b"
+  },
+  "pt/packs/pacote-labirintos-faceis-a4.pdf": {
+    "pages": 24,
+    "bytes": 798438,
+    "sha256": "6c5625043357c588c3e2c7ba2ca7366189e724da41e2196a20fbfe8e75357a61"
+  },
+  "pt/packs/pacote-labirintos-faceis-letter.pdf": {
+    "pages": 24,
+    "bytes": 798937,
+    "sha256": "db7d79aa447a173c9d547be339a18baafd34d98f17aedef658641f4ec3829fe1"
+  },
+  "pt/packs/pacote-labirintos-medios-a4.pdf": {
+    "pages": 29,
+    "bytes": 953597,
+    "sha256": "52ca1efde3a7a39a49b8ea8cefcef64c3bedeb1962c9321b0bd4e27926058003"
+  },
+  "pt/packs/pacote-labirintos-medios-letter.pdf": {
+    "pages": 29,
+    "bytes": 954278,
+    "sha256": "f5f192db246a136418882ecee08b1df6a7f663f4d71b6bd0fa2ac5fd70e3427e"
+  },
+  "pt/packs/pacote-ligue-os-pontos-completo-a4.pdf": {
+    "pages": 74,
+    "bytes": 9480356,
+    "sha256": "abbd71f0f2125da99b66af095b29267cd762cc026fcddcb1870d4474e8884ec3"
+  },
+  "pt/packs/pacote-ligue-os-pontos-completo-letter.pdf": {
+    "pages": 74,
+    "bytes": 9279783,
+    "sha256": "0c2f916ddff35c3b20a0820319b3570a37e953c16ecc2a0460f2ee75b9119784"
+  },
+  "pt/packs/pacote-ligue-os-pontos-dificeis-e-letras-a4.pdf": {
+    "pages": 24,
+    "bytes": 3197238,
+    "sha256": "3428bf121fdb5b70eccafc819cf899293a6c1c29912290978a396290d7f90c3e"
+  },
+  "pt/packs/pacote-ligue-os-pontos-dificeis-e-letras-letter.pdf": {
+    "pages": 24,
+    "bytes": 3147928,
+    "sha256": "2ec3a63fed51bedbb0902c585aa0c0cf6b87faf61bd3a3b01a8b801d75a8d9da"
+  },
+  "pt/packs/pacote-ligue-os-pontos-faceis-a4.pdf": {
+    "pages": 22,
+    "bytes": 2513107,
+    "sha256": "793de6af882635e59de7bbc688fe0203e4e37e75ba8f5340987c3eaefabb4d4f"
+  },
+  "pt/packs/pacote-ligue-os-pontos-faceis-letter.pdf": {
+    "pages": 22,
+    "bytes": 2477536,
+    "sha256": "a9d73f0d4b280d6627c04b03d51b77eb3343023f4fcd929faa0565bc8247e0fc"
+  },
+  "pt/packs/pacote-ligue-os-pontos-medios-a4.pdf": {
+    "pages": 37,
+    "bytes": 4434469,
+    "sha256": "75a38b309520df880eea6b1a105010b04faf04ce99b680b47591cdabdb7de9ff"
+  },
+  "pt/packs/pacote-ligue-os-pontos-medios-letter.pdf": {
+    "pages": 37,
+    "bytes": 4319577,
+    "sha256": "9c8a9e0fbe16211e6fd518e3fc3668fe5b7fac73c3f03d2c8d295c65fc319104"
+  },
+  "pt/packs/pacote-mega-part-1-a4.pdf": {
+    "pages": 157,
+    "bytes": 6169551,
+    "sha256": "57c3c13290a5bfde5e8118037c53a0b5cdfaaeb20d011723868d81525b379232"
+  },
+  "pt/packs/pacote-mega-part-1-letter.pdf": {
+    "pages": 157,
+    "bytes": 6143832,
+    "sha256": "ff21e46868713c1a40eee1f268a27e1b29e5816eb186aba205045b0ea516ee42"
+  },
+  "pt/packs/pacote-mega-part-2-a4.pdf": {
+    "pages": 167,
+    "bytes": 15323235,
+    "sha256": "dc30626ab9e1eb0d00f3d4ef368fde82ce0a0c8c27294ee30cf9eb1043a1c284"
+  },
+  "pt/packs/pacote-mega-part-2-letter.pdf": {
+    "pages": 167,
+    "bytes": 15342958,
+    "sha256": "47e7dccb7d274fe021d8652db4d2d7b6d57eeb69f650fd2ce3f15694d2375297"
+  },
+  "pt/packs/pacote-mega-part-3-a4.pdf": {
+    "pages": 142,
+    "bytes": 10123916,
+    "sha256": "bc869df02471058108124e4447cfaac149d901f9adfd7ef5cfdaa59861cecb70"
+  },
+  "pt/packs/pacote-mega-part-3-letter.pdf": {
+    "pages": 142,
+    "bytes": 9924528,
+    "sha256": "04b9d3090e0fae27884f89b99e12a1d16ae288ce05f90e89fd213031d015bec4"
+  },
+  "pt/packs/pacote-mega-part-4-a4.pdf": {
+    "pages": 101,
+    "bytes": 13874282,
+    "sha256": "625b3785500e67d04a9f854ffa0600e775be33d9431360406149bfdbac0036bc"
+  },
+  "pt/packs/pacote-mega-part-4-letter.pdf": {
+    "pages": 101,
+    "bytes": 13620712,
+    "sha256": "ba8b9644d6de5c7f1a107db7b155233db1a8ff2be0cbc0d7dbe176461a8dfb47"
+  },
+  "pt/packs/pacote-mega-part-5-a4.pdf": {
+    "pages": 231,
+    "bytes": 10501103,
+    "sha256": "7b42e269db86a0b017990c798156305b66bd432034b00b499f9b201439b6ed79"
+  },
+  "pt/packs/pacote-mega-part-5-letter.pdf": {
+    "pages": 231,
+    "bytes": 10474645,
+    "sha256": "fb65e18de77777a11e1719ba8a78a261096e996532f1d3991a34b6bd9b0eb48c"
+  },
+  "pt/packs/pacote-numeros-que-faltam-1-a-100-e-saltos-a4.pdf": {
+    "pages": 53,
+    "bytes": 2979104,
+    "sha256": "dd2caf15f07158fa09c327a1bc93226da4c9e219d4a7e37f7e9413c040b66b5b"
+  },
+  "pt/packs/pacote-numeros-que-faltam-1-a-100-e-saltos-letter.pdf": {
+    "pages": 53,
+    "bytes": 2972234,
+    "sha256": "fe9710e84aa5e44040dd0de6257cd26cae96361ac41f8a4fa00946ad3a4e96a0"
+  },
+  "pt/packs/pacote-numeros-que-faltam-1-a-20-a4.pdf": {
+    "pages": 34,
+    "bytes": 1905461,
+    "sha256": "418dd491088e75bc74a8c0a0e1a85865486f5bcd1ce9f722315751c0cd932f95"
+  },
+  "pt/packs/pacote-numeros-que-faltam-1-a-20-letter.pdf": {
+    "pages": 34,
+    "bytes": 1906620,
+    "sha256": "b787cbe4adc9fc3808857bb8a41782d679704d7dc5ac6bede94362867915639f"
+  },
+  "pt/packs/pacote-numeros-que-faltam-1-a-50-a4.pdf": {
+    "pages": 26,
+    "bytes": 1649539,
+    "sha256": "6ebd3b40f339ca3776188ebdd2b805e2c276afb6a7751126b419f20910146fa8"
+  },
+  "pt/packs/pacote-numeros-que-faltam-1-a-50-letter.pdf": {
+    "pages": 26,
+    "bytes": 1649860,
+    "sha256": "1940db98f1c3d81aee54d859376e9ec23523462f1704bd7b580e18f812ec6462"
+  },
+  "pt/packs/pacote-numeros-que-faltam-completo-a4.pdf": {
+    "pages": 104,
+    "bytes": 5251057,
+    "sha256": "203deb8e7ffa262f527f73d7d3431d2f834cfed079618064c0c97a621c8345fd"
+  },
+  "pt/packs/pacote-numeros-que-faltam-completo-letter.pdf": {
+    "pages": 104,
+    "bytes": 5247019,
+    "sha256": "06b7ffd3ac57d34e698358c4720bfc8d26a8d97cdd1fd2a3019c801995149b63"
+  },
+  "pt/packs/pacote-origami-completo-a4.pdf": {
+    "pages": 18,
+    "bytes": 623619,
+    "sha256": "88af038275a46c1fc2ac4b9f2359e9de78708ce387fdb5ab125cac225b57bb5c"
+  },
+  "pt/packs/pacote-origami-completo-letter.pdf": {
+    "pages": 18,
+    "bytes": 626948,
+    "sha256": "12851d39ab68dc1fe953f7db7f2d82ba33db7e691f0d1d73e0c12107785e4efa"
+  },
+  "pt/packs/pacote-partes-do-corpo-animais-e-planta-a4.pdf": {
+    "pages": 29,
+    "bytes": 953329,
+    "sha256": "1443fe6be14aac29f4edfe60378f22dc22dc926cd7dafa46a4d28a3258aad6ee"
+  },
+  "pt/packs/pacote-partes-do-corpo-animais-e-planta-letter.pdf": {
+    "pages": 29,
+    "bytes": 953216,
+    "sha256": "a65c1bb50d8527876f71ee686f81efa16f612915e8090f1310cfb732c6b8534b"
+  },
+  "pt/packs/pacote-partes-do-corpo-completo-a4.pdf": {
+    "pages": 37,
+    "bytes": 1169395,
+    "sha256": "8f4b24d5dfa568f4af78aab258fc1d08d2f5ff5994310faeb2762e48bf2b8991"
+  },
+  "pt/packs/pacote-partes-do-corpo-completo-letter.pdf": {
+    "pages": 37,
+    "bytes": 1167340,
+    "sha256": "ab897aed070e5852946bbfd0170bd3890a22d2186471969ce021ed3db2d22e0f"
+  },
+  "pt/packs/pacote-partes-do-corpo-corpo-humano-a4.pdf": {
+    "pages": 12,
+    "bytes": 605908,
+    "sha256": "03cd0b96f04932ad5ab0939807298725b8e02328537b5d7b3d29dfe120a69d9e"
+  },
+  "pt/packs/pacote-partes-do-corpo-corpo-humano-letter.pdf": {
+    "pages": 12,
+    "bytes": 604336,
+    "sha256": "71d7851a4c26c18e6ee7d7ab23d9bc014589e679f5dfd728f34e57199451cf9e"
+  },
+  "pt/packs/pacote-quebra-cabecas-deslizantes-completo-a4.pdf": {
+    "pages": 76,
+    "bytes": 3105749,
+    "sha256": "6060f4df33e27a294c0b2da905a0a2c252b23fb7aa67e269a52830bcd0714dc0"
+  },
+  "pt/packs/pacote-quebra-cabecas-deslizantes-completo-letter.pdf": {
+    "pages": 76,
+    "bytes": 3109437,
+    "sha256": "ca8a4a5727aaec38923999a1c5e605216ddd33844b23b5012fb51b5510d87034"
+  },
+  "pt/packs/pacote-sequencias-logicas-ab-aab-abb-aabb-a4.pdf": {
+    "pages": 74,
+    "bytes": 10047249,
+    "sha256": "876a9564bdb612770fb1a22a689ef88d927723bbc8dd9559ec696ddf38a8d092"
+  },
+  "pt/packs/pacote-sequencias-logicas-ab-aab-abb-aabb-letter.pdf": {
+    "pages": 74,
+    "bytes": 10035917,
+    "sha256": "aba86120aba21bdb0cb07e50eb08b63b213fc83ffbe11f46eedfacf06845420c"
+  },
+  "pt/packs/pacote-sequencias-logicas-abc-e-crescentes-a4.pdf": {
+    "pages": 34,
+    "bytes": 5029909,
+    "sha256": "9f2aac50eedbc374eee3c32889f90273766e17dd132e0b09d05f510778e4eeb1"
+  },
+  "pt/packs/pacote-sequencias-logicas-abc-e-crescentes-letter.pdf": {
+    "pages": 34,
+    "bytes": 5028684,
+    "sha256": "d1814763b6586e310e27e7236981140c0beb52c3b6440b57050b48b247beb7ad"
+  },
+  "pt/packs/pacote-sequencias-logicas-completo-a4.pdf": {
+    "pages": 104,
+    "bytes": 14136000,
+    "sha256": "4e6b6c3468b806d21f69765dccc6ca1dba3bf42c8a51d50c2ff31d6032446e61"
+  },
+  "pt/packs/pacote-sequencias-logicas-completo-letter.pdf": {
+    "pages": 104,
+    "bytes": 14123379,
+    "sha256": "75ec63e9e4ae8bad033f5cc9e06d60cea24488d7a219771798f2e89dd3c1c8d5"
+  },
+  "pt/packs/pacote-tracados-completo-a4.pdf": {
+    "pages": 47,
+    "bytes": 12911802,
+    "sha256": "794d249712b63638d0e349bc8fce2a47c1e2dce26bafdde17fc5a82a2a98a235"
+  },
+  "pt/packs/pacote-tracados-completo-letter.pdf": {
+    "pages": 47,
+    "bytes": 12665513,
+    "sha256": "3dd8b13a22a8fced106d1dd0591c9d34652409e142e2d65fd2485e608b340627"
+  },
+  "pt/packs/pacote-tracados-desenhos-a4.pdf": {
+    "pages": 34,
+    "bytes": 10515184,
+    "sha256": "55a2cfdb2f52f9860403a79996b25dec28a9def48e04edd5abbb83e2af7a01be"
+  },
+  "pt/packs/pacote-tracados-desenhos-letter.pdf": {
+    "pages": 34,
+    "bytes": 10320873,
+    "sha256": "fa2bb3b554c1ac71a44498c8fd13eafb32ca53715bbcfba0e72bde25df3a820b"
+  },
+  "pt/packs/pacote-tracados-linhas-e-formas-a4.pdf": {
+    "pages": 17,
+    "bytes": 2714901,
+    "sha256": "a73bbf409d98138845c0443c519a76c02af2dac7fd318fc114abc662e7e9cf03"
+  },
+  "pt/packs/pacote-tracados-linhas-e-formas-letter.pdf": {
+    "pages": 17,
+    "bytes": 2663336,
+    "sha256": "099379bf8a82c071f8dcbea35826b3f3bc0f9875795ee72dec6498d5365bd6fc"
+  }
+}

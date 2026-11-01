@@ -19,6 +19,7 @@
     "phonics": "Phonics",
     "worksheets": "Worksheets",
     "allWorksheets": "All worksheets",
+    "proPacks": "Pro worksheet packs",
     "games": "Games",
     "stories": "Stories",
     "pricing": "Pricing",
@@ -94,6 +95,8 @@
     "intro": "Welcome back! Log in to see your child's progress.",
     "newHere": "New here?",
     "createAccount": "Create an account",
+    "notPro": "Not Pro yet?",
+    "seePlans": "See plans",
     "email": "Email",
     "password": "Password",
     "invalidCredentials": "Incorrect email or password.",
@@ -134,6 +137,7 @@
     "intro": "The free plan includes every printable worksheet, the alphabet and phonics lessons, the free games, and progress tracking for each child. Pro adds the premium games and one-click downloads of whole worksheet bundles, for parents and teachers who want everything.",
     "currencyNote": "",
     "billingNote": "Paid securely through PayPal. Pro renews automatically; cancel any time from your dashboard and keep Pro until the end of the period you've paid for.",
+    "packsLink": "See the Pro packs",
     "refundLink": "Refund policy",
     "choose": "Choose {plan}",
     "startFree": "Start Free",
@@ -155,7 +159,8 @@
       "features": [
         "Everything in Free",
         "3 premium games: Beginning Sound, Letter Tracing, Alphabet Quiz",
-        "Whole-bundle PDF downloads"
+        "Whole-bundle PDF downloads",
+        "39 Pro worksheet packs with answer keys and certificates, in US Letter and A4"
       ]
     },
     "annual": {

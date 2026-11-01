@@ -18,7 +18,8 @@ describe("bundle files (pro-files/, uploaded to the private bucket)", () => {
   it("has exactly one file per bundle, at the key the route reads", () => {
     for (const [locale, slugs] of Object.entries(SLUGS) as [keyof typeof SLUGS, readonly string[]][]) {
       const expected = slugs.map((s) => bundleKey(locale, s).split("/")[1]).sort();
-      const onDisk = readdirSync(join(PRO_FILES_DIR, locale)).sort();
+      // The Pro packs' packs/ folder (git-ignored) is checked by the manifest.
+      const onDisk = readdirSync(join(PRO_FILES_DIR, locale)).filter((f) => f.endsWith(".pdf")).sort();
       expect(onDisk, `${locale}: run the generator, or remove stale files`).toEqual(expected);
     }
   });

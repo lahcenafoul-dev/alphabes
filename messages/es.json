@@ -19,6 +19,7 @@
     "phonics": "Sílabas",
     "worksheets": "Fichas",
     "allWorksheets": "Todas las fichas",
+    "proPacks": "Paquetes Pro",
     "games": "Juegos",
     "stories": "Cuentos",
     "pricing": "Precios",
@@ -94,6 +95,8 @@
     "intro": "¡Qué bueno verte de nuevo! Inicia sesión para seguir el progreso de tu hijo o hija.",
     "newHere": "¿Eres nuevo en AlphaBes?",
     "createAccount": "Crear una cuenta",
+    "notPro": "¿Todavía no eres Pro?",
+    "seePlans": "Ver planes",
     "email": "Correo electrónico",
     "password": "Contraseña",
     "invalidCredentials": "Correo electrónico o contraseña incorrectos.",
@@ -134,6 +137,7 @@
     "intro": "El plan gratis incluye todas las fichas para imprimir, las lecciones del abecedario y de las sílabas, los juegos gratis y el seguimiento del progreso de cada niño. Pro suma los juegos premium y la descarga de los paquetes de fichas en un solo PDF, para madres, padres y maestros que lo quieren todo.",
     "currencyNote": "Precios en dólares estadounidenses (USD).",
     "billingNote": "Pago seguro con PayPal. Pro se renueva automáticamente; puedes cancelar cuando quieras desde tu cuenta y conservas Pro hasta el final del periodo pagado.",
+    "packsLink": "Ver los paquetes Pro",
     "refundLink": "Política de reembolsos",
     "choose": "Elegir {plan}",
     "startFree": "Empezar gratis",
@@ -155,7 +159,8 @@
       "features": [
         "Todo lo del plan gratis",
         "3 juegos premium: ¿Con qué sílaba empieza?, Traza la letra y El quiz del abecedario",
-        "Los paquetes de fichas en un solo PDF"
+        "Los paquetes de fichas en un solo PDF",
+        "39 paquetes Pro con soluciones y diplomas, en A4 y carta"
       ]
     },
     "annual": {

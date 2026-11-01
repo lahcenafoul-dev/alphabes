@@ -95,6 +95,12 @@ export default async function PricingPage({ params }: { params: LocaleParams }) 
         ))}
       </div>
 
+      <p className="mt-8 text-center">
+        <Link href="/worksheets/bundles" className="font-display font-bold text-crayon-purple underline underline-offset-2">
+          {t("packsLink")} →
+        </Link>
+      </p>
+
       {t("currencyNote") && (
         <p className="mt-6 text-center text-sm text-chalkboard/60">{t("currencyNote")}</p>
       )}

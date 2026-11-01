@@ -40,6 +40,12 @@ export default async function LoginPage({ params }: { params: LocaleParams }) {
           {t("createAccount")}
         </Link>
       </p>
+      <p className="mt-2 text-center text-sm text-chalkboard/70">
+        {t("notPro")}{" "}
+        <Link href="/pricing" className="font-bold text-crayon-purple">
+          {t("seePlans")}
+        </Link>
+      </p>
     </main>
   );
 }

@@ -98,6 +98,8 @@ export type SheetPage = {
   body: string;
   /** Leave out the Name/Date line (flash cards: nothing to write). */
   noNameLine?: boolean;
+  /** The footer's left and right texts, when not the free site line and the type (the Pro packs). */
+  foot?: [string, string];
 };
 
 export function sheetPage(s: SheetPage): string {
@@ -111,7 +113,7 @@ export function sheetPage(s: SheetPage): string {
   ${s.noNameLine ? "" : `<div class="sh-who"><span>${esc(typo(t.name, s.locale))}</span><span class="sh-date">${esc(typo(t.date, s.locale))}</span></div>`}
   <p class="sh-instr">${PENCIL}<span>${esc(typo(s.instruction, s.locale))}</span></p>
   <div class="sh-body"><div class="sh-inner">${s.body}</div></div>
-  <footer class="sh-foot"><span>${esc(t.site)}</span><span>${esc(s.kindName)}</span></footer>
+  <footer class="sh-foot"><span>${esc(s.foot?.[0] ?? t.site)}</span><span>${esc(s.foot?.[1] ?? s.kindName)}</span></footer>
 </section>`;
 }
 

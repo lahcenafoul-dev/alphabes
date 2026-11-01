@@ -19,6 +19,7 @@
     "phonics": "Sílabas",
     "worksheets": "Atividades",
     "allWorksheets": "Todas as atividades",
+    "proPacks": "Pacotes Pro",
     "games": "Jogos",
     "stories": "Histórias",
     "pricing": "Preços",
@@ -94,6 +95,8 @@
     "intro": "Que bom ver você de novo! Entre para acompanhar o progresso do seu filho ou da sua filha.",
     "newHere": "É novo no AlphaBes?",
     "createAccount": "Criar uma conta",
+    "notPro": "Ainda não é Pro?",
+    "seePlans": "Veja os planos",
     "email": "E-mail",
     "password": "Senha",
     "invalidCredentials": "E-mail ou senha incorretos.",
@@ -134,6 +137,7 @@
     "intro": "O plano grátis inclui todas as atividades para imprimir, as lições do alfabeto e das sílabas, os jogos grátis e o acompanhamento do progresso de cada criança. O Pro acrescenta os jogos premium e o download dos pacotes de atividades em um único PDF, para mães, pais e professores que querem tudo.",
     "currencyNote": "Preços em dólares americanos (USD).",
     "billingNote": "Pagamento seguro pelo PayPal. O Pro renova automaticamente; você pode cancelar quando quiser na sua conta e continua com o Pro até o fim do período pago.",
+    "packsLink": "Ver os pacotes Pro",
     "refundLink": "Política de reembolso",
     "choose": "Escolher {plan}",
     "startFree": "Começar grátis",
@@ -155,7 +159,8 @@
       "features": [
         "Tudo do plano grátis",
         "3 jogos premium: Com que sílaba começa?, Trace a letra e O quiz do alfabeto",
-        "Os pacotes de atividades em um único PDF"
+        "Os pacotes de atividades em um único PDF",
+        "39 pacotes Pro com gabaritos e certificados, em A4 e Carta"
       ]
     },
     "annual": {

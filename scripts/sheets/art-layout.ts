@@ -22,6 +22,8 @@ const r2 = (n: number) => Math.round(n * 100) / 100;
 
 /** The colour of the lines each step adds; it still reads as grey in black and white. */
 export const NEW_LINE = "#F0307A";
+/** Answers in the Pro packs' answer keys. */
+const KEY_RED = "#E53935";
 
 /** Problems found while drawing the sheets (printed by generate.ts). */
 export const ART_PROBLEMS: string[] = [];
@@ -237,7 +239,12 @@ export function bodyPlan(sheet: BodyPartsSheet, box: Box): BodyPlan {
   return { fitted, anchors, boxes, lines, height, problems };
 }
 
-export function bodyPartsBody(sheet: BodyPartsSheet, locale: SheetLocale, box: Box): string {
+/**
+ * The exercise, or (`key`) its answer key for the Pro packs: each word
+ * written in its box in red (label), or a red line from each word to its
+ * part (match).
+ */
+export function bodyPartsBody(sheet: BodyPartsSheet, locale: SheetLocale, box: Box, key = false): string {
   const plan = bodyPlan(sheet, box);
   ART_PROBLEMS.push(...plan.problems.map((x) => `${locale} ${x}`));
   const b = getBodySubject(sheet.params.subject);
@@ -248,7 +255,13 @@ export function bodyPartsBody(sheet: BodyPartsSheet, locale: SheetLocale, box: B
   const boxes = plan.boxes
     .map(({ rect: r, word }, i) => {
       const frame = `<rect x="${r2(r.x0 + 0.25)}" y="${r2(r.y0 + 0.25)}" width="${BOX_W - 0.5}" height="${BOX_H - 0.5}" rx="3" fill="#fff" stroke="${PURPLE}" stroke-width="0.5"/>`;
-      if (!word) return `${frame}<path d="M${r2(r.x0 + 3)} ${r2(r.y1 - 2.6)} H${r2(r.x1 - 3)}" stroke="#CFC6FF" stroke-width="0.35" stroke-dasharray="1.2 1"/>`;
+      if (!word) {
+        const line = `<path d="M${r2(r.x0 + 3)} ${r2(r.y1 - 2.6)} H${r2(r.x1 - 3)}" stroke="#CFC6FF" stroke-width="0.35" stroke-dasharray="1.2 1"/>`;
+        if (!key) return frame + line;
+        const text = b.labels[i].word[locale];
+        const size = r2(Math.min(5, (5 * 12) / text.length));
+        return `${frame}${line}<text x="${r2((r.x0 + r.x1) / 2)}" y="${r2(r.y1 - 3.4)}" font-size="${size}" text-anchor="middle" font-family="script" font-weight="700" fill="${KEY_RED}">${esc(text)}</text>`;
+      }
       // Match: the word, and a dot on the box's inner edge to start the line from.
       const inner = plan.lines[i][1];
       // Long words ("les moustaches") get a smaller font, to keep clear of the box's edges.
@@ -258,7 +271,18 @@ export function bodyPartsBody(sheet: BodyPartsSheet, locale: SheetLocale, box: B
         <circle cx="${r2(inner.x)}" cy="${r2(inner.y)}" r="1.3" fill="${PURPLE}" stroke="#fff" stroke-width="0.4"/>`;
     })
     .join("");
-  const svg = `<svg width="${box.w}mm" height="${r2(plan.height)}mm" viewBox="0 0 ${box.w} ${r2(plan.height)}" aria-hidden="true">${art}${lines}${dots}${boxes}</svg>`;
+  // Match key: from each box's dot to the part its word names.
+  const answers =
+    key && match
+      ? plan.boxes
+          .map(({ word }, i) => {
+            const [, from] = plan.lines[i];
+            const to = plan.anchors[b.labels.indexOf(word!)];
+            return `<path d="M${r2(from.x)} ${r2(from.y)} L${r2(to.x)} ${r2(to.y)}" stroke="${KEY_RED}" stroke-width="0.6" stroke-linecap="round"/>`;
+          })
+          .join("")
+      : "";
+  const svg = `<svg width="${box.w}mm" height="${r2(plan.height)}mm" viewBox="0 0 ${box.w} ${r2(plan.height)}" aria-hidden="true">${art}${lines}${answers}${dots}${boxes}</svg>`;
   if (match) return svg;
   // Alphabetical by the noun, not its article ("la bouche" among the b's).
   const noun = (w: string) => w.replace(/^(l'|le |la |les |el |los |las |o |a |os |as )/, "");
