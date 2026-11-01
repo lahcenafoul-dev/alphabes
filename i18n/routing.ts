@@ -39,6 +39,12 @@ export const routing = defineRouting({
     "/flashcards": { en: "/flashcards", fr: "/imagier", es: "/tarjetas", pt: "/cartoes" },
     "/games": { en: "/games", fr: "/jeux", es: "/juegos", pt: "/jogos" },
     "/games/[slug]": { en: "/games/[slug]", fr: "/jeux/[slug]", es: "/juegos/[slug]", pt: "/jogos/[slug]" },
+    "/games/sliding-puzzle": {
+      en: "/games/sliding-puzzle",
+      fr: "/jeux/taquin",
+      es: "/juegos/rompecabezas-deslizante",
+      pt: "/jogos/quebra-cabeca-deslizante",
+    },
     "/games/sliding-puzzle/[puzzle]": {
       en: "/games/sliding-puzzle/[puzzle]",
       fr: "/jeux/taquin/[puzzle]",

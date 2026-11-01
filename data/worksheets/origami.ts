@@ -401,7 +401,7 @@ export const MODELS: OrigamiModel[] = [
       { fold: { line: [pt(-1, -0.82), pt(1, -0.82)], from: pt(0, -1), behind: true }, text: BACK_TIP_BEHIND },
     ],
     done: {
-      en: "Draw two eyes and colour the nose black. Clever fox!",
+      en: "Draw two eyes and color the nose black. Clever fox!",
       fr: "Dessine deux yeux et colorie le museau en noir. Malin, le renard !",
       es: "Dibuja dos ojos y pinta de negro el hocico. ¡Qué zorro tan listo!",
       pt: "Desenhe dois olhos e pinte o focinho de preto. Que raposa esperta!",
@@ -741,7 +741,7 @@ export const MODELS: OrigamiModel[] = [
       },
     ],
     done: {
-      en: "Colour the trunk brown and draw balls and a star.",
+      en: "Color the trunk brown and draw balls and a star.",
       fr: "Colorie le tronc en marron, dessine des boules et une étoile.",
       es: "Pinta el tronco de marrón y dibuja bolas y una estrella.",
       pt: "Pinte o tronco de marrom e desenhe bolinhas e uma estrela.",
@@ -796,7 +796,7 @@ function sheet(m: OrigamiModel): OrigamiSheet {
       pt: `${cap(n.pt)} de origami grátis para imprimir: ${steps} passos fáceis em uma página, com um papel quadrado. Dobrem juntos e desenhem um rosto!`,
     },
     instruction: {
-      en: "Use a square of paper, coloured on one side. Fold on the dashed lines.",
+      en: "Use a square of paper, colored on one side. Fold on the dashed lines.",
       fr: "Prends une feuille carrée, colorée d'un côté. Plie sur les pointillés.",
       es: "Usa un papel cuadrado, de color por un lado. Dobla por las líneas de puntos.",
       pt: "Use um papel quadrado, colorido de um lado. Dobre nas linhas tracejadas.",
@@ -837,7 +837,7 @@ export const origamiKind: SheetKind = {
     pt: "Cada atividade mostra um modelo fácil com um papel quadrado, em passos numerados: a linha tracejada mostra onde dobrar e a seta para que lado. Crianças de 5 a 8 anos dobram com um adulto e depois desenham um rosto no modelo pronto.",
   },
   howTo: {
-    en: "Cut a square from coloured paper (15 cm or 6 inches is a good size), or use origami paper. Fold each step together, pressing the creases flat with a fingernail, and compare with the next picture before going on.",
+    en: "Cut a square from colored paper (15 cm or 6 inches is a good size), or use origami paper. Fold each step together, pressing the creases flat with a fingernail, and compare with the next picture before going on.",
     fr: "Découpez un carré de papier de couleur (15 cm, c'est bien) ou prenez du papier origami. Pliez chaque étape ensemble, marquez bien les plis avec l'ongle, et comparez avec le dessin suivant avant de continuer.",
     es: "Recorten un cuadrado de papel de color (15 cm es un buen tamaño) o usen papel de origami. Doblen cada paso juntos, marquen bien los pliegues con la uña y comparen con el dibujo siguiente antes de seguir.",
     pt: "Recortem um quadrado de papel colorido (15 cm é um bom tamanho) ou usem papel de origami. Dobrem cada passo juntos, marquem bem as dobras com a unha e comparem com o desenho seguinte antes de continuar.",

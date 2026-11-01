@@ -138,13 +138,13 @@ function pictureSheet(id: string): TracingSheet {
     },
     label: { en: capWords(d.name.en), fr: cap(d.name.fr), es: cap(d.name.es), pt: cap(d.name.pt) },
     description: {
-      en: `Free printable picture tracing sheet: trace ${d.the.en} on the dashed lines, big then small, and colour it like the model.`,
+      en: `Free printable picture tracing sheet: trace ${d.the.en} on the dashed lines, big then small, and color it like the model.`,
       fr: `Fiche gratuite à imprimer : repasse ${d.the.fr} sur les pointillés, en grand puis en petit, et colorie-le comme le modèle.`,
       es: `Ficha gratis para imprimir: repasa ${d.the.es} por las líneas de puntos, en grande y en pequeño, y coloréalo como el modelo.`,
       pt: `Atividade grátis para imprimir: cubra ${d.the.pt} nas linhas tracejadas, grande e pequeno, e pinte como o modelo.`,
     },
     instruction: {
-      en: "Trace the dashed lines with your pencil. Then colour your pictures like the one in the corner.",
+      en: "Trace the dashed lines with your pencil. Then color your pictures like the one in the corner.",
       fr: "Repasse les pointillés avec ton crayon. Puis colorie tes dessins comme le modèle dans le coin.",
       es: "Repasa las líneas de puntos con tu lápiz. Luego colorea tus dibujos como el modelo de la esquina.",
       pt: "Cubra as linhas tracejadas com o lápis. Depois pinte seus desenhos como o modelo do canto.",
@@ -179,7 +179,7 @@ function shapeSheet(shape: TraceShape): TracingSheet {
       pt: `Atividade grátis para imprimir para traçar a forma ${n.pt}, da maior para a menor, a partir do ponto verde.`,
     },
     instruction: {
-      en: "Start at the green dot and trace each shape. Then colour them in.",
+      en: "Start at the green dot and trace each shape. Then color them in.",
       fr: "Pars du point vert et repasse chaque forme. Puis colorie-les.",
       es: "Empieza en el punto verde y repasa cada figura. Luego coloréalas.",
       pt: "Comece no ponto verde e cubra cada forma. Depois pinte todas.",

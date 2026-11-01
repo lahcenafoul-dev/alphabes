@@ -18,6 +18,7 @@ import { frenchGames } from "@/lib/games-fr";
 import { schoolTopics } from "@/lib/ecole-fr";
 import { spanishGames } from "@/lib/juegos-es";
 import { SHEETS, SHEET_KINDS } from "@/lib/sheets/catalog";
+import { PUZZLES } from "@/lib/puzzles";
 import { schoolTopicsEs } from "@/lib/escuela-es";
 import { worksheetCategories } from "@/lib/worksheet-categories";
 import { WORKSHEET_TYPES } from "@/lib/worksheet-types";
@@ -143,6 +144,14 @@ export async function sitemapEntries(): Promise<MetadataRoute.Sitemap> {
     priority: 0.6,
   }));
 
+  // The sliding puzzles and their listing; withTwins adds the other languages.
+  const puzzleRoutes = ["", ...PUZZLES.map((p) => `/${p.slug.en}`)].map((path) => ({
+    url: `${baseUrl}/games/sliding-puzzle${path}`,
+    lastModified: RELEASE_DATE,
+    changeFrequency: "monthly" as const,
+    priority: path ? 0.6 : 0.7,
+  }));
+
   const phonicsRoutes = phonicsSkills.map((s) => ({
     url: `${baseUrl}/phonics/${s.slug}`,
     lastModified: RELEASE_DATE,
@@ -233,6 +242,7 @@ export async function sitemapEntries(): Promise<MetadataRoute.Sitemap> {
     ...letterRoutes,
     ...letterWorksheetRoutes,
     ...gameRoutes,
+    ...puzzleRoutes,
     ...phonicsRoutes,
     ...worksheetCategoryRoutes,
     ...worksheetTypeCategoryRoutes,

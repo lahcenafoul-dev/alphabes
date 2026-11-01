@@ -162,7 +162,7 @@ function faceSvg(marks: FaceMark[], v: View): string {
 }
 
 const LEGEND_TEXT: Record<"colour" | "white" | "fold" | "behind" | "turn", L10n> = {
-  colour: { en: "coloured side", fr: "côté coloré", es: "lado de color", pt: "lado colorido" },
+  colour: { en: "colored side", fr: "côté coloré", es: "lado de color", pt: "lado colorido" },
   white: { en: "white side", fr: "côté blanc", es: "lado blanco", pt: "lado branco" },
   fold: { en: "fold towards you", fr: "plier vers soi", es: "doblar hacia ti", pt: "dobrar para a frente" },
   behind: { en: "fold behind", fr: "plier derrière", es: "doblar hacia atrás", pt: "dobrar para trás" },

@@ -44,7 +44,7 @@ function neighbours(pos: number, n: number): number[] {
 }
 
 /** Random legal moves from the solved picture (never undoing the last one). */
-function shuffled(n: number): number[] {
+export function shuffled(n: number): number[] {
   const tiles = solvedTiles(n);
   let gap = n * n - 1;
   let prev = -1;
