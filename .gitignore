@@ -28,3 +28,7 @@ scripts/review.html
 
 # Retired word pictures (Pixabay photos), kept locally only
 /public/words-old/
+
+# Pro pack PDFs (scripts/sheets/packs.ts): too big for git; uploaded to the
+# private R2 bucket and tracked in lib/sheets/pack-manifest.json
+pro-files/*/packs/

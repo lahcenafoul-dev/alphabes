@@ -1,8 +1,10 @@
 // The exercise of a pattern sheet (data/worksheets/patterns.ts): six rows of
 // boxes holding cartoons, shapes or balloons. "Circle" sheets end each row
 // with a "?" box and three choices to circle; "draw" sheets leave two or
-// three boxes empty to draw in (or an uncoloured balloon to colour).
-import { itemCaption, type PatternCell, type PatternItem, type PatternsSheet } from "../../data/worksheets/patterns";
+// three boxes empty to draw in (or an uncoloured balloon to colour). In an
+// answer key (the Pro packs), the empty boxes show what goes there, in a red
+// dashed box, and the right choice is circled in red.
+import { itemCaption, type PatternCell, type PatternItem, type PatternRow, type PatternsSheet } from "../../data/worksheets/patterns";
 import type { ColourId, ShapeId } from "../../data/worksheets/vocab";
 import type { SheetLocale } from "../../lib/sheets/types";
 import { picturePrint } from "../picture-emoji";
@@ -22,6 +24,8 @@ export const PATTERNS_CSS = `
 .pt-q { font-family: display; font-weight: 800; color: #B9AEF5; line-height: 1; padding-top: 0.1em }
 .pt-cap { font-size: 2.7mm; line-height: 1; color: #3d3866; margin-top: 0.6mm; white-space: nowrap }
 .pt-items { display: grid; justify-content: center; align-content: center; gap: 0.6mm }
+.pt-cell.key { border: 0.6mm dashed #E53935 }
+.pt-cell.right { border: 0.9mm solid #E53935; border-radius: 50%; box-shadow: 0 0 0 0.6mm #fff, 0 0 0 1.3mm #E53935 }
 .pt-sep { flex: none; align-self: stretch; border-left: 0.45mm dashed #B9AEF5; margin: 0 1.2mm }
 `;
 
@@ -35,7 +39,7 @@ function itemHtml(item: PatternItem, size: number, blankBalloon = false): string
 
 type Dims = { w: number; h: number; caption: boolean };
 
-function cellHtml(cell: PatternCell, d: Dims, locale: SheetLocale, opts: { choice?: boolean; question?: boolean; colourBlank?: PatternItem } = {}): string {
+function cellHtml(cell: PatternCell, d: Dims, locale: SheetLocale, opts: { choice?: boolean; right?: boolean; key?: boolean; question?: boolean; colourBlank?: PatternItem } = {}): string {
   const style = `width:${r1(d.w)}mm;height:${r1(d.h)}mm`;
   if (!cell) {
     // An uncoloured balloon to colour in, an empty box to draw in, or "?".
@@ -52,10 +56,28 @@ function cellHtml(cell: PatternCell, d: Dims, locale: SheetLocale, opts: { choic
     const size = Math.min((d.w - 2.5) / cols - 0.6, (room - 2.5) / rows - 0.6);
     inner = `<div class="pt-items" style="grid-template-columns:repeat(${cols},${r1(size)}mm)">${Array.from({ length: cell.count }, () => itemHtml(cell.item, size)).join("")}</div>`;
   }
-  return `<div class="pt-cell${opts.choice ? " choice" : ""}" style="${style}">${inner}${caption ? `<span class="pt-cap">${esc(caption)}</span>` : ""}</div>`;
+  const cls = opts.right ? " choice right" : opts.choice ? " choice" : opts.key ? " key" : "";
+  return `<div class="pt-cell${cls}" style="${style}">${inner}${caption ? `<span class="pt-cap">${esc(caption)}</span>` : ""}</div>`;
 }
 
-export function patternsBody(sheet: PatternsSheet, locale: SheetLocale, box: Box): string {
+/** Boxes in one repeat of each pattern type. */
+const UNIT_LENGTH = { ab: 2, aab: 3, abb: 3, abc: 3, aabb: 4 };
+
+/**
+ * What goes in box i of a row: the box one repeat earlier (the first repeat
+ * is always shown), or, for growing rows, the count that keeps the step.
+ */
+function answerAt(row: PatternRow, i: number, type: PatternsSheet["params"]["type"]): { item: PatternItem; count: number } {
+  if (type === "growing") {
+    const a = row.cells[i - 2]!;
+    const b = row.cells[i - 1]!;
+    return { item: b.item, count: 2 * b.count - a.count };
+  }
+  return row.cells[i % UNIT_LENGTH[type]]!;
+}
+
+/** The exercise, or (`key`) its answer key. */
+export function patternsBody(sheet: PatternsSheet, locale: SheetLocale, box: Box, key = false): string {
   const { rows, version, type, theme } = sheet.params;
   const caption = theme === "shapes" || theme === "colours";
   const gap = 1.8;
@@ -75,14 +97,16 @@ export function patternsBody(sheet: PatternsSheet, locale: SheetLocale, box: Box
       // For colour sheets the blanks are uncoloured balloons; the right one
       // is the item the pattern puts there.
       const firstFull = row.cells.find((c) => c);
+      const right = row.choices && answerAt(row, row.cells.length - 1, type);
       const cells = row.cells
-        .map((c) => {
+        .map((c, i) => {
           if (c) return cellHtml(c, d, locale);
+          if (key) return cellHtml(answerAt(row, i, type), d, locale, { key: true });
           if (version === "draw" && theme === "colours" && type !== "growing") return cellHtml(null, d, locale, { colourBlank: firstFull!.item });
           return cellHtml(null, d, locale, { question: version === "circle" });
         })
         .join("");
-      const options = row.choices ? `<span class="pt-sep"></span>${row.choices.map((c) => cellHtml(c, d, locale, { choice: true })).join("")}` : "";
+      const options = row.choices ? `<span class="pt-sep"></span>${row.choices.map((c) => cellHtml(c, d, locale, { choice: true, right: key && !!right && c.item === right.item && c.count === right.count })).join("")}` : "";
       return `<div class="pt-row">${cells}${options}</div>`;
     })
     .join("");

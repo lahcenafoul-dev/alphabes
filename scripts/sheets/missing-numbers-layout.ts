@@ -2,7 +2,8 @@
 // sized to the page's body box (scripts/sheets/chrome.ts). Six layouts:
 // picture grid, caterpillar/snake path, hundred chart, train, skip counting,
 // and before/after/between. Empty boxes have a purple border; printed numbers
-// sit on a light fill.
+// sit on a light fill. In an answer key (the Pro packs), the empty boxes hold
+// their number in red.
 import type { MissingNumbersSheet } from "../../data/worksheets/missing-numbers";
 import type { SheetLocale } from "../../lib/sheets/types";
 import { picturePrint, pictureSrc } from "../picture-emoji";
@@ -12,11 +13,17 @@ type Box = { w: number; h: number };
 
 const r1 = (n: number) => Math.round(n * 10) / 10;
 
-/** A number box (or an empty one), w × h mm; the font fits the digits. */
-function nb(n: number | null, w: number, h: number, extra = ""): string {
-  const digits = n === null ? 2 : String(n).length;
+/** The answers' red. */
+export const ANSWER = "#E53935";
+// Set while drawing an answer key (missingNumbersBody's `key`).
+let KEY = false;
+
+/** A number box (or an empty one, holding `answer` in red in a key), w × h mm; the font fits the digits. */
+function nb(n: number | null, w: number, h: number, answer?: number): string {
+  const shown = n ?? (KEY ? answer : undefined);
+  const digits = shown === undefined ? 2 : String(shown).length;
   const size = r1(Math.min(h * 0.64, (w - 2) / (digits * 0.56)));
-  return `<div class="nb${n === null ? " blank" : ""}" style="width:${r1(w)}mm;height:${r1(h)}mm;font-size:${size}mm;${extra}">${n ?? ""}</div>`;
+  return `<div class="nb${n === null ? " blank" : ""}" style="width:${r1(w)}mm;height:${r1(h)}mm;font-size:${size}mm;${n === null && KEY ? `color:${ANSWER}` : ""}">${shown ?? ""}</div>`;
 }
 
 /** A cartoon as an <img> of the given size (the picture's 1em img, scaled by font-size). */
@@ -46,7 +53,7 @@ function grid(p: { start: number; end: number; picture: string; blanks: number[]
     .map((n, i) => {
       const ring = BRIGHT[i % BRIGHT.length];
       return `<div style="width:${r1(cellW)}mm;border:0.45mm solid ${ring}55;border-radius:4mm;padding:2.5mm 0 3mm;display:flex;flex-direction:column;align-items:center;gap:2mm">
-        ${pic(p.picture, picSize)}${nb(blanks.has(n) ? null : n, cellW * 0.72, nbH)}</div>`;
+        ${pic(p.picture, picSize)}${nb(blanks.has(n) ? null : n, cellW * 0.72, nbH, n)}</div>`;
     })
     .join("");
   return `<div style="display:grid;grid-template-columns:repeat(${cols},${r1(cellW)}mm);gap:${gapY}mm ${gapX}mm">${cells}</div>`;
@@ -89,7 +96,7 @@ function path(p: { start: number; end: number; picture: string; blanks: number[]
       const { x, y } = centres[i];
       const blank = blanks.has(n);
       const circle = `<circle cx="${r1(x)}" cy="${r1(y)}" r="${r1(d / 2)}" fill="${blank ? "#fff" : c.fills[i % 2]}" stroke="${blank ? PURPLE : c.line}" stroke-width="${blank ? 0.9 : 0.7}"/>`;
-      const text = blank ? "" : `<text x="${r1(x)}" y="${r1(y + size * 0.36)}" text-anchor="middle" font-family="display" font-weight="800" font-size="${size}" fill="${INK}">${n}</text>`;
+      const text = blank && !KEY ? "" : `<text x="${r1(x)}" y="${r1(y + size * 0.36)}" text-anchor="middle" font-family="display" font-weight="800" font-size="${size}" fill="${blank ? ANSWER : INK}">${n}</text>`;
       return circle + text;
     })
     .join("");
@@ -112,7 +119,7 @@ function chart(p: { start: number; end: number; blanks: number[] }, box: Box): s
       const tens = (i + 1) % 10 === 0;
       const bg = blank ? "#fff" : tens ? "#E4DEFF" : "#F4F1FF";
       const inner = blank ? `box-shadow: inset 0 0 0 0.45mm ${PURPLE};` : "";
-      return `<div style="width:${r1(w)}mm;height:${r1(h)}mm;background:${bg};${inner}border-right:0.3mm solid #B9AEF5;border-bottom:0.3mm solid #B9AEF5;display:flex;align-items:center;justify-content:center;font-family:display;font-weight:800;font-size:${font}mm;padding-top:0.1em">${blank ? "" : n}</div>`;
+      return `<div style="width:${r1(w)}mm;height:${r1(h)}mm;background:${bg};${inner}border-right:0.3mm solid #B9AEF5;border-bottom:0.3mm solid #B9AEF5;display:flex;align-items:center;justify-content:center;font-family:display;font-weight:800;font-size:${font}mm;padding-top:0.1em;${blank && KEY ? `color:${ANSWER}` : ""}">${blank && !KEY ? "" : n}</div>`;
     })
     .join("");
   return `<div style="display:grid;grid-template-columns:repeat(10,${r1(w)}mm);border-top:0.3mm solid #B9AEF5;border-left:0.3mm solid #B9AEF5;border-radius:2mm;overflow:hidden">${cells}</div>`;
@@ -153,9 +160,9 @@ function train(p: { start: number; end: number; picture: string; blanks: number[
       const winX = x + 3;
       const winW = bw - 6;
       out += `<rect x="${r1(winX)}" y="${r1(roof + 2.8)}" width="${r1(winW)}" height="${r1(ch - 5.6)}" rx="2" fill="#fff" stroke="${blank ? PURPLE : "#CFC6FF"}" stroke-width="${blank ? 0.8 : 0.4}"/>`;
-      if (!blank) {
+      if (!blank || KEY) {
         const size = r1(Math.min(10, winW / (String(n).length * 0.58)));
-        out += `<text x="${r1(winX + winW / 2)}" y="${r1(roof + ch / 2 + size * 0.36)}" text-anchor="middle" font-family="display" font-weight="800" font-size="${size}" fill="${INK}">${n}</text>`;
+        out += `<text x="${r1(winX + winW / 2)}" y="${r1(roof + ch / 2 + size * 0.36)}" text-anchor="middle" font-family="display" font-weight="800" font-size="${size}" fill="${blank ? ANSWER : INK}">${n}</text>`;
       }
       out += image(p.picture, x + bw / 2 - passenger / 2, roof - passenger + 0.6, passenger);
     }
@@ -186,7 +193,7 @@ function skip(p: { step: number; to: number; picture: string; perGroup: number; 
   const rows = p.rows
     .map((row) => {
       const blanks = new Set(row.blanks);
-      return `<div style="display:flex;gap:${gap}mm">${row.values.map((n) => nb(blanks.has(n) ? null : n, w, h)).join("")}</div>`;
+      return `<div style="display:flex;gap:${gap}mm">${row.values.map((n) => nb(blanks.has(n) ? null : n, w, h, n)).join("")}</div>`;
     })
     .join("");
   return `<div style="display:flex;flex-direction:column;align-items:center;gap:9mm">
@@ -209,7 +216,8 @@ function neighbours(p: { mode: "before" | "after" | "between"; items: { n: numbe
   const items = p.items
     .map(({ n, picture }) => {
       const cells = p.mode === "before" ? [null, n] : p.mode === "after" ? [n, null] : [n - 1, null, n + 1];
-      return `<div style="display:flex;align-items:center;gap:5mm">${pic(picture, picSize)}<div style="display:flex;gap:3mm">${cells.map((c) => nb(c, bw, bh)).join("")}</div></div>`;
+      const answer = p.mode === "before" ? n - 1 : p.mode === "after" ? n + 1 : n;
+      return `<div style="display:flex;align-items:center;gap:5mm">${pic(picture, picSize)}<div style="display:flex;gap:3mm">${cells.map((c) => nb(c, bw, bh, answer)).join("")}</div></div>`;
     })
     .join("");
   return `<div style="display:grid;grid-template-columns:repeat(2,${r1(colW)}mm);column-gap:${colGap}mm;row-gap:${r1(rowGap)}mm">${items}</div>`;
@@ -217,7 +225,17 @@ function neighbours(p: { mode: "before" | "after" | "between"; items: { n: numbe
 
 // ------------------------------------------------------------------
 
-export function missingNumbersBody(sheet: MissingNumbersSheet, _locale: SheetLocale, box: Box): string {
+/** The exercise, or (`key`) its answer key: every empty box filled in red. */
+export function missingNumbersBody(sheet: MissingNumbersSheet, _locale: SheetLocale, box: Box, key = false): string {
+  KEY = key;
+  try {
+    return layout(sheet, box);
+  } finally {
+    KEY = false;
+  }
+}
+
+function layout(sheet: MissingNumbersSheet, box: Box): string {
   const p = sheet.params;
   switch (p.layout) {
     case "grid":
