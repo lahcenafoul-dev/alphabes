@@ -39,6 +39,16 @@ import type { TellingTimeSheet } from "../../data/worksheets/telling-time";
 import { CLOCK_CSS, tellingTimeBody } from "./clock-layout";
 import type { FlashCardsSheet } from "../../data/worksheets/flash-cards";
 import { FLASH_CSS, flashCardsBody } from "./flash-cards-layout";
+import { origamiKind, origamiSheets, type OrigamiSheet } from "../../data/worksheets/origami";
+import { ORIGAMI_CSS, origamiBody } from "./origami-layout";
+import { tracingKind, tracingSheets, type TracingSheet } from "../../data/worksheets/tracing-lines";
+import { TRACING_CSS, tracingBody } from "./tracing-layout";
+import type { SheetKind } from "../../lib/sheets/types";
+
+// Phase 5, step A: types not in the catalogue yet, rendered for samples only (--out).
+const DRAFT_KINDS: SheetKind[] = [tracingKind, origamiKind];
+const DRAFT_SHEETS: Sheet[] = [...tracingSheets, ...origamiSheets];
+const kindOf = (sheet: Sheet) => DRAFT_KINDS.find((k) => k.id === sheet.kind) ?? getSheetKind(sheet.kind);
 
 const ROOT = process.cwd();
 const FONTS_EN = join(ROOT, "scripts", "worksheets-en", "fonts");
@@ -70,6 +80,8 @@ ${ART_CSS}
 ${MAZE_CSS}
 ${CLOCK_CSS}
 ${FLASH_CSS}
+${ORIGAMI_CSS}
+${TRACING_CSS}
 </style>
 <script>/* tsx wraps functions in __name(); fitBodies runs here, so define it. */ var __name = (f) => f;</script>
 </head><body></body></html>`;
@@ -97,6 +109,10 @@ function body(sheet: Sheet, locale: SheetLocale): string | SheetPart[] {
       return tellingTimeBody(sheet as TellingTimeSheet, locale, box);
     case "mazes":
       return mazesBody(sheet as MazesSheet, locale, box);
+    case "tracing-lines":
+      return tracingBody(sheet as TracingSheet, locale, box);
+    case "origami":
+      return origamiBody(sheet as OrigamiSheet, locale, box);
     default:
       throw new Error(`No layout for ${sheet.kind}`);
   }
@@ -110,7 +126,7 @@ function pageHtml(sheet: Sheet, locale: SheetLocale): string {
       sheetPage({
         locale,
         page: SHEET_PAGE[locale],
-        kindName: getSheetKind(sheet.kind).name[locale],
+        kindName: kindOf(sheet).name[locale],
         title: p.title ?? sheet.title[locale],
         instruction: p.instruction ?? sheet.instruction[locale],
         body: p.body,
@@ -167,7 +183,8 @@ async function render(page: Page, sheet: Sheet, locale: SheetLocale, pdfFile: st
 
 async function main() {
   const parts = filter?.split(",") ?? [];
-  const list = SHEETS.filter((s) => (!kind || s.kind === kind) && (!filter || parts.some((p) => s.id.includes(p) || Object.values(s.slug).some((x) => x.includes(p)))));
+  // Draft sheets only go to --out, never to public/.
+  const list = [...SHEETS, ...(out ? DRAFT_SHEETS : [])].filter((s) => (!kind || s.kind === kind) && (!filter || parts.some((p) => s.id.includes(p) || Object.values(s.slug).some((x) => x.includes(p)))));
   if (!list.length) throw new Error(`No sheet matches "${filter ?? kind}"`);
 
   await preparePictures();

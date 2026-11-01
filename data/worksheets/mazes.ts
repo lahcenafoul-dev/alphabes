@@ -10,8 +10,8 @@ export type MazeLevel = "easy" | "medium" | "hard";
 export type MazeShape = "square" | "circle" | "heart" | "star" | "apple" | "fish" | "house";
 
 /** A cartoon of public/words/, its name and its name with "the". */
-type Actor = { picture: string; name: L10n; the: L10n };
-type Story = { from: Actor; to: Actor };
+export type Actor = { picture: string; name: L10n; the: L10n };
+export type Story = { from: Actor; to: Actor };
 
 const actor = (picture: string, en: string, fr: string, es: string, pt: string): Actor => {
   // "l'abeille" → "abeille"; "el perro" → "perro".
@@ -19,7 +19,7 @@ const actor = (picture: string, en: string, fr: string, es: string, pt: string):
   return { picture, name: { en: bare(en), fr: bare(fr), es: bare(es), pt: bare(pt) }, the: { en, fr, es, pt } };
 };
 
-const STORIES: Story[] = [
+export const STORIES: Story[] = [
   { from: actor("bee", "the bee", "l'abeille", "la abeja", "a abelha"), to: actor("flower", "the flower", "la fleur", "la flor", "a flor") },
   { from: actor("dog", "the dog", "le chien", "el perro", "o cachorro"), to: actor("bone", "the bone", "l'os", "el hueso", "o osso") },
   { from: actor("rabbit", "the rabbit", "le lapin", "el conejo", "o coelho"), to: actor("carrot", "the carrot", "la carotte", "la zanahoria", "a cenoura") },

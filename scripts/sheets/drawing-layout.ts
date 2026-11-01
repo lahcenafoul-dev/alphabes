@@ -342,6 +342,37 @@ function drawingSvg(p: Parsed, s: number, uid: string, paint: boolean): string {
   </g>`;
 }
 
+/**
+ * A drawing fitted in a rectangle (mm) for the tracing sheets: coloured
+ * (the model), or as dashed grey lines to trace over.
+ */
+export function drawingArt(id: string, area: Rect, uid: string, mode: "paint" | "trace"): string {
+  const p = parse(id);
+  if (mode === "paint") return pictureSvg(p, area, uid, true);
+  const bb = bbox([...p.outline, ...p.regions.flatMap((r) => (r.region.clip ? [] : r.polys)), ...p.details.flatMap((d) => d.polys)]);
+  const s = Math.min((area.x1 - area.x0) / (bb.x1 - bb.x0), (area.y1 - area.y0) / (bb.y1 - bb.y0));
+  const tx = area.x0 + (area.x1 - area.x0 - (bb.x1 - bb.x0) * s) / 2 - bb.x0 * s;
+  const ty = area.y0 + (area.y1 - area.y0 - (bb.y1 - bb.y0) * s) / 2 - bb.y0 * s;
+  const w = (mm: number) => r2(mm / s);
+  // Dashes a little shorter on small copies, so small details still show some.
+  const dash = Math.min(1.8, Math.max(1, s * 2.2));
+  const line = (d: string, width: number, clip = false) =>
+    `<path d="${d}" fill="none" stroke-width="${w(width)}" stroke-dasharray="${w(dash)} ${w(dash * 0.75)}"${clip ? ` clip-path="url(#${uid}-clip)"` : ""}/>`;
+  const details = p.drawing.details
+    .map((d) => (d.fill === "ink" ? `<path d="${d.d}" fill="#CFCBE2" stroke="none"/>` : line(d.d, (d.width ?? DETAIL_W) * 0.9)))
+    .join("");
+  return `<g transform="translate(${r2(tx)} ${r2(ty)}) scale(${r2(s)})">
+  <defs><clipPath id="${uid}-clip"><path d="${p.drawing.outline}"/></clipPath></defs>
+  <g stroke="${TRACE_INK}" stroke-linecap="round" stroke-linejoin="round">
+    ${p.regions.map((r) => line(r.region.d, 0.8, r.region.clip)).join("")}
+    ${line(p.drawing.outline, 1)}
+    ${details}
+  </g></g>`;
+}
+
+/** The grey of the lines to trace. */
+export const TRACE_INK = "#8E89B0";
+
 export type ColourSpot = { x: number; y: number; n: number; fs: number };
 
 export type ColourPlan = {

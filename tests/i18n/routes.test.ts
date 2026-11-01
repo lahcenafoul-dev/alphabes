@@ -11,7 +11,7 @@ import {
   safeNextPath,
 } from "@/lib/i18n/routes";
 
-const sampleParams = { letter: "a", slug: "x", id: "c1", topic: "t", skill: "s", category: "c", bundleSlug: "b" };
+const sampleParams = { letter: "a", slug: "x", id: "c1", topic: "t", skill: "s", category: "c", bundleSlug: "b", puzzle: "p" };
 
 describe("localizedPath / absoluteUrl", () => {
   it("keeps English URLs unprefixed and exactly as before", () => {

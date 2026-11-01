@@ -12,6 +12,7 @@ import { getBlogCategory, getBlogPost } from "@/lib/blog-data";
 import { getSchoolTopic } from "@/lib/ecole-fr";
 import { getFiche, getFicheCategory, getFichePack } from "@/lib/fiches-fr";
 import { getGame } from "@/lib/games-data";
+import { getPuzzle } from "@/lib/puzzles";
 import { getFrenchGame } from "@/lib/games-fr";
 import { getSpanishGame } from "@/lib/juegos-es";
 import { getSchoolTopicEs } from "@/lib/escuela-es";
@@ -56,6 +57,8 @@ const VALIDATORS: Partial<Record<AppPathname, Validator>> = {
   "/games/[slug]": ({ slug }, locale) => (locale === "fr" ? !!getFrenchGame(slug) : !!getGame(slug)),
   // Only premium games have a play page.
   "/games/[slug]/play": ({ slug }, locale) => isPremiumGame(locale, slug),
+  // English only for now (phase 5, step A): the other languages aren't in their page lists yet.
+  "/games/sliding-puzzle/[puzzle]": ({ puzzle }, locale) => locale === "en" && !!getPuzzle(puzzle, "en"),
   "/kindergarten/[topic]": ({ topic }, locale) =>
     locale === "fr" ? !!getSchoolTopic("grande-section", topic) : !!getKindergartenTopic(topic),
   "/phonics/[skill]": ({ skill }, locale) => (locale === "fr" ? !!getFrenchSound(skill) : !!getPhonicsSkill(skill)),
