@@ -1,5 +1,5 @@
 // The origami sheets (data/worksheets/origami.ts): the model's numbered steps
-// in a 3 × 2 grid, each a drawing of the paper as it is before that fold
+// in a grid of three columns (two or three rows), each a drawing of the paper as it is before that fold
 // (lib/sheets/origami.ts) with the fold line dashed and an arrow showing where
 // the paper goes, and one short sentence; the last cell is the finished model
 // with its face. A legend at the bottom explains the marks.
@@ -186,8 +186,11 @@ export function origamiBody(sheet: OrigamiSheet, locale: SheetLocale, box: Box):
   const m = getModel(sheet.params.model);
   const states = origamiStates(m);
   const cellW = (box.w - 2 * GAP) / 3;
-  const cellH = (box.h - LEGEND - GAP) / 2;
-  const size = Math.min(cellW - 4, cellH - 23);
+  // Two rows of three, or three rows for models of 7 to 9 steps.
+  const rows = Math.ceil((states.length + 1) / 3);
+  const cellH = (box.h - LEGEND - (rows - 1) * GAP) / rows;
+  // The cell's padding and border take 4.8 mm of its width.
+  const size = Math.min(cellW - 5, cellH - (rows > 2 ? 15 : 23));
   const s = size / SPAN;
 
   const cells = states.map(({ before, fold: f, turn }, i) => {

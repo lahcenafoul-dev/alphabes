@@ -13,14 +13,16 @@ import { bodyPartsKind, bodyPartsSheets } from "@/data/worksheets/body-parts";
 import { flashCardsKind, flashCardsSheets } from "@/data/worksheets/flash-cards";
 import { tellingTimeKind, tellingTimeSheets } from "@/data/worksheets/telling-time";
 import { mazesKind, mazesSheets } from "@/data/worksheets/mazes";
+import { tracingKind, tracingSheets } from "@/data/worksheets/tracing-lines";
+import { origamiKind, origamiSheets } from "@/data/worksheets/origami";
 import { SHEET_LOCALES, type Sheet, type SheetKind, type SheetKindId, type SheetLocale } from "./types";
 
 export type { Sheet, SheetKind, SheetKindId, SheetLocale } from "./types";
 
 /** In the order they're linked: each type links to its neighbours. */
-export const SHEET_KINDS: SheetKind[] = [missingNumbersKind, patternsKind, stickersKind, dotToDotKind, colouringKind, howToDrawKind, bodyPartsKind, flashCardsKind, tellingTimeKind, mazesKind];
+export const SHEET_KINDS: SheetKind[] = [missingNumbersKind, patternsKind, stickersKind, dotToDotKind, colouringKind, howToDrawKind, bodyPartsKind, flashCardsKind, tellingTimeKind, mazesKind, tracingKind, origamiKind];
 
-export const SHEETS: Sheet[] = [...missingNumbersSheets, ...patternsSheets, ...stickersSheets, ...dotToDotSheets, ...colouringSheets, ...howToDrawSheets, ...bodyPartsSheets, ...flashCardsSheets, ...tellingTimeSheets, ...mazesSheets];
+export const SHEETS: Sheet[] = [...missingNumbersSheets, ...patternsSheets, ...stickersSheets, ...dotToDotSheets, ...colouringSheets, ...howToDrawSheets, ...bodyPartsSheets, ...flashCardsSheets, ...tellingTimeSheets, ...mazesSheets, ...tracingSheets, ...origamiSheets];
 
 // Each language's existing worksheet folders (scripts/fiches-fr, fichas-es,
 // atividades-pt, worksheets-en): the PDFs go in a folder named after the

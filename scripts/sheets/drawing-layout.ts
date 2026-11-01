@@ -356,10 +356,17 @@ export function drawingArt(id: string, area: Rect, uid: string, mode: "paint" | 
   const w = (mm: number) => r2(mm / s);
   // Dashes a little shorter on small copies, so small details still show some.
   const dash = Math.min(1.8, Math.max(1, s * 2.2));
-  const line = (d: string, width: number, clip = false) =>
-    `<path d="${d}" fill="none" stroke-width="${w(width)}" stroke-dasharray="${w(dash)} ${w(dash * 0.75)}"${clip ? ` clip-path="url(#${uid}-clip)"` : ""}/>`;
+  const line = (d: string, width: number, clip = false, dashMm = dash) =>
+    `<path d="${d}" fill="none" stroke-width="${w(width)}" stroke-dasharray="${w(dashMm)} ${w(dashMm * 0.75)}"${clip ? ` clip-path="url(#${uid}-clip)"` : ""}/>`;
+  // Eyes and noses are dashed outlines like the rest of the drawing. The
+  // small white shines inside eyes are left out, and small shapes get
+  // shorter dashes so their outline still shows a few.
   const details = p.drawing.details
-    .map((d) => (d.fill === "ink" ? `<path d="${d.d}" fill="#CFCBE2" stroke="none"/>` : line(d.d, (d.width ?? DETAIL_W) * 0.9)))
+    .map((d, i) => {
+      if (d.fill === "white" && d.width === undefined) return "";
+      const length = p.details[i].polys.reduce((sum, q) => sum + q.pts.reduce((t, pt, j) => (j ? t + Math.hypot(pt.x - q.pts[j - 1].x, pt.y - q.pts[j - 1].y) : 0), 0), 0) * s;
+      return line(d.d, (d.width ?? DETAIL_W) * 0.9, false, Math.min(dash, Math.max(0.45, length / 8)));
+    })
     .join("");
   return `<g transform="translate(${r2(tx)} ${r2(ty)}) scale(${r2(s)})">
   <defs><clipPath id="${uid}-clip"><path d="${p.drawing.outline}"/></clipPath></defs>
