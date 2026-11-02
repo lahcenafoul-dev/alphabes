@@ -19,6 +19,7 @@
     "atividades:pt": "tsx scripts/atividades-pt/generate.ts",
     "worksheets:en": "tsx scripts/worksheets-en/generate.ts",
     "numbers:en": "tsx scripts/numbers/generate.ts",
+    "stories:prompts": "tsx scripts/stories/prompts.ts",
     "bundles:en": "tsx scripts/bundles-en/generate.ts",
     "sheets": "tsx scripts/sheets/generate.ts",
     "previews:thumbs": "node scripts/preview-thumbs.mjs",
