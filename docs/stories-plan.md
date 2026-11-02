@@ -6,7 +6,7 @@ The goal: rewrite the 8 stories as real little stories, add 16 new ones (24 in a
 
 ## Status
 - **Step A (2026-11-02): done.** The 24 English stories and the character cast. Approved by the owner on 2026-11-02, including the 6-letter alphabet story, the changes to the old stories, and question+answer pages on level 1.
-- **Step B (2026-11-02): done, waiting for the owner to make the images.**
+- **Step B (2026-11-02): done and approved by the owner on 2026-11-02, including broccoli instead of peas, "Boo's Ten Cherries" and the two wording changes. Waiting for the owner to make the images.**
   - FR/ES/PT versions, SEO descriptions and talk-about-it questions for all 24 stories, in `prisma/stories-v2/`.
   - All Canva prompts in `../owl-design/stories/prompts.md` and the list of missing pictures in `../owl-design/stories/images/MISSING.txt`, both from `npm run stories:prompts`.
 - **Step C:** image script, reader, listing, seed, tests, build and browser check. It starts when the owner says the images are ready.
