@@ -1,26 +1,11 @@
-import { ImageResponse } from "next/og";
+import { owlIconResponse } from "@/lib/owl-icon";
 
+// The owl favicon (lib/owl-icon.tsx), 32 px. Its siblings, each a static file:
+// icon1 (16 px, its own pixel drawing), icon2 and icon3 (192 and 512 px, for
+// the web app manifest).
 export const size = { width: 32, height: 32 };
 export const contentType = "image/png";
 
 export default function Icon() {
-  return new ImageResponse(
-    (
-      <div
-        style={{
-          width: "100%",
-          height: "100%",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          backgroundColor: "#D9A86C",
-          borderRadius: 6,
-          fontFamily: "sans-serif",
-        }}
-      >
-        <div style={{ color: "#FFFDF7", fontSize: 20, fontWeight: 800 }}>A</div>
-      </div>
-    ),
-    { ...size }
-  );
+  return owlIconResponse(32);
 }

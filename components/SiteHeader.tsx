@@ -3,6 +3,7 @@ import Link from "next/link";
 import type { Locale } from "@/i18n/routing";
 import { isAvailable, localizedPath } from "@/lib/i18n/routes";
 import { SHEET_KINDS } from "@/lib/sheets/catalog";
+import { OwlMark } from "./home/Owl";
 import LanguageSwitcher from "./LanguageSwitcher";
 import MobileMenu from "./MobileMenu";
 
@@ -41,9 +42,7 @@ export default async function SiteHeader({ locale }: { locale: Locale }) {
     <header data-site-header className="relative border-b border-chalkboard/10 bg-paper print:hidden">
       <div className="mx-auto max-w-6xl px-6 py-3 flex items-center justify-between gap-4 max-[389px]:px-4 max-[389px]:gap-2">
         <Link href={localizedPath(locale, "/")} aria-label={t("homeLabel")} className="flex items-center gap-2 shrink-0">
-          <span aria-hidden="true" className="letter-block h-9 w-9 text-xl">
-            A
-          </span>
+          <OwlMark className="h-9 w-9" />
           <span className="font-display text-2xl font-extrabold max-[389px]:text-xl">AlphaBes</span>
         </Link>
 
