@@ -88,7 +88,7 @@ Slugs stay globally unique. Migration `20260930050000_story_locale`, **applied t
 
 - Story content lives in `prisma/stories-data.ts` (both languages, `translationGroup` pairs twins); `npm run db:seed` upserts it. Twins get hreflang to each other (page metadata and sitemap).
 - Stories exist only in their language: the lists filter by `locale`, and `storyExists(slug, locale)` in the middleware 404s a story under the other language's URL.
-- Audio: `npm run tts:histoires` prints the estimate and sends nothing. `-- --list-voices` / `-- --generate [--voice fr-FR-Neural2-A]` need `GOOGLE_TTS_API_KEY` (key restricted to Text-to-Speech) and write `public/audio/histoires/<slug>-<page>.mp3`; then `npm run db:seed` fills `StoryPage.audioUrl`. Without a file, "Écouter" uses the browser's French voice.
+- Audio: replaced on 2026-11-03 by the Stories v2 narration for all four languages (`npm run stories:audio`, edge-tts, see docs/stories-plan.md). The Google TTS script `tts:histoires` was removed.
 - **TTS for later** (not run, Google Cloud billing not active): estimate 2,186 characters for the 40 pages, inside the 1M free characters/month for Neural2/WaveNet (≈ $0.04 even at list price, about $16 per 1M; check Google's pricing page). Planned voice: a slow female fr-FR voice (fr-FR-Neural2-A, rate ≈ 0.85). The owner wants **one sample page first**, then an OK before the other 39: `--generate` currently does all pages, so add a one-page option before running it. MP3s, once there, take priority over browser speech automatically (`components/StoryAudioFr.tsx`).
 
 ### Things later phases must remember

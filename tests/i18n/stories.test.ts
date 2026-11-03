@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { allStories, englishStories, frenchAudioPath, frenchStories, portugueseStories, spanishStories } from "@/prisma/stories-data";
+import { allStories, englishStories, frenchStories, portugueseStories, spanishStories } from "@/prisma/stories-data";
 import { LEVEL_PAGES } from "@/prisma/stories-v2";
 
 const strip = (s: string) => s.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
@@ -43,10 +43,6 @@ describe("stories (prisma/stories-data.ts)", () => {
     const puddles = englishStories.find((s) => s.translationGroup === "puddles")!;
     expect(puddles.pages[0].image).toBe("/stories/puddles/p1-1200.webp");
     expect(puddles.coverFallbackScene).toBeNull();
-  });
-
-  it("keeps new French audio apart from the MP3s of the old texts", () => {
-    expect(frenchAudioPath("la-petite-pomme", 1)).toBe("/audio/histoires/v2/la-petite-pomme-1.mp3");
   });
 
   it("avoids words that change from one country to another, and vosotros", () => {
