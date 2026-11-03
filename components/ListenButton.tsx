@@ -41,7 +41,7 @@ export default function ListenButton({
  * the language, and `notice` (render it) explains how to install one when
  * the device has none.
  */
-export function useSpeech(locale: SpeechLocale) {
+export function useSpeech(locale: Locale) {
   const [problem, setProblem] = useState<Exclude<SpeakResult, "ok"> | null>(null);
 
   useEffect(warmUpVoices, []);
@@ -53,8 +53,9 @@ export function useSpeech(locale: SpeechLocale) {
     return result === "ok";
   }
 
-  const Notice = { fr: NoVoiceNotice, es: NoVoiceNoticeEs, pt: NoVoiceNoticePt }[locale];
-  const notice = problem ? <Notice kind={problem} onClose={() => setProblem(null)} /> : null;
+  // English (the story reader) has no notice: every device has an English voice.
+  const Notice = locale === "en" ? null : { fr: NoVoiceNotice, es: NoVoiceNoticeEs, pt: NoVoiceNoticePt }[locale];
+  const notice = problem && Notice ? <Notice kind={problem} onClose={() => setProblem(null)} /> : null;
   return { say, notice };
 }
 

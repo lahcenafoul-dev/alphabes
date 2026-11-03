@@ -1,8 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useState } from "react";
-import StoryIllustration from "@/components/StoryIllustration";
-import AudioButton from "@/components/AudioButton";
+import StoryPicture from "@/components/stories/StoryPicture";
 import StoryAudio from "@/components/StoryAudio";
 import type { Locale } from "@/i18n/routing";
 import { localizedPath } from "@/lib/i18n/routes";
@@ -21,6 +20,7 @@ const LABELS = {
     more: "More Stories",
     dashboard: "Dashboard",
     endLabel: "The End",
+    talk: "Talk about it",
   },
   fr: {
     readingAs: "Lecture pour",
@@ -34,6 +34,7 @@ const LABELS = {
     more: "D'autres histoires",
     dashboard: "Tableau de bord",
     endLabel: "Fin",
+    talk: "On en parle",
   },
   es: {
     readingAs: "Lectura para",
@@ -47,6 +48,7 @@ const LABELS = {
     more: "Más cuentos",
     dashboard: "Mi cuenta",
     endLabel: "Fin",
+    talk: "Para conversar",
   },
   pt: {
     readingAs: "Leitura para",
@@ -60,6 +62,7 @@ const LABELS = {
     more: "Mais histórias",
     dashboard: "Minha conta",
     endLabel: "Fim",
+    talk: "Para conversar",
   },
 };
 type Page = {
@@ -83,9 +86,13 @@ type Props = {
   story: Story;
   childProfiles: Child[];
   locale?: Locale;
+  /** Alt text: [cover, page 1, page 2…] (lib/stories.ts). */
+  alt?: string[];
+  /** Shown under the last page; empty when the last page is locked. */
+  questions?: string[];
 };
 
-export default function StoryReader({ story, childProfiles, locale = "en" }: Props) {
+export default function StoryReader({ story, childProfiles, locale = "en", alt = [], questions = [] }: Props) {
   const t = LABELS[locale];
   const [finished, setFinished] = useState(false);
   const [pageIndex, setPageIndex] = useState(0);
@@ -167,37 +174,51 @@ if (finished) {
         </div>
       )}
 
-      <div className="rounded-block border border-chalkboard/10 shadow-block overflow-hidden ...">
-  <StoryIllustration scene={page.imageUrl} endLabel={t.endLabel} />
-  <div className="p-8 text-center">
-    <p className="text-2xl font-display">{page.text}</p>
-    <div className="mt-3 flex justify-center">
-      {locale === "en" ? (
-        <AudioButton scene={page.imageUrl} />
-      ) : (
-        <StoryAudio text={page.text} audioUrl={page.audioUrl} locale={locale} />
-      )}
-    </div>
-  </div>
-</div>
+      <div className="overflow-hidden rounded-3xl bg-white ring-1 ring-owl-ink/5 shadow-[0_24px_40px_-24px_rgba(29,24,70,.35)]">
+        <StoryPicture
+          src={page.imageUrl}
+          alt={alt[page.pageNumber] ?? ""}
+          sizes="(min-width: 768px) 720px, 100vw"
+          priority={isFirst}
+          endLabel={t.endLabel}
+        />
+        <div className="p-6 text-center sm:p-8">
+          <p className="font-display text-2xl leading-snug sm:text-[28px]">{page.text}</p>
+          <div className="mt-4 flex justify-center">
+            <StoryAudio text={page.text} audioUrl={page.audioUrl} locale={locale} />
+          </div>
+        </div>
+      </div>
 
-      <div className="mt-6 flex items-center justify-between">
+      {isLast && questions.length > 0 && (
+        <section className="mt-6 rounded-3xl bg-owl-mint p-6 sm:p-8">
+          <h2 className="font-display text-xl font-extrabold">{t.talk}</h2>
+          <ul className="mt-3 list-disc space-y-1.5 pl-5 text-lg">
+            {questions.map((q) => (
+              <li key={q}>{q}</li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      {/* Phones: the page count on its own line, the two buttons side by side under it. */}
+      <div className="mt-6 grid grid-cols-2 items-center gap-3 sm:flex sm:justify-between">
         <button
           onClick={goPrev}
           disabled={isFirst}
-          className="rounded-block bg-crayon-blue text-white px-6 py-3 font-bold disabled:opacity-30"
+          className="w-full rounded-block bg-crayon-blue px-4 py-3 font-bold text-white disabled:opacity-30 sm:w-auto sm:px-6"
         >
           {t.back}
         </button>
 
-        <span className="text-sm text-chalkboard/60">
+        <span className="order-first col-span-2 text-center text-sm text-chalkboard/60 sm:order-none">
           {t.page} {pageIndex + 1} {t.of} {story.pages.length}
         </span>
 
         {isLast ? (
           <button
             onClick={() => saveProgress(pageIndex, true)}
-            className="rounded-block bg-crayon-green text-white px-6 py-3 font-bold"
+            className="w-full rounded-block bg-crayon-green px-4 py-3 font-bold text-white sm:w-auto sm:px-6"
           >
             {t.finish}
             <InlineIcon name="party" after />
@@ -205,7 +226,7 @@ if (finished) {
         ) : (
           <button
             onClick={goNext}
-            className="rounded-block bg-crayon-green text-white px-6 py-3 font-bold"
+            className="w-full rounded-block bg-crayon-green px-4 py-3 font-bold text-white sm:w-auto sm:px-6"
           >
             {t.next}
           </button>

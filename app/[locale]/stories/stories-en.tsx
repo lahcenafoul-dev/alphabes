@@ -1,48 +1,37 @@
+import type { Metadata } from "next";
 import Link from "next/link";
-import { getPrisma } from "@/lib/prisma";
-import StoryIllustration from "@/components/StoryIllustration";
-import { alternatesFor } from "@/lib/i18n/routes";
+import StoryShelf from "@/components/stories/StoryShelf";
+import { absoluteUrl, alternatesFor } from "@/lib/i18n/routes";
 
-export const storiesMetadataEn = {
+const description =
+  "24 short illustrated stories for children aged 3 to 8, in three reading levels, to read together or listen to: friends, feelings, counting, letters and bedtime.";
+
+export const storiesMetadataEn: Metadata = {
   title: "Story Time",
+  description,
   alternates: alternatesFor("en", "/stories"),
+  openGraph: { title: "Story Time", description, url: absoluteUrl("en", "/stories") },
 };
 
-export default async function StoriesEn() {
-  const prisma = getPrisma();
-  const stories = await prisma.story.findMany({
-    where: { locale: "EN" },
-    orderBy: { order: "asc" },
-  });
-
+export default function StoriesEn() {
   return (
-    <main id="main-content" className="mx-auto max-w-5xl px-6 py-12">
-      <nav className="text-sm text-chalkboard/60">
-        <Link href="/">Home</Link>
-      </nav>
+    <div className="bg-owl-bg text-owl-ink">
+      <main id="main-content" className="mx-auto max-w-6xl px-4 py-10 sm:px-6 sm:py-12">
+        <nav aria-label="Breadcrumb" className="text-sm text-owl-muted">
+          <ol className="flex gap-2">
+            <li><Link href="/" className="hover:text-owl-purple">Home</Link> /</li>
+            <li aria-current="page" className="font-bold text-owl-ink">Story Time</li>
+          </ol>
+        </nav>
 
-      <h1 className="mt-4 text-4xl font-extrabold">Short Stories for Kids</h1>
-      <p className="mt-2 text-chalkboard/70 max-w-2xl">
-        Pick a story to read together. Each one comes with pictures and fun words to learn.
-      </p>
+        <h1 className="mt-4 font-display text-4xl font-extrabold leading-tight sm:text-5xl">Short Stories for Kids</h1>
+        <p className="mt-4 max-w-3xl text-lg text-owl-muted">
+          Pick a story to read together. Every page has its own picture and can be read aloud. Level 1 is for the
+          youngest listeners, and level 3 has longer stories for children who are starting to read on their own.
+        </p>
 
-      <div className="mt-10 grid gap-6 sm:grid-cols-2 md:grid-cols-3">
-        {stories.map((story) => (
-          <Link
-            key={story.id}
-            href={`/stories/${story.slug}`}
-            className="rounded-block border border-chalkboard/10 shadow-block overflow-hidden hover:shadow-lg transition"
-          >
-           <StoryIllustration scene={story.coverUrl} />
-            <div className="p-4">
-              <h2 className="font-display font-bold text-lg">{story.title}</h2>
-              <p className="mt-1 text-sm text-chalkboard/60">
-                Ages {story.ageRangeMin}-{story.ageRangeMax}
-              </p>
-            </div>
-          </Link>
-        ))}
-      </div>
-    </main>
+        <StoryShelf locale="en" />
+      </main>
+    </div>
   );
 }

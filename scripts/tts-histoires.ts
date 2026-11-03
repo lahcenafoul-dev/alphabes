@@ -3,7 +3,7 @@
 // npm run tts:histoires -- --generate [--voice fr-FR-Neural2-A] [--force]
 //
 // Makes the French story audio with Google Cloud Text-to-Speech: one MP3
-// per page in public/audio/histoires/<slug>-<page>.mp3 (the path in
+// per page in public/audio/histoires/v2/<slug>-<page>.mp3 (the path in
 // prisma/stories-data.ts). Existing files are kept unless --force. Then run
 // `npm run db:seed` so the pages get their audioUrl; until a page has one,
 // the reader uses the browser's French voice.

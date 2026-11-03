@@ -1,13 +1,19 @@
 import { describe, expect, it } from "vitest";
-import { allStories, englishStories, frenchStories, portugueseStories, spanishStories } from "@/prisma/stories-data";
+import { allStories, englishStories, frenchAudioPath, frenchStories, portugueseStories, spanishStories } from "@/prisma/stories-data";
+import { LEVEL_PAGES } from "@/prisma/stories-v2";
 
 const strip = (s: string) => s.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
 
+// What the seed writes (prisma/stories-data.ts, built from prisma/stories-v2).
+// The texts themselves are checked in tests/stories-v2.test.ts.
 describe("stories (prisma/stories-data.ts)", () => {
-  it("has 8 stories in each language, each with 5 pages", () => {
+  it("has 24 stories in each language, with the page count of their level", () => {
     for (const list of [englishStories, frenchStories, spanishStories, portugueseStories]) {
-      expect(list).toHaveLength(8);
-      for (const s of list) expect(s.pages.map((p) => p.pageNumber)).toEqual([1, 2, 3, 4, 5]);
+      expect(list).toHaveLength(24);
+      for (const s of list) {
+        expect(s.pages.map((p) => p.pageNumber), s.slug).toEqual(Array.from({ length: LEVEL_PAGES[s.level] }, (_, i) => i + 1));
+      }
+      expect(list.map((s) => s.order)).toEqual(Array.from({ length: 24 }, (_, i) => i + 1));
     }
     expect(new Set(spanishStories.map((s) => s.locale))).toEqual(new Set(["ES"]));
     expect(new Set(portugueseStories.map((s) => s.locale))).toEqual(new Set(["PT"]));
@@ -18,29 +24,29 @@ describe("stories (prisma/stories-data.ts)", () => {
     expect(new Set(slugs).size).toBe(slugs.length);
   });
 
-  it("pairs each Spanish story with its English and French twins, same pictures", () => {
-    for (const es of spanishStories) {
-      for (const other of [englishStories, frenchStories]) {
-        const twin = other.find((s) => s.translationGroup === es.translationGroup)!;
-        expect(twin, es.slug).toBeDefined();
-        expect(es.coverScene).toBe(twin.coverScene);
-        expect(es.order).toBe(twin.order);
-        expect(es.pages.map((p) => p.scene)).toEqual(twin.pages.map((p) => p.scene));
+  it("pairs every story with its twins in the other languages: same pictures, order and ages", () => {
+    for (const list of [frenchStories, spanishStories, portugueseStories]) {
+      for (const s of list) {
+        const en = englishStories.find((e) => e.translationGroup === s.translationGroup)!;
+        expect(en, s.slug).toBeDefined();
+        expect([s.cover, s.order, s.ageRangeMin, s.ageRangeMax]).toEqual([en.cover, en.order, en.ageRangeMin, en.ageRangeMax]);
+        expect(s.pages.map((p) => p.image)).toEqual(en.pages.map((p) => p.image));
       }
     }
   });
 
-  it("uses the slugs approved in the plan", () => {
-    expect(spanishStories.map((s) => s.slug)).toEqual([
-      "la-manzanita-roja",
-      "bruno-el-osito-valiente",
-      "mia-la-gatita-curiosa",
-      "canelo-y-su-pelota",
-      "lupita-la-patita-timida",
-      "burbujas-el-pececito",
-      "tito-el-buho-sabio",
-      "la-siesta-de-leo",
-    ]);
+  it("points pictures at the converted WebP files, with the old drawn scenes as fallback", () => {
+    const apple = englishStories.find((s) => s.translationGroup === "apple")!;
+    expect(apple.cover).toBe("/stories/apple/cover-1200.webp");
+    expect(apple.coverFallbackScene).toBe("apple-1");
+    expect(apple.pages.map((p) => p.fallbackScene)).toEqual(["apple-1", "apple-2", "apple-3", "apple-4", "apple-5", null]);
+    const puddles = englishStories.find((s) => s.translationGroup === "puddles")!;
+    expect(puddles.pages[0].image).toBe("/stories/puddles/p1-1200.webp");
+    expect(puddles.coverFallbackScene).toBeNull();
+  });
+
+  it("keeps new French audio apart from the MP3s of the old texts", () => {
+    expect(frenchAudioPath("la-petite-pomme", 1)).toBe("/audio/histoires/v2/la-petite-pomme-1.mp3");
   });
 
   it("avoids words that change from one country to another, and vosotros", () => {
@@ -53,41 +59,6 @@ describe("stories (prisma/stories-data.ts)", () => {
       const words = strip([s.title, ...s.pages.map((p) => p.text)].join(" ")).match(/\p{L}+/gu) ?? [];
       for (const w of words) expect(regional, `${s.slug}: ${w}`).not.toContain(w);
     }
-  });
-
-  it("opens Spanish questions and exclamations, and has no look-alike letters", () => {
-    for (const s of spanishStories) {
-      for (const p of s.pages) {
-        expect(p.text.split("?").length, p.text).toBe(p.text.split("¿").length);
-        expect(p.text.split("!").length, p.text).toBe(p.text.split("¡").length);
-      }
-    }
-    expect(JSON.stringify(spanishStories)).not.toMatch(/[Ѐ-ӿ]|[Ͱ-Ͽ]/);
-  });
-
-  it("pairs each Portuguese story with its twins in the three other languages, same pictures", () => {
-    for (const pt of portugueseStories) {
-      for (const other of [englishStories, frenchStories, spanishStories]) {
-        const twin = other.find((s) => s.translationGroup === pt.translationGroup)!;
-        expect(twin, pt.slug).toBeDefined();
-        expect(pt.coverScene).toBe(twin.coverScene);
-        expect(pt.order).toBe(twin.order);
-        expect(pt.pages.map((p) => p.scene)).toEqual(twin.pages.map((p) => p.scene));
-      }
-    }
-  });
-
-  it("uses the Portuguese slugs from the plan", () => {
-    expect(portugueseStories.map((s) => s.slug)).toEqual([
-      "a-macazinha-vermelha",
-      "beto-o-ursinho-corajoso",
-      "mimi-a-gatinha-curiosa",
-      "toto-e-sua-bola",
-      "lili-a-patinha-timida",
-      "bolinha-o-peixinho",
-      "juju-a-coruja-sabida",
-      "a-soneca-do-leo",
-    ]);
   });
 
   it("writes Brazilian Portuguese: no Portugal-only words or forms, no Spanish", () => {
@@ -105,14 +76,6 @@ describe("stories (prisma/stories-data.ts)", () => {
       for (const w of raw) expect(spanish, `${s.slug}: ${w}`).not.toContain(w);
       expect(raw, s.slug).not.toContain("bebé"); // Brazil writes bebê
       for (const phrase of notBrazilian.filter((x) => x.includes(" "))) expect(text, s.slug).not.toContain(phrase);
-      expect(text, s.slug).not.toMatch(/[¿¡«»]/);
-    }
-    expect(JSON.stringify(portugueseStories)).not.toMatch(/[Ѐ-ӿ]|[Ͱ-Ͽ]/);
-  });
-
-  it("closes every Portuguese quotation it opens", () => {
-    for (const s of portugueseStories) {
-      for (const p of s.pages) expect(p.text.split("“").length, p.text).toBe(p.text.split("”").length);
     }
   });
 });

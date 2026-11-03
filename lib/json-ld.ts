@@ -113,6 +113,7 @@ export function buildShortStoryJsonLd(
     ageRangeMin: number;
     ageRangeMax: number;
     isPremium: boolean;
+    description?: string;
     createdAt: Date;
     updatedAt: Date;
   },
@@ -122,6 +123,7 @@ export function buildShortStoryJsonLd(
     "@type": "ShortStory",
     name: story.title,
     url: absoluteUrl(locale, "/stories/[slug]", { slug: story.slug }),
+    ...(story.description && { description: story.description }),
     inLanguage: HTML_LANG[locale],
     // Covers drawn by components/StoryIllustration.tsx are scene names
     // ("apple-1"), not files: only a real path or URL is an image.
