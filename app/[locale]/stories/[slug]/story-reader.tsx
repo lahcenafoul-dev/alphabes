@@ -201,23 +201,24 @@ if (finished) {
         </section>
       )}
 
-      <div className="mt-6 flex items-center justify-between">
+      {/* Phones: the page count on its own line, the two buttons side by side under it. */}
+      <div className="mt-6 grid grid-cols-2 items-center gap-3 sm:flex sm:justify-between">
         <button
           onClick={goPrev}
           disabled={isFirst}
-          className="rounded-block bg-crayon-blue text-white px-6 py-3 font-bold disabled:opacity-30"
+          className="w-full rounded-block bg-crayon-blue px-4 py-3 font-bold text-white disabled:opacity-30 sm:w-auto sm:px-6"
         >
           {t.back}
         </button>
 
-        <span className="text-sm text-chalkboard/60">
+        <span className="order-first col-span-2 text-center text-sm text-chalkboard/60 sm:order-none">
           {t.page} {pageIndex + 1} {t.of} {story.pages.length}
         </span>
 
         {isLast ? (
           <button
             onClick={() => saveProgress(pageIndex, true)}
-            className="rounded-block bg-crayon-green text-white px-6 py-3 font-bold"
+            className="w-full rounded-block bg-crayon-green px-4 py-3 font-bold text-white sm:w-auto sm:px-6"
           >
             {t.finish}
             <InlineIcon name="party" after />
@@ -225,7 +226,7 @@ if (finished) {
         ) : (
           <button
             onClick={goNext}
-            className="rounded-block bg-crayon-green text-white px-6 py-3 font-bold"
+            className="w-full rounded-block bg-crayon-green px-4 py-3 font-bold text-white sm:w-auto sm:px-6"
           >
             {t.next}
           </button>
