@@ -7,7 +7,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import Owl from "@/components/home/Owl";
 import type { PuzzleSize } from "@/lib/puzzles";
-import { chime } from "@/lib/sounds";
 
 export type SlidingPuzzleText = {
   moves: string;
@@ -58,6 +57,30 @@ export function shuffled(n: number): number[] {
     gap = next;
   }
   return tiles;
+}
+
+/** A short happy chime (three notes), made in the browser. */
+function chime() {
+  try {
+    const Ctx = window.AudioContext ?? (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+    const ctx = new Ctx();
+    [523.25, 659.25, 783.99, 1046.5].forEach((f, i) => {
+      const o = ctx.createOscillator();
+      const g = ctx.createGain();
+      o.type = "triangle";
+      o.frequency.value = f;
+      const t = ctx.currentTime + i * 0.12;
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.exponentialRampToValueAtTime(0.25, t + 0.02);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + 0.35);
+      o.connect(g).connect(ctx.destination);
+      o.start(t);
+      o.stop(t + 0.4);
+    });
+    setTimeout(() => ctx.close(), 1200);
+  } catch {
+    // No sound: the owl and the message still show.
+  }
 }
 
 export default function SlidingPuzzleGame({ image, alt, size: initialSize, text }: Props) {
