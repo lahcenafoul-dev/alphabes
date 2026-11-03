@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+import { OWL_PURPLE } from "@/lib/owl-icon";
 
 // /manifest.webmanifest, linked from every page by Next.js.
 export default function manifest(): MetadataRoute.Manifest {
@@ -9,9 +10,10 @@ export default function manifest(): MetadataRoute.Manifest {
     start_url: "/",
     display: "browser",
     background_color: "#FFFDF7",
-    theme_color: "#D9A86C",
+    theme_color: OWL_PURPLE,
     icons: [
-      { src: "/icon", sizes: "32x32", type: "image/png" },
+      { src: "/icon2", sizes: "192x192", type: "image/png" },
+      { src: "/icon3", sizes: "512x512", type: "image/png" },
       { src: "/apple-icon", sizes: "180x180", type: "image/png" },
     ],
   };
