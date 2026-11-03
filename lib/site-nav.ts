@@ -1,10 +1,11 @@
 // The main navigation, shared by the site header (components/SiteHeader.tsx)
 // and the home page header (components/home/OwlHome.tsx): Alphabet ⌄,
-// Numbers ⌄, Games, Worksheets ⌄, Stories, Parents, and Pricing on desktop. Every link goes to a page
+// Numbers ⌄ (with the number games), Games, Worksheets ⌄, Stories, Parents, and Pricing on desktop. Every link goes to a page
 // that exists in that language (tests/site-nav.test.ts).
 import type { Locale } from "@/i18n/routing";
 import { localizedPath } from "@/lib/i18n/routes";
 import { SHEET_KINDS } from "@/lib/sheets/catalog";
+import { NUMBER_GAME_SLUGS, type NumberGameKey } from "@/lib/number-games";
 
 export type NavLink = { href: string; label: string };
 export type NavItem = NavLink & { key: string; children?: NavLink[]; nofollow?: boolean; desktopOnly?: boolean };
@@ -13,6 +14,7 @@ type HeaderKey =
   | "alphabet" | "numbers" | "games" | "worksheets" | "stories" | "parents" | "pricing"
   | "allLetters" | "letterSounds" | "alphabetWorksheets" | "letterTracing" | "alphabetGames" | "flashcards"
   | "allNumbers" | "numberTracing" | "missingNumbers" | "dotToDot" | "numberStickers" | "numberFlashCards"
+  | "countGame" | "missingGame" | "matchGame" | "compareGame" | "balloonGame"
   | "allWorksheets" | "proPacks";
 
 // The Header messages; the worksheet types' labels come from the catalog.
@@ -61,8 +63,21 @@ export function numberLinks(locale: Locale, t: Translate): NavLink[] {
     { href: sheetPath(locale, kindSlug("dot-to-dot", locale)), label: t("dotToDot") },
     { href: sheetPath(locale, NUMBER_STICKERS[locale][0]), label: t("numberStickers") },
     ...(cards ? [{ href: sheetPath(locale, cards[0]), label: t("numberFlashCards") }] : []),
+    // The five number games (lib/number-games.ts).
+    ...(Object.entries(NUMBER_GAME_MENU) as [NumberGameKey, HeaderKey][]).map(([key, label]) => ({
+      href: localizedPath(locale, "/games/[slug]", { slug: NUMBER_GAME_SLUGS[key][locale] }),
+      label: t(label),
+    })),
   ];
 }
+
+const NUMBER_GAME_MENU: Record<NumberGameKey, HeaderKey> = {
+  count: "countGame",
+  missing: "missingGame",
+  match: "matchGame",
+  compare: "compareGame",
+  balloons: "balloonGame",
+};
 
 export function worksheetLinks(locale: Locale, t: Translate, { proPacks = true } = {}): NavLink[] {
   return [

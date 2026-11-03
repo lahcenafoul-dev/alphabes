@@ -13,6 +13,7 @@ import { getSchoolTopic } from "@/lib/ecole-fr";
 import { getFiche, getFicheCategory, getFichePack } from "@/lib/fiches-fr";
 import { getGame } from "@/lib/games-data";
 import { getPuzzle } from "@/lib/puzzles";
+import { getNumberGame } from "@/lib/number-games";
 import { getFrenchGame } from "@/lib/games-fr";
 import { getSpanishGame } from "@/lib/juegos-es";
 import { getSchoolTopicEs } from "@/lib/escuela-es";
@@ -55,7 +56,8 @@ const VALIDATORS: Partial<Record<AppPathname, Validator>> = {
   "/alphabet/[letter]/worksheet": ({ letter }, locale) =>
     locale === "fr" ? FRENCH_LETTERS.has(letter) : !!getLetterData(letter),
   "/blog/[slug]": ({ slug }) => !!(getBlogCategory(slug) || getBlogPost(slug)),
-  "/games/[slug]": ({ slug }, locale) => (locale === "fr" ? !!getFrenchGame(slug) : !!getGame(slug)),
+  "/games/[slug]": ({ slug }, locale) =>
+    !!getNumberGame(locale, slug) || (locale === "fr" ? !!getFrenchGame(slug) : !!getGame(slug)),
   // Only premium games have a play page.
   "/games/[slug]/play": ({ slug }, locale) => isPremiumGame(locale, slug),
   // English only for now (phase 5, step A): the other languages aren't in their page lists yet.
@@ -88,7 +90,7 @@ const SPANISH_LETTERS = new Set(spanishLetterParams());
 const SPANISH_VALIDATORS: Partial<Record<AppPathname, (params: RouteParams) => boolean>> = {
   "/alphabet/[letter]": ({ letter }) => SPANISH_LETTERS.has(letter) || letter === TILDE_SLUG,
   "/alphabet/[letter]/worksheet": ({ letter }) => SPANISH_LETTERS.has(letter),
-  "/games/[slug]": ({ slug }) => !!getSpanishGame(slug),
+  "/games/[slug]": ({ slug }) => !!getSpanishGame(slug) || !!getNumberGame("es", slug),
   "/games/[slug]/play": ({ slug }) => isPremiumGame("es", slug),
   "/games/sliding-puzzle/[puzzle]": ({ puzzle }) => !!getPuzzle(puzzle, "es"),
   "/kindergarten/[topic]": ({ topic }) => !!getSchoolTopicEs("kinder", topic),
@@ -105,7 +107,7 @@ const PORTUGUESE_LETTERS = new Set(portugueseLetterParams());
 const PORTUGUESE_VALIDATORS: Partial<Record<AppPathname, (params: RouteParams) => boolean>> = {
   "/alphabet/[letter]": ({ letter }) => PORTUGUESE_LETTERS.has(letter) || letter === PT_ACENTOS_SLUG,
   "/alphabet/[letter]/worksheet": ({ letter }) => PORTUGUESE_LETTERS.has(letter),
-  "/games/[slug]": ({ slug }) => !!getPortugueseGame(slug),
+  "/games/[slug]": ({ slug }) => !!getPortugueseGame(slug) || !!getNumberGame("pt", slug),
   "/games/[slug]/play": ({ slug }) => isPremiumGame("pt", slug),
   "/games/sliding-puzzle/[puzzle]": ({ puzzle }) => !!getPuzzle(puzzle, "pt"),
   "/kindergarten/[topic]": ({ topic }) => !!getSchoolTopicPt("primeiro-ano", topic),

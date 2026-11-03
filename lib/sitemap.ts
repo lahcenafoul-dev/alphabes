@@ -12,6 +12,7 @@ import { spanishSyllablePages } from "@/lib/silabas-es";
 import { fichaCategoryParams, fichaPacks } from "@/lib/fichas-es";
 import { phonicsSkills } from "@/lib/phonics-data";
 import { games } from "@/lib/games-data";
+import { numberGames } from "@/lib/number-games";
 import { frenchSounds } from "@/lib/sons-fr";
 import { FICHE_CATEGORIES, fichePacks, fiches } from "@/lib/fiches-fr";
 import { frenchGames } from "@/lib/games-fr";
@@ -148,6 +149,14 @@ export async function sitemapEntries(): Promise<MetadataRoute.Sitemap> {
     priority: 0.6,
   }));
 
+  // The number games; withTwins adds the other languages.
+  const numberGameRoutes = numberGames("en").map((g) => ({
+    url: `${baseUrl}/games/${g.slug}`,
+    lastModified: RELEASE_DATE,
+    changeFrequency: "monthly" as const,
+    priority: 0.6,
+  }));
+
   // The sliding puzzles and their listing; withTwins adds the other languages.
   const puzzleRoutes = ["", ...PUZZLES.map((p) => `/${p.slug.en}`)].map((path) => ({
     url: `${baseUrl}/games/sliding-puzzle${path}`,
@@ -246,6 +255,7 @@ export async function sitemapEntries(): Promise<MetadataRoute.Sitemap> {
     ...letterRoutes,
     ...letterWorksheetRoutes,
     ...gameRoutes,
+    ...numberGameRoutes,
     ...puzzleRoutes,
     ...phonicsRoutes,
     ...worksheetCategoryRoutes,

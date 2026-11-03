@@ -38,6 +38,11 @@
     "dotToDot": "Dot to dot",
     "numberStickers": "Number stickers",
     "numberFlashCards": "Number flash cards",
+    "countGame": "Counting game",
+    "missingGame": "Missing number game",
+    "matchGame": "Number match game",
+    "compareGame": "Bigger or smaller game",
+    "balloonGame": "Balloon pop game",
     "openSection": "Open the {section} menu"
   },
   "LanguageSwitcher": {
@@ -286,5 +291,59 @@
     "yesDelete": "Yes, delete",
     "saving": "Saving…",
     "save": "Save Changes"
+  },
+  "NumberGames": {
+    "label": "Number game",
+    "roundLabel": "Round {n} of {total}",
+    "allDone": "All done!",
+    "stars": "{score} stars",
+    "listen": "Listen",
+    "listenAgain": "Hear the question again",
+    "next": "Next",
+    "playAgain": "Play again",
+    "tryAgain": "Not this one. Try again!",
+    "tryAgainSpoken": "Try again!",
+    "finalTitle": "Great job with numbers!",
+    "hint": "Tap your answer",
+    "number": "Number {n}",
+    "picture": "picture",
+    "count": {
+      "question": "How many are there?",
+      "spoken": "How many are there? Count them, then tap the number.",
+      "right": "Yes! There are {n}.",
+      "group": "Pictures to count"
+    },
+    "missing": {
+      "question": "Which number is missing?",
+      "spoken": "{row}. Which number is missing?",
+      "gap": "…",
+      "gapLabel": "missing number",
+      "row": "Numbers in a row",
+      "right": "Yes! {n} goes in the gap."
+    },
+    "match": {
+      "question": "Which group shows {n}?",
+      "spokenDots": "Find {n, plural, one {# dot} other {# dots}}.",
+      "spokenFingers": "Find {n, plural, one {# finger} other {# fingers}}.",
+      "dots": "{n, plural, one {# dot} other {# dots}}",
+      "fingers": "{n, plural, one {# finger} other {# fingers}}",
+      "right": "Yes! That's {n}."
+    },
+    "compare": {
+      "bigger": "Tap the bigger number!",
+      "smaller": "Tap the smaller number!",
+      "rightBigger": "Yes! {a} is bigger than {b}.",
+      "rightSmaller": "Yes! {a} is smaller than {b}.",
+      "group": "{n} pictures"
+    },
+    "balloons": {
+      "question": "Pop the balloons in order, from 1 to 10!",
+      "spoken": "Pop the balloons in order. Start with 1!",
+      "find": "Find {n}!",
+      "wrong": "That's {m}. Find {n}!",
+      "balloon": "Balloon {n}",
+      "done": "You popped them all, from 1 to 10!",
+      "field": "Balloons"
+    }
   }
 }

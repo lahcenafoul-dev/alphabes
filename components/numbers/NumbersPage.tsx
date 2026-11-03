@@ -3,6 +3,7 @@ import type { Locale } from "@/i18n/routing";
 import { buildBreadcrumbJsonLd } from "@/lib/json-ld";
 import { HTML_LANG, SITE_URL, absoluteUrl, localizedPath } from "@/lib/i18n/routes";
 import { activityLinks, numberCards, numbersCopy } from "@/lib/numbers-page";
+import { NumberGamesSection } from "@/components/number-games/NumberGamePage";
 
 // The card colours of the home page's feature tiles, in turn.
 const TINTS = ["bg-white", "bg-owl-lilac", "bg-owl-cream", "bg-owl-mint"];
@@ -72,6 +73,8 @@ export default function NumbersPage({ locale }: { locale: Locale }) {
             ))}
           </ul>
         </section>
+
+        <NumberGamesSection locale={locale} className="mt-12 bg-white ring-1 ring-owl-ink/5" />
 
         <section aria-labelledby="activities-heading" className="mt-12">
           <h2 id="activities-heading" className="font-display text-2xl font-extrabold sm:text-3xl">

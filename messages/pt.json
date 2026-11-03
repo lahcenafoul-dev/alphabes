@@ -38,6 +38,11 @@
     "dotToDot": "Ligue os pontos",
     "numberStickers": "Adesivos de números",
     "numberFlashCards": "Cartões de números",
+    "countGame": "Jogo de contar",
+    "missingGame": "Jogo do número que falta",
+    "matchGame": "Jogo de combinar números",
+    "compareGame": "Jogo de maior ou menor",
+    "balloonGame": "Jogo dos balões",
     "openSection": "Abrir o menu {section}"
   },
   "LanguageSwitcher": {
@@ -286,5 +291,59 @@
     "yesDelete": "Sim, excluir",
     "saving": "Salvando…",
     "save": "Salvar"
+  },
+  "NumberGames": {
+    "label": "Jogo de números",
+    "roundLabel": "Rodada {n} de {total}",
+    "allDone": "Acabou!",
+    "stars": "{score} estrelas",
+    "listen": "Ouvir",
+    "listenAgain": "Ouvir a pergunta de novo",
+    "next": "Próximo",
+    "playAgain": "Jogar de novo",
+    "tryAgain": "Esse não. Tente de novo!",
+    "tryAgainSpoken": "Tente de novo!",
+    "finalTitle": "Muito bem com os números!",
+    "hint": "Toque na sua resposta",
+    "number": "Número {n}",
+    "picture": "desenho",
+    "count": {
+      "question": "Quantos tem?",
+      "spoken": "Quantos tem? Conte e toque no número.",
+      "right": "Isso! Tem {n}.",
+      "group": "Desenhos para contar"
+    },
+    "missing": {
+      "question": "Qual número está faltando?",
+      "spoken": "{row}. Qual número está faltando?",
+      "gap": "…",
+      "gapLabel": "número que falta",
+      "row": "Números em sequência",
+      "right": "Isso! O {n} vai no espaço vazio."
+    },
+    "match": {
+      "question": "Qual grupo mostra o {n}?",
+      "spokenDots": "Procure {n, plural, one {# bolinha} other {# bolinhas}}.",
+      "spokenFingers": "Procure {n, plural, one {# dedo} other {# dedos}}.",
+      "dots": "{n, plural, one {# bolinha} other {# bolinhas}}",
+      "fingers": "{n, plural, one {# dedo} other {# dedos}}",
+      "right": "Isso! É o {n}."
+    },
+    "compare": {
+      "bigger": "Toque no número maior!",
+      "smaller": "Toque no número menor!",
+      "rightBigger": "Isso! {a} é maior que {b}.",
+      "rightSmaller": "Isso! {a} é menor que {b}.",
+      "group": "{n} desenhos"
+    },
+    "balloons": {
+      "question": "Estoure os balões em ordem, de 1 a 10!",
+      "spoken": "Estoure os balões em ordem. Comece pelo 1!",
+      "find": "Procure o {n}!",
+      "wrong": "Esse é o {m}. Procure o {n}!",
+      "balloon": "Balão {n}",
+      "done": "Você estourou todos os balões, de 1 a 10!",
+      "field": "Balões"
+    }
   }
 }

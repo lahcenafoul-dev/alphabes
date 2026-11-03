@@ -1,3 +1,4 @@
+import { NUMBER_GAME_GROUPS } from "@/lib/number-games";
 import { describe, expect, it } from "vitest";
 import { getGame } from "@/lib/games-data";
 import { getKindergartenTopic } from "@/lib/kindergarten-data";
@@ -32,7 +33,9 @@ describe("French games data", () => {
       expect(getGame(g.en), g.slug).not.toBeNull();
       expect(TRANSLATED_PARAMS["/games/[slug]"]!.groups.find((group) => group.en === g.en)?.fr).toBe(g.slug);
     }
-    expect(TRANSLATED_PARAMS["/games/[slug]"]!.groups.filter((group) => group.fr)).toHaveLength(frenchGames.length);
+    // The other groups are the number games (lib/number-games.ts, tests/games/number-games.test.ts).
+    const letterGroups = TRANSLATED_PARAMS["/games/[slug]"]!.groups.filter((group) => !NUMBER_GAME_GROUPS.includes(group as never));
+    expect(letterGroups.filter((group) => group.fr)).toHaveLength(frenchGames.length);
   });
 
   it("uses the 26 letters of the alphabet, in order", () => {
