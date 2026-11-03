@@ -13,6 +13,7 @@ import { hasPro } from "@/lib/billing/entitlement";
 import StoryReader from "./story-reader";
 import { buildShortStoryJsonLd } from "@/lib/json-ld";
 import { withSocialMetadata } from "@/lib/social-metadata";
+import { storyExtras, storyOgImage } from "@/lib/stories";
 
 type Props = { params: Promise<{ locale: string; slug: string }> };
 
@@ -27,7 +28,6 @@ async function findStoryMeta(slug: string, locale: Locale) {
       title: true,
       isPremium: true,
       translationGroup: true,
-      pages: { select: { text: true }, orderBy: { pageNumber: "asc" }, take: 2 },
     },
   });
   if (!story) return null;
@@ -52,21 +52,23 @@ async function pageMetadata(props: Props): Promise<Metadata> {
   const alternates = alternatesFor(locale, "/stories/[slug]", { slug }, found?.otherParams);
   // Without its own canonical, a story inherited the home page's.
   if (!found) return { alternates };
-  const { title: name, isPremium, pages } = found.story;
-  const { title, closing } = {
-    en: { title: `${name}: A Short Story to Read and Listen To`, closing: "A short illustrated story for young children to read together or listen to." },
-    fr: { title: `${name} : une histoire à lire et à écouter`, closing: "Une histoire illustrée pour les enfants, à lire ensemble ou à écouter." },
-    es: { title: `${name}: un cuento para leer y escuchar`, closing: "Un cuento ilustrado para niños, para leer juntos o escuchar." },
-    pt: { title: `${name}: uma história para ler e ouvir`, closing: "Uma história ilustrada para crianças, para ler juntos ou ouvir." },
+  const { title: name, translationGroup } = found.story;
+  const title = {
+    en: `${name}: A Short Story to Read and Listen To`,
+    fr: `${name} : une histoire à lire et à écouter`,
+    es: `${name}: un cuento para leer y escuchar`,
+    pt: `${name}: uma história para ler e ouvir`,
   }[locale];
-  // The opening of the story, then the closing sentence: two pages when that
-  // fits Google's 160 characters, else the first (rule R3). English uses the
-  // first page only, and a premium story never quotes more than the page
-  // everyone can read.
-  const opening = (count: number) => [...pages.slice(0, count).map((p) => p.text), closing].join(" ");
-  const twoPages = opening(2);
-  const description = locale === "en" || isPremium || twoPages.length > 160 ? opening(1) : twoPages;
-  return { title, description, alternates, openGraph: { title, description, url: absoluteUrl(locale, "/stories/[slug]", { slug }) } };
+  // The description written for each story (prisma/stories-v2); every story
+  // has one, and a premium story's never quotes its locked pages.
+  const description = storyExtras(translationGroup, locale)?.description;
+  const images = translationGroup ? [{ url: storyOgImage(translationGroup), width: 1200, height: 630, alt: name }] : undefined;
+  return {
+    title,
+    description,
+    alternates,
+    openGraph: { title, description, url: absoluteUrl(locale, "/stories/[slug]", { slug }), ...(images && { images }) },
+  };
 }
 
 export default async function StoryPage(props: Props) {
@@ -102,6 +104,7 @@ export default async function StoryPage(props: Props) {
   // rest only with Pro, decided here on the server: the other pages are never
   // sent to the browser (docs/paypal-plan.md, B4).
   const locked = story.isPremium && !hasPro(user?.subscription);
+  const extras = storyExtras(story.translationGroup, locale);
 
   return (
     <main id="main-content" className="mx-auto max-w-3xl px-6 py-12">
@@ -124,11 +127,11 @@ export default async function StoryPage(props: Props) {
       )}
 
       <h1 className="mt-4 text-3xl font-extrabold">{story.title}</h1>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(buildShortStoryJsonLd(locale, story)) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(buildShortStoryJsonLd(locale, { ...story, description: extras?.description })) }} />
 
       {locked ? (
         <>
-          <StoryReader story={{ ...story, pages: story.pages.slice(0, 1) }} childProfiles={children} locale={locale} />
+          <StoryReader story={{ ...story, pages: story.pages.slice(0, 1) }} childProfiles={children} locale={locale} alt={extras?.alt} />
           <Paywall
             locale={locale}
             kind="story"
@@ -137,7 +140,7 @@ export default async function StoryPage(props: Props) {
           />
         </>
       ) : (
-        <StoryReader story={story} childProfiles={children} locale={locale} />
+        <StoryReader story={story} childProfiles={children} locale={locale} alt={extras?.alt} questions={extras?.questions} />
       )}
     </main>
   );

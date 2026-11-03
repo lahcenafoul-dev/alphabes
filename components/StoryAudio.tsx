@@ -6,16 +6,18 @@ import { stopSpeaking } from "@/lib/speech";
 import { InlineIcon } from "@/components/UiIcon";
 
 const LABELS = {
+  en: { listen: "Listen", stop: "Stop", listenAria: "Listen to the page", stopAria: "Stop reading" },
   fr: { listen: "Écouter", stop: "Arrêter", listenAria: "Écouter la page", stopAria: "Arrêter la lecture" },
   es: { listen: "Escuchar", stop: "Detener", listenAria: "Escuchar la página", stopAria: "Detener la lectura" },
   pt: { listen: "Ouvir", stop: "Parar", listenAria: "Ouvir a página", stopAria: "Parar a leitura" },
 };
 
-// "Écouter" / "Escuchar" / "Ouvir" on a French, Spanish or Portuguese story page: plays the page's
+// "Listen" / "Écouter" / "Escuchar" / "Ouvir" on a story page: plays the page's
 // recorded MP3 when it has one (French only, scripts/tts-histoires.ts),
-// otherwise reads the text with the browser's voice in the story's language.
+// otherwise reads the text with the browser's voice in the story's language
+// (English stories have no recorded audio since stories v2).
 // A missing or broken file also falls back to it. While reading, the button
-// becomes "Arrêter" / "Detener" / "Parar"; turning the page or leaving the story stops
+// becomes "Stop" / "Arrêter" / "Detener" / "Parar"; turning the page or leaving the story stops
 // the reading.
 export default function StoryAudio({
   text,

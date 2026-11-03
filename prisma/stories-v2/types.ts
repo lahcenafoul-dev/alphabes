@@ -40,3 +40,6 @@ export type StoryV2 = {
 
 export const LEVEL_PAGES: Record<Level, number> = { 1: 6, 2: 7, 3: 8 };
 export const LEVEL_AGES: Record<Level, [number, number]> = { 1: [3, 4], 2: [4, 6], 3: [6, 8] };
+
+/** Alt text per language: [cover, page 1, page 2…], written from the scenes. */
+export type StoryAlt = Record<Lang, string[]>;

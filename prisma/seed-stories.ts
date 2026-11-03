@@ -5,24 +5,33 @@ import { allStories, frenchAudioPath } from "./stories-data";
 
 const prisma = new PrismaClient();
 
+// Writes the stories (prisma/stories-data.ts) to the database: stories and
+// pages are upserted by slug and page number, so ids stay the same and
+// children's progress (StoryProgress) is never touched. Pages past a story's
+// last page are removed; nothing else is deleted.
+//
+// A picture is used once its file exists in public/ (npm run stories:images);
+// until then the page shows its old drawn scene, or the open book.
+const inPublic = (path: string) => existsSync(join(process.cwd(), "public", path));
+const picture = (path: string, fallback: string | null) => (inPublic(path) ? path : fallback);
+
 // French pages get an audioUrl once their MP3 exists (scripts/tts-histoires.ts);
-// until then the reader falls back to the browser's French voice. Spanish
-// and Portuguese pages are read by the browser's voice (no recorded audio). English
-// audio is found by scene name (components/AudioButton.tsx), as before.
+// until then, and in the other languages, the reader uses the browser's voice.
 function audioUrlFor(locale: "EN" | "FR" | "ES" | "PT", slug: string, pageNumber: number): string | null {
   if (locale !== "FR") return null;
   const path = frenchAudioPath(slug, pageNumber);
-  return existsSync(join(process.cwd(), "public", path)) ? path : null;
+  return inPublic(path) ? path : null;
 }
 
 async function main() {
+  let missing = 0;
   for (const story of allStories) {
     const fields = {
       title: story.title,
       ageRangeMin: story.ageRangeMin,
       ageRangeMax: story.ageRangeMax,
       order: story.order,
-      coverUrl: story.coverScene,
+      coverUrl: picture(story.cover, story.coverFallbackScene),
       locale: story.locale,
       translationGroup: story.translationGroup,
     };
@@ -33,28 +42,23 @@ async function main() {
     });
 
     for (const page of story.pages) {
-      // English pages keep whatever audioUrl they have.
-      const audio = story.locale !== "EN" ? { audioUrl: audioUrlFor(story.locale, story.slug, page.pageNumber) } : {};
+      if (!inPublic(page.image)) missing++;
+      const data = {
+        text: page.text,
+        imageUrl: picture(page.image, page.fallbackScene),
+        audioUrl: audioUrlFor(story.locale, story.slug, page.pageNumber),
+      };
       await prisma.storyPage.upsert({
-        where: {
-          storyId_pageNumber: {
-            storyId: created.id,
-            pageNumber: page.pageNumber,
-          },
-        },
-        update: { text: page.text, imageUrl: page.scene, ...audio },
-        create: {
-          storyId: created.id,
-          pageNumber: page.pageNumber,
-          text: page.text,
-          imageUrl: page.scene,
-          ...audio,
-        },
+        where: { storyId_pageNumber: { storyId: created.id, pageNumber: page.pageNumber } },
+        update: data,
+        create: { storyId: created.id, pageNumber: page.pageNumber, ...data },
       });
     }
+    await prisma.storyPage.deleteMany({ where: { storyId: created.id, pageNumber: { gt: story.pages.length } } });
 
-    console.log(`Seeded: ${story.title} (${story.locale})`);
+    console.log(`Seeded: ${story.title} (${story.locale}, ${story.pages.length} pages)`);
   }
+  console.log(`${allStories.length} stories seeded; ${missing} page pictures missing (shown as drawn scenes).`);
 }
 
 main()

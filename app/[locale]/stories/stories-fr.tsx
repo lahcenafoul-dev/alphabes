@@ -1,12 +1,11 @@
 import type { Metadata } from "next";
 import { Link } from "@/i18n/navigation";
-import StoryIllustration from "@/components/StoryIllustration";
-import { getPrisma } from "@/lib/prisma";
+import StoryShelf from "@/components/stories/StoryShelf";
 import { absoluteUrl, alternatesFor } from "@/lib/i18n/routes";
 
 const title = "Histoires pour enfants à lire et à écouter";
 const description =
-  "Huit petites histoires illustrées pour les enfants de 3 à 7 ans, à lire ensemble ou à écouter : une pomme, un ourson, un chat curieux, un lion qui veut faire la sieste…";
+  "24 petites histoires illustrées pour les enfants de 3 à 8 ans, en trois niveaux, à lire ensemble ou à écouter : l'amitié, les émotions, les chiffres, les lettres, le coucher…";
 
 export const storiesMetadataFr: Metadata = {
   title,
@@ -15,45 +14,26 @@ export const storiesMetadataFr: Metadata = {
   openGraph: { title, description, url: absoluteUrl("fr", "/stories") },
 };
 
-export default async function StoriesFr() {
-  const stories = await getPrisma().story.findMany({
-    where: { locale: "FR" },
-    orderBy: { order: "asc" },
-  });
-
+export default function StoriesFr() {
   return (
-    <main id="main-content" className="mx-auto max-w-5xl px-6 py-12">
-      <nav aria-label="Fil d'Ariane" className="text-sm text-chalkboard/60">
-        <ol className="flex gap-2">
-          <li><Link href="/">Accueil</Link> /</li>
-          <li aria-current="page" className="font-bold">Histoires</li>
-        </ol>
-      </nav>
+    <div className="bg-owl-bg text-owl-ink">
+      <main id="main-content" className="mx-auto max-w-6xl px-4 py-10 sm:px-6 sm:py-12">
+        <nav aria-label="Fil d'Ariane" className="text-sm text-owl-muted">
+          <ol className="flex gap-2">
+            <li><Link href="/" className="hover:text-owl-purple">Accueil</Link> /</li>
+            <li aria-current="page" className="font-bold text-owl-ink">Histoires</li>
+          </ol>
+        </nav>
 
-      <h1 className="mt-4 text-4xl font-extrabold">Des histoires à lire et à écouter</h1>
-      <p className="mt-2 text-chalkboard/70 max-w-2xl">
-        Choisissez une histoire à lire ensemble. Chaque page a son image, et on peut l&apos;écouter : les plus
-        petits suivent, les lecteurs du CP lisent les phrases eux-mêmes.
-      </p>
+        <h1 className="mt-4 font-display text-4xl font-extrabold leading-tight sm:text-5xl">Des histoires à lire et à écouter</h1>
+        <p className="mt-4 max-w-3xl text-lg text-owl-muted">
+          Choisissez une histoire à lire ensemble. Chaque page a son image, et on peut l&apos;écouter. Le niveau 1 est
+          pour les plus petits ; au niveau 3, les histoires sont plus longues, pour les enfants qui commencent à lire
+          seuls.
+        </p>
 
-      <ul className="mt-10 grid gap-6 sm:grid-cols-2 md:grid-cols-3">
-        {stories.map((story) => (
-          <li key={story.id}>
-            <Link
-              href={{ pathname: "/stories/[slug]", params: { slug: story.slug } }}
-              className="block rounded-block border border-chalkboard/10 shadow-block overflow-hidden hover:shadow-lg transition"
-            >
-              <StoryIllustration scene={story.coverUrl} endLabel="Fin" />
-              <div className="p-4">
-                <h2 className="font-display font-bold text-lg">{story.title}</h2>
-                <p className="mt-1 text-sm text-chalkboard/60">
-                  De {story.ageRangeMin} à {story.ageRangeMax} ans
-                </p>
-              </div>
-            </Link>
-          </li>
-        ))}
-      </ul>
-    </main>
+        <StoryShelf locale="fr" />
+      </main>
+    </div>
   );
 }

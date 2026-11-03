@@ -9,7 +9,10 @@ The goal: rewrite the 8 stories as real little stories, add 16 new ones (24 in a
 - **Step B (2026-11-02): done and approved by the owner on 2026-11-02, including broccoli instead of peas, "Boo's Ten Cherries" and the two wording changes. Waiting for the owner to make the images.**
   - FR/ES/PT versions, SEO descriptions and talk-about-it questions for all 24 stories, in `prisma/stories-v2/`.
   - All Canva prompts in `../owl-design/stories/prompts.md` and the list of missing pictures in `../owl-design/stories/images/MISSING.txt`, both from `npm run stories:prompts`.
-- **Step C:** image script, reader, listing, seed, tests, build and browser check. It starts when the owner says the images are ready.
+- **Step C (2026-11-03): done on the branch, not merged or pushed.**
+  - The 192 Canva pictures are converted to WebP in `public/stories/<group>/` (1200 and 640 px, plus a 1200×630 `og.jpg` per story; 408 files, 25.6 MB).
+  - Alt text in 4 languages, and the seed, reader, listing, story page, sitemap, French audio script and tests use the new stories.
+  - Seeded on the **dev** database only; production is seeded after the deploy (see below).
 
 ## Where things are
 - **`prisma/stories-v2/`:** the 24 stories (`level-1.ts`, `level-2.ts`, `level-3.ts`, types in `types.ts`).
@@ -102,7 +105,14 @@ The full texts in all four languages are in `prisma/stories-v2/`. Overview:
 | 23 | `bike` | 3 | Rex Rides a Bike | new |
 | 24 | `school` | 3 | Daisy's First Day | new |
 
-## Notes for step C
-- **Alt text per page and language:** not written yet. Write it in step C from the scenes, in each language.
-- **Switching over:** `prisma/stories-data.ts`, the seed, `scripts/tts-histoires.ts` and `tests/i18n/stories.test.ts` still use the old 8×5 stories. Step C switches them to `prisma/stories-v2`. The old SVG scenes stay as the fallback when a picture is missing.
+## How the site uses them (step C)
+- **Pictures:** `npm run stories:images -- <group>` (or `--all`, `--force`) converts `../owl-design/stories/images/<group>/*.png` one picture at a time. The seed stores the 1200 px path; `components/stories/StoryPicture.tsx` adds the 640 px one. A missing or broken picture shows the old drawn scene (`components/StoryIllustration.tsx`, first 5 pages of the 8 old stories) or the open book.
+- **Database:** the rows keep only what they had (slug, title, ages, order, cover, pages). The level, the "new" badge, the SEO description, the questions and the alt text come from `prisma/stories-v2` by `translationGroup` (`lib/stories.ts`), so no schema change was needed.
+- **Seed** (`npm run db:seed`): upserts stories by slug and pages by number, so ids stay and `StoryProgress` is never touched; it deletes only pages past a story's last page.
+- **Audio:** none recorded for the new texts. Every language uses the browser's voice. French MP3s, when made, go to `/audio/histoires/v2/` (`npm run tts:histoires`), so the old MP3s, which read the old texts, are never played. The old files in `public/audio/stories/` and `public/audio/histoires/` are no longer used.
 - **`isPremium`:** none of the stories is Premium yet.
+
+## Production (after the merge)
+1. Push `main` and wait for Workers Builds to deploy (the pictures ship in `public/stories/`).
+2. Then run `npm run db:seed` once with `DATABASE_URL` pointing at the production branch. It upserts 96 stories and 672 pages and leaves children's progress alone.
+3. The sitemap's story list is cached for an hour.

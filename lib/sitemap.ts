@@ -59,7 +59,7 @@ const SITEMAP_REVALIDATE_SECONDS = 3600;
 const getCachedStories = unstable_cache(
   async () =>
     getPrisma().story.findMany({
-      select: { slug: true, updatedAt: true, locale: true, translationGroup: true },
+      select: { slug: true, updatedAt: true, locale: true, translationGroup: true, coverUrl: true },
       orderBy: [{ locale: "asc" }, { order: "asc" }],
     }),
   ["sitemap-stories"],
@@ -86,6 +86,8 @@ async function getStoryRoutes(): Promise<MetadataRoute.Sitemap> {
         changeFrequency: "monthly" as const,
         priority: 0.6,
         ...(Object.keys(languages).length > 2 && { alternates: { languages } }),
+        // The cover picture (a drawn scene name is not a file).
+        ...(s.coverUrl?.startsWith("/") && { images: [new URL(s.coverUrl, SITE_URL).href] }),
       };
     });
   } catch (err) {

@@ -1,10 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { LEVEL_PAGES, storiesV2, type Lang } from "@/prisma/stories-v2";
+import { LEVEL_PAGES, STORY_ALT, storiesV2, type Lang } from "@/prisma/stories-v2";
 import { charactersIn } from "@/scripts/stories/characters";
 
 const LANGS: Lang[] = ["EN", "FR", "ES", "PT"];
 const strip = (s: string) => s.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
-const all = (lang: Lang) => storiesV2.map((s) => s.text[lang]);
+// Each story's texts with its alt text, checked by the same word rules.
+const all = (lang: Lang) => storiesV2.map((s) => ({ ...s.text[lang], questions: [...s.text[lang].questions, ...(STORY_ALT[s.group]?.[lang] ?? [])] }));
 const words = (s: string) => s.match(/\p{L}+(?:-\p{L}+)*/gu) ?? [];
 
 describe("stories v2 (prisma/stories-v2)", () => {
@@ -103,7 +104,18 @@ describe("stories v2 (prisma/stories-v2)", () => {
     }
   });
 
+  it("has alt text for the cover and every page, in every language", () => {
+    expect(Object.keys(STORY_ALT).sort()).toEqual(storiesV2.map((s) => s.group).sort());
+    for (const s of storiesV2) {
+      for (const lang of LANGS) {
+        const alt = STORY_ALT[s.group][lang];
+        expect(alt, `${s.group} ${lang}`).toHaveLength(s.scenes.length + 1);
+        for (const a of alt) expect(a.trim().length, `${s.group} ${lang}`).toBeGreaterThan(10);
+      }
+    }
+  });
+
   it("has no look-alike letters from other alphabets", () => {
-    expect(JSON.stringify(storiesV2)).not.toMatch(/[Ѐ-ӿ]|[Ͱ-Ͽ]/);
+    expect(JSON.stringify([storiesV2, STORY_ALT])).not.toMatch(/[Ѐ-ӿ]|[Ͱ-Ͽ]/);
   });
 });
