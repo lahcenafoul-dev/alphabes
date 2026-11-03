@@ -38,6 +38,11 @@
     "dotToDot": "Points à relier",
     "numberStickers": "Gommettes des nombres",
     "numberFlashCards": "Cartes des nombres",
+    "countGame": "Jeu pour compter",
+    "missingGame": "Jeu du nombre manquant",
+    "matchGame": "Jeu pour associer les nombres",
+    "compareGame": "Jeu plus grand, plus petit",
+    "balloonGame": "Jeu des ballons",
     "openSection": "Ouvrir le menu {section}"
   },
   "LanguageSwitcher": {
@@ -286,5 +291,59 @@
     "yesDelete": "Oui, supprimer",
     "saving": "Enregistrement…",
     "save": "Enregistrer"
+  },
+  "NumberGames": {
+    "label": "Jeu des nombres",
+    "roundLabel": "Manche {n} sur {total}",
+    "allDone": "Terminé !",
+    "stars": "{score} étoiles",
+    "listen": "Écouter",
+    "listenAgain": "Réécouter la question",
+    "next": "Suivant",
+    "playAgain": "Rejouer",
+    "tryAgain": "Pas celui-là. Essaie encore !",
+    "tryAgainSpoken": "Essaie encore !",
+    "finalTitle": "Bravo, tu connais bien les nombres !",
+    "hint": "Touche ta réponse",
+    "number": "Nombre {n}",
+    "picture": "dessin",
+    "count": {
+      "question": "Combien y en a-t-il ?",
+      "spoken": "Combien y en a-t-il ? Compte-les, puis touche le nombre.",
+      "right": "Oui ! Il y en a {n}.",
+      "group": "Dessins à compter"
+    },
+    "missing": {
+      "question": "Quel nombre manque ?",
+      "spoken": "{row}. Quel nombre manque ?",
+      "gap": "…",
+      "gapLabel": "nombre manquant",
+      "row": "Nombres qui se suivent",
+      "right": "Oui ! Le {n} va dans la case vide."
+    },
+    "match": {
+      "question": "Quel groupe montre {n} ?",
+      "spokenDots": "Trouve {n, plural, one {# point} other {# points}}.",
+      "spokenFingers": "Trouve {n, plural, one {# doigt} other {# doigts}}.",
+      "dots": "{n, plural, one {# point} other {# points}}",
+      "fingers": "{n, plural, one {# doigt} other {# doigts}}",
+      "right": "Oui ! C'est {n}."
+    },
+    "compare": {
+      "bigger": "Touche le plus grand nombre !",
+      "smaller": "Touche le plus petit nombre !",
+      "rightBigger": "Oui ! {a} est plus grand que {b}.",
+      "rightSmaller": "Oui ! {a} est plus petit que {b}.",
+      "group": "{n} dessins"
+    },
+    "balloons": {
+      "question": "Éclate les ballons dans l'ordre, de 1 à 10 !",
+      "spoken": "Éclate les ballons dans l'ordre. Commence par le 1 !",
+      "find": "Trouve le {n} !",
+      "wrong": "Ça, c'est le {m}. Trouve le {n} !",
+      "balloon": "Ballon {n}",
+      "done": "Tu as éclaté tous les ballons, de 1 à 10 !",
+      "field": "Ballons"
+    }
   }
 }

@@ -6,6 +6,7 @@ import type { Metadata } from "next";
 import { routing, type AppPathname, type Locale } from "@/i18n/routing";
 import { sheetParamGroups } from "@/lib/sheets/catalog";
 import { PUZZLES } from "@/lib/puzzles";
+import { NUMBER_GAME_GROUPS } from "@/lib/number-games";
 
 export const SITE_URL = "https://alphabes.com";
 
@@ -195,6 +196,8 @@ const GAME_PARAMS: { key: string; groups: ParamGroup[] } = {
     { en: "letter-tracing", fr: "trace-la-lettre", es: "traza-la-letra", pt: "trace-a-letra" },
     { en: "alphabet-quiz", fr: "quiz-alphabet", es: "quiz-del-abecedario", pt: "quiz-do-alfabeto" },
     { es: "aplaude-las-silabas", pt: "bata-palmas" },
+    // The five number games (lib/number-games.ts), in every language.
+    ...NUMBER_GAME_GROUPS,
   ],
 };
 export const TRANSLATED_PARAMS: Partial<Record<AppPathname, { key: string; groups: ParamGroup[] }>> = {

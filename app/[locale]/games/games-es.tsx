@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import SlidingPuzzleTeaser from "@/components/games/SlidingPuzzleTeaser";
+import { NumberGamesSection } from "@/components/number-games/NumberGamePage";
 import { Link } from "@/i18n/navigation";
 import { absoluteUrl, alternatesFor } from "@/lib/i18n/routes";
 import { buildBreadcrumbJsonLd } from "@/lib/json-ld";
@@ -84,6 +85,8 @@ export default function GamesEs() {
           </div>
         ))}
       </div>
+
+      <NumberGamesSection locale="es" />
 
       <SlidingPuzzleTeaser locale="es" />
 

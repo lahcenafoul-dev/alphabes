@@ -1,5 +1,6 @@
 import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
+import { NUMBER_GAME_GROUPS } from "@/lib/number-games";
 import { describe, expect, it } from "vitest";
 import { getGame } from "@/lib/games-data";
 import { getKindergartenTopic } from "@/lib/kindergarten-data";
@@ -47,7 +48,8 @@ describe("Spanish games data", () => {
       expect(getGame(g.en!), g.slug).not.toBeNull();
       expect(groups.find((group) => group.en === g.en)?.es).toBe(g.slug);
     }
-    expect(groups.filter((group) => group.es && group.en)).toHaveLength(5);
+    // Plus the number games (lib/number-games.ts, tests/games/number-games.test.ts).
+    expect(groups.filter((group) => group.es && group.en && !NUMBER_GAME_GROUPS.includes(group as never))).toHaveLength(5);
     // «Aplaude las sílabas» has no English twin; its Portuguese twin is «Bata palmas».
     expect(groups.find((group) => group.es === "aplaude-las-silabas")).toEqual({ es: "aplaude-las-silabas", pt: "bata-palmas" });
   });

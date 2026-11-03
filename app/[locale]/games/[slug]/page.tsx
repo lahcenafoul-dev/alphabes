@@ -9,6 +9,8 @@ import GameFr, { gameMetadataFr } from "./game-fr";
 import GameEs, { gameMetadataEs } from "./game-es";
 import GamePt, { gameMetadataPt } from "./game-pt";
 import { withSocialMetadata } from "@/lib/social-metadata";
+import { getNumberGame, numberGames } from "@/lib/number-games";
+import NumberGamePage, { numberGameMetadata } from "@/components/number-games/NumberGamePage";
 
 type Props = { params: Promise<{ locale: string; slug: string }> };
 
@@ -28,18 +30,22 @@ export function generateStaticParams({ params }: { params: { locale: string } })
         : params.locale === "pt"
           ? portugueseGames.map((g) => g.slug)
           : englishGameParams();
-  return slugs.map((slug) => ({ slug }));
+  // The number games (lib/number-games.ts) exist in every language.
+  const locale = params.locale === "fr" || params.locale === "es" || params.locale === "pt" ? params.locale : "en";
+  return [...slugs, ...numberGames(locale).map((g) => g.slug)].map((slug) => ({ slug }));
 }
 
 async function pageMetadata(props: Props): Promise<Metadata> {
   const { locale: param, slug } = await props.params;
   const locale = initLocale(param);
+  if (getNumberGame(locale, slug)) return numberGameMetadata(locale, slug);
   return byLocale(locale, { en: gameMetadataEn, fr: gameMetadataFr, es: gameMetadataEs, pt: gameMetadataPt })(slug);
 }
 
 export default async function GamePage(props: Props) {
   const { locale: param, slug } = await props.params;
   const locale = initLocale(param);
+  if (getNumberGame(locale, slug)) return <NumberGamePage locale={locale} slug={slug} />;
   const Game = byLocale(locale, { en: GameEn, fr: GameFr, es: GameEs, pt: GamePt });
   return <Game slug={slug} />;
 }
