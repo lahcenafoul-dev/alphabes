@@ -66,6 +66,7 @@ export const routing = defineRouting({
       pt: "/primeiro-ano/[topic]",
     },
     "/login": { en: "/login", fr: "/connexion", es: "/iniciar-sesion", pt: "/entrar" },
+    "/numbers": { en: "/numbers", fr: "/nombres", es: "/numeros", pt: "/numeros" },
     "/phonics": { en: "/phonics", fr: "/sons", es: "/silabas", pt: "/silabas" },
     "/phonics/[skill]": { en: "/phonics/[skill]", fr: "/sons/[skill]", es: "/silabas/[skill]", pt: "/silabas/[skill]" },
     "/preschool": { en: "/preschool", fr: "/maternelle", es: "/preescolar", pt: "/educacao-infantil" },

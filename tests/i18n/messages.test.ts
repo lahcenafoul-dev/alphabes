@@ -64,7 +64,7 @@ describe("message files", () => {
   it("don't leave English text in the other files", () => {
     // Words that are the same in several languages are allowed.
     const sameInBoth = new Set([
-      "English", "Français", "Español", "Português", "Blog", "Contact", "Message", "Alphabet", "Pro", "Menu", "AlphaBes", "Page {page}",
+      "English", "Français", "Español", "Português", "Blog", "Contact", "Message", "Alphabet", "Pro", "Menu", "AlphaBes", "Page {page}", "Parents",
     ]);
     for (const [lang, flat] of others) {
       const suspicious = Object.entries(flat).filter(

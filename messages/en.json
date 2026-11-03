@@ -23,7 +23,21 @@
     "games": "Games",
     "stories": "Stories",
     "pricing": "Pricing",
-    "account": "My Account"
+    "account": "My Account",
+    "numbers": "Numbers",
+    "parents": "Parents",
+    "allLetters": "All letters",
+    "letterSounds": "Letter sounds (phonics)",
+    "alphabetWorksheets": "Alphabet worksheets",
+    "letterTracing": "Letter tracing",
+    "alphabetGames": "Alphabet games",
+    "flashcards": "Flashcards",
+    "allNumbers": "Numbers 0 to 20",
+    "numberTracing": "Number tracing",
+    "missingNumbers": "Missing numbers",
+    "dotToDot": "Dot to dot",
+    "numberStickers": "Number stickers",
+    "numberFlashCards": "Number flash cards"
   },
   "LanguageSwitcher": {
     "label": "Choose language",

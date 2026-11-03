@@ -23,7 +23,21 @@
     "games": "Juegos",
     "stories": "Cuentos",
     "pricing": "Precios",
-    "account": "Mi cuenta"
+    "account": "Mi cuenta",
+    "numbers": "Números",
+    "parents": "Familias",
+    "allLetters": "Todas las letras",
+    "letterSounds": "Las sílabas",
+    "alphabetWorksheets": "Fichas del abecedario",
+    "letterTracing": "Trazo de letras",
+    "alphabetGames": "Juegos de letras",
+    "flashcards": "Tarjetas",
+    "allNumbers": "Los números del 0 al 20",
+    "numberTracing": "Repasar los números",
+    "missingNumbers": "Números faltantes",
+    "dotToDot": "Une los puntos",
+    "numberStickers": "Stickers de números",
+    "numberFlashCards": "Tarjetas de números"
   },
   "LanguageSwitcher": {
     "label": "Elegir idioma",
