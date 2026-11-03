@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import StoryPicture from "@/components/stories/StoryPicture";
 import StoryAudio from "@/components/StoryAudio";
 import type { Locale } from "@/i18n/routing";
@@ -19,6 +19,7 @@ const LABELS = {
     finished: (title: string) => `You finished "${title}"!`,
     more: "More Stories",
     dashboard: "Dashboard",
+    signUp: "Sign Up",
     endLabel: "The End",
     talk: "Talk about it",
   },
@@ -33,6 +34,7 @@ const LABELS = {
     finished: (title: string) => `Tu as fini « ${title} » !`,
     more: "D'autres histoires",
     dashboard: "Tableau de bord",
+    signUp: "Créer un compte",
     endLabel: "Fin",
     talk: "On en parle",
   },
@@ -47,6 +49,7 @@ const LABELS = {
     finished: (title: string) => `¡Terminaste «${title}»!`,
     more: "Más cuentos",
     dashboard: "Mi cuenta",
+    signUp: "Crear una cuenta",
     endLabel: "Fin",
     talk: "Para conversar",
   },
@@ -61,6 +64,7 @@ const LABELS = {
     finished: (title: string) => `Você terminou “${title}”!`,
     more: "Mais histórias",
     dashboard: "Minha conta",
+    signUp: "Criar uma conta",
     endLabel: "Fim",
     talk: "Para conversar",
   },
@@ -90,68 +94,116 @@ type Props = {
   alt?: string[];
   /** Shown under the last page; empty when the last page is locked. */
   questions?: string[];
+  /** Signed in: the finished screen links to the dashboard, otherwise to sign-up. */
+  loggedIn?: boolean;
 };
 
-export default function StoryReader({ story, childProfiles, locale = "en", alt = [], questions = [] }: Props) {
+type ProgressSave = { slug: string; childId: string; lastPageRead: number; completed: boolean };
+
+/** Saves a child's reading progress. Never throws: a failed save only logs. */
+export async function saveProgress(save: ProgressSave, fetcher: typeof fetch = fetch): Promise<boolean> {
+  try {
+    const res = await fetcher(`/api/stories/${save.slug}/progress`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ childId: save.childId, lastPageRead: save.lastPageRead, completed: save.completed }),
+    });
+    return res.ok;
+  } catch (err) {
+    console.error("Story progress not saved:", err);
+    return false;
+  }
+}
+
+/**
+ * Finish: the finished screen shows at once for everyone (signed out, no child
+ * profile, or a save that fails). Progress is saved in the background, and
+ * only when a child is selected.
+ */
+export function finishStory(opts: {
+  slug: string;
+  childId: string;
+  pageCount: number;
+  showFinished: () => void;
+  save?: (save: ProgressSave) => Promise<unknown>;
+}) {
+  opts.showFinished();
+  if (!opts.childId) return;
+  const save = opts.save ?? saveProgress;
+  void save({ slug: opts.slug, childId: opts.childId, lastPageRead: opts.pageCount, completed: true });
+}
+
+export function FinishedScreen({ title, locale, loggedIn }: { title: string; locale: Locale; loggedIn: boolean }) {
+  const t = LABELS[locale];
+  // The reader was scrolled down to the Finish button; this block is much
+  // shorter, so on phones it would sit above the screen.
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    ref.current?.scrollIntoView({ block: "center" });
+  }, []);
+  return (
+    <div ref={ref} className="text-center py-20">
+      <UiIcon name="party" className="mx-auto mb-4 h-16 w-16 text-crayon-purple" />
+      <h2 className="text-3xl font-extrabold text-crayon-green">{t.greatJob}</h2>
+      <p className="mt-2 text-chalkboard/70">{t.finished(title)}</p>
+      <div className="mt-6 flex flex-wrap justify-center gap-4">
+        <Link href={localizedPath(locale, "/stories")} className="rounded-block bg-blue-500 text-white px-6 py-3 font-bold">
+          {t.more}
+        </Link>
+        {loggedIn ? (
+          <Link href={localizedPath(locale, "/dashboard")} className="rounded-block bg-crayon-green text-white px-6 py-3 font-bold">
+            {t.dashboard}
+          </Link>
+        ) : (
+          <Link href={localizedPath(locale, "/register")} className="rounded-block bg-crayon-green text-white px-6 py-3 font-bold">
+            {t.signUp}
+          </Link>
+        )}
+      </div>
+    </div>
+  );
+}
+
+export default function StoryReader({ story, childProfiles, locale = "en", alt = [], questions = [], loggedIn = false }: Props) {
   const t = LABELS[locale];
   const [finished, setFinished] = useState(false);
   const [pageIndex, setPageIndex] = useState(0);
   const [selectedChild, setSelectedChild] = useState(childProfiles[0]?.id ?? "");
-  
+
   const page = story.pages[pageIndex];
   const isLast = pageIndex === story.pages.length - 1;
   const isFirst = pageIndex === 0;
 
- async function saveProgress(newIndex: number, completed: boolean) {
-  if (!selectedChild) return;
-  try {
-    const res = await fetch(`/api/stories/${story.slug}/progress`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        childId: selectedChild,
-        lastPageRead: newIndex + 1,
-        completed,
-      }),
+  function finish() {
+    finishStory({
+      slug: story.slug,
+      childId: selectedChild,
+      pageCount: story.pages.length,
+      showFinished: () => setFinished(true),
     });
-    if (completed && res.ok) setFinished(true);
-  } catch (err) {
-    console.error("FETCH ERROR:", err);
   }
-}
 
   function goNext() {
     if (isLast) {
-      saveProgress(pageIndex, true);
+      finish();
       return;
     }
     const next = pageIndex + 1;
     setPageIndex(next);
-    saveProgress(next, false);
+    if (selectedChild) {
+      void saveProgress({ slug: story.slug, childId: selectedChild, lastPageRead: next + 1, completed: false });
+    }
   }
 
   function goPrev() {
     if (isFirst) return;
     setPageIndex(pageIndex - 1);
   }
-if (finished) {
-    return (
-      <div className="text-center py-20">
-        <UiIcon name="party" className="mx-auto mb-4 h-16 w-16 text-crayon-purple" />
-        <h2 className="text-3xl font-extrabold text-crayon-green">{t.greatJob}</h2>
-        <p className="mt-2 text-chalkboard/70">{t.finished(story.title)}</p>
-        <div className="mt-6 flex justify-center gap-4">
-          <Link href={localizedPath(locale, "/stories")} className="rounded-block bg-blue-500 text-white px-6 py-3 font-bold">
-            {t.more}
-          </Link>
-          <Link href={localizedPath(locale, "/dashboard")} className="rounded-block bg-crayon-green text-white px-6 py-3 font-bold">
-            {t.dashboard}
-          </Link>
-        </div>
-      </div>
-    );
+
+  if (finished) {
+    return <FinishedScreen title={story.title} locale={locale} loggedIn={loggedIn} />;
   }
-  
+
   return (
     <div className="mt-6">
       {childProfiles.length > 0 && (
@@ -217,7 +269,7 @@ if (finished) {
 
         {isLast ? (
           <button
-            onClick={() => saveProgress(pageIndex, true)}
+            onClick={finish}
             className="w-full rounded-block bg-crayon-green px-4 py-3 font-bold text-white sm:w-auto sm:px-6"
           >
             {t.finish}

@@ -131,7 +131,7 @@ export default async function StoryPage(props: Props) {
 
       {locked ? (
         <>
-          <StoryReader story={{ ...story, pages: story.pages.slice(0, 1) }} childProfiles={children} locale={locale} alt={extras?.alt} />
+          <StoryReader story={{ ...story, pages: story.pages.slice(0, 1) }} childProfiles={children} locale={locale} loggedIn={!!email} alt={extras?.alt} />
           <Paywall
             locale={locale}
             kind="story"
@@ -140,7 +140,7 @@ export default async function StoryPage(props: Props) {
           />
         </>
       ) : (
-        <StoryReader story={story} childProfiles={children} locale={locale} alt={extras?.alt} questions={extras?.questions} />
+        <StoryReader story={story} childProfiles={children} locale={locale} loggedIn={!!email} alt={extras?.alt} questions={extras?.questions} />
       )}
     </main>
   );
