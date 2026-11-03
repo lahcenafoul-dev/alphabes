@@ -38,7 +38,7 @@ const STYLES = {
     phoneCurrent: "flex items-center gap-3 rounded-block bg-chalkboard px-3 py-2.5 text-paper",
     phoneOther: "flex items-center gap-3 rounded-block px-3 py-2.5 hover:bg-crayon-blue/10",
     phoneCode: "w-6 text-chalkboard/60",
-    group: "hidden items-center rounded-full border-2 border-chalkboard/15 p-0.5 font-display font-bold text-sm sm:flex",
+    group: "hidden items-center rounded-full border-2 border-chalkboard/15 p-0.5 font-display font-bold text-sm sm:flex lg:hidden",
     current: "rounded-full bg-chalkboard px-2.5 py-1 text-paper",
     other: "rounded-full px-2.5 py-1 text-chalkboard/70 hover:text-chalkboard",
   },
@@ -52,7 +52,7 @@ const STYLES = {
     phoneOther: "flex items-center gap-3 rounded-full px-4 py-2.5 hover:bg-owl-lilac hover:text-owl-purple",
     phoneCode: "w-6 text-owl-muted",
     group:
-      "hidden items-center rounded-full bg-white p-1 font-display text-sm font-extrabold shadow-[0_0_0_1px_rgba(29,24,70,.12)] sm:flex",
+      "hidden items-center rounded-full bg-white p-1 font-display text-sm font-extrabold shadow-[0_0_0_1px_rgba(29,24,70,.12)] sm:flex lg:hidden",
     current: "rounded-full bg-owl-purple px-2.5 py-1 text-white",
     other: "rounded-full px-2.5 py-1 text-owl-muted hover:bg-owl-lilac hover:text-owl-purple",
   },
@@ -104,7 +104,8 @@ export default function LanguageSwitcher({ variant = "site" }: { variant?: "site
 
   return (
     <>
-      <div ref={menuRef} className="relative sm:hidden">
+      {/* The compact menu on phones and beside the full desktop nav (from 1024 px), where the four buttons don't fit. */}
+      <div ref={menuRef} className="relative sm:hidden lg:block">
         <button
           ref={buttonRef}
           type="button"

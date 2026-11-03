@@ -83,24 +83,24 @@ export default async function OwlHome({ locale, copy, children }: { locale: Loca
   return (
     <div data-owl-home className="min-h-screen overflow-x-clip bg-owl-bg font-body text-owl-ink">
       <header className="relative print:hidden">
-        <div className="mx-auto flex max-w-[1200px] items-center justify-between gap-4 px-4 py-4 sm:px-6 sm:py-[22px]">
+        <div className="mx-auto flex max-w-[1200px] items-center justify-between gap-4 px-4 py-4 sm:px-6 sm:py-[22px] lg:px-4 xl:px-6">
           <Link
             href={path("/")}
             aria-label={th("homeLabel")}
-            className="flex items-center gap-2.5 font-display text-[26px] font-extrabold text-owl-ink sm:text-[32px]"
+            className="flex shrink-0 items-center gap-2.5 font-display text-[26px] font-extrabold text-owl-ink sm:text-[32px] lg:text-[26px] xl:text-[32px]"
           >
             <OwlMark className="h-10 w-10 sm:h-11 sm:w-11" />
             AlphaBes
           </Link>
           <div className="flex items-center gap-2 sm:gap-3">
             <nav aria-label={th("mainNav")} className="hidden lg:block">
-              <ul className="flex items-center gap-1 text-[17px] font-extrabold">
+              <ul className="flex items-center gap-1 whitespace-nowrap text-[15px] font-extrabold xl:text-[17px]">
                 {nav.map((item) =>
                   item.children ? (
                     // Opens on hover and while any of its links has focus, so it
                     // works from the keyboard without JavaScript.
                     <li key={item.key} className="group relative">
-                      <Link href={item.href} className="inline-flex items-center gap-1 rounded-full px-2.5 py-2.5 text-owl-ink hover:text-owl-purple">
+                      <Link href={item.href} className="inline-flex items-center gap-1 rounded-full px-1.5 py-2.5 text-owl-ink hover:text-owl-purple xl:px-2">
                         {item.label}
                         <svg aria-hidden="true" viewBox="0 0 12 12" className="h-3 w-3 transition-transform group-hover:rotate-180 group-focus-within:rotate-180">
                           <path d="M2.5 4.5L6 8l3.5-3.5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
@@ -123,7 +123,7 @@ export default async function OwlHome({ locale, copy, children }: { locale: Loca
                       <Link
                         href={item.href}
                         rel={item.nofollow ? "nofollow" : undefined}
-                        className="rounded-full px-2.5 py-2.5 text-owl-ink hover:text-owl-purple"
+                        className="rounded-full px-1.5 py-2.5 text-owl-ink hover:text-owl-purple xl:px-2"
                       >
                         {item.label}
                       </Link>
@@ -131,7 +131,7 @@ export default async function OwlHome({ locale, copy, children }: { locale: Loca
                   ),
                 )}
                 <li>
-                  <Link href={path("/register")} className="owl-btn owl-btn-purple ml-1.5 whitespace-nowrap px-[22px] text-[17px] font-extrabold shadow-none">
+                  <Link href={path("/register")} className="owl-btn owl-btn-purple ml-1.5 whitespace-nowrap px-4 text-[15px] font-extrabold shadow-none xl:px-[22px] xl:text-[17px]">
                     {copy.nav.join}
                   </Link>
                 </li>
@@ -139,7 +139,10 @@ export default async function OwlHome({ locale, copy, children }: { locale: Loca
             </nav>
             <LanguageSwitcher variant="owl" />
             <MobileMenu
-              items={nav.map(({ href, label, children }) => ({ href, label, ...(children && { children: children.slice(1) }) }))}
+              items={nav
+                .filter((item) => !item.desktopOnly)
+                .map(({ href, label, children }) => ({ href, label, ...(children && { children: children.slice(1) }) }))}
+              sectionLabel={th.raw("openSection")}
               account={{ href: path("/register"), label: copy.nav.join }}
               menuLabel={th("menu")}
               closeLabel={th("closeMenu")}

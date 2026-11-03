@@ -37,7 +37,8 @@
     "missingNumbers": "Missing numbers",
     "dotToDot": "Dot to dot",
     "numberStickers": "Number stickers",
-    "numberFlashCards": "Number flash cards"
+    "numberFlashCards": "Number flash cards",
+    "openSection": "Open the {section} menu"
   },
   "LanguageSwitcher": {
     "label": "Choose language",

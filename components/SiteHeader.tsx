@@ -78,7 +78,10 @@ export default async function SiteHeader({ locale }: { locale: Locale }) {
           </Link>
           <LanguageSwitcher />
           <MobileMenu
-            items={items.map(({ href, label, children }) => ({ href, label, ...(children && { children: children.slice(1) }) }))}
+            items={items
+              .filter((item) => !item.desktopOnly)
+              .map(({ href, label, children }) => ({ href, label, ...(children && { children: children.slice(1) }) }))}
+            sectionLabel={t.raw("openSection")}
             account={{ href: localizedPath(locale, "/dashboard"), label: t("account") }}
             menuLabel={t("menu")}
             closeLabel={t("closeMenu")}

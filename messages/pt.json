@@ -37,7 +37,8 @@
     "missingNumbers": "Números que faltam",
     "dotToDot": "Ligue os pontos",
     "numberStickers": "Adesivos de números",
-    "numberFlashCards": "Cartões de números"
+    "numberFlashCards": "Cartões de números",
+    "openSection": "Abrir o menu {section}"
   },
   "LanguageSwitcher": {
     "label": "Escolher o idioma",

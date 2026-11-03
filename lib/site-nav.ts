@@ -1,16 +1,16 @@
 // The main navigation, shared by the site header (components/SiteHeader.tsx)
 // and the home page header (components/home/OwlHome.tsx): Alphabet ⌄,
-// Numbers ⌄, Games, Worksheets ⌄, Stories, Parents. Every link goes to a page
+// Numbers ⌄, Games, Worksheets ⌄, Stories, Parents, and Pricing on desktop. Every link goes to a page
 // that exists in that language (tests/site-nav.test.ts).
 import type { Locale } from "@/i18n/routing";
 import { localizedPath } from "@/lib/i18n/routes";
 import { SHEET_KINDS } from "@/lib/sheets/catalog";
 
 export type NavLink = { href: string; label: string };
-export type NavItem = NavLink & { key: string; children?: NavLink[]; nofollow?: boolean };
+export type NavItem = NavLink & { key: string; children?: NavLink[]; nofollow?: boolean; desktopOnly?: boolean };
 
 type HeaderKey =
-  | "alphabet" | "numbers" | "games" | "worksheets" | "stories" | "parents"
+  | "alphabet" | "numbers" | "games" | "worksheets" | "stories" | "parents" | "pricing"
   | "allLetters" | "letterSounds" | "alphabetWorksheets" | "letterTracing" | "alphabetGames" | "flashcards"
   | "allNumbers" | "numberTracing" | "missingNumbers" | "dotToDot" | "numberStickers" | "numberFlashCards"
   | "allWorksheets" | "proPacks";
@@ -72,7 +72,7 @@ export function worksheetLinks(locale: Locale, t: Translate, { proPacks = true }
   ];
 }
 
-/** The six menu items in order; `children` are the dropdown links, the first being the section's own page. */
+/** The menu items in order; `children` are the dropdown links, the first being the section's own page. */
 export function siteNav(locale: Locale, t: Translate, opts?: { proPacks?: boolean }): NavItem[] {
   const path = (p: Parameters<typeof localizedPath>[1]) => localizedPath(locale, p);
   return [
@@ -83,5 +83,7 @@ export function siteNav(locale: Locale, t: Translate, opts?: { proPacks?: boolea
     { key: "stories", href: path("/stories"), label: t("stories") },
     // Signed-out visitors are sent on to the login page, so crawlers needn't follow it.
     { key: "parents", href: path("/dashboard"), label: t("parents"), nofollow: true },
+    // Not in the phone menu, which ends with the account or sign-up button.
+    { key: "pricing", href: path("/pricing"), label: t("pricing"), desktopOnly: true },
   ];
 }

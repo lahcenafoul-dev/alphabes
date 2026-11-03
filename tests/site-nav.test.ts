@@ -30,8 +30,9 @@ function expectRealPage(locale: Locale, href: string) {
 describe.each(routing.locales)("site menu and /numbers in %s", (locale) => {
   const nav = siteNav(locale, translate(locale));
 
-  it("has the six items in order, with Alphabet, Numbers and Worksheets dropdowns", () => {
-    expect(nav.map((i) => i.key)).toEqual(["alphabet", "numbers", "games", "worksheets", "stories", "parents"]);
+  it("has the items in order, with Alphabet, Numbers and Worksheets dropdowns, and Pricing on desktop only", () => {
+    expect(nav.map((i) => i.key)).toEqual(["alphabet", "numbers", "games", "worksheets", "stories", "parents", "pricing"]);
+    expect(nav.filter((i) => i.desktopOnly).map((i) => i.key)).toEqual(["pricing"]);
     expect(nav.filter((i) => i.children).map((i) => i.key)).toEqual(["alphabet", "numbers", "worksheets"]);
     // The dropdown's first link is the section's own page (the phone menu leaves it out).
     for (const item of nav) if (item.children) expect(item.children[0].href).toBe(item.href);
