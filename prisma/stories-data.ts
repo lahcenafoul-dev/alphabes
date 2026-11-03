@@ -1,7 +1,7 @@
 // The stories as the database stores them, in all four languages. Built from
 // prisma/stories-v2 (the texts, written per language, see
 // docs/stories-plan.md). Used by prisma/seed-stories.ts (which writes them to
-// the database) and scripts/tts-histoires.ts (which makes the French audio).
+// the database) and scripts/stories/audio.ts (which makes the narration).
 // Pure data, no imports beyond the texts.
 import { LEVEL_AGES, storiesV2, type Lang, type Level } from "./stories-v2";
 
@@ -66,10 +66,3 @@ export const frenchStories = build("FR");
 export const spanishStories = build("ES");
 export const portugueseStories = build("PT");
 export const allStories: SeedStory[] = [...englishStories, ...frenchStories, ...spanishStories, ...portugueseStories];
-
-/**
- * Where a French page's audio file goes (scripts/tts-histoires.ts writes it).
- * The v2 folder keeps the MP3s of the old texts (/audio/histoires/<slug>-<n>.mp3)
- * from being played over the new ones.
- */
-export const frenchAudioPath = (slug: string, pageNumber: number) => `/audio/histoires/v2/${slug}-${pageNumber}.mp3`;

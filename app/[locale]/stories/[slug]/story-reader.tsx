@@ -2,7 +2,8 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import StoryPicture from "@/components/stories/StoryPicture";
-import StoryAudio from "@/components/StoryAudio";
+import StoryAudio, { type NarrationPart } from "@/components/StoryAudio";
+import { storyAudioPath } from "@/lib/story-audio";
 import type { Locale } from "@/i18n/routing";
 import { localizedPath } from "@/lib/i18n/routes";
 import UiIcon, { InlineIcon } from "@/components/UiIcon";
@@ -164,6 +165,19 @@ export function FinishedScreen({ title, locale, loggedIn }: { title: string; loc
   );
 }
 
+/**
+ * What "Listen" plays on a page: its MP3 (public/audio/stories/v2, made by
+ * scripts/stories/audio.ts), and on the first page the title (page 0) first,
+ * as when a grown-up reads the cover. Each part keeps its text for the
+ * browser's voice, used when a file is missing or can't play.
+ */
+export function narration(story: Pick<Story, "slug" | "title">, page: Pick<Page, "pageNumber" | "text">, locale: Locale): NarrationPart[] {
+  const part = { url: storyAudioPath(locale, story.slug, page.pageNumber), text: page.text };
+  if (page.pageNumber !== 1) return [part];
+  const title = /[.!?…]$/.test(story.title) ? story.title : `${story.title}.`;
+  return [{ url: storyAudioPath(locale, story.slug, 0), text: title }, part];
+}
+
 export default function StoryReader({ story, childProfiles, locale = "en", alt = [], questions = [], loggedIn = false }: Props) {
   const t = LABELS[locale];
   const [finished, setFinished] = useState(false);
@@ -237,7 +251,7 @@ export default function StoryReader({ story, childProfiles, locale = "en", alt =
         <div className="p-6 text-center sm:p-8">
           <p className="font-display text-2xl leading-snug sm:text-[28px]">{page.text}</p>
           <div className="mt-4 flex justify-center">
-            <StoryAudio text={page.text} audioUrl={page.audioUrl} locale={locale} />
+            <StoryAudio parts={narration(story, page, locale)} locale={locale} />
           </div>
         </div>
       </div>

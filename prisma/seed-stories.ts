@@ -1,7 +1,8 @@
 import { existsSync } from "fs";
 import { join } from "path";
 import { PrismaClient } from "@prisma/client";
-import { allStories, frenchAudioPath } from "./stories-data";
+import { allStories } from "./stories-data";
+import { storyAudioPath, type StoryAudioLocale } from "../lib/story-audio";
 
 const prisma = new PrismaClient();
 
@@ -15,11 +16,11 @@ const prisma = new PrismaClient();
 const inPublic = (path: string) => existsSync(join(process.cwd(), "public", path));
 const picture = (path: string, fallback: string | null) => (inPublic(path) ? path : fallback);
 
-// French pages get an audioUrl once their MP3 exists (scripts/tts-histoires.ts);
-// until then, and in the other languages, the reader uses the browser's voice.
+// A page's audioUrl records its narration MP3 once the file exists
+// (npm run stories:audio). The reader finds the file from lib/story-audio.ts
+// itself and falls back to the browser's voice, so this is informational.
 function audioUrlFor(locale: "EN" | "FR" | "ES" | "PT", slug: string, pageNumber: number): string | null {
-  if (locale !== "FR") return null;
-  const path = frenchAudioPath(slug, pageNumber);
+  const path = storyAudioPath(locale.toLowerCase() as StoryAudioLocale, slug, pageNumber);
   return inPublic(path) ? path : null;
 }
 

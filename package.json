@@ -25,7 +25,7 @@
     "sheets": "tsx scripts/sheets/generate.ts",
     "previews:thumbs": "node scripts/preview-thumbs.mjs",
     "previews:en": "node scripts/previews-en.mjs",
-    "tts:histoires": "tsx scripts/tts-histoires.ts",
+    "stories:audio": "tsx scripts/stories/audio.ts",
     "postinstall": "prisma generate",
     "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
     "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
