@@ -1,22 +1,14 @@
 import { getTranslations } from "next-intl/server";
 import Link from "next/link";
 import type { Locale } from "@/i18n/routing";
-import { isAvailable, localizedPath } from "@/lib/i18n/routes";
-import { SHEET_KINDS } from "@/lib/sheets/catalog";
+import { localizedPath } from "@/lib/i18n/routes";
+import { siteNav } from "@/lib/site-nav";
 import { OwlMark } from "./home/Owl";
 import LanguageSwitcher from "./LanguageSwitcher";
 import MobileMenu from "./MobileMenu";
 
-const NAV = [
-  { href: "/alphabet", key: "alphabet" },
-  { href: "/phonics", key: "phonics" },
-  { href: "/worksheets", key: "worksheets" },
-  { href: "/games", key: "games" },
-  { href: "/stories", key: "stories" },
-  { href: "/pricing", key: "pricing" },
-] as const;
-
-// Site-wide header: logo, main sections, parent account link, language switch.
+// Site-wide header: logo, main sections (lib/site-nav.ts, shared with the home
+// page header), parent account link, language switch.
 // The section links show inline from 1024 px (between 768 and 1023 px they
 // didn't fit next to the switcher) and in the menu below that. Below 390 px
 // the spacing and logo shrink so it fits a 320 px phone.
@@ -27,16 +19,7 @@ const NAV = [
 // app/global-not-found.tsx, outside [locale]).
 export default async function SiteHeader({ locale }: { locale: Locale }) {
   const t = await getTranslations({ locale, namespace: "Header" });
-  const items = NAV.filter((item) => isAvailable(locale, item.href));
-  // The "Worksheets" dropdown: the hub, then the worksheet types of lib/sheets/catalog.ts.
-  const worksheetLinks = [
-    { href: localizedPath(locale, "/worksheets"), label: t("allWorksheets") },
-    ...SHEET_KINDS.map((k) => ({
-      href: localizedPath(locale, "/worksheets/[category]", { category: k.slug[locale] }),
-      label: k.name[locale],
-    })),
-    { href: localizedPath(locale, "/worksheets/bundles"), label: t("proPacks") },
-  ];
+  const items = siteNav(locale, t);
 
   return (
     <header data-site-header className="relative border-b border-chalkboard/10 bg-paper print:hidden">
@@ -47,21 +30,21 @@ export default async function SiteHeader({ locale }: { locale: Locale }) {
         </Link>
 
         <nav aria-label={t("mainNav")} className="hidden lg:block">
-          <ul className="flex items-center gap-5 lg:gap-7 font-display font-bold">
+          <ul className="flex items-center gap-5 xl:gap-7 font-display font-bold">
             {items.map((item) =>
-              item.key === "worksheets" ? (
+              item.children ? (
                 // Opens on hover and while any of its links has focus, so it
                 // works from the keyboard without JavaScript.
-                <li key={item.href} className="group relative">
-                  <Link href={localizedPath(locale, item.href)} className="inline-flex items-center gap-1 hover:text-crayon-blue transition-colors">
-                    {t(item.key)}
+                <li key={item.key} className="group relative">
+                  <Link href={item.href} className="inline-flex items-center gap-1 hover:text-crayon-blue transition-colors">
+                    {item.label}
                     <svg aria-hidden="true" viewBox="0 0 12 12" className="h-3 w-3 transition-transform group-hover:rotate-180 group-focus-within:rotate-180">
                       <path d="M2.5 4.5L6 8l3.5-3.5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
                     </svg>
                   </Link>
                   <div className="invisible absolute left-1/2 top-full z-40 -translate-x-1/2 pt-3 opacity-0 transition group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100">
                     <ul className="w-60 rounded-block border border-chalkboard/10 bg-paper p-2 shadow-block">
-                      {worksheetLinks.map((link) => (
+                      {item.children.map((link) => (
                         <li key={link.href}>
                           <Link href={link.href} className="block rounded-block px-3 py-2 hover:bg-crayon-blue/10 focus-visible:bg-crayon-blue/10">
                             {link.label}
@@ -72,9 +55,13 @@ export default async function SiteHeader({ locale }: { locale: Locale }) {
                   </div>
                 </li>
               ) : (
-                <li key={item.href}>
-                  <Link href={localizedPath(locale, item.href)} className="hover:text-crayon-blue transition-colors">
-                    {t(item.key)}
+                <li key={item.key}>
+                  <Link
+                    href={item.href}
+                    rel={item.nofollow ? "nofollow" : undefined}
+                    className="hover:text-crayon-blue transition-colors"
+                  >
+                    {item.label}
                   </Link>
                 </li>
               ),
@@ -85,17 +72,16 @@ export default async function SiteHeader({ locale }: { locale: Locale }) {
         <div className="flex items-center gap-3 max-[389px]:gap-1.5">
           <Link
             href={localizedPath(locale, "/dashboard")}
-            className="hidden sm:inline-block rounded-block bg-crayon-yellow px-4 py-2 font-display font-bold shadow-block hover:shadow-blockHover transition"
+            className="hidden sm:inline-block whitespace-nowrap rounded-block bg-crayon-yellow px-4 py-2 font-display font-bold shadow-block hover:shadow-blockHover transition"
           >
             {t("account")}
           </Link>
           <LanguageSwitcher />
           <MobileMenu
-            items={items.map((item) => ({
-              href: localizedPath(locale, item.href),
-              label: t(item.key),
-              ...(item.key === "worksheets" && { children: worksheetLinks.slice(1) }),
-            }))}
+            items={items
+              .filter((item) => !item.desktopOnly)
+              .map(({ href, label, children }) => ({ href, label, ...(children && { children: children.slice(1) }) }))}
+            sectionLabel={t.raw("openSection")}
             account={{ href: localizedPath(locale, "/dashboard"), label: t("account") }}
             menuLabel={t("menu")}
             closeLabel={t("closeMenu")}

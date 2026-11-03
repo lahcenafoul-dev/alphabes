@@ -101,6 +101,7 @@ export async function sitemapEntries(): Promise<MetadataRoute.Sitemap> {
   const staticRoutes = [
     "",
     "/alphabet",
+    "/numbers",
     "/phonics",
     "/preschool",
     "/kindergarten",
