@@ -53,6 +53,7 @@ export async function middleware(req: NextRequest) {
   if (pathname.startsWith("/api/")) {
     if (
       pathname.startsWith("/api/auth/callback/credentials") ||
+      pathname === "/api/app/login" ||
       pathname === "/api/register" ||
       pathname === "/api/contact"
     ) {
@@ -135,6 +136,7 @@ export const config = {
     // answered 500 (static to dynamic at runtime); here they get the 404 page.
     "/(\\.[^/]*(?:/.*)?)",
     "/api/auth/callback/credentials",
+    "/api/app/login",
     "/api/register",
     "/api/contact",
   ],
