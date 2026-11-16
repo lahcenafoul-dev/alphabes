@@ -21,6 +21,10 @@ Neon PostgreSQL through Prisma 5 with the Neon driver adapter (`previewFeatures 
 
 - **Never use a real database as a Prisma shadow database.** A shadow database is reset (every table emptied), so never pass `DATABASE_URL`, `dev`, `production` or any other real Neon branch as `--shadow-database-url` or `shadowDatabaseUrl`, and don't run `prisma migrate dev`, `migrate reset` or `db push` against them. On 2026-10-01 `prisma migrate diff --shadow-database-url <dev>` wiped the `dev` branch (it was then reset from `production`). Write migration SQL by hand or with `migrate diff --from-schema-datamodel/--to-schema-datamodel` (no database), and apply it with `prisma migrate deploy` only.
 
+## Mobile app
+
+The official app (Expo, repo `Desktoplphabes-app`) uses only `/api/app/*`, with its own token: routes, store rules (the app never sells or shows prices) and tests in [docs/mobile-app-api.md](docs/mobile-app-api.md).
+
 ## Stories
 
 Stories v2 (24 stories in 4 languages with Canva illustrations, branch `stories-v2`, started 2026-11-02) has its plan, decisions, status and the English texts in [docs/stories-plan.md](docs/stories-plan.md). Read it before any story work.
