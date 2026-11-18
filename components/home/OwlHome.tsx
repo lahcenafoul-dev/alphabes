@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import type { Locale } from "@/i18n/routing";
-import { localizedPath } from "@/lib/i18n/routes";
+import { isAvailable, localizedPath } from "@/lib/i18n/routes";
 import { homeQuizRounds } from "@/lib/home-quiz";
 import { siteNav } from "@/lib/site-nav";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
@@ -157,7 +157,8 @@ export default async function OwlHome({ locale, copy, children }: { locale: Loca
         {/* Hero and the quiz */}
         <section className="mx-auto flex max-w-[1200px] flex-wrap items-center gap-10 px-4 pb-20 pt-6 sm:px-6 sm:pb-24 sm:pt-10 lg:gap-14">
           <div className="min-w-0 flex-[1_1_440px]">
-            <h1 className="owl-fade-up m-0 font-display text-[clamp(44px,6.4vw,82px)] font-extrabold leading-[0.98] tracking-[-1px]">
+            {/* No fade on the heading and intro: they are the largest paint (LCP), and starting at opacity 0 delayed it. */}
+            <h1 className="m-0 font-display text-[clamp(44px,6.4vw,82px)] font-extrabold leading-[0.98] tracking-[-1px]">
               <span className="mb-4 block font-body text-base font-extrabold leading-snug tracking-normal text-owl-purple sm:text-lg">
                 {copy.headline.seo}
               </span>
@@ -170,7 +171,7 @@ export default async function OwlHome({ locale, copy, children }: { locale: Loca
               <span className="text-[#13956F]">C</span>
               {copy.headline.after}
             </h1>
-            <p className="owl-fade-up mb-8 mt-6 max-w-[480px] text-lg leading-relaxed text-owl-muted [animation-delay:.12s] sm:text-[21px]">
+            <p className="mb-8 mt-6 max-w-[480px] text-lg leading-relaxed text-owl-muted sm:text-[21px]">
               {copy.intro}
             </p>
             <div className="owl-fade-up flex flex-wrap items-center gap-3.5 [animation-delay:.24s]">
@@ -278,7 +279,8 @@ export default async function OwlHome({ locale, copy, children }: { locale: Loca
           </div>
           <nav aria-label={copy.footer.legal}>
             <ul className="flex flex-wrap gap-x-5 gap-y-2 text-sm font-semibold">
-              {FOOTER_LINKS.map((link) => (
+              {/* Only pages that exist in this language (the blog is English only). */}
+              {FOOTER_LINKS.filter((link) => isAvailable(locale, link.href)).map((link) => (
                 <li key={link.href}>
                   <Link href={path(link.href)} className="text-owl-muted hover:text-owl-purple">
                     {tf(link.label)}

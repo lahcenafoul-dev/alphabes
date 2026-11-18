@@ -2,6 +2,8 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { blogPosts, blogCategories } from "@/lib/blog-data";
 import { withSocialMetadata } from "@/lib/social-metadata";
+import JsonLd from "@/components/JsonLd";
+import { buildCollectionPageJsonLd, buildLocaleBreadcrumbJsonLd } from "@/lib/json-ld";
 
 const BASE_URL = "https://alphabes.com";
 const title = "AlphaBes Blog: Alphabet, Phonics & Early Learning Guides";
@@ -23,9 +25,21 @@ export default function BlogIndexPage() {
   const sorted = [...blogPosts].sort((a, b) => (a.publishedAt < b.publishedAt ? 1 : -1));
   const featured = sorted.slice(0, 2);
   const latest = sorted;
+  const url = `${BASE_URL}/blog`;
+  // The articles, newest first (the category pages are noindex, so they are left out).
+  const jsonLd = [
+    buildLocaleBreadcrumbJsonLd("en", [{ name: "Blog", url }]),
+    buildCollectionPageJsonLd("en", {
+      name: title,
+      description,
+      url,
+      items: sorted.map((post) => ({ name: post.title, url: `${BASE_URL}/blog/${post.slug}` })),
+    }),
+  ];
 
   return (
     <main id="main-content" className="mx-auto max-w-4xl px-6 py-12">
+      <JsonLd data={jsonLd} />
       <h1 className="text-4xl font-extrabold">Early Learning Activities &amp; Printable Resources</h1>
       <p className="mt-2 text-chalkboard/70 max-w-2xl">
         Practical, original articles on teaching the alphabet, phonics, and early reading —

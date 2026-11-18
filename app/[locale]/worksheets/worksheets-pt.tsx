@@ -4,7 +4,8 @@ import { Link } from "@/i18n/navigation";
 import { FichePreview } from "@/components/fiches/FicheParts";
 import { ATIVIDADE_CATEGORIES, atividades, atividadesInCategory, getAtividade, type AtividadeCategoryGroup } from "@/lib/atividades-pt";
 import { absoluteUrl, alternatesFor } from "@/lib/i18n/routes";
-import { buildBreadcrumbJsonLd } from "@/lib/json-ld";
+import { buildBreadcrumbJsonLd, buildCollectionPageJsonLd } from "@/lib/json-ld";
+import { sheetKindItems } from "@/lib/hub-json-ld";
 import { CEDILHA_SLUG, portugueseLetters } from "@/lib/letters-pt";
 
 const title = "Atividades para imprimir grátis: alfabeto, letra cursiva e sílabas";
@@ -71,6 +72,16 @@ export default function WorksheetsPt() {
     { name: "Início", url: absoluteUrl("pt", "/") },
     { name: "Atividades", url },
   ]);
+  const collectionJsonLd = buildCollectionPageJsonLd("pt", {
+    name: title,
+    description,
+    url,
+    items: [
+      ...ATIVIDADE_CATEGORIES.map((c) => ({ name: c.name, url: absoluteUrl("pt", "/worksheets/[category]", { category: c.slug }) })),
+      { name: "Pacotes", url: absoluteUrl("pt", "/worksheets/bundles") },
+      ...sheetKindItems("pt"),
+    ],
+  });
   const faqJsonLd = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
@@ -214,6 +225,7 @@ export default function WorksheetsPt() {
 
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionJsonLd) }} />
     </main>
   );
 }

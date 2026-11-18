@@ -55,6 +55,39 @@ export function fitTitle(title: string): string {
   return (t + BRAND).length <= MAX_TITLE ? t + BRAND : t;
 }
 
+type ImageItem = string | URL | { url: string | URL; alt?: string };
+
+/**
+ * Every image as an object with an alt text (og:image:alt, twitter:image:alt).
+ * An image the page described keeps its own alt; the others get `alt`, the
+ * page's share title, which is in the page's language (the site image's
+ * English alt from app/opengraph-image.tsx would be wrong on a French page).
+ */
+export function withImageAlt(images: Images, alt: string): Images {
+  const list = (Array.isArray(images) ? images : [images]) as ImageItem[];
+  return list.map((img) =>
+    typeof img === "string" || img instanceof URL ? { url: img, alt } : { ...img, alt: img.alt || alt },
+  ) as Images;
+}
+
+/** The images without their alt, so withImageAlt gives them a new one. */
+function stripAlt(images: Images): Images {
+  const list = (Array.isArray(images) ? images : [images]) as ImageItem[];
+  return list.map((img) => (typeof img === "string" || img instanceof URL ? img : { ...img, alt: undefined })) as Images;
+}
+
+/**
+ * og:locale:alternate: the Open Graph locales of the page's other languages,
+ * from its hreflang alternates (x-default and the page's own language left out).
+ */
+export function alternateOgLocales(locale: Locale, metadata: Metadata): string[] {
+  const languages = metadata.alternates?.languages;
+  if (!languages) return [];
+  return Object.keys(languages)
+    .filter((l): l is Locale => l !== locale && isLocale(l))
+    .map((l) => OG_LOCALE[l]);
+}
+
 /** The path of a canonical URL ("https://alphabes.com/fr/tarifs" → "/fr/tarifs"). */
 function pathOf(url: string): string {
   return url.startsWith(SITE_URL) ? url.slice(SITE_URL.length) || "/" : url;
@@ -78,7 +111,17 @@ export function completeSocial(locale: Locale, metadata: Metadata, defaultImages
   const pageTitle = override?.title ?? plainTitle(metadata.title);
   const title = override?.title ?? og.title ?? pageTitle;
   const description = override?.description ?? og.description ?? metadata.description ?? undefined;
-  const images = og.images ?? defaultImages;
+  // og.title can be a template object; the alt needs the plain text.
+  const altText = plainTitle(title);
+  // The page's own images keep their alt. The inherited site image always
+  // takes the page's title: its English alt (app/opengraph-image.tsx) would
+  // be wrong on a French page and too generic everywhere else.
+  const images = og.images
+    ? altText ? withImageAlt(og.images, altText) : og.images
+    : defaultImages && altText
+      ? withImageAlt(stripAlt(defaultImages), altText)
+      : defaultImages;
+  const alternateLocale = alternateOgLocales(locale, metadata);
   return {
     ...metadata,
     ...(pageTitle && { title: { absolute: fitTitle(pageTitle) } }),
@@ -92,6 +135,7 @@ export function completeSocial(locale: Locale, metadata: Metadata, defaultImages
       ...(title && { title }),
       ...(description && { description }),
       ...(images && { images }),
+      ...(alternateLocale.length > 0 && { alternateLocale }),
     } as Metadata["openGraph"],
     twitter: {
       card: "summary_large_image",

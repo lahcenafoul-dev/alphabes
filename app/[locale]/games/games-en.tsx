@@ -3,7 +3,10 @@ import SlidingPuzzleTeaser from "@/components/games/SlidingPuzzleTeaser";
 import { NumberGamesSection } from "@/components/number-games/NumberGamePage";
 import Link from "next/link";
 import { games } from "@/lib/games-data";
-import { alternatesFor } from "@/lib/i18n/routes";
+import { absoluteUrl, alternatesFor } from "@/lib/i18n/routes";
+import JsonLd from "@/components/JsonLd";
+import { buildCollectionPageJsonLd, buildLocaleBreadcrumbJsonLd } from "@/lib/json-ld";
+import { gamesHubItems } from "@/lib/hub-json-ld";
 import { InlineIcon } from "@/components/UiIcon";
 
 export const gamesMetadataEn: Metadata = {
@@ -13,8 +16,19 @@ export const gamesMetadataEn: Metadata = {
 };
 
 export default function GamesEn() {
+  const url = absoluteUrl("en", "/games");
+  const jsonLd = [
+    buildLocaleBreadcrumbJsonLd("en", [{ name: "Games", url }]),
+    buildCollectionPageJsonLd("en", {
+      name: "Alphabet Games for Kids",
+      description: gamesMetadataEn.description as string,
+      url,
+      items: gamesHubItems("en", games),
+    }),
+  ];
   return (
     <main id="main-content" className="mx-auto max-w-6xl px-6 py-12">
+      <JsonLd data={jsonLd} />
       <h1 className="text-4xl font-extrabold">Alphabet Games for Kids</h1>
       <p className="mt-2 text-chalkboard/70 max-w-2xl">
         Five games that work on desktop and mobile, built to reinforce letter recognition and phonics.

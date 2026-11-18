@@ -1,6 +1,8 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import { alternatesFor } from "@/lib/i18n/routes";
+import { absoluteUrl, alternatesFor } from "@/lib/i18n/routes";
+import JsonLd from "@/components/JsonLd";
+import { buildCollectionPageJsonLd } from "@/lib/json-ld";
 
 export const activitiesMetadataEn: Metadata = {
   title: "Activities",
@@ -16,8 +18,16 @@ const activities = [
 ];
 
 export default function ActivitiesEn() {
+  // The activities have no pages of their own: the list names them only.
+  const collectionJsonLd = buildCollectionPageJsonLd("en", {
+    name: "Alphabet and Phonics Activities",
+    description: activitiesMetadataEn.description as string,
+    url: absoluteUrl("en", "/activities"),
+    items: activities.map((a) => ({ name: a.title })),
+  });
   return (
     <main id="main-content" className="mx-auto max-w-5xl px-6 py-12">
+      <JsonLd data={collectionJsonLd} />
       <h1 className="text-4xl font-extrabold">Alphabet and Phonics Activities</h1>
       <p className="mt-2 text-chalkboard/70 max-w-2xl">
         Simple, screen-optional activities that pair with any letter lesson.

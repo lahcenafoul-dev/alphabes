@@ -11,7 +11,7 @@ import { initLocale } from "@/lib/i18n/server";
 import Paywall from "@/components/billing/Paywall";
 import { hasPro } from "@/lib/billing/entitlement";
 import StoryReader from "./story-reader";
-import { buildShortStoryJsonLd } from "@/lib/json-ld";
+import { buildShortStoryJsonLd, buildStoriesBreadcrumbJsonLd } from "@/lib/json-ld";
 import { withSocialMetadata } from "@/lib/social-metadata";
 import { storyExtras, storyOgImage } from "@/lib/stories";
 
@@ -128,6 +128,7 @@ export default async function StoryPage(props: Props) {
 
       <h1 className="mt-4 text-3xl font-extrabold">{story.title}</h1>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(buildShortStoryJsonLd(locale, { ...story, description: extras?.description })) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(buildStoriesBreadcrumbJsonLd(locale, story)) }} />
 
       {locked ? (
         <>

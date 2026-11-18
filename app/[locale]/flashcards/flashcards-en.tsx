@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { alphabetData } from "@/lib/alphabet-data";
 import SpeakButton from "@/components/SpeakButton";
-import { alternatesFor } from "@/lib/i18n/routes";
+import { absoluteUrl, alternatesFor } from "@/lib/i18n/routes";
+import JsonLd from "@/components/JsonLd";
+import { buildCollectionPageJsonLd } from "@/lib/json-ld";
 import { getSheetKind } from "@/lib/sheets/catalog";
 import WordIllustration from "@/components/WordIllustration";
 
@@ -13,8 +15,19 @@ export const flashcardsMetadataEn: Metadata = {
 };
 
 export default function FlashcardsEn() {
+  // The letter lessons each card links to.
+  const collectionJsonLd = buildCollectionPageJsonLd("en", {
+    name: "Alphabet Flashcards",
+    description: flashcardsMetadataEn.description as string,
+    url: absoluteUrl("en", "/flashcards"),
+    items: alphabetData.map(({ letter, word }) => ({
+      name: `Letter ${letter.toUpperCase()}: ${word}`,
+      url: absoluteUrl("en", "/alphabet/[letter]", { letter }),
+    })),
+  });
   return (
     <main id="main-content" className="mx-auto max-w-6xl px-6 py-12">
+      <JsonLd data={collectionJsonLd} />
       <h1 className="text-4xl font-extrabold">Alphabet Flashcards</h1>
       <p className="mt-2 text-chalkboard/70 max-w-2xl">
         Flip through letter flashcards to practice recognition, or print a set for offline use.

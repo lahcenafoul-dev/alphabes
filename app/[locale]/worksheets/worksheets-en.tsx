@@ -6,7 +6,10 @@ import { WORKSHEET_TYPES } from "@/lib/worksheet-types";
 import { worksheets } from "@/lib/worksheets-data";
 import { staticWorksheetCategories } from "@/lib/static-worksheet-categories";
 import WorksheetLibrary, { type LibraryCardData } from "@/components/worksheets/WorksheetLibrary";
-import { alternatesFor } from "@/lib/i18n/routes";
+import { absoluteUrl, alternatesFor } from "@/lib/i18n/routes";
+import JsonLd from "@/components/JsonLd";
+import { buildCollectionPageJsonLd, buildLocaleBreadcrumbJsonLd } from "@/lib/json-ld";
+import { sheetKindItems } from "@/lib/hub-json-ld";
 
 export const worksheetsMetadataEn: Metadata = {
   title: "Free Printable Alphabet Worksheets",
@@ -28,8 +31,28 @@ export default function WorksheetsEn() {
     primaryWord: w.primaryWord,
   }));
 
+  const url = absoluteUrl("en", "/worksheets");
+  const page = (slug: string) => absoluteUrl("en", "/worksheets/[category]", { category: slug });
+  const jsonLd = [
+    buildLocaleBreadcrumbJsonLd("en", [{ name: "Worksheets", url }]),
+    // The topics and types this page links to, in its order.
+    buildCollectionPageJsonLd("en", {
+      name: "Free Printable Alphabet Worksheets",
+      description: worksheetsMetadataEn.description as string,
+      url,
+      items: [
+        ...worksheetCategories.map((c) => ({ name: c.name, url: page(c.slug) })),
+        ...WORKSHEET_TYPES.map((t) => ({ name: t.label, url: page(t.categorySlug) })),
+        { name: "Bundles", url: absoluteUrl("en", "/worksheets/bundles") },
+        ...staticWorksheetCategories.map((c) => ({ name: c.name, url: page(c.slug) })),
+        ...sheetKindItems("en"),
+      ],
+    }),
+  ];
+
   return (
     <main id="main-content" className="mx-auto max-w-6xl px-6 py-12">
+      <JsonLd data={jsonLd} />
       <h1 className="text-4xl font-extrabold">Free Printable Alphabet Worksheets</h1>
       <p className="mt-2 text-chalkboard/70 max-w-2xl">
         {worksheets.length}+ worksheets across 10 activity types for every letter, A to Z. Preview free, print, or
