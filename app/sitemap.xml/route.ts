@@ -1,12 +1,12 @@
-import { sitemapEntries, sitemapXml } from "@/lib/sitemap";
+import { sitemapIndexXml } from "@/lib/sitemap";
 
-// Written by hand instead of app/sitemap.ts so the XML follows the sitemap
-// XSD (lib/sitemap.ts). Built per request; the cache header is in
-// next.config.js.
-export const dynamic = "force-dynamic";
+// The sitemap index: one sitemap per language (app/sitemap-<locale>.xml).
+// Built at build time from the code (no database), so it is prerendered and
+// cached like the pages; the cache header is in next.config.js.
+export const dynamic = "force-static";
 
 export async function GET() {
-  return new Response(sitemapXml(await sitemapEntries()), {
+  return new Response(await sitemapIndexXml(), {
     headers: { "Content-Type": "application/xml" },
   });
 }

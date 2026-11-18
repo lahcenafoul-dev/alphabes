@@ -15,6 +15,5 @@ export default function robots(): MetadataRoute.Robots {
       },
     ],
     sitemap: "https://alphabes.com/sitemap.xml",
-    host: "https://alphabes.com",
   };
 }

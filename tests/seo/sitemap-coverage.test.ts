@@ -11,9 +11,6 @@ import { spanishGames } from "@/lib/juegos-es";
 import { portugueseGames } from "@/lib/jogos-pt";
 import { blogCategories } from "@/lib/blog-data";
 
-vi.stubEnv("RELEASE_DATE", "2026-10-07T12:00:00.000Z");
-vi.mock("next/cache", () => ({ unstable_cache: (fn: () => unknown) => fn }));
-vi.mock("@/lib/prisma", () => ({ getPrisma: () => ({ story: { findMany: async () => [] } }) }));
 
 const { sitemapEntries } = await import("@/lib/sitemap");
 const entries = await sitemapEntries();
