@@ -140,6 +140,13 @@ export function buildProProductJsonLd(locale: Locale, plans: { description: stri
 }
 
 /** A picture story, on its own page. */
+const READ_ALOUD: Record<Locale, string> = {
+  en: "Read-aloud story",
+  fr: "Lecture à voix haute",
+  es: "Lectura en voz alta",
+  pt: "Leitura em voz alta",
+};
+
 export function buildShortStoryJsonLd(
   locale: Locale,
   story: {
@@ -150,6 +157,10 @@ export function buildShortStoryJsonLd(
     ageRangeMax: number;
     isPremium: boolean;
     description?: string;
+    /** "For parents": what the story teaches. */
+    teaches?: string;
+    /** "For parents": words to practise. */
+    keywords?: string[];
     createdAt: Date;
     updatedAt: Date;
   },
@@ -161,6 +172,9 @@ export function buildShortStoryJsonLd(
     url: absoluteUrl(locale, "/stories/[slug]", { slug: story.slug }),
     ...(story.description && { description: story.description }),
     inLanguage: HTML_LANG[locale],
+    educationalUse: READ_ALOUD[locale],
+    ...(story.teaches && { teaches: story.teaches }),
+    ...(story.keywords?.length && { keywords: story.keywords.join(", ") }),
     // Covers drawn by components/StoryIllustration.tsx are scene names
     // ("apple-1"), not files: only a real path or URL is an image.
     ...(story.coverUrl && /^(\/|https?:\/\/)/.test(story.coverUrl) && { image: new URL(story.coverUrl, SITE_URL).href }),

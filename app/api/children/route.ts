@@ -40,3 +40,19 @@ export async function POST(req: NextRequest) {
 
   return NextResponse.json({ id: child.id }, { status: 201 });
 }
+
+// The signed-in parent's children, for pages that are static and so can't
+// read the session on the server (the story reader's "Reading as" picker,
+// which then saves progress through /api/stories/[slug]/progress).
+export async function GET() {
+  const noStore = { "Cache-Control": "private, no-store" };
+  const session = await getServerSession(authOptions);
+  if (!session?.user?.email) {
+    return NextResponse.json({ error: "Please log in first.", code: "unauthorized" }, { status: 401, headers: noStore });
+  }
+  const user = await getPrisma().user.findUnique({
+    where: { email: session.user.email },
+    select: { children: { select: { id: true, firstName: true, language: true }, orderBy: { createdAt: "asc" } } },
+  });
+  return NextResponse.json({ children: user?.children ?? [] }, { headers: noStore });
+}

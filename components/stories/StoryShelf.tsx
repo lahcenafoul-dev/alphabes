@@ -1,18 +1,13 @@
 import type { Locale } from "@/i18n/routing";
-import { DB_LOCALE } from "@/lib/i18n/db-locale";
 import { SITE_URL, absoluteUrl, localizedPath } from "@/lib/i18n/routes";
-import { getPrisma } from "@/lib/prisma";
-import { storyExtras } from "@/lib/stories";
+import { storiesFor, storyExtras } from "@/lib/stories";
 import StoryGrid, { type StoryCard } from "./StoryGrid";
 
-// The story list of one language (from the database, in order), as cards
-// with the level filter, plus its ItemList JSON-LD.
-export default async function StoryShelf({ locale }: { locale: Locale }) {
-  const stories = await getPrisma().story.findMany({
-    where: { locale: DB_LOCALE[locale] },
-    orderBy: { order: "asc" },
-    include: { _count: { select: { pages: true } } },
-  });
+// The story list of one language (prisma/stories-v2 through lib/stories.ts,
+// in order), as cards with the level filter, plus its ItemList JSON-LD.
+// Built at build time, so the list pages are static and cached.
+export default function StoryShelf({ locale }: { locale: Locale }) {
+  const stories = storiesFor(locale);
 
   const cards: StoryCard[] = stories.map((s) => {
     const extras = storyExtras(s.translationGroup, locale);
@@ -25,7 +20,7 @@ export default async function StoryShelf({ locale }: { locale: Locale }) {
       level: extras?.level ?? (s.ageRangeMax <= 4 ? 1 : s.ageRangeMax <= 6 ? 2 : 3),
       ageMin: s.ageRangeMin,
       ageMax: s.ageRangeMax,
-      pages: s._count.pages,
+      pages: s.pages.length,
       isNew: extras?.isNew ?? false,
     };
   });
