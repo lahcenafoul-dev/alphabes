@@ -2,7 +2,7 @@ import type { UiIconName } from "@/components/UiIcon";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { absoluteUrl, alternatesFor, localizedPath } from "@/lib/i18n/routes";
-import { buildBreadcrumbJsonLd } from "@/lib/json-ld";
+import { buildBreadcrumbJsonLd, buildCollectionPageJsonLd } from "@/lib/json-ld";
 import UiIcon from "@/components/UiIcon";
 
 const title = "Activités pour apprendre les lettres et les sons, sans écran";
@@ -158,17 +158,12 @@ export default function ActivitiesFr() {
     { name: "Accueil", url: absoluteUrl("fr", "/") },
     { name: "Activités", url },
   ]);
-  const itemListJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "ItemList",
-    name: "Activités pour apprendre les lettres et les sons",
-    itemListElement: activities.map((a, i) => ({
-      "@type": "ListItem",
-      position: i + 1,
-      name: a.title,
-      url: `${url}#${a.id}`,
-    })),
-  };
+  const collectionJsonLd = buildCollectionPageJsonLd("fr", {
+    name: title,
+    description,
+    url,
+    items: activities.map((a) => ({ name: a.title, url: `${url}#${a.id}` })),
+  });
 
   return (
     <main id="main-content" className="mx-auto max-w-5xl px-6 py-12">
@@ -220,7 +215,7 @@ export default function ActivitiesFr() {
       </Link>
 
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListJsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionJsonLd) }} />
     </main>
   );
 }

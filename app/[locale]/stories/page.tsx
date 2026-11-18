@@ -6,6 +6,8 @@ import StoriesFr, { storiesMetadataFr } from "./stories-fr";
 import StoriesEs, { storiesMetadataEs } from "./stories-es";
 import StoriesPt, { storiesMetadataPt } from "./stories-pt";
 import { withSocialMetadata } from "@/lib/social-metadata";
+import JsonLd from "@/components/JsonLd";
+import { buildStoriesBreadcrumbJsonLd } from "@/lib/json-ld";
 
 async function pageMetadata({ params }: { params: LocaleParams }): Promise<Metadata> {
   const locale = initLocale((await params).locale);
@@ -19,7 +21,12 @@ export const dynamic = "force-dynamic";
 export default async function StoriesPage({ params }: { params: LocaleParams }) {
   const locale = initLocale((await params).locale);
   const Stories = byLocale(locale, { en: StoriesEn, fr: StoriesFr, es: StoriesEs, pt: StoriesPt });
-  return <Stories />;
+  return (
+    <>
+      <JsonLd data={buildStoriesBreadcrumbJsonLd(locale)} />
+      <Stories />
+    </>
+  );
 }
 
 export const generateMetadata = withSocialMetadata(pageMetadata);

@@ -1,5 +1,8 @@
 import { ImageResponse } from "next/og";
 
+// og:image:alt for pages that don't go through withSocialMetadata (those use
+// their own title, in their own language: lib/social-metadata.ts).
+export const alt = "AlphaBes: free alphabet games, worksheets and stories for kids 3 to 8";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 

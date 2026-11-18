@@ -32,8 +32,27 @@ describe("completeSocial", () => {
       openGraph: { title: "Post", url: "https://alphabes.com", type: "article", images: ["https://alphabes.com/p.jpg"] },
     };
     const m = completeSocial("en", page, siteImage);
-    expect(m.openGraph).toMatchObject({ type: "article", title: "Post", url: "https://alphabes.com/blog/x", images: ["https://alphabes.com/p.jpg"], locale: "en_US" });
-    expect(m.twitter).toMatchObject({ title: "Post", images: ["https://alphabes.com/p.jpg"] });
+    expect(m.openGraph).toMatchObject({ type: "article", title: "Post", url: "https://alphabes.com/blog/x", images: [{ url: "https://alphabes.com/p.jpg", alt: "Post" }], locale: "en_US" });
+    expect(m.twitter).toMatchObject({ title: "Post", images: [{ url: "https://alphabes.com/p.jpg", alt: "Post" }] });
+  });
+
+  it("gives every image an alt: its own, or else the page's share title", () => {
+    const own = completeSocial("fr", { title: "Tarifs", openGraph: { images: [{ url: "https://alphabes.com/a.jpg", alt: "Une fiche" }] } });
+    expect(own.openGraph?.images).toEqual([{ url: "https://alphabes.com/a.jpg", alt: "Une fiche" }]);
+    const site = completeSocial("fr", { title: "Tarifs", alternates: { canonical: "https://alphabes.com/fr/tarifs" } }, siteImage);
+    expect(site.openGraph?.images).toEqual([{ ...siteImage[0], alt: "AlphaBes Pro : formules et tarifs" }]);
+    expect(site.twitter?.images).toEqual([{ ...siteImage[0], alt: "AlphaBes Pro : formules et tarifs" }]);
+    // The inherited site image's English alt is replaced by the page's title.
+    const inherited = completeSocial("fr", { title: "Jeux", alternates: { canonical: "https://alphabes.com/fr/jeux" } }, [{ ...siteImage[0], alt: "AlphaBes: free alphabet games" }]);
+    expect((inherited.openGraph?.images as { alt: string }[])[0].alt).not.toBe("AlphaBes: free alphabet games");
+  });
+
+  it("lists the page's other languages as og:locale:alternate", () => {
+    const languages = { en: "https://alphabes.com/alphabet", fr: "https://alphabes.com/fr/alphabet", es: "https://alphabes.com/es/abecedario", pt: "https://alphabes.com/pt/alfabeto", "x-default": "https://alphabes.com/alphabet" };
+    const m = completeSocial("fr", { alternates: { canonical: languages.fr, languages } });
+    expect((m.openGraph as { alternateLocale: string[] }).alternateLocale).toEqual(["en_US", "es_LA", "pt_BR"]);
+    // A page with no twin has none.
+    expect(completeSocial("fr", { alternates: { canonical: languages.fr } }).openGraph).not.toHaveProperty("alternateLocale");
   });
 
   it("uses each language's Open Graph locale", () => {

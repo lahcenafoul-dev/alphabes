@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Link } from "@/i18n/navigation";
 import ListenButton from "@/components/ListenButton";
 import { absoluteUrl, alternatesFor } from "@/lib/i18n/routes";
+import JsonLd from "@/components/JsonLd";
+import { buildCollectionPageJsonLd } from "@/lib/json-ld";
 import { getSheetKind } from "@/lib/sheets/catalog";
 import { spanishLetters } from "@/lib/letters-es";
 import WordIllustration from "@/components/WordIllustration";
@@ -21,8 +23,16 @@ export const flashcardsMetadataEs: Metadata = {
 const cardColors = ["bg-crayon-yellow/30", "bg-crayon-blue/15", "bg-crayon-green/20", "bg-crayon-red/15", "bg-crayon-purple/15"];
 
 export default function FlashcardsEs() {
+  // The letter pages each card links to.
+  const collectionJsonLd = buildCollectionPageJsonLd("es", {
+    name: title,
+    description,
+    url: absoluteUrl("es", "/flashcards"),
+    items: spanishLetters.map((l) => ({ name: `Letra ${l.upper}`, url: absoluteUrl("es", "/alphabet/[letter]", { letter: l.slug }) })),
+  });
   return (
     <main id="main-content" className="mx-auto max-w-6xl px-6 py-12">
+      <JsonLd data={collectionJsonLd} />
       <h1 className="text-4xl font-extrabold">Las tarjetas del abecedario</h1>
       <p className="mt-2 text-chalkboard/70 max-w-2xl">
         Una palabra, un dibujo, una letra. Toca una tarjeta para escuchar la palabra y busquen juntos

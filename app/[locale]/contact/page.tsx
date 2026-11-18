@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
-import { alternatesFor } from "@/lib/i18n/routes";
+import { absoluteUrl, alternatesFor } from "@/lib/i18n/routes";
+import JsonLd from "@/components/JsonLd";
+import { buildAboutOrContactPageJsonLd } from "@/lib/json-ld";
 import { initLocale, type LocaleParams } from "@/lib/i18n/server";
 import ClientMessages from "@/components/ClientMessages";
 import ContactForm from "./contact-form";
@@ -22,6 +24,13 @@ export default async function ContactPage({ params }: { params: LocaleParams }) 
 
   return (
     <main id="main-content" className="mx-auto max-w-md px-6 py-16">
+      <JsonLd
+        data={buildAboutOrContactPageJsonLd(locale, "ContactPage", {
+          name: t("title"),
+          description: t("description"),
+          url: absoluteUrl(locale, "/contact"),
+        })}
+      />
       <h1 className="text-3xl font-extrabold text-center">{t("heading")}</h1>
       <p className="mt-2 text-center text-chalkboard/70">{t("intro")}</p>
       <div className="mt-8 rounded-block border border-chalkboard/10 p-6 shadow-block">

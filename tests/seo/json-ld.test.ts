@@ -1,6 +1,18 @@
 import { describe, expect, it } from "vitest";
 import { routing } from "@/i18n/routing";
-import { PRO_PRICES_USD, buildProProductJsonLd, buildShortStoryJsonLd, buildWebSiteJsonLd } from "@/lib/json-ld";
+import {
+  ORG_ID,
+  PRO_PRICES_USD,
+  buildAboutOrContactPageJsonLd,
+  buildCollectionPageJsonLd,
+  buildLocaleBreadcrumbJsonLd,
+  buildOrganizationJsonLd,
+  buildProProductJsonLd,
+  buildShortStoryJsonLd,
+  buildStoriesBreadcrumbJsonLd,
+  buildWebSiteJsonLd,
+} from "@/lib/json-ld";
+import { gamesHubItems, sheetKindItems } from "@/lib/hub-json-ld";
 import en from "@/messages/en.json";
 import fr from "@/messages/fr.json";
 import es from "@/messages/es.json";
@@ -54,5 +66,35 @@ describe("structured data", () => {
     expect(buildShortStoryJsonLd("en", { ...story, coverUrl: null })).not.toHaveProperty("image");
     // A scene drawn by components/StoryIllustration.tsx is not a file.
     expect(buildShortStoryJsonLd("en", { ...story, coverUrl: "apple-1" })).not.toHaveProperty("image");
+  });
+
+  it("declares one organization, with the same @id, URL and logo in every language", () => {
+    const org = buildOrganizationJsonLd("x");
+    expect(org).toMatchObject({ "@type": "EducationalOrganization", "@id": "https://alphabes.com/#org", url: "https://alphabes.com", logo: { url: "https://alphabes.com/icon3" } });
+    expect(org.sameAs).toEqual([]);
+    expect(org.areaServed).toEqual(expect.arrayContaining(["US", "FR", "MX", "BR"]));
+    // Other nodes point to it.
+    expect(buildWebSiteJsonLd("fr").publisher["@id"]).toBe(ORG_ID);
+  });
+
+  it("builds breadcrumbs from each language's home", () => {
+    expect(buildLocaleBreadcrumbJsonLd("es", [{ name: "Precios", url: "https://alphabes.com/es/precios" }]).itemListElement).toEqual([
+      { "@type": "ListItem", position: 1, name: "Inicio", item: "https://alphabes.com/es" },
+      { "@type": "ListItem", position: 2, name: "Precios", item: "https://alphabes.com/es/precios" },
+    ]);
+    const story = buildStoriesBreadcrumbJsonLd("fr", { title: "Filou", slug: "filou-et-sa-balle" }).itemListElement;
+    expect(story.map((c) => c.item)).toEqual(["https://alphabes.com/fr", "https://alphabes.com/fr/histoires", "https://alphabes.com/fr/histoires/filou-et-sa-balle"]);
+  });
+
+  it("lists a hub's pages in a CollectionPage, in the hub's language", () => {
+    const items = gamesHubItems("pt", [{ title: "Encontre a letra", slug: "encontre-a-letra" }]);
+    expect(items[0]).toEqual({ name: "Encontre a letra", url: "https://alphabes.com/pt/jogos/encontre-a-letra" });
+    expect(items.at(-1)?.url).toBe("https://alphabes.com/pt/jogos/quebra-cabeca-deslizante");
+    const page = buildCollectionPageJsonLd("pt", { name: "Jogos", description: "d", url: "https://alphabes.com/pt/jogos", items });
+    expect(page).toMatchObject({ "@type": "CollectionPage", inLanguage: "pt-BR", mainEntity: { "@type": "ItemList", numberOfItems: items.length } });
+    expect(sheetKindItems("fr").every((i) => i.url.startsWith("https://alphabes.com/fr/fiches/"))).toBe(true);
+    // An item with no page of its own has no url.
+    expect(buildCollectionPageJsonLd("en", { name: "n", description: "d", url: "u", items: [{ name: "a" }] }).mainEntity.itemListElement[0]).not.toHaveProperty("url");
+    expect(buildAboutOrContactPageJsonLd("fr", "ContactPage", { name: "n", description: "d", url: "u" }).about["@id"]).toBe(ORG_ID);
   });
 });

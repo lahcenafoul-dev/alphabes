@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Link } from "@/i18n/navigation";
 import ListenButton from "@/components/ListenButton";
 import { absoluteUrl, alternatesFor } from "@/lib/i18n/routes";
+import JsonLd from "@/components/JsonLd";
+import { buildCollectionPageJsonLd } from "@/lib/json-ld";
 import { getSheetKind } from "@/lib/sheets/catalog";
 import { CEDILHA_SLUG, portugueseLetters } from "@/lib/letters-pt";
 import WordIllustration from "@/components/WordIllustration";
@@ -21,8 +23,16 @@ export const flashcardsMetadataPt: Metadata = {
 const cardColors = ["bg-crayon-yellow/30", "bg-crayon-blue/15", "bg-crayon-green/20", "bg-crayon-red/15", "bg-crayon-purple/15"];
 
 export default function FlashcardsPt() {
+  // The letter pages each card links to.
+  const collectionJsonLd = buildCollectionPageJsonLd("pt", {
+    name: title,
+    description,
+    url: absoluteUrl("pt", "/flashcards"),
+    items: portugueseLetters.map((l) => ({ name: `Letra ${l.upper}`, url: absoluteUrl("pt", "/alphabet/[letter]", { letter: l.slug }) })),
+  });
   return (
     <main id="main-content" className="mx-auto max-w-6xl px-6 py-12">
+      <JsonLd data={collectionJsonLd} />
       <h1 className="text-4xl font-extrabold">Os cartões do alfabeto</h1>
       <p className="mt-2 text-chalkboard/70 max-w-2xl">
         Uma palavra, uma figura, uma letra. Toque num cartão para ouvir a palavra e procurem juntos

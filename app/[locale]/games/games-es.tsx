@@ -3,7 +3,8 @@ import SlidingPuzzleTeaser from "@/components/games/SlidingPuzzleTeaser";
 import { NumberGamesSection } from "@/components/number-games/NumberGamePage";
 import { Link } from "@/i18n/navigation";
 import { absoluteUrl, alternatesFor } from "@/lib/i18n/routes";
-import { buildBreadcrumbJsonLd } from "@/lib/json-ld";
+import { buildBreadcrumbJsonLd, buildCollectionPageJsonLd } from "@/lib/json-ld";
+import { gamesHubItems } from "@/lib/hub-json-ld";
 import { spanishGames } from "@/lib/juegos-es";
 import { IconTile, InlineIcon } from "@/components/UiIcon";
 
@@ -31,17 +32,7 @@ export default function GamesEs() {
     { name: "Inicio", url: absoluteUrl("es", "/") },
     { name: "Juegos", url },
   ]);
-  const itemListJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "ItemList",
-    name: "Juegos educativos AlphaBes",
-    itemListElement: spanishGames.map((g, i) => ({
-      "@type": "ListItem",
-      position: i + 1,
-      name: g.title,
-      url: absoluteUrl("es", "/games/[slug]", { slug: g.slug }),
-    })),
-  };
+  const collectionJsonLd = buildCollectionPageJsonLd("es", { name: title, description, url, items: gamesHubItems("es", spanishGames) });
 
   return (
     <main id="main-content" className="mx-auto max-w-6xl px-6 py-12">
@@ -117,7 +108,7 @@ export default function GamesEs() {
       </section>
 
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListJsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionJsonLd) }} />
     </main>
   );
 }

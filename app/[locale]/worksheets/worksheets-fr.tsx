@@ -4,7 +4,8 @@ import { Link } from "@/i18n/navigation";
 import { FichePreview } from "@/components/fiches/FicheParts";
 import { FICHE_CATEGORIES, fiches, fichesInCategory, getFiche } from "@/lib/fiches-fr";
 import { absoluteUrl, alternatesFor } from "@/lib/i18n/routes";
-import { buildBreadcrumbJsonLd } from "@/lib/json-ld";
+import { buildBreadcrumbJsonLd, buildCollectionPageJsonLd } from "@/lib/json-ld";
+import { sheetKindItems } from "@/lib/hub-json-ld";
 import { frenchLetters } from "@/lib/letters-fr";
 
 const title = "Fiches gratuites à imprimer : alphabet, écriture cursive et sons";
@@ -70,6 +71,16 @@ export default function WorksheetsFr() {
     { name: "Accueil", url: absoluteUrl("fr", "/") },
     { name: "Fiches", url },
   ]);
+  const collectionJsonLd = buildCollectionPageJsonLd("fr", {
+    name: title,
+    description,
+    url,
+    items: [
+      ...FICHE_CATEGORIES.map((c) => ({ name: c.name, url: absoluteUrl("fr", "/worksheets/[category]", { category: c.slug }) })),
+      { name: "Packs", url: absoluteUrl("fr", "/worksheets/bundles") },
+      ...sheetKindItems("fr"),
+    ],
+  });
   const faqJsonLd = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
@@ -188,6 +199,7 @@ export default function WorksheetsFr() {
 
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionJsonLd) }} />
     </main>
   );
 }

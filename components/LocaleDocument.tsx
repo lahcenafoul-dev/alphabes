@@ -10,6 +10,7 @@ import { TIME_ZONE } from "@/i18n/request";
 import type { Locale } from "@/i18n/routing";
 import { HTML_LANG, SITE_URL } from "@/lib/i18n/routes";
 import { OG_LOCALE } from "@/lib/social-metadata";
+import { buildOrganizationJsonLd } from "@/lib/json-ld";
 
 const baloo = Baloo_2({
   subsets: ["latin"],
@@ -28,13 +29,6 @@ const nunito = Nunito({
 // Message namespaces used by site-wide client components. Forms get theirs
 // from a nested <ClientMessages> on their own page.
 const CLIENT_NAMESPACES = ["Common", "Header", "LanguageSwitcher", "CookieConsent"] as const;
-
-// Where each language's families live (organization JSON-LD).
-const AREA_SERVED: Record<Exclude<Locale, "en">, string[]> = {
-  fr: ["FR", "MA", "BE", "CH", "CA"],
-  es: ["MX", "US", "CO", "AR", "PE", "CL", "VE", "EC", "GT", "ES"],
-  pt: ["BR", "PT", "AO", "MZ"],
-};
 
 /** Site-wide default metadata for a language (pages override what they need). */
 export async function buildLocaleMetadata(locale: Locale): Promise<Metadata> {
@@ -89,25 +83,8 @@ export default async function LocaleDocument({
   const messages = await getMessages({ locale });
   const clientMessages = Object.fromEntries(CLIENT_NAMESPACES.map((ns) => [ns, messages[ns]]));
 
-  const orgJsonLd =
-    locale === "en"
-      ? {
-          "@context": "https://schema.org",
-          "@type": "EducationalOrganization",
-          name: "AlphaBes",
-          url: SITE_URL,
-          description: t("orgDescription"),
-          areaServed: ["US", "CA", "GB"],
-        }
-      : {
-          "@context": "https://schema.org",
-          "@type": "EducationalOrganization",
-          name: "AlphaBes",
-          url: `${SITE_URL}/${locale}`,
-          description: t("orgDescription"),
-          inLanguage: HTML_LANG[locale],
-          areaServed: AREA_SERVED[locale],
-        };
+  // One organization, the same @id in every language (lib/json-ld.ts).
+  const orgJsonLd = buildOrganizationJsonLd(t("orgDescription"));
 
   return (
     <html lang={HTML_LANG[locale]} className={`${baloo.variable} ${nunito.variable}`}>

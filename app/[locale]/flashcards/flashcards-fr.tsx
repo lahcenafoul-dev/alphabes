@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Link } from "@/i18n/navigation";
 import ListenButton from "@/components/ListenButton";
 import { absoluteUrl, alternatesFor } from "@/lib/i18n/routes";
+import JsonLd from "@/components/JsonLd";
+import { buildCollectionPageJsonLd } from "@/lib/json-ld";
 import { getSheetKind } from "@/lib/sheets/catalog";
 import { frenchLetters } from "@/lib/letters-fr";
 import WordIllustration from "@/components/WordIllustration";
@@ -21,8 +23,16 @@ export const flashcardsMetadataFr: Metadata = {
 const cardColors = ["bg-crayon-yellow/30", "bg-crayon-blue/15", "bg-crayon-green/20", "bg-crayon-red/15", "bg-crayon-purple/15"];
 
 export default function FlashcardsFr() {
+  // The letter pages each card links to.
+  const collectionJsonLd = buildCollectionPageJsonLd("fr", {
+    name: title,
+    description,
+    url: absoluteUrl("fr", "/flashcards"),
+    items: frenchLetters.map((l) => ({ name: `Lettre ${l.upper}`, url: absoluteUrl("fr", "/alphabet/[letter]", { letter: l.slug }) })),
+  });
   return (
     <main id="main-content" className="mx-auto max-w-6xl px-6 py-12">
+      <JsonLd data={collectionJsonLd} />
       <h1 className="text-4xl font-extrabold">L&apos;imagier de l&apos;alphabet</h1>
       <p className="mt-2 text-chalkboard/70 max-w-2xl">
         Un mot, une image, une lettre. Touchez une carte pour entendre le mot, puis cherchez

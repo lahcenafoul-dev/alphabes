@@ -13,5 +13,19 @@
   Cache-Control: public, max-age=86400, stale-while-revalidate=604800
 /audio/*
   Cache-Control: public, max-age=86400, stale-while-revalidate=604800
+
+# The worksheet PDFs stay out of search results: each one has its own HTML
+# page (/worksheets/..., /fr/fiches/..., /es/fichas/..., /pt/atividades/...),
+# which is the page that should rank. Only the PDFs: the preview images in the
+# same folders can still appear in image search. These rules add to the
+# Cache-Control rules above (a URL inherits the headers of every rule it matches).
+/worksheets-pdf/*.pdf
+  X-Robots-Tag: noindex
+/fiches-pdf/*.pdf
+  X-Robots-Tag: noindex
+/fichas-pdf/*.pdf
+  X-Robots-Tag: noindex
+/atividades-pdf/*.pdf
+  X-Robots-Tag: noindex
 /favicon.ico
   Cache-Control: public, max-age=86400, stale-while-revalidate=604800

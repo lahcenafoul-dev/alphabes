@@ -2,8 +2,9 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
-import { alternatesFor } from "@/lib/i18n/routes";
-import { buildProProductJsonLd } from "@/lib/json-ld";
+import { absoluteUrl, alternatesFor } from "@/lib/i18n/routes";
+import { buildLocaleBreadcrumbJsonLd, buildProProductJsonLd } from "@/lib/json-ld";
+import JsonLd from "@/components/JsonLd";
 import { initLocale, type LocaleParams } from "@/lib/i18n/server";
 import ClientMessages from "@/components/ClientMessages";
 import CheckoutNotice from "./checkout-notice";
@@ -123,6 +124,7 @@ export default async function PricingPage({ params }: { params: LocaleParams }) 
           ),
         }}
       />
+      <JsonLd data={buildLocaleBreadcrumbJsonLd(locale, [{ name: t("title"), url: absoluteUrl(locale, "/pricing") }])} />
     </main>
   );
 }
