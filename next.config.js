@@ -1,6 +1,25 @@
-const createNextIntlPlugin = require("next-intl/plugin");
+const path = require("path");
 
-const withNextIntl = createNextIntlPlugin("./i18n/request.ts");
+// What next-intl's plugin (createNextIntlPlugin("./i18n/request.ts")) does
+// for this config: point `next-intl/config` at our request config. The plugin
+// itself is not used because it loads @swc/core and @parcel/watcher (native
+// binaries, only for its experimental message extraction) as soon as
+// next.config.js is read, and the Cloudflare build failed on that on
+// 2026-11-18 ("Failed to load native binding"). If next-intl is upgraded,
+// check its plugin still adds nothing else we need (env, turbopack alias).
+function withNextIntl(config) {
+  return {
+    ...config,
+    webpack(webpackConfig, context) {
+      webpackConfig.resolve = webpackConfig.resolve || {};
+      webpackConfig.resolve.alias = {
+        ...webpackConfig.resolve.alias,
+        "next-intl/config": path.resolve(__dirname, "i18n/request.ts"),
+      };
+      return typeof config.webpack === "function" ? config.webpack(webpackConfig, context) : webpackConfig;
+    },
+  };
+}
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
