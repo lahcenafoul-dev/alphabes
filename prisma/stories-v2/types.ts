@@ -43,3 +43,11 @@ export const LEVEL_AGES: Record<Level, [number, number]> = { 1: [3, 4], 2: [4, 6
 
 /** Alt text per language: [cover, page 1, page 2…], written from the scenes. */
 export type StoryAlt = Record<Lang, string[]>;
+
+/** The "For parents" section under a story, per language (parents.ts). */
+export type StoryParents = {
+  /** What the story teaches, for grown-ups. */
+  teaches: string;
+  /** 4–6 words from the story to practise. */
+  words: string[];
+};

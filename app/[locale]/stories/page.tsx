@@ -14,10 +14,7 @@ async function pageMetadata({ params }: { params: LocaleParams }): Promise<Metad
   return byLocale<Metadata>(locale, { en: storiesMetadataEn, fr: storiesMetadataFr, es: storiesMetadataEs, pt: storiesMetadataPt });
 }
 
-// Rendered per request so the build never needs the database and new
-// stories show up without a redeploy.
-export const dynamic = "force-dynamic";
-
+// Static: the list comes from prisma/stories-v2 (components/stories/StoryShelf.tsx).
 export default async function StoriesPage({ params }: { params: LocaleParams }) {
   const locale = initLocale((await params).locale);
   const Stories = byLocale(locale, { en: StoriesEn, fr: StoriesFr, es: StoriesEs, pt: StoriesPt });

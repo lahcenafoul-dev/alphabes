@@ -75,11 +75,9 @@ type Page = {
   pageNumber: number;
   text: string;
   imageUrl: string | null;
-  audioUrl: string | null;
 };
 
 type Story = {
-  id: string;
   slug: string;
   title: string;
   pages: Page[];
@@ -89,15 +87,32 @@ type Child = { id: string; firstName: string };
 
 type Props = {
   story: Story;
-  childProfiles: Child[];
   locale?: Locale;
   /** Alt text: [cover, page 1, page 2…] (lib/stories.ts). */
   alt?: string[];
-  /** Shown under the last page; empty when the last page is locked. */
+  /** Shown under the last page. */
   questions?: string[];
-  /** Signed in: the finished screen links to the dashboard, otherwise to sign-up. */
-  loggedIn?: boolean;
 };
+
+/**
+ * Who is reading. The story page is static (the same HTML for everyone, so it
+ * can be cached), so the browser asks for the signed-in parent's children:
+ * signed out (401) or offline means no picker and no saving, as before.
+ * Children who learn in the story's language come first (preselected).
+ */
+export async function loadReader(locale: Locale, fetcher: typeof fetch = fetch): Promise<{ loggedIn: boolean; children: Child[] }> {
+  try {
+    const res = await fetcher("/api/children", { credentials: "same-origin" });
+    if (!res.ok) return { loggedIn: false, children: [] };
+    const data = (await res.json()) as { children?: (Child & { language?: string })[] };
+    const all = data.children ?? [];
+    const lang = locale.toUpperCase();
+    const ordered = [...all.filter((c) => c.language === lang), ...all.filter((c) => c.language !== lang)];
+    return { loggedIn: true, children: ordered.map(({ id, firstName }) => ({ id, firstName })) };
+  } catch {
+    return { loggedIn: false, children: [] };
+  }
+}
 
 type ProgressSave = { slug: string; childId: string; lastPageRead: number; completed: boolean };
 
@@ -178,11 +193,26 @@ export function narration(story: Pick<Story, "slug" | "title">, page: Pick<Page,
   return [{ url: storyAudioPath(locale, story.slug, 0), text: title }, part];
 }
 
-export default function StoryReader({ story, childProfiles, locale = "en", alt = [], questions = [], loggedIn = false }: Props) {
+export default function StoryReader({ story, locale = "en", alt = [], questions = [] }: Props) {
   const t = LABELS[locale];
   const [finished, setFinished] = useState(false);
   const [pageIndex, setPageIndex] = useState(0);
-  const [selectedChild, setSelectedChild] = useState(childProfiles[0]?.id ?? "");
+  const [childProfiles, setChildProfiles] = useState<Child[]>([]);
+  const [loggedIn, setLoggedIn] = useState(false);
+  const [selectedChild, setSelectedChild] = useState("");
+
+  useEffect(() => {
+    let live = true;
+    void loadReader(locale).then((r) => {
+      if (!live) return;
+      setLoggedIn(r.loggedIn);
+      setChildProfiles(r.children);
+      setSelectedChild((current) => current || (r.children[0]?.id ?? ""));
+    });
+    return () => {
+      live = false;
+    };
+  }, [locale]);
 
   const page = story.pages[pageIndex];
   const isLast = pageIndex === story.pages.length - 1;
