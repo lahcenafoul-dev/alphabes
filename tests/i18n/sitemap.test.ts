@@ -1,33 +1,21 @@
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, it } from "vitest";
+import { routing } from "@/i18n/routing";
+import { AREA_LASTMOD, areaOf } from "@/lib/sitemap-lastmod";
+import { STORIES_UPDATED } from "@/lib/stories";
 
-// The release date is baked in at build time; fix it for the test.
-vi.stubEnv("RELEASE_DATE", "2026-10-07T12:00:00.000Z");
-
-// Stand-in for the database: two stories with their own update dates.
-const stories = [
-  { slug: "the-little-apple", locale: "EN", translationGroup: null, updatedAt: new Date("2026-09-01T08:00:00Z") },
-  { slug: "la-petite-pomme", locale: "FR", translationGroup: null, updatedAt: new Date("2026-09-15T09:30:00Z") },
-];
-vi.mock("next/cache", () => ({ unstable_cache: (fn: () => unknown) => fn }));
-vi.mock("@/lib/prisma", () => ({ getPrisma: () => ({ story: { findMany: async () => stories } }) }));
-
-const { sitemapEntries: sitemap, sitemapXml } = await import("@/lib/sitemap");
+const { sitemapEntries: sitemap, sitemapEntriesFor, sitemapIndexXml, sitemapXml, localeOfUrl } = await import("@/lib/sitemap");
 
 describe("sitemap lastmod", () => {
-  it("uses the release date for pages in the code and each story's own date", async () => {
-    const first = await sitemap();
-    const release = new Date("2026-10-07T12:00:00.000Z").getTime();
-    const storyUrls = new Map([
-      ["https://alphabes.com/stories/the-little-apple", "2026-09-01T08:00:00Z"],
-      ["https://alphabes.com/fr/histoires/la-petite-pomme", "2026-09-15T09:30:00Z"],
-    ]);
-
-    expect(first.length).toBeGreaterThan(1000);
-    for (const e of first) {
-      const story = storyUrls.get(e.url);
-      expect(new Date(e.lastModified!).getTime(), e.url).toBe(story ? new Date(story).getTime() : release);
+  it("gives pages in the code their area's fixed date, and stories theirs (never the build time)", async () => {
+    const entries = await sitemap();
+    expect(entries.length).toBeGreaterThan(4000);
+    for (const e of entries) {
+      const area = areaOf(e.url);
+      const expected = area === "stories" && /\/(stories|histoires|cuentos|historias)\/./.test(e.url) ? STORIES_UPDATED.slice(0, 10) : AREA_LASTMOD[area ?? "?"];
+      expect(e.lastModified, e.url).toBe(expected);
+      expect(String(e.lastModified)).toMatch(/^\d{4}-\d{2}-\d{2}$/);
     }
-    expect(first.filter((e) => storyUrls.has(e.url))).toHaveLength(2);
+    expect(entries.filter((e) => /\/stories\/./.test(e.url))).toHaveLength(24);
   });
 
   it("writes hreflang links after <priority>, as the sitemap XSD requires", async () => {
@@ -46,10 +34,29 @@ describe("sitemap lastmod", () => {
     expect(xml).toContain('href="https://alphabes.com/a?b=1&amp;c=2"');
   });
 
-  it("gives the same lastmod values on every request", async () => {
-    const lastmods = async () => (await sitemap()).map((e) => [e.url, new Date(e.lastModified!).toISOString()]);
-    const a = await lastmods();
-    await new Promise((r) => setTimeout(r, 5));
-    expect(await lastmods()).toEqual(a);
+});
+
+describe("sitemap index", () => {
+  it("splits every URL into exactly one language sitemap, keeping hreflang", async () => {
+    const all = await sitemap();
+    const parts = await Promise.all(routing.locales.map((l) => sitemapEntriesFor(l)));
+    expect(parts.reduce((n, p) => n + p.length, 0)).toBe(all.length);
+    routing.locales.forEach((l, i) => {
+      expect(parts[i].length).toBeGreaterThan(900);
+      for (const e of parts[i]) expect(localeOfUrl(e.url)).toBe(l);
+    });
+    expect(parts[1].find((e) => e.url === "https://alphabes.com/fr/alphabet/a")?.alternates?.languages).toMatchObject({
+      en: "https://alphabes.com/alphabet/a",
+      fr: "https://alphabes.com/fr/alphabet/a",
+    });
+  });
+
+  it("lists the 4 language sitemaps", async () => {
+    const xml = await sitemapIndexXml();
+    expect(xml.startsWith('<?xml version="1.0" encoding="UTF-8"?>\n<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n')).toBe(true);
+    for (const l of routing.locales) {
+      expect(xml).toMatch(new RegExp(`<loc>https://alphabes\\.com/sitemap-${l}\\.xml</loc>\\n<lastmod>\\d{4}-\\d{2}-\\d{2}</lastmod>`));
+    }
+    expect(xml.match(/<sitemap>/g)).toHaveLength(4);
   });
 });

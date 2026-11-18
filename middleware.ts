@@ -124,13 +124,13 @@ export async function middleware(req: NextRequest) {
 export const config = {
   matcher: [
     // Every page, but not API routes, Next internals, generated metadata
-    // images, or files with an extension (robots.txt, sitemap.xml, PDFs, MP3s).
+    // images, or files with an extension (robots.txt, the sitemaps, PDFs, MP3s).
     "/((?!api|_next|_vercel|icon|apple-icon|opengraph-image|.*\\..*).*)",
     // Unknown top-level files ("/foo.xml", "/sitemap_index.xml"): without
     // this they reach app/[locale] as a locale and answer 500 on Workers;
     // here they get the 404 page. Real root files are left alone (on Workers
     // existing public files never reach the worker anyway).
-    "/((?!(?:robots\\.txt|sitemap\\.xml|favicon\\.ico|manifest\\.webmanifest)$)[^/]+\\.[^/]+)",
+    "/((?!(?:robots\\.txt|sitemap(?:-(?:en|fr|es|pt))?\\.xml|favicon\\.ico|manifest\\.webmanifest)$)[^/]+\\.[^/]+)",
     // Dot paths at any depth ("/.env", "/.git/config", "/.x/about"): the
     // patterns above skip them, so they reached app/[locale] as a locale and
     // answered 500 (static to dynamic at runtime); here they get the 404 page.

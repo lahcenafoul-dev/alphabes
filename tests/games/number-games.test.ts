@@ -31,10 +31,6 @@ import fr from "@/messages/fr.json";
 import es from "@/messages/es.json";
 import pt from "@/messages/pt.json";
 
-// The sitemap reads stories from the database: none here.
-vi.stubEnv("RELEASE_DATE", "2026-11-03T12:00:00.000Z");
-vi.mock("next/cache", () => ({ unstable_cache: (fn: () => unknown) => fn }));
-vi.mock("@/lib/prisma", () => ({ getPrisma: () => ({ story: { findMany: async () => [] } }) }));
 
 const RUNS = 500;
 

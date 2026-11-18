@@ -25,11 +25,6 @@ function withNextIntl(config) {
 const nextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
-  // Fixed per release (lib/release-date.ts): the sitemap's <lastmod> for
-  // pages in the code, instead of the time of each request.
-  env: {
-    RELEASE_DATE: new Date().toISOString(),
-  },
   // Keep Prisma out of the bundler so its Workers (WASM) build is picked at
   // runtime by OpenNext.
   serverExternalPackages: ["@prisma/client", ".prisma/client"],
@@ -71,10 +66,10 @@ const nextConfig = {
           { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=()" },
         ],
       },
-      // Crawlers and proxies may keep the sitemap an hour (its story list is
-      // cached that long on the server too; see lib/sitemap.ts).
+      // Crawlers and proxies may keep the sitemaps (index and one per
+      // language, built at build time; lib/sitemap.ts) an hour.
       {
-        source: "/sitemap.xml",
+        source: "/:file(sitemap|sitemap-en|sitemap-fr|sitemap-es|sitemap-pt).xml",
         headers: [{ key: "Cache-Control", value: "public, max-age=3600, stale-while-revalidate=86400" }],
       },
     ];

@@ -5,9 +5,6 @@ import { absoluteUrl } from "@/lib/i18n/routes";
 import { sheetCategoryParams } from "@/lib/sheets/catalog";
 import { SHEET_LOCALES } from "@/lib/sheets/types";
 
-vi.stubEnv("RELEASE_DATE", "2026-10-07T12:00:00.000Z");
-vi.mock("next/cache", () => ({ unstable_cache: (fn: () => unknown) => fn }));
-vi.mock("@/lib/prisma", () => ({ getPrisma: () => ({ story: { findMany: async () => [] } }) }));
 
 const { sitemapEntries } = await import("@/lib/sitemap");
 const entries = await sitemapEntries();

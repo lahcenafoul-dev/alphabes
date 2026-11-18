@@ -71,7 +71,7 @@ describe("middleware routing", () => {
   });
 
   it("serves the 404 page for unknown top-level files, not the real root files", async () => {
-    for (const path of ["/sitemap_index.xml", "/foo.xml", "/foo.txt", "/wp-login.php"]) {
+    for (const path of ["/sitemap_index.xml", "/sitemap-de.xml", "/foo.xml", "/foo.txt", "/wp-login.php"]) {
       expect(unstable_doesMiddlewareMatch({ config, url: path }), path).toBe(true);
       const res = await middleware(request(path));
       expect(rewrite(res), path).toBe("/_not-found");
@@ -80,6 +80,10 @@ describe("middleware routing", () => {
     for (const path of [
       "/robots.txt",
       "/sitemap.xml",
+      "/sitemap-en.xml",
+      "/sitemap-fr.xml",
+      "/sitemap-es.xml",
+      "/sitemap-pt.xml",
       "/favicon.ico",
       "/manifest.webmanifest",
       "/apple-icon",
