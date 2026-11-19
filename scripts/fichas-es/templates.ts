@@ -9,6 +9,7 @@
 //               capitals and loops 1.0 em (two x-heights), tails 0.5 em below.
 //   cuadrícula: 6 mm squares, for the number sheets.
 import { getSpanishLetter, type SpanishLetter, type SpanishWord } from "../../lib/letters-es";
+import { spanishLetterWords } from "../../lib/pack-words";
 import {
   COLOURS,
   colourLabel,
@@ -111,15 +112,8 @@ function pictureCard(word: SpanishWord, picSize: number, textSize: number): stri
   return `<div class="card"><div class="pic" style="font-size:${picSize}mm">${picturePrint(word.picture)}</div><div style="font-size:${textSize}mm;margin-top:1.5mm">${esc(plain(word.word))}</div></div>`;
 }
 
-/** The letter's words, then its first-syllable words: three at most, no repeats. */
-export function letterWords(l: SpanishLetter): SpanishWord[] {
-  const out: SpanishWord[] = [];
-  const firstSyllable = (FIRST_SYLLABLE_WORDS[l.slug] ?? []).map((x) => ({ ...x, word: plain(x.word) }));
-  for (const x of [...l.words, ...(l.wordsInside ?? []), ...firstSyllable]) {
-    if (out.length < 3 && !out.some((o) => o.word.toLowerCase() === x.word.toLowerCase())) out.push(x);
-  }
-  return out;
-}
+/** The words of the "write words" sheet (lib/pack-words.ts). */
+export const letterWords = spanishLetterWords;
 
 // ------------------------------------------------------------------ letter sheets
 

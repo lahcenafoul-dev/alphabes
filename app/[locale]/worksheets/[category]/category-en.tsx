@@ -21,6 +21,7 @@ import { THUMB_WIDTH, pdfPreview, previewThumb } from "@/lib/preview-thumb";
 import { letterHowTo, staticHowTo } from "@/lib/worksheet-howto";
 import { staticWorksheetCategories, getStaticWorksheetCategory } from "@/lib/static-worksheet-categories";
 import { getStaticWorksheetBySlug, getStaticWorksheetsByCategory, getAllStaticWorksheetSlugs } from "@/lib/static-worksheets-data";
+import GuideBlocks from "@/components/GuideBlocks";
 import { letterGuide, type GuideBlock, type Inline } from "@/lib/worksheet-letter-guide";
 
 const BASE_URL = "https://alphabes.com";
@@ -374,7 +375,7 @@ function WorksheetDetailView({ slug }: { slug: string }) {
         </p>
       )}
 
-      <LetterGuide blocks={letterGuide(worksheet.worksheetType, worksheet.letter)} />
+      <GuideBlocks blocks={letterGuide(worksheet.worksheetType, worksheet.letter)} />
 
       <section className="mt-12 print:hidden" aria-labelledby="related-heading">
         <h2 id="related-heading" className="text-xl font-bold">
@@ -512,7 +513,7 @@ function StaticWorksheetDetailView({ slug }: { slug: string }) {
 
       <HowToUse text={staticHowTo(worksheet.slug)} />
 
-      {cursiveLetter && <LetterGuide blocks={letterGuide("cursive", cursiveLetter)} />}
+      {cursiveLetter && <GuideBlocks blocks={letterGuide("cursive", cursiveLetter)} />}
 
       <section className="mt-12 print:hidden" aria-labelledby="related-heading">
         <h2 id="related-heading" className="text-xl font-bold">
@@ -566,36 +567,6 @@ function HowToUse({ text }: { text: string | null }) {
 }
 
 // Per-letter text under "How to use this worksheet" (lib/worksheet-letter-guide.ts).
-function LetterGuide({ blocks }: { blocks: GuideBlock[] }) {
-  if (!blocks.length) return null;
-  return (
-    <div className="mt-8 space-y-6 print:hidden">
-      {blocks.map((b) => (
-        <section key={b.id} aria-labelledby={`guide-${b.id}`}>
-          <h2 id={`guide-${b.id}`} className="font-display font-bold text-lg">
-            {b.heading}
-          </h2>
-          {b.paragraphs.map((p, i) => (
-            <p key={i} className="mt-2 text-chalkboard/80">
-              {p.map((part, j) => <GuideInline key={j} part={part} />)}
-            </p>
-          ))}
-        </section>
-      ))}
-    </div>
-  );
-}
-
-function GuideInline({ part }: { part: Inline }) {
-  if (typeof part === "string") return <>{part}</>;
-  if ("strong" in part) return <strong>{part.strong}</strong>;
-  return (
-    <Link href={part.href} className="font-bold underline">
-      {part.text}
-    </Link>
-  );
-}
-
 function InfoItem({ label, value }: { label: string; value: string }) {
   return (
     <div className="rounded-block border border-chalkboard/10 p-3">

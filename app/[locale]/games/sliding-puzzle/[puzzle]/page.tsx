@@ -10,6 +10,8 @@ import { PUZZLES, PUZZLE_TEXT, getPuzzle, puzzleImage } from "@/lib/puzzles";
 import { PUZZLE_PAGES } from "@/lib/puzzle-pages";
 import { routing } from "@/i18n/routing";
 import { withSocialMetadata } from "@/lib/social-metadata";
+import GuideBlocks from "@/components/GuideBlocks";
+import { puzzleGuide } from "@/lib/puzzle-guide";
 
 // One sliding puzzle (lib/puzzles.ts), in every language. The listing is
 // ../page.tsx.
@@ -80,6 +82,8 @@ export default async function SlidingPuzzlePage(props: Props) {
           <SlidingPuzzleGame image={puzzleImage(puzzle)} alt={puzzle.alt[locale]} size={puzzle.size} text={PUZZLE_TEXT[locale]} />
         </ClientOnly>
       </div>
+
+      <GuideBlocks blocks={puzzleGuide(locale, puzzle.slug[locale])} className="mt-10 space-y-6" />
 
       <section className="mt-10 grid gap-6 sm:grid-cols-2">
         <div>

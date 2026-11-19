@@ -7,6 +7,8 @@ import { buildBreadcrumbJsonLd } from "@/lib/json-ld";
 import { HTML_LANG, absoluteUrl, alternatesFor, localizedPath } from "@/lib/i18n/routes";
 import { getNumberGame, numberGamePage, numberGames, type NumberGame as Game } from "@/lib/number-games";
 import NumberGame from "./NumberGame";
+import GuideBlocks from "@/components/GuideBlocks";
+import { numberGameGuide } from "@/lib/game-guide";
 
 export function numberGameMetadata(locale: Locale, slug: string): Metadata {
   const g = getNumberGame(locale, slug);
@@ -140,6 +142,8 @@ export default function NumberGamePage({ locale, slug }: { locale: Locale; slug:
             <p className="mt-3 text-sm font-bold text-owl-muted">{page.age}</p>
           </div>
         </section>
+
+        <GuideBlocks blocks={numberGameGuide(locale, g.key)} className="mt-10 max-w-3xl space-y-6" />
 
         <section aria-labelledby="more-games-heading" className="mt-12">
           <h2 id="more-games-heading" className="font-display text-2xl font-extrabold sm:text-3xl">
