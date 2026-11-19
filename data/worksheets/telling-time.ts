@@ -4,7 +4,7 @@
 // times are drawn from the sheet's id, so a sheet never changes, and say
 // the time the way each language does ("trois heures et demie",
 // "las tres y media", "três e meia").
-import { pick, seededRandom, type L10n, type Sheet, type SheetKind, type SheetLocale } from "@/lib/sheets/types";
+import { firstFitL10n, pick, seededRandom, type L10n, type Sheet, type SheetKind, type SheetLocale } from "@/lib/sheets/types";
 
 export type ClockLevel = "oclock" | "half" | "quarter" | "five" | "any";
 export type ClockActivity = "read" | "draw" | "match" | "before-after" | "routine";
@@ -103,9 +103,27 @@ const LEVELS: Record<ClockLevel, { name: L10n; minutes: number[] }> = {
   any: { name: { en: "Any Minute", fr: "à la minute près", es: "minuto a minuto", pt: "minuto a minuto" }, minutes: Array.from({ length: 59 }, (_, i) => i + 1).filter((m) => m % 5) },
 };
 
-const ACTIVITIES: Record<Exclude<ClockActivity, "routine">, { name: L10n; count: number; instruction: L10n }> = {
+/** "3:15, 7:45 and 9:15"; French "3 h 15, 7 h 45 et 9 h 15". */
+function list(ts: Time[], l: SheetLocale): string {
+  const words = ts.map((t) => digital(t, l));
+  const and = { en: "and", fr: "et", es: "y", pt: "e" }[l];
+  return `${words.slice(0, -1).join(", ")} ${and} ${words[words.length - 1]}`;
+}
+
+type Activity = {
+  name: L10n;
+  /** A shorter name for the SEO title, when the full one doesn't fit. */
+  shortName: L10n;
+  count: number;
+  instruction: L10n;
+  /** The task with this sheet's times, for the meta description. */
+  about: L10n<(times: string) => string>;
+};
+
+const ACTIVITIES: Record<Exclude<ClockActivity, "routine">, Activity> = {
   read: {
     name: { en: "What Time Is It?", fr: "Quelle heure est-il ?", es: "¿Qué hora es?", pt: "Que horas são?" },
+    shortName: { en: "What Time Is It?", fr: "Quelle heure est-il ?", es: "¿Qué hora es?", pt: "Que horas são?" },
     count: 6,
     instruction: {
       en: "Look at each clock and write the time.",
@@ -113,9 +131,16 @@ const ACTIVITIES: Record<Exclude<ClockActivity, "routine">, { name: L10n; count:
       es: "Mira cada reloj y escribe la hora.",
       pt: "Olhe cada relógio e escreva a hora.",
     },
+    about: {
+      en: (t) => `read the clocks and write the time (${t})`,
+      fr: (t) => `lis les horloges et écris l'heure (${t})`,
+      es: (t) => `mira los relojes y escribe la hora (${t})`,
+      pt: (t) => `olhe os relógios e escreva a hora (${t})`,
+    },
   },
   draw: {
     name: { en: "Draw the Hands", fr: "Dessine les aiguilles", es: "Dibuja las manecillas", pt: "Desenhe os ponteiros" },
+    shortName: { en: "Draw the Hands", fr: "Dessine les aiguilles", es: "Dibuja las manecillas", pt: "Desenhe os ponteiros" },
     count: 6,
     instruction: {
       en: "Draw the hands: the short one for the hour, the long one for the minutes.",
@@ -123,9 +148,16 @@ const ACTIVITIES: Record<Exclude<ClockActivity, "routine">, { name: L10n; count:
       es: "Dibuja las manecillas: la corta para la hora, la larga para los minutos.",
       pt: "Desenhe os ponteiros: o pequeno para as horas, o grande para os minutos.",
     },
+    about: {
+      en: (t) => `draw the hands for ${t}`,
+      fr: (t) => `dessine les aiguilles pour ${t}`,
+      es: (t) => `dibuja las manecillas para las ${t}`,
+      pt: (t) => `desenhe os ponteiros para ${t}`,
+    },
   },
   match: {
     name: { en: "Match the Clocks", fr: "Relie les horloges", es: "Une los relojes", pt: "Ligue os relógios" },
+    shortName: { en: "Match the Clocks", fr: "Relie les horloges", es: "Une los relojes", pt: "Ligue os relógios" },
     count: 5,
     instruction: {
       en: "Draw a line from each clock to the same time.",
@@ -133,15 +165,28 @@ const ACTIVITIES: Record<Exclude<ClockActivity, "routine">, { name: L10n; count:
       es: "Une cada reloj con la misma hora.",
       pt: "Ligue cada relógio à mesma hora.",
     },
+    about: {
+      en: (t) => `match each clock to its time: ${t}`,
+      fr: (t) => `relie chaque horloge à son heure : ${t}`,
+      es: (t) => `une cada reloj con su hora: ${t}`,
+      pt: (t) => `ligue cada relógio à sua hora: ${t}`,
+    },
   },
   "before-after": {
     name: { en: "One Hour Before and After", fr: "Une heure avant, une heure après", es: "Una hora antes y después", pt: "Uma hora antes e depois" },
+    shortName: { en: "One Hour Before and After", fr: "Une heure avant et après", es: "Una hora antes y después", pt: "Uma hora antes e depois" },
     count: 4,
     instruction: {
       en: "Write the time one hour before and one hour after each clock.",
       fr: "Écris l'heure qu'il était une heure avant, et celle qu'il sera une heure après.",
       es: "Escribe la hora una hora antes y una hora después de cada reloj.",
       pt: "Escreva a hora uma hora antes e uma hora depois de cada relógio.",
+    },
+    about: {
+      en: (t) => `write the time one hour before and after ${t}`,
+      fr: (t) => `écris l'heure une heure avant et après ${t}`,
+      es: (t) => `escribe la hora una hora antes y después de las ${t}`,
+      pt: (t) => `escreva a hora uma hora antes e depois de ${t}`,
     },
   },
 };
@@ -213,6 +258,7 @@ function activitySheet(activity: Exclude<ClockActivity, "routine">, level: Clock
   const a = ACTIVITIES[activity];
   const lv = LEVELS[level].name;
   const id = `time-${activity}-${level}-${set}`;
+  const sheetTimes = times(level, a.count, id);
   // "What Time Is It? Half Past", "Draw the Hands: Half Past".
   const sep = (l: SheetLocale) => (a.name[l].endsWith("?") ? " " : l === "fr" ? " : " : ": ");
   // A capital after a question mark: "Quelle heure est-il ? Les heures pile".
@@ -232,22 +278,38 @@ function activitySheet(activity: Exclude<ClockActivity, "routine">, level: Clock
       es: `${a.name.es}${sep("es")}${after("es")}, ${SHEET_WORD.es} ${set}`,
       pt: `${a.name.pt}${sep("pt")}${after("pt")}, ${SHEET_WORD.pt} ${set}`,
     },
+    metaTitle: firstFitL10n(
+      {
+        en: `${a.name.en}${sep("en")}${lv.en}, Sheet ${set}`,
+        fr: `${a.name.fr}${sep("fr")}${after("fr")}, ${SHEET_WORD.fr} ${set}`,
+        es: `${a.name.es}${sep("es")}${after("es")}, ${SHEET_WORD.es} ${set}`,
+        pt: `${a.name.pt}${sep("pt")}${after("pt")}, ${SHEET_WORD.pt} ${set}`,
+      },
+      {
+        en: `${a.shortName.en}${sep("en")}${lv.en.replace("Quarter Past and Quarter To", "Quarter Past/To")}, Sheet ${set}`,
+        fr: `${a.shortName.fr}${sep("fr")}${after("fr")}, ${SHEET_WORD.fr} ${set}`,
+        es: `${a.shortName.es}${sep("es")}${after("es")}, ${SHEET_WORD.es} ${set}`,
+        pt: `${a.shortName.pt}${sep("pt")}${after("pt")}, ${SHEET_WORD.pt} ${set}`,
+      },
+    ),
     label: {
       en: `${lv.en}, sheet ${set}`,
       fr: `${lv.fr.charAt(0).toUpperCase() + lv.fr.slice(1)}, ${SHEET_WORD.fr} ${set}`,
       es: `${lv.es.charAt(0).toUpperCase() + lv.es.slice(1)}, ${SHEET_WORD.es} ${set}`,
       pt: `${lv.pt.charAt(0).toUpperCase() + lv.pt.slice(1)}, ${SHEET_WORD.pt} ${set}`,
     },
+    // What this sheet asks and its own times, so sheet 1 and sheet 2 differ
+    // (SEO phase 4: they shared one description).
     description: {
-      en: `Free printable telling time worksheet (${lv.en.toLowerCase()}): ${a.instruction.en.charAt(0).toLowerCase() + a.instruction.en.slice(1)} Answer key on page 2.`,
-      fr: `Fiche gratuite pour apprendre à lire l'heure (${lv.fr}) : ${a.instruction.fr.charAt(0).toLowerCase() + a.instruction.fr.slice(1)} Corrigé en page 2.`,
-      es: `Ficha gratis para aprender la hora (${lv.es}): ${a.instruction.es.charAt(0).toLowerCase() + a.instruction.es.slice(1)} Respuestas en la página 2.`,
-      pt: `Atividade grátis para aprender as horas (${lv.pt}): ${a.instruction.pt.charAt(0).toLowerCase() + a.instruction.pt.slice(1)} Gabarito na página 2.`,
+      en: `Free telling time worksheet (${lv.en.toLowerCase()}), sheet ${set}: ${a.about.en(list(sheetTimes, "en"))}. Answer key on page 2.`,
+      fr: `Fiche ${set} gratuite pour lire l'heure (${lv.fr}) : ${a.about.fr(list(sheetTimes, "fr"))}. Corrigé en page 2.`,
+      es: `Ficha ${set} gratis para aprender la hora (${lv.es}): ${a.about.es(list(sheetTimes, "es"))}. Respuestas en la página 2.`,
+      pt: `Atividade ${set} grátis para aprender as horas (${lv.pt}): ${a.about.pt(list(sheetTimes, "pt"))}. Gabarito na página 2.`,
     },
     instruction: a.instruction,
     filters: { level, activity },
     pages: 2,
-    params: { activity, level, times: times(level, a.count, id) },
+    params: { activity, level, times: sheetTimes },
   };
 }
 
@@ -270,9 +332,9 @@ function routineSheet(r: (typeof ROUTINES)[number]): TellingTimeSheet {
     label: r.name,
     description: {
       en: `Free printable daily routine worksheet: read what happens at each time of ${r.name.en.toLowerCase()} and draw the hands on the clock. Answer key on page 2.`,
-      fr: `Fiche gratuite sur les heures de la journée : lis ce qui se passe à chaque heure et dessine les aiguilles sur l'horloge. Corrigé en page 2.`,
-      es: `Ficha gratis sobre las horas del día: lee lo que pasa a cada hora y dibuja las manecillas en el reloj. Respuestas en la página 2.`,
-      pt: `Atividade grátis sobre as horas do dia: leia o que acontece em cada hora e desenhe os ponteiros no relógio. Gabarito na página 2.`,
+      fr: `Fiche gratuite sur les heures de la journée (${r.name.fr.toLowerCase()}) : lis ce qui se passe à chaque heure et dessine les aiguilles sur l'horloge. Corrigé en page 2.`,
+      es: `Ficha gratis sobre las horas del día (${r.name.es.toLowerCase()}): lee lo que pasa a cada hora y dibuja las manecillas en el reloj. Respuestas en la página 2.`,
+      pt: `Atividade grátis sobre as horas do dia (${r.name.pt.toLowerCase()}): leia o que acontece em cada hora e desenhe os ponteiros no relógio. Gabarito na página 2.`,
     },
     instruction: {
       en: "Read each sentence, then draw the hands on the clock.",

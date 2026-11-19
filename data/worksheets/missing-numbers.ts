@@ -8,7 +8,7 @@
 //   neighbours  the number before, after or in between
 // Blanks are drawn from a random generator seeded with the sheet id, so they
 // stay the same from one build to the next.
-import { cap, pick, seededRandom, slugify, type L10n, type Sheet, type SheetKind } from "@/lib/sheets/types";
+import { cap, firstFit, pick, seededRandom, slugify, type L10n, type Sheet, type SheetKind } from "@/lib/sheets/types";
 
 export type MissingNumbersParams =
   | { layout: "grid" | "path" | "train"; start: number; end: number; picture: string; blanks: number[] }
@@ -473,7 +473,37 @@ function neighbourSheets(): MissingNumbersSheet[] {
 
 // ------------------------------------------------------------------ the type
 
-export const missingNumbersSheets: MissingNumbersSheet[] = [...rangeSheets(), ...chartSheets(), ...skipSheets(), ...neighbourSheets()];
+// Shorter SEO titles, used only when a title passes 60 characters (firstFit):
+// each step is applied on top of the previous ones. The H1 keeps the full title.
+const META_STEPS: Record<keyof L10n, [RegExp, string][][]> = {
+  en: [],
+  fr: [
+    [[/^Nombres manquants de (\d+) à (\d+)/, "Nombres manquants $1–$2"]],
+    [[/ des nombres( \(|$)/, "$1"], [/tableau des nombres jusqu'à 100/, "tableau"], [/tableau jusqu'à 100, /, "tableau, "], [/^Compter de/, "De"]],
+  ],
+  es: [
+    [[/^Números faltantes del (\d+) al (\d+)/, "Números faltantes $1–$2"]],
+    [[/ de los números( \(|$)/, "$1"], [/tabla del 1 al 100 con /, "tabla con "], [/tabla del 1 al 100, /, "tabla, "]],
+  ],
+  pt: [
+    [[/^Números que faltam de (\d+) a (\d+)/, "Números que faltam $1–$2"]],
+    [[/ dos números( \(|$)/, "$1"], [/tabela até 100 com /, "tabela com "], [/tabela até 100, /, "tabela, "]],
+  ],
+};
+
+function metaTitleOf(title: L10n): L10n {
+  const pick = (l: keyof L10n) => {
+    const candidates = [title[l]];
+    for (const step of META_STEPS[l]) candidates.push(step.reduce((t, [from, to]) => t.replace(from, to), candidates[candidates.length - 1]));
+    return firstFit(...candidates);
+  };
+  return { en: pick("en"), fr: pick("fr"), es: pick("es"), pt: pick("pt") };
+}
+
+export const missingNumbersSheets: MissingNumbersSheet[] = [...rangeSheets(), ...chartSheets(), ...skipSheets(), ...neighbourSheets()].map((s) => ({
+  ...s,
+  metaTitle: metaTitleOf(s.title),
+}));
 
 export const missingNumbersKind: SheetKind = {
   id: "missing-numbers",
