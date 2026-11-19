@@ -1,5 +1,7 @@
 const path = require("path");
 
+const LETTERS = "abcdefghijklmnopqrstuvwxyz".split("");
+
 // What next-intl's plugin (createNextIntlPlugin("./i18n/request.ts")) does
 // for this config: point `next-intl/config` at our request config. The plugin
 // itself is not used because it loads @swc/core and @parcel/watcher (native
@@ -50,6 +52,11 @@ const nextConfig = {
     return [
       // An older, shorter copy of the privacy policy (docs/seo-audit.md, I4).
       { source: "/privacy", destination: "/privacy-policy", statusCode: 301 },
+      // The English online tracer gave the same PDF as the tracing worksheet
+      // (SEO phase 4, 2026-11-19). Both cases: the page used to answer /alphabet/A/worksheet too.
+      ...LETTERS.flatMap((l) =>
+        [l, l.toUpperCase()].map((p) => ({ source: `/alphabet/${p}/worksheet`, destination: `/worksheets/letter-${l}-tracing`, statusCode: 301 })),
+      ),
       { source: "/fiches-pdf/packs/:slug([a-z0-9-]+).pdf", destination: "/fr/fiches/packs/:slug", permanent: true },
       { source: "/fichas-pdf/paquetes/:slug([a-z0-9-]+).pdf", destination: "/es/fichas/paquetes/:slug", permanent: true },
       { source: "/atividades-pdf/pacotes/:slug([a-z0-9-]+).pdf", destination: "/pt/atividades/pacotes/:slug", permanent: true },

@@ -1,6 +1,7 @@
 // Shared page chrome for every worksheet PDF template, factored out of the
 // original hand-coded header/footer drawing that used to live inline in
-// components/WorksheetClient.tsx. Every template in lib/pdf/templates/ uses
+// components/WorksheetClient.tsx (removed with the English online tracer,
+// 2026-11-19). Every template in lib/pdf/templates/ uses
 // these so all 260+ worksheets look like one consistent, professional set.
 
 import type { jsPDF } from "jspdf";

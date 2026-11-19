@@ -9,12 +9,12 @@ import { SITE_URL, matchPath } from "@/lib/i18n/routes";
 
 export const AREA_LASTMOD: Record<string, string> = {
   "": "2026-11-03", // home
-  alphabet: "2026-10-28",
+  alphabet: "2026-11-19",
   numbers: "2026-11-03",
   phonics: "2026-10-28",
   preschool: "2026-10-31",
   kindergarten: "2026-10-07",
-  worksheets: "2026-11-18",
+  worksheets: "2026-11-19",
   games: "2026-11-18",
   stories: "2026-11-18",
   flashcards: "2026-11-18",

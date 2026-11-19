@@ -1,8 +1,8 @@
-// Letter Tracing PDF template. This is the extracted, behaviorally-identical
-// body of components/WorksheetClient.tsx's original inline downloadPDF --
-// same visual output, same saved-file semantics -- so the legacy interactive
-// /alphabet/[letter]/worksheet page and the new "Letter X Tracing" worksheet
-// type render byte-identical PDFs from one function.
+// Letter Tracing PDF template, used by the "Letter X Tracing" worksheets
+// (/worksheets/letter-x-tracing). It was extracted from the inline
+// downloadPDF of the old English online tracer, /alphabet/[letter]/worksheet,
+// which gave this same PDF; that page now 301s to the tracing worksheet
+// (SEO phase 4, 2026-11-19).
 import type { jsPDF } from "jspdf";
 import { PAGE_MARGIN, drawWorksheetHeader, drawWorksheetTitle, drawWorksheetFooter } from "../chrome";
 

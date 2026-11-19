@@ -99,7 +99,8 @@ describe("French alphabet routes", () => {
 
   it("maps letter pages across languages, except French-only ones", () => {
     expect(counterpartPath(matchPath("/alphabet/b")!, "fr")).toBe("/fr/alphabet/b");
-    expect(counterpartPath(matchPath("/fr/alphabet/b/fiche")!, "en")).toBe("/alphabet/b/worksheet");
+    // The English tracer 301s to the tracing worksheet, so the switcher goes straight there.
+    expect(counterpartPath(matchPath("/fr/alphabet/b/fiche")!, "en")).toBe("/worksheets/letter-b-tracing");
     expect(counterpartPath(matchPath("/fr/alphabet/e-accent-aigu")!, "en")).toBeNull();
     expect(counterpartPath(matchPath("/fr/alphabet/accents")!, "en")).toBeNull();
   });

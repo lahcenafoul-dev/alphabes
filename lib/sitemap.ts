@@ -104,13 +104,21 @@ export async function sitemapEntries(): Promise<MetadataRoute.Sitemap> {
     priority: 0.8,
   }));
 
-  // One printable page per letter; withTwins adds the French, Spanish and
-  // Portuguese ones.
-  const letterWorksheetRoutes = getAllLetterSlugs().map((letter) => ({
-    url: `${baseUrl}/alphabet/${letter}/worksheet`,
-    changeFrequency: "monthly" as const,
-    priority: 0.7,
-  }));
+  // The French, Spanish and Portuguese online tracers, one per letter; they
+  // are twins of each other only (the English one 301s to
+  // /worksheets/letter-x-tracing). Their accented letters (é, ñ, ç…) are in the
+  // locale-only entries below.
+  const tracerEntries: MetadataRoute.Sitemap = (["fr", "es", "pt"] as const).flatMap((locale) =>
+    getAllLetterSlugs().map((letter) => {
+      const { canonical, languages } = alternatesFor(locale, "/alphabet/[letter]/worksheet", { letter });
+      return {
+        url: canonical as string,
+        changeFrequency: "monthly" as const,
+        priority: 0.7,
+        ...(languages && { alternates: { languages: languages as Record<string, string> } }),
+      };
+    }),
+  );
 
   const gameRoutes = games.map((g) => ({
     url: `${baseUrl}/games/${g.slug}`,
@@ -209,7 +217,6 @@ export async function sitemapEntries(): Promise<MetadataRoute.Sitemap> {
   const englishEntries: MetadataRoute.Sitemap = [
     ...staticRoutes,
     ...letterRoutes,
-    ...letterWorksheetRoutes,
     ...gameRoutes,
     ...numberGameRoutes,
     ...puzzleRoutes,
@@ -370,6 +377,7 @@ export async function sitemapEntries(): Promise<MetadataRoute.Sitemap> {
 
   const codeEntries = [
     ...withTwins(englishEntries),
+    ...tracerEntries,
     ...frenchGameEntries,
     ...spanishGameEntries,
     ...portugueseGameEntries,

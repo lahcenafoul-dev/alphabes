@@ -109,8 +109,13 @@ describe("middleware routing", () => {
     }
   });
 
+  it("has no English tracer page (next.config.js 301s it before the middleware runs)", async () => {
+    expect(rewrite(await middleware(request("/alphabet/b/worksheet")))).toBe("/_not-found");
+    expect(rewrite(await middleware(request("/fr/alphabet/b/fiche")))).toBe("/fr/alphabet/b/worksheet");
+  });
+
   it("lets real pages through, including /alphabet/A", async () => {
-    for (const path of ["/alphabet/A", "/alphabet/b/worksheet", "/games/find-the-letter", "/worksheets/letter-a-tracing", "/worksheets/sight-words", "/stories/the-little-apple"]) {
+    for (const path of ["/alphabet/A", "/games/find-the-letter", "/worksheets/letter-a-tracing", "/worksheets/sight-words", "/stories/the-little-apple"]) {
       expect(rewrite(await middleware(request(path))), path).toBe(`/en${path}`);
     }
   });

@@ -21,7 +21,6 @@ import { getAllBundleSlugs } from "@/lib/worksheet-bundles";
 describe("paramsExist accepts every real page", () => {
   const cases: [Parameters<typeof paramsExist>[0], string, string[]][] = [
     ["/alphabet/[letter]", "letter", getAllLetterSlugs().flatMap((l) => [l, l.toUpperCase()])],
-    ["/alphabet/[letter]/worksheet", "letter", alphabetData.flatMap((l) => [l.letter, l.letter.toUpperCase()])],
     ["/blog/[slug]", "slug", [...blogCategories.map((c) => c.slug), ...blogPosts.map((p) => p.slug)]],
     ["/games/[slug]", "slug", games.map((g) => g.slug)],
     ["/kindergarten/[topic]", "topic", kindergartenTopics.map((t) => t.slug)],

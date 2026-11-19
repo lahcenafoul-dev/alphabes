@@ -7,7 +7,6 @@
 // Database-backed routes (stories, dashboard) aren't listed; their pages
 // still call notFound().
 import type { AppPathname, Locale } from "@/i18n/routing";
-import { getLetterData } from "@/lib/alphabet-data";
 import { getBlogCategory, getBlogPost } from "@/lib/blog-data";
 import { getSchoolTopic } from "@/lib/ecole-fr";
 import { getFiche, getFicheCategory, getFichePack } from "@/lib/fiches-fr";
@@ -53,8 +52,8 @@ const FRENCH_LETTERS = new Set(frenchLetterParams());
 const VALIDATORS: Partial<Record<AppPathname, Validator>> = {
   "/alphabet/[letter]": ({ letter }, locale) =>
     locale === "fr" ? FRENCH_LETTERS.has(letter) || letter === ACCENTS_SLUG : !!getLetterContent(letter),
-  "/alphabet/[letter]/worksheet": ({ letter }, locale) =>
-    locale === "fr" ? FRENCH_LETTERS.has(letter) : !!getLetterData(letter),
+  // English has no tracer page any more (it 301s to /worksheets/letter-x-tracing).
+  "/alphabet/[letter]/worksheet": ({ letter }, locale) => locale === "fr" && FRENCH_LETTERS.has(letter),
   "/blog/[slug]": ({ slug }) => !!(getBlogCategory(slug) || getBlogPost(slug)),
   "/games/[slug]": ({ slug }, locale) =>
     !!getNumberGame(locale, slug) || (locale === "fr" ? !!getFrenchGame(slug) : !!getGame(slug)),
