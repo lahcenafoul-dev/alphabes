@@ -7,6 +7,7 @@
 // layoutFills() (run in the browser) writes the model and repeats the grey
 // copies until the line is full, measuring the real shaped text.
 import { getFrenchLetter, type FrenchLetter, type FrenchWord } from "../../lib/letters-fr";
+import { frenchLetterWords } from "../../lib/pack-words";
 import { getFrenchSound, plainWord } from "../../lib/sons-fr";
 import {
   COLOURS,
@@ -325,14 +326,8 @@ function coloriage(f: Fiche): string {
     <div><div style="font-size:4.4mm;color:#555">${esc(word.withArticle)}</div><div style="font-size:12mm">${esc(word.word.toLowerCase())}</div><div class="cur" style="font-size:12mm;line-height:1.6">${esc(word.word.toLowerCase())}</div></div></div>`;
 }
 
-/** The letter's words, then the "son" worksheet's, three at most. */
-export function letterWords(l: FrenchLetter): FrenchWord[] {
-  const out: FrenchWord[] = [];
-  for (const w of [...l.words, ...(l.wordsInside ?? []), ...(LETTER_IMAGES[l.slug]?.yes ?? [])]) {
-    if (out.length < 3 && !out.some((o) => o.word.toLowerCase() === w.word.toLowerCase())) out.push(w);
-  }
-  return out;
-}
+/** The words of the "write words" sheet (lib/pack-words.ts). */
+export const letterWords = frenchLetterWords;
 
 function mots(f: Fiche): string {
   const l = letterOf(f);

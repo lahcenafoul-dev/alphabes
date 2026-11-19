@@ -5,6 +5,8 @@ import { getBundleBySlug, getAllBundleSlugs } from "@/lib/worksheet-bundles";
 import { worksheets } from "@/lib/worksheets-data";
 import { buildBreadcrumbJsonLd } from "@/lib/json-ld";
 import BundleDownload from "@/components/billing/BundleDownload";
+import GuideBlocks from "@/components/GuideBlocks";
+import { bundleGuide } from "@/lib/bundle-guide";
 
 const BASE_URL = "https://alphabes.com";
 
@@ -67,6 +69,8 @@ export default function BundleEn({ slug }: { slug: string }) {
           ))}
         </ul>
       </section>
+
+      <GuideBlocks blocks={bundleGuide("en", bundle.slug)} className="mt-10 space-y-6" />
 
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
     </main>

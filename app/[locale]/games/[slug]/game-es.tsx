@@ -10,6 +10,8 @@ import { absoluteUrl, alternatesFor } from "@/lib/i18n/routes";
 import { buildBreadcrumbJsonLd } from "@/lib/json-ld";
 import { getSpanishGame, spanishGames } from "@/lib/juegos-es";
 import UiIcon from "@/components/UiIcon";
+import GuideBlocks from "@/components/GuideBlocks";
+import { letterGameGuide } from "@/lib/game-guide";
 
 export function gameMetadataEs(slug: string): Metadata {
   const g = getSpanishGame(slug);
@@ -89,13 +91,7 @@ export default function GameEs({ slug }: { slug: string }) {
         </div>
       )}
 
-      <section className="mt-10 rounded-block bg-crayon-yellow/15 p-6" aria-labelledby="parents-heading">
-        <h2 id="parents-heading" className="font-display font-bold text-lg">
-          Para mamá y papá
-        </h2>
-        <p className="mt-2 text-chalkboard/80">{g.forParents}</p>
-        <p className="mt-2 text-sm text-chalkboard/60">Edad recomendada: de {g.age}.</p>
-      </section>
+      <GuideBlocks blocks={letterGameGuide("es", g.slug)} className="mt-10 max-w-3xl space-y-6" />
 
       <section className="mt-10" aria-labelledby="others-heading">
         <h2 id="others-heading" className="font-display font-bold text-lg">

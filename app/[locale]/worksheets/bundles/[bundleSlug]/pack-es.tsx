@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Link } from "@/i18n/navigation";
 import { FicheCard } from "@/components/fiches/FicheParts";
 import BundleDownload from "@/components/billing/BundleDownload";
+import GuideBlocks from "@/components/GuideBlocks";
+import { bundleGuide } from "@/lib/bundle-guide";
 import { getFicha, getFichaPack } from "@/lib/fichas-es";
 import { absoluteUrl, alternatesFor } from "@/lib/i18n/routes";
 import { buildBreadcrumbJsonLd } from "@/lib/json-ld";
@@ -52,6 +54,8 @@ export default function PackEs({ slug }: { slug: string }) {
           <FicheCard key={f.slug} fiche={f} locale="es" />
         ))}
       </ul>
+
+      <GuideBlocks blocks={bundleGuide("es", pack.slug)} className="mt-10 max-w-4xl space-y-6" />
 
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
     </main>

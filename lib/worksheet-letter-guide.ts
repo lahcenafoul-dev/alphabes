@@ -18,7 +18,8 @@ import { WORKSHEET_TYPES, type WorksheetTypeId } from "./worksheet-types";
 import { storiesV2, LEVEL_AGES } from "@/prisma/stories-v2";
 import { STORY_PARENTS } from "@/prisma/stories-v2/parents";
 
-export type Inline = string | { strong: string } | { href: string; text: string };
+import type { Inline } from "./guide-blocks";
+export type { Inline };
 export type GuideBlock = { id: "sheet" | "write" | "watch" | "sound" | "story" | "next"; heading: string; paragraphs: Inline[][] };
 
 /** The 10 generated types plus the cursive sheets (lib/static-worksheets-data.ts). */

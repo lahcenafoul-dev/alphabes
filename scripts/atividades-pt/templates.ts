@@ -11,6 +11,7 @@
 //               line, for the print letters (Andika).
 //   quadriculado: 6 mm squares, for the number sheets.
 import { getPortugueseLetter, type PortugueseLetter, type PortugueseWord } from "../../lib/letters-pt";
+import { portugueseLetterWords } from "../../lib/pack-words";
 import {
   COLOURS,
   FIRST_SYLLABLE_WORDS,
@@ -109,15 +110,8 @@ function letterOf(a: Atividade): PortugueseLetter {
   return getPortugueseLetter(a.letter!)!;
 }
 
-/** The letter's words, then its first-syllable words: three at most, no repeats. */
-export function letterWords(l: PortugueseLetter): PortugueseWord[] {
-  const out: PortugueseWord[] = [];
-  const firstSyllable = (FIRST_SYLLABLE_WORDS[l.slug] ?? []).map((x) => ({ ...x, word: plain(x.word) }));
-  for (const x of [...l.words, ...(l.wordsInside ?? []), ...firstSyllable]) {
-    if (out.length < 3 && !out.some((o) => o.word.toLowerCase() === x.word.toLowerCase())) out.push(x);
-  }
-  return out;
-}
+/** The words of the "write words" sheet (lib/pack-words.ts). */
+export const letterWords = portugueseLetterWords;
 
 /**
  * The bastão (capitals) and forma (lowercase) sheets: a whole page in the

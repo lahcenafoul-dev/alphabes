@@ -9,6 +9,8 @@ import { gameAreaMinHeight } from "@/components/games/game-area";
 import PremiumGameTeaser from "@/components/billing/PremiumGameTeaser";
 import { buildBreadcrumbJsonLd } from "@/lib/json-ld";
 import { alternatesFor } from "@/lib/i18n/routes";
+import GuideBlocks from "@/components/GuideBlocks";
+import { letterGameGuide } from "@/lib/game-guide";
 
 const BASE_URL = "https://alphabes.com";
 
@@ -59,16 +61,7 @@ export default function GameEn({ slug }: { slug: string }) {
         </div>
       )}
 
-      <section className="mt-10 grid gap-6 sm:grid-cols-2">
-        <div>
-          <h2 className="font-display font-bold text-lg">How to play</h2>
-          <p className="mt-2 text-chalkboard/80">{game.howToPlay}</p>
-        </div>
-        <div>
-          <h2 className="font-display font-bold text-lg">What your child practices</h2>
-          <p className="mt-2 text-chalkboard/80">{game.practices}</p>
-        </div>
-      </section>
+      <GuideBlocks blocks={letterGameGuide("en", game.slug)} className="mt-10 max-w-3xl space-y-6" />
 
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
     </main>

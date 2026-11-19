@@ -6,6 +6,8 @@ import { initLocale, type LocaleParams } from "@/lib/i18n/server";
 import { PUZZLES, puzzleImage } from "@/lib/puzzles";
 import { PUZZLE_PAGES } from "@/lib/puzzle-pages";
 import { withSocialMetadata } from "@/lib/social-metadata";
+import GuideBlocks from "@/components/GuideBlocks";
+import { puzzleHubGuide } from "@/lib/game-guide";
 
 // The sliding puzzles (lib/puzzles.ts): a picture and a name for each, in
 // every language.
@@ -69,16 +71,7 @@ export default async function SlidingPuzzlesPage({ params }: { params: LocalePar
         ))}
       </ul>
 
-      <section className="mt-12 grid gap-6 sm:grid-cols-2">
-        <div>
-          <h2 className="font-display text-lg font-bold">{t.howTitle}</h2>
-          <p className="mt-2 text-chalkboard/80">{t.how}</p>
-        </div>
-        <div>
-          <h2 className="font-display text-lg font-bold">{t.skillsTitle}</h2>
-          <p className="mt-2 text-chalkboard/80">{t.skills}</p>
-        </div>
-      </section>
+      <GuideBlocks blocks={puzzleHubGuide(locale)} className="mt-12 max-w-3xl space-y-6" />
 
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListJsonLd) }} />
