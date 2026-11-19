@@ -97,6 +97,32 @@ describe("B3: letter bundle and pack pages", () => {
   });
 });
 
+describe("B3: pack wording fixes", () => {
+  it("never repeats the sound sentence's words in the practice list", () => {
+    for (const l of ["fr", "es", "pt"] as const)
+      for (const slug of BUNDLES[l]) {
+        const b = bundleGuide(l, slug).find((x) => x.id === "letter");
+        if (!b) continue;
+        const t = b.paragraphs![0][0] as string;
+        const m = t.match(/(?:s'entraîner :|practicar:|praticar:) (.*)\. $/);
+        if (!m) continue;
+        const before = new Set(t.slice(0, t.indexOf(m[0])).toLowerCase().split(/[^\p{L}]+/u));
+        for (const w of m[1].split(/, | et | y | e /)) expect(before.has(w), `${l} ${slug}: ${w}`).toBe(false);
+      }
+  });
+
+  it("names the sound and the drawing the French way", () => {
+    const t = blocksText(bundleGuide("fr", "pack-lettre-b"));
+    expect(t).toContain("qui commencent par le son [b] : ballon, banane et bébé");
+    expect(t).toContain("à colorier, avec le dessin d'un ballon,");
+    expect(t).toContain("comme dans ballon et banane. Un autre mot pour s'entraîner : bébé.");
+    expect(blocksText(bundleGuide("fr", "pack-lettre-c"))).toContain("par le son [k] : canard");
+    for (const slug of BUNDLES.fr) expect(blocksText(bundleGuide("fr", slug)), slug).not.toMatch(/son son|et un dessin,/);
+    expect(blocksText(bundleGuide("es", "paquete-letra-b"))).toContain("con el dibujo de una ballena,");
+    expect(blocksText(bundleGuide("pt", "pacote-letra-b"))).toContain("com a figura de uma bola,");
+  });
+});
+
 describe("B5: game pages", () => {
   const pages = LOCALES.flatMap((l) => [
     ...LETTER_GAMES[l].map((slug) => ({ l, name: slug, blocks: letterGameGuide(l, slug), full: true })),

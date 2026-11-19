@@ -29,6 +29,21 @@ import { frenchLetterWords, portugueseLetterWords, spanishLetterWords } from "./
 
 const plain = (w: string) => w.replace(/\|/g, "");
 const lower = (w: string) => plain(w).toLowerCase();
+/** "d'un ballon", "de el…": the drawing's name after "de", from its indefinite form. */
+const deFr = (withArticle: string) => (/^une? /.test(withArticle) ? `d'${withArticle}` : `de ${withArticle}`);
+
+/**
+ * Practice words for the letter line: the pack's words that the sound sentence
+ * doesn't already name, at most three. Empty when the sentence names them all.
+ */
+function extraWords(sound: string, words: string[]): string[] {
+  const named = new Set(sound.toLowerCase().split(/[^\p{L}]+/u));
+  return [...new Set(words.map(lower))].filter((w) => !w.split(/[^\p{L}]+/u).every((x) => named.has(x))).slice(0, 3);
+}
+
+/** The sound the words of the French "son" sheet start with ([k] for canard, coq…), for letters with two sounds. */
+const FR_SHEET_SOUND: Record<string, string> = { c: "[k]", e: "[ɛ]", g: "[g]", o: "[o]", s: "[s]", y: "[j]" };
+
 const sheetHref = (locale: Locale, slug: string) => localizedPath(locale, "/worksheets/[category]", { category: slug });
 
 /** The sheets, in order, split into five days (the first days get the extra sheets). */
@@ -179,14 +194,14 @@ function frLine(type: FrType, l: FrenchLetter): string {
   const alikes = [...(FR_LOOK_ALIKES[l.lower] ?? "")];
   switch (type) {
     case "coloriage":
-      return `un grand ${l.upper} et un petit ${l.lower} à colorier, et un dessin, ${w0.withArticle}, avec le mot en script et en cursive.`;
+      return `un grand ${l.upper} et un petit ${l.lower} à colorier, avec le dessin ${deFr(w0.withArticle)}, et le mot en script et en cursive.`;
     case "trace":
       return `${l.upper} et ${l.lower} à repasser, puis le mot ${lower(w0.word)}, et une ligne pour écrire seul.`;
     case "reconnaissance":
       return `14 ${l.upper} ${l.lower} à entourer dans une grille de 42 lettres, en capitale, script et cursive${alikes.length ? `, parmi des lettres qui leur ressemblent comme ${listJoin(alikes.slice(0, 3).map((x) => `le ${x}`), "et")}` : ""}.`;
     case "son": {
       const yes = LETTER_IMAGES[l.slug].yes.map((w) => lower(w.word));
-      return `neuf images à nommer ; on entoure les ${yes.length} qui commencent par son son : ${listJoin(yes, "et")}.`;
+      return `neuf images à nommer ; on entoure les ${yes.length} qui commencent par le son ${FR_SHEET_SOUND[l.slug] ?? l.ipa} : ${listJoin(yes, "et")}.`;
     }
     case "cursive":
       return `${l.lower}, ${l.upper} et le mot ${lower(w0.word)} en cursive sur lignes Seyès : à repasser, puis seul.`;
@@ -205,7 +220,6 @@ function frenchPack(slug: string): Block[] {
     const f = pack.fiches.map((s) => getFiche(s)!).find((x) => x.slug.endsWith(`-${t}`));
     return f ? [{ type: t, link: { href: sheetHref("fr", f.slug), text: FR_LABEL[t] } }] : [];
   });
-  const words = l.words.map((w) => lower(w.word));
   return [
     {
       id: "inside",
@@ -231,7 +245,7 @@ function frenchPack(slug: string): Block[] {
       heading: `La lettre ${l.upper}`,
       paragraphs: [
         [
-          `${l.sound} Des mots pour s'entraîner : ${listJoin(words, "et")}. `,
+          `${l.sound} ${frPractice(l)}`,
           { href: localizedPath("fr", "/alphabet/[letter]", { letter: l.slug }), text: `Tout sur la lettre ${l.upper}` },
           ".",
         ],
@@ -258,7 +272,7 @@ function esLine(type: EsType, l: SpanishLetter): string {
   const alikes = [...(ES_LOOK_ALIKES[l.lower] ?? "")];
   switch (type) {
     case "colorear":
-      return `una ${l.upper} grande y una ${l.lower} para colorear, y un dibujo, ${w0.withArticle}, con la palabra en script y en cursiva.`;
+      return `una ${l.upper} grande y una ${l.lower} para colorear, con el dibujo de ${w0.withArticle}, y la palabra en script y en cursiva.`;
     case "trazo":
       return `la ${l.upper} y la ${l.lower} para repasar, luego la palabra ${lower(w0.word)} y una línea para escribir solo.`;
     case "reconocer":
@@ -287,7 +301,6 @@ function spanishPack(slug: string): Block[] {
     const f = pack.fichas.map((s) => getFicha(s)!).find((x) => x.slug.endsWith(`-${t}`));
     return f ? [{ type: t, link: { href: sheetHref("es", f.slug), text: ES_LABEL[t] } }] : [];
   });
-  const words = l.words.map((w) => lower(w.word));
   return [
     {
       id: "inside",
@@ -313,7 +326,7 @@ function spanishPack(slug: string): Block[] {
       heading: `La letra ${l.upper}`,
       paragraphs: [
         [
-          `${l.sound} Palabras para practicar: ${listJoin(words, "y")}. `,
+          `${l.sound} ${esPractice(l)}`,
           { href: localizedPath("es", "/alphabet/[letter]", { letter: l.slug }), text: `Todo sobre la letra ${l.upper}` },
           ".",
         ],
@@ -341,7 +354,7 @@ function ptLine(type: PtType, l: PortugueseLetter): string {
   const alikes = [...(PT_LOOK_ALIKES[l.lower] ?? "")];
   switch (type) {
     case "colorir":
-      return `um ${l.upper} grande e um ${l.lower} para colorir, e uma figura, ${w0.withArticle}, com a palavra em letra de forma e em cursiva.`;
+      return `um ${l.upper} grande e um ${l.lower} para colorir, com a figura de ${w0.withArticle}, e a palavra em letra de forma e em cursiva.`;
     case "bastao":
       return `o ${l.upper} para cobrir, a palavra ${plain(w0.word).toUpperCase()} em maiúsculas e uma linha para escrever sozinho.`;
     case "forma":
@@ -372,7 +385,6 @@ function portuguesePack(slug: string): Block[] {
     const a = pack.atividades.map((s) => getAtividade(s)!).find((x) => x.slug.endsWith(`-${t}`));
     return a ? [{ type: t, link: { href: sheetHref("pt", a.slug), text: PT_LABEL[t] } }] : [];
   });
-  const words = l.words.map((w) => lower(w.word));
   return [
     {
       id: "inside",
@@ -398,7 +410,7 @@ function portuguesePack(slug: string): Block[] {
       heading: l.upper === "Ç" ? "O Ç" : `A letra ${l.upper}`,
       paragraphs: [
         [
-          `${l.sound} Palavras para praticar: ${listJoin(words, "e")}. `,
+          `${l.sound} ${ptPractice(l)}`,
           { href: localizedPath("pt", "/alphabet/[letter]", { letter: l.slug }), text: l.upper === "Ç" ? "Tudo sobre o Ç" : `Tudo sobre a letra ${l.upper}` },
           ".",
         ],
@@ -466,4 +478,19 @@ export function bundleGuide(locale: Locale, slug: string): Block[] {
     default:
       return englishBundle(slug);
   }
+}
+
+function frPractice(l: FrenchLetter): string {
+  const w = extraWords(l.sound, [...frenchLetterWords(l), ...(LETTER_IMAGES[l.slug]?.yes ?? [])].map((x) => x.word));
+  return !w.length ? "" : w.length === 1 ? `Un autre mot pour s'entraîner : ${w[0]}. ` : `D'autres mots pour s'entraîner : ${listJoin(w, "et")}. `;
+}
+
+function esPractice(l: SpanishLetter): string {
+  const w = extraWords(l.sound, [...spanishLetterWords(l).map((x) => x.word), ...(ES_SYLLABLES[l.slug] ?? []).map((x) => plain(x.word))]);
+  return !w.length ? "" : w.length === 1 ? `Otra palabra para practicar: ${w[0]}. ` : `Más palabras para practicar: ${listJoin(w, "y")}. `;
+}
+
+function ptPractice(l: PortugueseLetter): string {
+  const w = extraWords(l.sound, [...portugueseLetterWords(l).map((x) => x.word), ...(PT_SYLLABLES[l.slug] ?? []).map((x) => plain(x.word))]);
+  return !w.length ? "" : w.length === 1 ? `Outra palavra para praticar: ${w[0]}. ` : `Mais palavras para praticar: ${listJoin(w, "e")}. `;
 }
