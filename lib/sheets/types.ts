@@ -26,6 +26,8 @@ export type Sheet<P = unknown> = {
   slug: L10n;
   /** The H1, the PDF title and the start of the SEO title; unique across all sheets. */
   title: L10n;
+  /** A shorter SEO title, where `title` passes 60 characters (the H1 keeps `title`). */
+  metaTitle?: L10n;
   /** Short name for cards and breadcrumbs. */
   label: L10n;
   /** Meta description. */
@@ -101,3 +103,17 @@ export function pick<T>(list: readonly T[], count: number, rand: () => number): 
 }
 
 export const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
+
+/**
+ * The first of `candidates` (longest and clearest first) that fits Google's
+ * 60 characters, else the last one: for meta-only short titles.
+ */
+export function firstFit(...candidates: string[]): string {
+  return candidates.find((c) => c.length <= 60) ?? candidates[candidates.length - 1];
+}
+
+/** firstFit in each language. */
+export function firstFitL10n(...candidates: L10n[]): L10n {
+  const pick = (l: keyof L10n) => firstFit(...candidates.map((c) => c[l]));
+  return { en: pick("en"), fr: pick("fr"), es: pick("es"), pt: pick("pt") };
+}

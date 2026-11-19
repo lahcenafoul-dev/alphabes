@@ -5,7 +5,7 @@
 //   circle  the last box is empty; circle the right answer among three
 //   draw    two or three boxes are empty; draw (or colour) what goes there
 import { COLOURS, SHAPE_NAMES, type ColourId, type ShapeId } from "./vocab";
-import { cap, pick, seededRandom, slugify, type L10n, type Sheet, type SheetKind } from "@/lib/sheets/types";
+import { cap, pick, seededRandom, slugify, firstFitL10n, type L10n, type Sheet, type SheetKind } from "@/lib/sheets/types";
 
 /** "pic:apple" (a cartoon), "shape:star" or "colour:red" (a balloon). */
 export type PatternItem = string;
@@ -156,10 +156,22 @@ const VERSION: Record<PatternVersion, { title: L10n; slug: L10n; filter: L10n }>
 
 const PREFIX: L10n = { en: "patterns", fr: "suite-logique", es: "serie", pt: "sequencia" };
 
-function titleOf(type: PatternType, theme: PatternTheme, version: PatternVersion): L10n {
+// Shorter words for the SEO title only, used when the full title passes 60
+// characters (firstFit); the H1 keeps the full title.
+const SHORT_QUESTION: L10n = { en: "What Comes Next?", fr: "que vient-il après ?", es: "¿qué sigue?", pt: "o que vem depois?" };
+const SHORT_SEASONS: L10n = { en: "with Seasons", fr: "avec les saisons", es: "con las estaciones", pt: "com as estações" };
+
+function metaTitleOf(type: PatternType, theme: PatternTheme, version: PatternVersion): L10n {
+  const full = titleOf(type, theme, version);
+  const shortVersion = version === "circle" ? { ...VERSION, circle: { ...VERSION.circle, title: SHORT_QUESTION } } : VERSION;
+  const shortTheme = theme === "seasons" ? { ...THEME, seasons: { ...THEME.seasons, with: SHORT_SEASONS } } : THEME;
+  return firstFitL10n(full, titleOf(type, theme, version, shortTheme, shortVersion));
+}
+
+function titleOf(type: PatternType, theme: PatternTheme, version: PatternVersion, themes = THEME, versions = VERSION): L10n {
   const t = TYPE_NAME[type];
-  const th = THEME[theme].with;
-  const v = VERSION[version].title;
+  const th = themes[theme].with;
+  const v = versions[version].title;
   if (type === "growing")
     return {
       en: `Growing Patterns ${th.en}: ${v.en}`,
@@ -206,11 +218,14 @@ function descriptionOf(type: PatternType, theme: PatternTheme, version: PatternV
       : theme === "colours"
         ? { en: "color the empty balloons to finish each row", fr: "colorier les ballons vides pour finir chaque ligne", es: "colorear los globos vacíos para terminar cada fila", pt: "pintar os balões vazios para terminar cada linha" }
         : { en: "draw the missing pictures in the empty boxes", fr: "dessiner ce qui manque dans les cases vides", es: "dibujar lo que falta en las casillas vacías", pt: "desenhar o que falta nos quadrinhos vazios" };
+  // The type, theme and task all in the first sentence: a long description is
+  // cut after it (fitDescription), and the two versions must stay different.
+  const t: L10n = type === "growing" ? { en: "growing", fr: "qui grandissent", es: "que crecen", pt: "crescente" } : TYPE_NAME[type];
   return {
-    en: `Free printable pattern worksheet with ${n.en}: six rows where ${ex.en} repeat. Say each row aloud, then ${end.en}.`,
-    fr: `Fiche gratuite de suites logiques avec ${n.fr} : six lignes où se répètent ${ex.fr}. On dit chaque ligne à voix haute, puis on doit ${end.fr}.`,
-    es: `Ficha gratis de series con ${n.es}: seis filas donde se repiten ${ex.es}. Se dice cada fila en voz alta y luego hay que ${end.es}.`,
-    pt: `Atividade grátis de sequência lógica com ${n.pt}: seis linhas em que se repetem ${ex.pt}. Fale cada linha em voz alta e depois ${end.pt}.`,
+    en: `Free printable ${t.en} pattern worksheet with ${n.en}: six rows to say aloud, then ${end.en}. The pattern: ${ex.en}.`,
+    fr: `Fiche gratuite de suites logiques ${t.fr} avec ${n.fr} : six lignes à dire, puis ${end.fr}. Le motif : ${ex.fr}.`,
+    es: `Ficha gratis de series ${t.es} con ${n.es}: seis filas para decir en voz alta y luego ${end.es}. El patrón: ${ex.es}.`,
+    pt: `Atividade grátis de sequência ${t.pt} com ${n.pt}: seis linhas para dizer e depois ${end.pt}. O padrão: ${ex.pt}.`,
   };
 }
 
@@ -223,6 +238,7 @@ function sheet(type: PatternType, theme: PatternTheme, version: PatternVersion):
     id,
     slug: each((l) => [PREFIX[l], TYPE_SLUG[type][l], THEME[theme].slug[l], VERSION[version].slug[l]].map(slugify).join("-")),
     title: titleOf(type, theme, version),
+    metaTitle: metaTitleOf(type, theme, version),
     label: each((l) => `${type === "growing" ? cap(TYPE_NAME.growing[l]) : TYPE_NAME[type][l]} · ${THEME[theme].filter[l]} · ${VERSION[version].filter[l]}`),
     description: descriptionOf(type, theme, version),
     instruction: instructionOf(type, theme, version),

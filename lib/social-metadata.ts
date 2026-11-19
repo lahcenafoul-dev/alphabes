@@ -33,6 +33,10 @@ const SUFFIX_FALLBACKS: [string, string[]][] = [
   [" | PDF gratis para imprimir", [" (PDF gratis)", ""]],
   [" | Atividade em PDF grátis", [" (PDF grátis)", ""]],
   [" | PDF grátis para imprimir", [" (PDF grátis)", ""]],
+  // Pro packs and bundles (lib/sheets/pack-ui.ts).
+  [" | Printable PDF (AlphaBes Pro)", [" (Pro PDF)", ""]],
+  [" | PDF à imprimer (AlphaBes Pro)", [" (PDF Pro)", ""]],
+  [" | PDF para imprimir (AlphaBes Pro)", [" (PDF Pro)", ""]],
 ];
 // In Portuguese, a title that already ends in a bracket ("… (caligrafia)",
 // "… (1 a 10)") takes this instead of " (PDF grátis)": never two brackets in a row.
@@ -53,6 +57,22 @@ export function fitTitle(title: string): string {
     break;
   }
   return (t + BRAND).length <= MAX_TITLE ? t + BRAND : t;
+}
+
+// Google shows about 155–160 characters of a description (SEO phase 4).
+export const MAX_DESCRIPTION = 155;
+
+/**
+ * A description over 155 characters, cut to fit by dropping whole
+ * sentences from the end, so the first sentence (with the page's main
+ * keyword) always stays. One sentence that is too long on its own is left
+ * whole: it needs a shorter text (tests/seo/meta-lengths.test.ts).
+ */
+export function fitDescription(description: string): string {
+  if (description.length <= MAX_DESCRIPTION) return description;
+  const sentences = description.split(/(?<=[.!?…])\s+(?=[\p{Lu}0-9¿¡«"“])/u);
+  while (sentences.length > 1 && sentences.join(" ").length > MAX_DESCRIPTION) sentences.pop();
+  return sentences.join(" ");
 }
 
 type ImageItem = string | URL | { url: string | URL; alt?: string };
@@ -110,7 +130,8 @@ export function completeSocial(locale: Locale, metadata: Metadata, defaultImages
   const override = url ? META_OVERRIDES[pathOf(String(url))] : undefined;
   const pageTitle = override?.title ?? plainTitle(metadata.title);
   const title = override?.title ?? og.title ?? pageTitle;
-  const description = override?.description ?? og.description ?? metadata.description ?? undefined;
+  const rawDescription = override?.description ?? og.description ?? metadata.description ?? undefined;
+  const description = rawDescription ? fitDescription(rawDescription) : undefined;
   // og.title can be a template object; the alt needs the plain text.
   const altText = plainTitle(title);
   // The page's own images keep their alt. The inherited site image always
@@ -125,7 +146,7 @@ export function completeSocial(locale: Locale, metadata: Metadata, defaultImages
   return {
     ...metadata,
     ...(pageTitle && { title: { absolute: fitTitle(pageTitle) } }),
-    ...(override?.description && { description: override.description }),
+    ...((override?.description || metadata.description) && { description: fitDescription(override?.description ?? metadata.description!) }),
     openGraph: {
       type: "website",
       siteName: "AlphaBes",

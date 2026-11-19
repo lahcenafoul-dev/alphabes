@@ -58,7 +58,7 @@ export const PACK_UI: Record<SheetLocale, PackUi> = {
     title: (kind, pack, name) => (pack.scope === "mega" ? "Mega Pack: Every Worksheet Type" : pack.scope === "complete" ? `${kind} Complete Pack` : `${kind} Pack: ${name}`),
     metaSuffix: "Printable PDF (AlphaBes Pro)",
     description: (kind, n, ages, keys) =>
-      `${n} ${kind} worksheets in one print-ready PDF, from easy to hard, with a contents page, tips for parents${keys ? ", answer keys" : ""} and a certificate. ${ages}. US Letter or A4.`,
+      `${n} ${kind} worksheets in one print-ready PDF, from easy to hard, with a contents page, parent tips${keys ? ", answer keys" : ""} and a certificate. ${ages}. US Letter or A4.`,
     megaDescription: (n, kinds) => `All ${kinds} AlphaBes worksheet types in one pack: ${n} worksheets in five print-ready PDFs, with answer keys, tips for parents and certificates. US Letter or A4.`,
     ages: (a, b) => `Ages ${a}–${b}`,
     items: (n, kind) => `${n} ${kind === "sliding-puzzles" ? "sliding puzzles" : kind === "flash-cards" ? "flash card sets" : kind === "origami" ? "origami models" : "worksheets"}`,
@@ -96,7 +96,7 @@ export const PACK_UI: Record<SheetLocale, PackUi> = {
     title: (kind, pack, name) => (pack.scope === "mega" ? "Méga pack : tous les types de fiches" : pack.scope === "complete" ? `${kind} : le pack complet` : `Pack ${kind} : ${name}`),
     metaSuffix: "PDF à imprimer (AlphaBes Pro)",
     description: (kind, n, ages, keys) =>
-      `${n} fiches « ${kind} » dans un seul PDF prêt à imprimer, de la plus facile à la plus difficile, avec un sommaire, des conseils aux parents${keys ? ", les corrigés" : ""} et un diplôme. ${ages}. Format A4 ou Letter.`,
+      `${n} fiches « ${kind} » dans un seul PDF à imprimer, par ordre de difficulté, avec sommaire, conseils aux parents${keys ? ", corrigés" : ""} et diplôme. ${ages}. Format A4 ou Letter.`,
     megaDescription: (n, kinds) => `Les ${kinds} types de fiches AlphaBes réunis : ${n} fiches en cinq PDF prêts à imprimer, avec les corrigés, des conseils aux parents et des diplômes. Format A4 ou Letter.`,
     ages: (a, b) => `De ${a} à ${b} ans`,
     items: (n, kind) => `${n} ${kind === "sliding-puzzles" ? "taquins" : kind === "flash-cards" ? "jeux de cartes" : kind === "origami" ? "modèles à plier" : "fiches"}`,
@@ -134,7 +134,7 @@ export const PACK_UI: Record<SheetLocale, PackUi> = {
     title: (kind, pack, name) => (pack.scope === "mega" ? "Megapaquete: todos los tipos de fichas" : pack.scope === "complete" ? `${kind}: paquete completo` : `Paquete de ${kind}: ${name}`),
     metaSuffix: "PDF para imprimir (AlphaBes Pro)",
     description: (kind, n, ages, keys) =>
-      `${n} fichas de ${kind} en un solo PDF listo para imprimir, de fáciles a difíciles, con índice, consejos para papás${keys ? ", soluciones" : ""} y un diploma. ${ages}. Tamaño carta o A4.`,
+      `${n} fichas de ${kind} en un solo PDF para imprimir, de fáciles a difíciles, con índice, consejos para papás${keys ? ", soluciones" : ""} y un diploma. ${ages}. Tamaño carta o A4.`,
     megaDescription: (n, kinds) => `Los ${kinds} tipos de fichas de AlphaBes juntos: ${n} fichas en cinco PDF listos para imprimir, con soluciones, consejos para papás y diplomas. Tamaño carta o A4.`,
     ages: (a, b) => `De ${a} a ${b} años`,
     items: (n, kind) => `${n} ${kind === "sliding-puzzles" ? "rompecabezas" : kind === "flash-cards" ? "juegos de tarjetas" : kind === "origami" ? "modelos para doblar" : "fichas"}`,
@@ -172,7 +172,7 @@ export const PACK_UI: Record<SheetLocale, PackUi> = {
     title: (kind, pack, name) => (pack.scope === "mega" ? "Megapacote: todos os tipos de atividades" : pack.scope === "complete" ? `${kind}: pacote completo` : `Pacote de ${kind}: ${name}`),
     metaSuffix: "PDF para imprimir (AlphaBes Pro)",
     description: (kind, n, ages, keys) =>
-      `${n} atividades de ${kind} em um só PDF pronto para imprimir, das mais fáceis às mais difíceis, com sumário, dicas para os pais${keys ? ", gabaritos" : ""} e um certificado. ${ages}. Papel A4 ou Carta.`,
+      `${n} atividades de ${kind} em um só PDF para imprimir, por ordem de dificuldade, com sumário, dicas para os pais${keys ? ", gabaritos" : ""} e um certificado. ${ages}. Papel A4 ou Carta.`,
     megaDescription: (n, kinds) => `Os ${kinds} tipos de atividades da AlphaBes juntos: ${n} atividades em cinco PDFs prontos para imprimir, com gabaritos, dicas para os pais e certificados. Papel A4 ou Carta.`,
     ages: (a, b) => `De ${a} a ${b} anos`,
     items: (n, kind) => `${n} ${kind === "sliding-puzzles" ? "quebra-cabeças" : kind === "flash-cards" ? "conjuntos de cartões" : kind === "origami" ? "modelos para dobrar" : "atividades"}`,

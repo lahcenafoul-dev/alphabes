@@ -524,7 +524,7 @@ function sheet(t: Theme, words: boolean): FlashCardsSheet {
       ? {
           en: `Free printable flash cards: ${n} big cards (${name.en.toLowerCase()}) with the picture and the word, 4 to a page, ready to cut out (${pages} pages).`,
           fr: `Cartes images gratuites à imprimer : ${n} grandes cartes (${name.fr}) avec l'image et le mot, 4 par page, à découper (${pages} pages).`,
-          es: `Tarjetas ilustradas gratis para imprimir: ${n} tarjetas grandes (${name.es}) con el dibujo y la palabra, 4 por página, para recortar (${pages} páginas).`,
+          es: `Tarjetas ilustradas gratis para imprimir: ${n} tarjetas grandes (${name.es}) con el dibujo y la palabra. Cuatro por página, para recortar (${pages} páginas).`,
           pt: `Cartões ilustrados grátis para imprimir: ${n} cartões grandes (${name.pt}) com a figura e a palavra, 4 por página, para recortar (${pages} páginas).`,
         }
       : {

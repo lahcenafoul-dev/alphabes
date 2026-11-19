@@ -45,7 +45,7 @@ export function sheetMetadata(locale: SheetLocale, slug: string): Metadata {
     return { title, description, alternates, openGraph: { title, description, url, images: [SITE_URL + sheetPreview(locale, first)] } };
   }
   const sheet = getSheet(locale, slug)!;
-  const title = `${sheet.title[locale]} | ${SHEET_UI[locale].metaSuffix}`;
+  const title = `${(sheet.metaTitle ?? sheet.title)[locale]} | ${SHEET_UI[locale].metaSuffix}`;
   const description = sheet.description[locale];
   return { title, description, alternates, openGraph: { title, description, url, images: [SITE_URL + sheetPreview(locale, sheet)] } };
 }
