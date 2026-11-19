@@ -302,8 +302,19 @@ export function isLocale(value: unknown): value is Locale {
   return typeof value === "string" && (routing.locales as readonly string[]).includes(value);
 }
 
+// Pages that no longer exist in English. The English online tracer
+// (/alphabet/x/worksheet) gave the same PDF as /worksheets/letter-x-tracing,
+// so it 301s there (next.config.js, SEO phase 4, 2026-11-19); the French,
+// Spanish and Portuguese tracer pages stay and are twins of each other only.
+const NOT_IN_ENGLISH: ReadonlySet<AppPathname> = new Set<AppPathname>(["/alphabet/[letter]/worksheet"]);
+
 export function isAvailable(locale: Locale, pathname: AppPathname): boolean {
-  return locale === "en" || LOCALE_PATHNAMES[locale].has(pathname);
+  return locale === "en" ? !NOT_IN_ENGLISH.has(pathname) : LOCALE_PATHNAMES[locale].has(pathname);
+}
+
+/** The English page a tracer page's language switcher goes to: that letter's tracing worksheet. */
+export function englishTracingWorksheet(letter: string): string | null {
+  return /^[a-z]$/i.test(letter) ? `/worksheets/letter-${letter.toLowerCase()}-tracing` : null;
 }
 
 function template(locale: Locale, pathname: AppPathname): string {
@@ -407,6 +418,7 @@ export function matchPath(path: string): MatchedPath | null {
 /** Where a page lives in another language, or null if it has no twin there. */
 export function counterpartPath(match: MatchedPath, target: Locale): string | null {
   if (match.locale === target) return null;
+  if (target === "en" && match.pathname === "/alphabet/[letter]/worksheet") return englishTracingWorksheet(match.params.letter);
   if (!isAvailable(target, match.pathname) || !isAvailable(match.locale, match.pathname)) return null;
   if (PARAMS_DIFFER.has(match.pathname) && !TRANSLATED_PARAMS[match.pathname]) return null;
   if (isLocaleOnly(match.locale, match.pathname, match.params)) return null;

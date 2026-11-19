@@ -18,8 +18,12 @@ const urls = new Set(entries.map((e) => e.url));
 
 // docs/seo-audit.md: I2 (indexable pages missing), I3 (noindex pages listed), I4 (/privacy).
 describe("sitemap coverage", () => {
-  it("lists every letter worksheet page in every language", () => {
-    for (const letter of getAllLetterSlugs()) expect(urls.has(absoluteUrl("en", "/alphabet/[letter]/worksheet", { letter })), letter).toBe(true);
+  it("lists every letter tracer page in French, Spanish and Portuguese, and none in English", () => {
+    // The English tracer 301s to /worksheets/letter-x-tracing (SEO phase 4).
+    for (const letter of getAllLetterSlugs()) {
+      expect(urls.has(absoluteUrl("en", "/alphabet/[letter]/worksheet", { letter })), letter).toBe(false);
+      expect(urls.has(`https://alphabes.com/worksheets/letter-${letter}-tracing`), letter).toBe(true);
+    }
     for (const [locale, letters] of [
       ["fr", frenchLetters],
       ["es", spanishLetters],

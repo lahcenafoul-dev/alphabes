@@ -5,8 +5,8 @@
 // reusing that component directly: TracingCanvas always uppercases its
 // guide letter regardless of the `letter` prop, which would make this
 // game's uppercase/lowercase toggle a no-op. Modifying the shared
-// component to respect case would risk changing the existing
-// /alphabet/[letter]/worksheet page's behavior, so this game gets its own
+// component to respect case would risk changing the French, Spanish and
+// Portuguese tracer pages (/fr/alphabet/[letter]/fiche…), so this game gets its own
 // copy instead, correctly respecting whatever exact string it's given.
 import { useCallback, useEffect, useRef } from "react";
 import { InlineIcon } from "@/components/UiIcon";

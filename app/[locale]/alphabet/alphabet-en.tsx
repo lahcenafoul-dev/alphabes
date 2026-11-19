@@ -325,8 +325,8 @@ export default function AlphabetEn() {
             </Link>
           </li>
           <li>
-            <Link href="/alphabet/a/worksheet" className="font-display font-bold text-crayon-blue hover:underline">
-              Try the online tracing tool on any letter&apos;s page
+            <Link href="/games/letter-tracing" className="font-display font-bold text-crayon-blue hover:underline">
+              Trace any letter on screen in the Letter Tracing game
             </Link>
           </li>
         </ul>

@@ -212,7 +212,7 @@ function PillarCategoryView({ category }: { category: NonNullable<ReturnType<typ
           <Link
             key={letter}
             id={letter}
-            href={`/alphabet/${letter}/worksheet`}
+            href={`/worksheets/letter-${letter}-tracing`}
             className="rounded-block border border-chalkboard/10 p-4 text-center shadow-block scroll-mt-20"
           >
             <div className="letter-block bg-crayon-blue aspect-square text-xl mx-auto mb-2">
@@ -356,7 +356,7 @@ function WorksheetDetailView({ slug }: { slug: string }) {
       {worksheet.worksheetType === "tracing" && (
         <p className="mt-4 text-sm text-chalkboard/60 print:hidden">
           Prefer an interactive version?{" "}
-          <Link href={`/alphabet/${worksheet.letter}/worksheet`} className="font-bold underline">
+          <Link href="/games/letter-tracing" className="font-bold underline">
             Try the online tracing tool
           </Link>
           .
