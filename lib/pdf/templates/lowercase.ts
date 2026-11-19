@@ -4,7 +4,8 @@ import type { WorksheetRecord } from "../../worksheets-data";
 
 const NEARBY = "abcdefghijklmnopqrstuvwxyz";
 
-function distractorsFor(target: string, count: number): string[] {
+/** The letters the "find and circle" row hides the target among (also described on the worksheet page). */
+export function distractorsFor(target: string, count: number): string[] {
   const idx = NEARBY.indexOf(target);
   const pool = NEARBY.split("").filter((c) => c !== target);
   pool.sort((a, b) => Math.abs(NEARBY.indexOf(a) - idx) - Math.abs(NEARBY.indexOf(b) - idx));
