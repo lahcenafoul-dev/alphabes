@@ -1,6 +1,7 @@
 // The English letter pages (see generate.ts): the shared layout in
 // scripts/tracing-layout.ts on US Letter, with the letter's first example word.
-import { getAllLetterSlugs, getLetterContent, type LetterContent } from "../../lib/letters-data";
+import { getAllLetterSlugs, type LetterContent } from "../../lib/letters-data";
+import { firstWord, missingWords, otherLetters as others } from "../../lib/letter-sheet-content";
 import { pictureKey } from "../../lib/picture-key";
 import { esc, rng, shuffle } from "../fiches-fr/templates";
 import { picturePrint } from "../picture-emoji";
@@ -49,9 +50,7 @@ export const SHEET_TYPES = ["tracing", "beginning-sounds", "matching", "recognit
 export type SheetType = (typeof SHEET_TYPES)[number];
 
 const SLUGS = getAllLetterSlugs();
-const firstWord = (slug: string) => getLetterContent(slug)!.exampleWords[0].word;
 const pic = (word: string) => picturePrint(pictureKey(word));
-const others = (slug: string, offsets = [5, 11, 17]) => offsets.map((o) => SLUGS[(SLUGS.indexOf(slug) + o) % SLUGS.length]);
 
 const tiles = (items: string[], cls = "", small = false) => `<div class="tp-tiles${small ? " tp-small" : ""}">${items.map((i) => `<div class="tp-tile${cls}">${i}</div>`).join("")}</div>`;
 const STARS: TracingRow = { label: "", kind: "html", html: `<div class="tp-stars">How did I do? <b>★</b><b>★</b><b>★</b></div>` };
@@ -73,19 +72,6 @@ function matchColumns(left: string[], right: string[], seed: string, rightCls = 
     rightCls,
     true,
   )}</div>`;
-}
-
-/** Up to three words to complete: the letter's word, then other letters' words that contain it. */
-function missingWords(letter: LetterContent): { word: string; at: number }[] {
-  const words = [{ word: letter.exampleWords[0].word, at: 0 }];
-  for (const slug of SLUGS) {
-    if (words.length === 3) break;
-    if (slug === letter.slug) continue;
-    const w = firstWord(slug);
-    const at = w.toLowerCase().indexOf(letter.lowercase);
-    if (at > 0) words.push({ word: w, at });
-  }
-  return words;
 }
 
 function exercises(type: Exclude<SheetType, "tracing">, letter: LetterContent): TracingRow[] {

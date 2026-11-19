@@ -21,6 +21,7 @@ import { THUMB_WIDTH, pdfPreview, previewThumb } from "@/lib/preview-thumb";
 import { letterHowTo, staticHowTo } from "@/lib/worksheet-howto";
 import { staticWorksheetCategories, getStaticWorksheetCategory } from "@/lib/static-worksheet-categories";
 import { getStaticWorksheetBySlug, getStaticWorksheetsByCategory, getAllStaticWorksheetSlugs } from "@/lib/static-worksheets-data";
+import { letterGuide, type GuideBlock, type Inline } from "@/lib/worksheet-letter-guide";
 
 const BASE_URL = "https://alphabes.com";
 
@@ -122,6 +123,16 @@ export default function CategoryEn({ slug }: { slug: string }) {
 
 const PILLAR_CATEGORY_LINKS = worksheetCategories.map((c) => ({ slug: c.slug, name: c.name }));
 
+/** The sheet a pillar page's letter tiles open (SEO phase 4): the one that matches the page. */
+export const PILLAR_SHEET: Record<string, string> = {
+  alphabet: "recognition",
+  tracing: "tracing",
+  phonics: "matching",
+  "beginning-sounds": "beginning-sounds",
+  coloring: "coloring",
+  handwriting: "writing-practice",
+};
+
 function CategoryExtras({ currentSlug }: { currentSlug: string }) {
   const relatedPillars = PILLAR_CATEGORY_LINKS.filter((c) => c.slug !== currentSlug);
 
@@ -212,7 +223,7 @@ function PillarCategoryView({ category }: { category: NonNullable<ReturnType<typ
           <Link
             key={letter}
             id={letter}
-            href={`/worksheets/letter-${letter}-tracing`}
+            href={`/worksheets/letter-${letter}-${PILLAR_SHEET[category.slug] ?? "tracing"}`}
             className="rounded-block border border-chalkboard/10 p-4 text-center shadow-block scroll-mt-20"
           >
             <div className="letter-block bg-crayon-blue aspect-square text-xl mx-auto mb-2">
@@ -363,6 +374,8 @@ function WorksheetDetailView({ slug }: { slug: string }) {
         </p>
       )}
 
+      <LetterGuide blocks={letterGuide(worksheet.worksheetType, worksheet.letter)} />
+
       <section className="mt-12 print:hidden" aria-labelledby="related-heading">
         <h2 id="related-heading" className="text-xl font-bold">
           More Letter {worksheet.uppercase} Worksheets
@@ -442,6 +455,7 @@ function StaticWorksheetDetailView({ slug }: { slug: string }) {
 
   const category = getStaticWorksheetCategory(worksheet.categorySlug)!;
   const related = getStaticWorksheetsByCategory(worksheet.categorySlug).filter((w) => w.slug !== worksheet.slug);
+  const cursiveLetter = worksheet.slug.match(/^letter-([a-z])-cursive$/)?.[1];
 
   const breadcrumbJsonLd = buildBreadcrumbJsonLd([
     { name: "Home", url: BASE_URL },
@@ -498,6 +512,8 @@ function StaticWorksheetDetailView({ slug }: { slug: string }) {
 
       <HowToUse text={staticHowTo(worksheet.slug)} />
 
+      {cursiveLetter && <LetterGuide blocks={letterGuide("cursive", cursiveLetter)} />}
+
       <section className="mt-12 print:hidden" aria-labelledby="related-heading">
         <h2 id="related-heading" className="text-xl font-bold">
           More {category.name} Worksheets
@@ -546,6 +562,37 @@ function HowToUse({ text }: { text: string | null }) {
       </h2>
       <p className="mt-2 text-chalkboard/80">{text}</p>
     </section>
+  );
+}
+
+// Per-letter text under "How to use this worksheet" (lib/worksheet-letter-guide.ts).
+function LetterGuide({ blocks }: { blocks: GuideBlock[] }) {
+  if (!blocks.length) return null;
+  return (
+    <div className="mt-8 space-y-6 print:hidden">
+      {blocks.map((b) => (
+        <section key={b.id} aria-labelledby={`guide-${b.id}`}>
+          <h2 id={`guide-${b.id}`} className="font-display font-bold text-lg">
+            {b.heading}
+          </h2>
+          {b.paragraphs.map((p, i) => (
+            <p key={i} className="mt-2 text-chalkboard/80">
+              {p.map((part, j) => <GuideInline key={j} part={part} />)}
+            </p>
+          ))}
+        </section>
+      ))}
+    </div>
+  );
+}
+
+function GuideInline({ part }: { part: Inline }) {
+  if (typeof part === "string") return <>{part}</>;
+  if ("strong" in part) return <strong>{part.strong}</strong>;
+  return (
+    <Link href={part.href} className="font-bold underline">
+      {part.text}
+    </Link>
   );
 }
 

@@ -3,6 +3,11 @@ import { PAGE_MARGIN, drawWorksheetHeader, drawWorksheetTitle, drawWorksheetFoot
 import { drawWordPicture, type WordPhotos } from "../icons";
 import type { WorksheetRecord } from "../../worksheets-data";
 
+/** The five other letters in the "circle every" grid (also described on the worksheet page). */
+export function reviewDistractors(lower: string): string[] {
+  return "aeostmn".split("").filter((c) => c !== lower).slice(0, 5);
+}
+
 export function drawLetterReview(doc: jsPDF, w: WorksheetRecord, photos: WordPhotos = {}): void {
   const { uppercase: U, lowercase: L, letter, primaryWord } = w;
   const pageWidth = doc.internal.pageSize.getWidth();
@@ -33,7 +38,7 @@ export function drawLetterReview(doc: jsPDF, w: WorksheetRecord, photos: WordPho
   doc.setFont("helvetica", "normal");
   doc.setFontSize(11);
   doc.text(`2. Circle every ${U} and ${L}:`, PAGE_MARGIN, 105);
-  const distractors = "aeostmn".split("").filter((c) => c !== L);
+  const distractors = reviewDistractors(L);
   const grid = [U, distractors[0], L, distractors[1], U, distractors[2], L, distractors[3], U, L, distractors[4], L];
   doc.setFont("helvetica", "bold");
   doc.setFontSize(15);

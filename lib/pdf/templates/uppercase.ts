@@ -4,7 +4,8 @@ import type { WorksheetRecord } from "../../worksheets-data";
 
 const NEARBY = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
-function distractorsFor(target: string, count: number): string[] {
+/** The letters the "find and circle" row hides the target among (also described on the worksheet page). */
+export function distractorsFor(target: string, count: number): string[] {
   const idx = NEARBY.indexOf(target);
   const pool = NEARBY.split("").filter((c) => c !== target);
   // bias toward letters near the target in the alphabet for a bit of real difficulty
