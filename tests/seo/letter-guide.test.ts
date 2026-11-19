@@ -83,6 +83,27 @@ describe("letter worksheet guide", () => {
     expect(words).toEqual(["_all", "Ra_bit", "Um_rella"]);
     expect(text(letterGuide("missing-letter", "b"))).toContain("_all, Ra_bit and Um_rella");
     expect(text(letterGuide("missing-letter", "q"))).toContain("one word to complete, _ueen");
+    expect(text(letterGuide("missing-letter", "q"))).toContain("Read the word out loud");
+    expect(text(letterGuide("missing-letter", "b"))).toContain("Read each of the 3 words out loud");
+  });
+
+  it("describes the missing-letter sheet without an alphabet sequence (it has none)", async () => {
+    const { getWorksheetType } = await import("@/lib/worksheet-types");
+    const t = getWorksheetType("missing-letter")!;
+    for (const s of [t.shortDescription, t.longDescription]) expect(s).not.toMatch(/alphabet|sequence/i);
+    // The type page uses longDescription (or its override) as its meta description (SEO phase 4: at most 155 characters).
+    const { fitDescription } = await import("@/lib/social-metadata");
+    const { META_OVERRIDES } = await import("@/lib/seo/meta-overrides");
+    for (const type of WORKSHEET_TYPES) {
+      const shown = META_OVERRIDES[`/worksheets/${type.categorySlug}`]?.description ?? fitDescription(type.longDescription);
+      expect(shown.length, type.id).toBeLessThanOrEqual(155);
+    }
+    for (const l of LETTERS) {
+      const c = getLetterContent(l)!;
+      const instr = t.instructions(c.uppercase, c.lowercase, c.exampleWords[0].word);
+      expect(instr, l).not.toMatch(/alphabet|sequence/i);
+      expect(instr, l).toContain(missingWords(c).length === 1 ? "the word" : `each of the ${missingWords(c).length} words`);
+    }
   });
 
   it("gives each page of a letter a text of its own", () => {

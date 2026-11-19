@@ -2,6 +2,8 @@
 // worksheet slugs (letter-{a..z}-{slugFragment}), the 10 type-category pages
 // under /worksheets/{categorySlug}, and which PDF template (lib/pdf/index.ts)
 // renders a given worksheet.
+import { getLetterContent } from "./letters-data";
+import { missingWords } from "./letter-sheet-content";
 
 export type WorksheetTypeId =
   | "tracing"
@@ -133,13 +135,19 @@ export const WORKSHEET_TYPES: WorksheetTypeDef[] = [
     categorySlug: "missing-letter",
     slugFragment: "missing-letter",
     label: "Missing Letter",
-    shortDescription: "Fill in the missing letter in a word and the alphabet.",
+    shortDescription: "Fill in the missing letter in each word, then trace the letter.",
     longDescription:
-      "Fill-in-the-blank practice: complete a word that's missing its first letter, and complete a short run of the alphabet with the target letter missing.",
+      "Fill-in-the-blank practice: complete one to three words missing the target letter, each next to its picture, then trace the letter and write it alone.",
     defaultSkills: ["Letter recognition", "Sequencing", "Spelling readiness"],
     defaultAgeRange: [5, 7],
     defaultDifficulty: "intermediate",
-    instructions: (u, l, word) => `Write the missing letter ${u}${l} to complete the word and the alphabet sequence, like "${word}."`,
+    // What the static PDF shows (scripts/worksheets-en): the letter's words with a gap, then a tracing row.
+    instructions: (u, l, word) => {
+      const n = missingWords(getLetterContent(l)!).length;
+      return n === 1
+        ? `Write the missing ${u} to complete the word "${word}," then trace ${u} and write it on your own.`
+        : `Write the missing ${u} or ${l} to complete each of the ${n} words, like "${word}," then trace ${u} and write it on your own.`;
+    },
     titleTemplate: (u) => `Missing Letter ${u} Worksheet`,
   },
   {

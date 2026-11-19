@@ -195,7 +195,11 @@ export function soundSentence(c: LetterContent): string {
 const SOUND_TIPS: Partial<Record<GuideType, (c: LetterContent) => string | null>> = {
   "beginning-sounds": () => "Before circling, say each picture's name slowly together and listen for the very first sound.",
   matching: () => "If a picture is hard, say its name, then its first sound on its own, and ask which letter makes it.",
-  "missing-letter": () => "Read each word out loud, stopping at the gap, and ask which sound is missing.",
+  // As many words as that letter's sheet has (Q, X and Z have one).
+  "missing-letter": (c) =>
+    missingWords(c).length === 1
+      ? "Read the word out loud, stopping at the gap, and ask which sound is missing."
+      : `Read each of the ${missingWords(c).length} words out loud, stopping at the gap, and ask which sound is missing.`,
   coloring: (c) =>
     c.slug === "x" ? "While your child colors, take turns naming things that end with that sound, like box, six and fox." : `While your child colors, take turns naming things at home that start with ${c.ipa}.`,
   // Not for x (xylophone starts with a z sound) or o (orange has a different o in American English).
