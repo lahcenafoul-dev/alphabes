@@ -79,7 +79,9 @@
     "cookies": "Política de cookies",
     "copyright": "© {year} AlphaBes. Todos os direitos reservados.",
     "tagline": "Feito para pequenos curiosos de 3 a 8 anos.",
-    "photos": "Fotos: <link>Pixabay</link>"
+    "photos": "Fotos: <link>Pixabay</link>",
+    "follow": "Siga o AlphaBes",
+    "social": "AlphaBes no {network}"
   },
   "CookieConsent": {
     "region": "Consentimento de cookies",

@@ -1,5 +1,6 @@
 import type { Locale } from "@/i18n/routing";
 import { HTML_LANG, SITE_URL, absoluteUrl } from "@/lib/i18n/routes";
+import { SOCIAL_PROFILES } from "@/lib/social";
 
 export function buildBreadcrumbJsonLd(items: { name: string; url: string }[]) {
   return {
@@ -64,8 +65,8 @@ export function buildArticleJsonLd(article: {
 export const ORG_ID = `${SITE_URL}/#org`;
 // The owl at 512 px (app/icon3.tsx); Google wants a square logo of at least 112 px.
 export const ORG_LOGO = { url: `${SITE_URL}/icon3`, width: 512, height: 512 };
-// The site's social profiles. None yet: add their URLs here when they exist.
-export const ORG_SAME_AS: string[] = [];
+// The site's social profiles (lib/social.ts, also linked in the footers).
+export const ORG_SAME_AS: string[] = SOCIAL_PROFILES.map((p) => p.url);
 // Where the families of each language live.
 const AREA_SERVED: Record<Locale, string[]> = {
   en: ["US", "CA", "GB"],
