@@ -71,7 +71,12 @@ describe("structured data", () => {
   it("declares one organization, with the same @id, URL and logo in every language", () => {
     const org = buildOrganizationJsonLd("x");
     expect(org).toMatchObject({ "@type": "EducationalOrganization", "@id": "https://alphabes.com/#org", url: "https://alphabes.com", logo: { url: "https://alphabes.com/icon3" } });
-    expect(org.sameAs).toEqual([]);
+    expect(org.sameAs).toEqual([
+      "https://www.youtube.com/@Alphabes",
+      "https://www.pinterest.com/alphabeskid/",
+      "https://www.tiktok.com/@alphabes01",
+      "https://www.instagram.com/alph.abes/",
+    ]);
     expect(org.areaServed).toEqual(expect.arrayContaining(["US", "FR", "MX", "BR"]));
     // Other nodes point to it.
     expect(buildWebSiteJsonLd("fr").publisher["@id"]).toBe(ORG_ID);

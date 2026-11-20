@@ -79,7 +79,9 @@
     "cookies": "Cookie Policy",
     "copyright": "© {year} AlphaBes. All rights reserved.",
     "tagline": "Made for curious learners ages 3-8.",
-    "photos": "Photos: <link>Pixabay</link>"
+    "photos": "Photos: <link>Pixabay</link>",
+    "follow": "Follow AlphaBes",
+    "social": "AlphaBes on {network}"
   },
   "CookieConsent": {
     "region": "Cookie consent",

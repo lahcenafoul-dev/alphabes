@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import SocialLinks from "@/components/SocialLinks";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import type { Locale } from "@/i18n/routing";
@@ -276,6 +277,11 @@ export default async function OwlHome({ locale, copy, children }: { locale: Loca
           <div className="flex flex-wrap justify-between gap-4">
             <p className="m-0">{copy.footer.ages}</p>
             <LanguageLinks locale={locale} label={copy.footer.languages} />
+            <SocialLinks
+              label={tf("follow")}
+              linkLabel={(network) => tf("social", { network })}
+              linkClassName="text-owl-muted hover:text-owl-purple hover:bg-[#F1EEFC]"
+            />
           </div>
           <nav aria-label={copy.footer.legal}>
             <ul className="flex flex-wrap gap-x-5 gap-y-2 text-sm font-semibold">

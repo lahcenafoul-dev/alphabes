@@ -2,6 +2,7 @@ import { getTranslations } from "next-intl/server";
 import Link from "next/link";
 import type { Locale } from "@/i18n/routing";
 import { isAvailable, localizedPath } from "@/lib/i18n/routes";
+import SocialLinks from "@/components/SocialLinks";
 
 const columns = [
   {
@@ -83,6 +84,11 @@ export default async function Footer({ locale }: { locale: Locale }) {
         <div className="mx-auto max-w-6xl px-6 py-6 flex flex-wrap items-center justify-between gap-3 text-sm text-paper/60">
           <p>{t("copyright", { year: new Date().getFullYear() })}</p>
           <p>{t("tagline")}</p>
+          <SocialLinks
+            label={t("follow")}
+            linkLabel={(network) => t("social", { network })}
+            linkClassName="text-paper/80 hover:text-paper hover:bg-paper/10"
+          />
           <p>
             {t.rich("photos", {
               link: (chunks) => (
