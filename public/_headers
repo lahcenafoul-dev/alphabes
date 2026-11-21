@@ -13,6 +13,9 @@
   Cache-Control: public, max-age=86400, stale-while-revalidate=604800
 /audio/*
   Cache-Control: public, max-age=86400, stale-while-revalidate=604800
+# Pinterest pin images (1000 x 1500), linked from the pins themselves.
+/pins/*
+  Cache-Control: public, max-age=86400, stale-while-revalidate=604800
 
 # The worksheet PDFs stay out of search results: each one has its own HTML
 # page (/worksheets/..., /fr/fiches/..., /es/fichas/..., /pt/atividades/...),
